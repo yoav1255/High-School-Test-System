@@ -13,7 +13,7 @@ public class SimpleServer extends AbstractServer {
 		super(port);
 		
 	}
-
+//meitar
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		String msgString = msg.toString();
