@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.Subscribe;
  */
 public class App extends Application {
 
+    //Check Yoav
     private static Scene scene;
     private SimpleClient client;
 
