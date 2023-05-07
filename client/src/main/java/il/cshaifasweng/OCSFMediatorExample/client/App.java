@@ -9,6 +9,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
+
+
 import java.io.IOException;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,9 +29,9 @@ import org.greenrobot.eventbus.Subscribe;
  */
 public class App extends Application {
 
-    //Check Yoav
     private static Scene scene;
     private SimpleClient client;
+    private static Session session;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -31,6 +41,47 @@ public class App extends Application {
         scene = new Scene(loadFXML("primary"), 640, 480);
         stage.setScene(scene);
         stage.show();
+
+    // -------------- //
+
+        try{
+            SessionFactory sessionFactory = getSessionFactory();
+            session=sessionFactory.openSession();
+            session.beginTransaction();
+            //
+            //
+            //
+            session.getTransaction().commit(); // Save Everything in the transaction area
+        } catch (Exception exception){
+            if(session!=null){
+                session.getTransaction().rollback();
+            }
+            System.err.println("An error occured, changes have been rolled back.");
+            exception.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    private static SessionFactory getSessionFactory()throws HibernateException{
+        Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(User.class);
+        configuration.addAnnotatedClass(Course.class);
+        configuration.addAnnotatedClass(ExamForm.class);
+        configuration.addAnnotatedClass(Principal.class);
+        configuration.addAnnotatedClass(Question.class);
+        configuration.addAnnotatedClass(Student.class);
+        configuration.addAnnotatedClass(ScheduledTest.class);
+        configuration.addAnnotatedClass(StudentTest.class);
+        configuration.addAnnotatedClass(Subject.class);
+        configuration.addAnnotatedClass(Teacher.class);
+
+
+        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties())
+                .build();
+
+        return configuration.buildSessionFactory(serviceRegistry);
     }
 
     static void setRoot(String fxml) throws IOException {

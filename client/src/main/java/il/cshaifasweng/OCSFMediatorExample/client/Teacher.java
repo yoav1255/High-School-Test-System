@@ -12,5 +12,11 @@ public class Teacher extends User {
     @OneToMany(mappedBy = "teacher")
     private List<ScheduledTest> scheduledTests;
 
-
+    public Teacher(String id, String first_name, String last_name, String gender, String email, String password, List<Subject> subjects, List<Course> courses, List<ScheduledTest> scheduledTests) {
+        super(id, first_name, last_name, gender, email, password);
+        this.subjects = subjects;
+        this.courses = courses;
+        this.scheduledTests = scheduledTests;
+    }
+    public Teacher(){}
 }
