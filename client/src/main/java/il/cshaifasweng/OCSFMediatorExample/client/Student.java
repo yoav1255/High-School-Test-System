@@ -4,7 +4,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Student")
-public class Student extends Person{
+public class Student extends User {
     @OneToMany(mappedBy = "student")
     private List<StudentTest> studentTests;
 

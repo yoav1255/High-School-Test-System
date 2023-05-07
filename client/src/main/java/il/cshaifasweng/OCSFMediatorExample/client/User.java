@@ -3,9 +3,9 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import javax.persistence.*;
 
 @MappedSuperclass
-@Table(name = "Person")
+@Table(name = "User")
 
-public class Person {
+public class User {
     @Id
     private String id;
     private String first_name;

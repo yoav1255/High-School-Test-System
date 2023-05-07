@@ -4,7 +4,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Teacher")
-public class Teacher extends Person{
+public class Teacher extends User {
     @ManyToMany(mappedBy = "teachers")
     private List <Subject> subjects;
     @ManyToMany(mappedBy = "teachers")
