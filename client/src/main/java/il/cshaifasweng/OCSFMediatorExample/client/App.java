@@ -20,6 +20,8 @@ import org.hibernate.service.ServiceRegistry;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,6 +84,17 @@ public class App extends Application {
                 .build();
 
         return configuration.buildSessionFactory(serviceRegistry);
+    }
+
+    private static void generateObjects() throws Exception{
+        List<Student> students = Student.GenerateStudents();
+        List<Subject> subjects = Subject.GenerateSubjects();
+        List<Course> courses = Course.GenerateCourses();
+        List<ExamForm> examForms = ExamForm.GenerateExamForms();
+        List<Teacher> teachers = Teacher.GenerateTeachers();
+        List<ScheduledTest> scheduledTests = ScheduledTest.GenerateScheduledTests();
+        List<StudentTest> studentTests = StudentTest.GenerateStudentTests();
+
     }
 
     static void setRoot(String fxml) throws IOException {

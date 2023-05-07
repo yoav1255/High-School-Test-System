@@ -81,10 +81,14 @@
 -- inner join studenttest as t
 -- on s.id = t.id
 -- where s.id = 3;
---
---
---
---
---
---
---
+
+delete from studenttest;
+delete from scheduledtest;
+delete from teacher;
+delete from examform;
+delete from course;
+delete from subject;
+delete from student;
+
+
+SET SQL_SAFE_UPDATES = 0;
