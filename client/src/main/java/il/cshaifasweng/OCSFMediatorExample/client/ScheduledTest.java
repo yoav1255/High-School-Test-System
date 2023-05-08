@@ -72,6 +72,7 @@ public class ScheduledTest {
     public void setStudentTests(List<StudentTest> studentTests) {
         this.studentTests = studentTests;
     }
+    public void addStudentTest(StudentTest studentTest){ studentTests.add(studentTest); }
 
     public Teacher getTeacher() {
         return teacher;

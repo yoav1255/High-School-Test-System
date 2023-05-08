@@ -53,9 +53,7 @@ public class Course {
         return subject;
     }
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
+    public void setSubject(Subject subject) { this.subject = subject;}
 
     public List<ExamForm> getExamForms() {
         return examForms;
@@ -64,6 +62,7 @@ public class Course {
     public void setExamForms(List<ExamForm> examForms) {
         this.examForms = examForms;
     }
+    public void addExamForm(ExamForm examForm){ this.examForms.add(examForm); }
 
     public List<Question> getQuestions() {
         return questions;
@@ -80,6 +79,7 @@ public class Course {
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
+    public void addTeacher(Teacher teacher){ this.teachers.add(teacher); }
     public static List<Course> GenerateCourses(){
         List<Course> courses= new ArrayList<Course>();
         courses.add(new Course(1,"Hedva"));

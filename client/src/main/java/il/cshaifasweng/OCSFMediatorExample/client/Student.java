@@ -21,6 +21,7 @@ public class Student extends User {
     public void setStudentTests(List<StudentTest> studentTests) {
         this.studentTests = studentTests;
     }
+    public void addStudentTests(StudentTest studentTest) { studentTests.add(studentTest); }
 
 
     public static List<Student> GenerateStudents(){

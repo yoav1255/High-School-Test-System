@@ -66,10 +66,10 @@ public class ExamForm {
     public List<ScheduledTest> getScheduledTests() {
         return scheduledTests;
     }
-
     public void setScheduledTests(List<ScheduledTest> scheduledTests) {
         this.scheduledTests = scheduledTests;
     }
+    public void addScheduledTest(ScheduledTest scheduledTest){ this.scheduledTests.add(scheduledTest); }
 
     public List<Question> getQuestions() {
         return questions;

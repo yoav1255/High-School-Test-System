@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import org.hibernate.HibernateException;
@@ -22,6 +23,7 @@ import org.hibernate.service.ServiceRegistry;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,7 +53,7 @@ public class App extends Application {
             session=sessionFactory.openSession();
             session.beginTransaction();
             //
-            //
+            generateObjects();
             //
             session.getTransaction().commit(); // Save Everything in the transaction area
         } catch (Exception exception){
@@ -95,6 +97,69 @@ public class App extends Application {
         List<ScheduledTest> scheduledTests = ScheduledTest.GenerateScheduledTests();
         List<StudentTest> studentTests = StudentTest.GenerateStudentTests();
 
+// Update Courses
+        courses.get(0).setSubject(subjects.get(0));
+        subjects.get(0).addCourse(courses.get(0));
+
+//Update ExamForms
+
+        examForms.get(0).setSubject(subjects.get(0));
+        examForms.get(0).setCourse(courses.get(0));
+        subjects.get(0).addExamForm(examForms.get(0));
+        courses.get(0).addExamForm(examForms.get(0));
+
+//Update ScheduledTest
+
+        for (ScheduledTest s : scheduledTests){
+            s.setExamForm(examForms.get(0));
+            s.setTeacher(teachers.get(0));
+            examForms.get(0).addScheduledTest(s);
+            teachers.get(0).addScheduledTest(s);
+        }
+
+//Update Teachers
+
+        teachers.get(0).addCourses(courses.get(0));
+        teachers.get(0).addSubject(subjects.get(0));
+        courses.get(0).addTeacher(teachers.get(0));
+        subjects.get(0).addTeacher(teachers.get(0));
+
+//Update StudentTests
+
+        for(StudentTest s : studentTests){
+            Random rand = new Random();
+            int randTest = rand.nextInt(4);
+            int randStudent = rand.nextInt(12);
+            s.setScheduledTest(scheduledTests.get(randTest));
+            s.setStudent(students.get(randStudent));
+            scheduledTests.get(randTest).addStudentTest(s);
+            students.get(randStudent).addStudentTests(s);
+        }
+
+// ------------ Add objects to DB --------//
+
+        for(Subject subject:subjects)
+            session.save(subject);
+        for(Course course:courses)
+            session.save(course);
+        for (ExamForm examForm:examForms)
+            session.save(examForm);
+        for (ScheduledTest scheduledTest:scheduledTests)
+            session.save(scheduledTest);
+        for (Teacher teacher:teachers)
+            session.save(teacher);
+        for (Student student:students)
+            session.save(student);
+        for (StudentTest studentTest:studentTests)
+            session.save(studentTest);
+        session.flush();
+    }
+
+    private static List<Student> getAllStudents() throws Exception{
+        String queryString = "FROM Student";
+        Query query = session.createQuery(queryString,Student.class);
+        List<Student> students = query.getResultList();
+        return students;
     }
 
     static void setRoot(String fxml) throws IOException {

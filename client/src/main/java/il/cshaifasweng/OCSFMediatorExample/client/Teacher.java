@@ -28,6 +28,7 @@ public class Teacher extends User {
     public void setSubjects(List<Subject> subjects) {
         this.subjects = subjects;
     }
+    public void addSubject(Subject subject){ subjects.add(subject); }
 
     public List<Course> getCourses() {
         return courses;
@@ -36,6 +37,7 @@ public class Teacher extends User {
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }
+    public void addCourses(Course course){ courses.add(course); }
 
     public List<ScheduledTest> getScheduledTests() {
         return scheduledTests;
@@ -44,6 +46,7 @@ public class Teacher extends User {
     public void setScheduledTests(List<ScheduledTest> scheduledTests) {
         this.scheduledTests = scheduledTests;
     }
+    public void addScheduledTest(ScheduledTest scheduledTest){ scheduledTests.add(scheduledTest); }
     public static List<Teacher> GenerateTeachers(){
         List<Teacher> teachers = new ArrayList<Teacher>();
         teachers.add(new Teacher("1","shosh@gmail.com","Shoshana","Female","Levi","tt2p10"));
