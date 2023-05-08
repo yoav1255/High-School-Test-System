@@ -1,7 +1,6 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
