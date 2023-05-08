@@ -5,18 +5,13 @@ import java.util.List;
 import java.util.Random;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Hello world!
@@ -111,14 +106,16 @@ public class App
 
 //Update StudentTests
 
-        for(StudentTest s : studentTests){
-            Random rand = new Random();
-            int randTest = rand.nextInt(4);
-            int randStudent = rand.nextInt(12);
-            s.setScheduledTest(scheduledTests.get(randTest));
-            s.setStudent(students.get(randStudent));
-            scheduledTests.get(randTest).addStudentTest(s);
-            students.get(randStudent).addStudentTests(s);
+        int i = 0; int j = 6;
+        for(int index = 0; index<studentTests.size();index++){
+            StudentTest s = studentTests.get(index);
+            s.setScheduledTest(scheduledTests.get(i));
+            s.setStudent(students.get(j));
+            scheduledTests.get(i).addStudentTest(s);
+            students.get(j).addStudentTests(s);
+            i++; j++;
+            if(i>=4) i=0;
+            if(j>=12) j=0;
         }
 
 // ------------ Add objects to DB --------//
@@ -147,17 +144,24 @@ public class App
         return students;
     }
 
-    private Student getStudentWithTests(int student_id){
-        String queryString = "SELECT s.id,s.first_name,s.last_name " +
-                "FROM Student s LEFT JOIN FETCH s.studentTests st " +
-                "WHERE s.id = :student_id";
-        Query query = session.createQuery(queryString);
-        query.setParameter("student_id",student_id);
-        return (Student) query.getSingleResult();
-    }
+//    private Student getStudentWithTests(String student_id){
+//        String queryString = "SELECT s.id,s.first_name,s.last_name " +
+//                "FROM Student s LEFT JOIN FETCH s.studentTests st " +
+//                "WHERE s.id = :student_id";
+//        Query query = session.createQuery(queryString);
+//        query.setParameter("student_id",student_id);
+//        return (Student) query.getSingleResult();
+//    }
 
-    private void updateStudent(int student_id){
 
+    private static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
+        Student student = session.get(Student.class,student_id);
+        StudentTest studentTest = session.get(StudentTest.class,studentTest_id);
+        studentTest.setGrade(newGrade);
+        studentTest.setStudent(student);
+        session.saveOrUpdate(studentTest);
+        session.saveOrUpdate(student);
+        session.flush();
     }
 
 
