@@ -1,0 +1,85 @@
+package il.cshaifasweng.OCSFMediatorExample.server;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "ExamForm")
+public class ExamForm {
+    @Id
+    private String code; //TODO construct the code properly
+    private int timeLimit;
+    @ManyToOne
+    @JoinColumn(name="course_id")
+    private Course course;
+    @ManyToOne
+    @JoinColumn(name="subject_id")
+    private Subject subject;
+    @OneToMany(mappedBy = "examForm")
+    private List<ScheduledTest> scheduledTests;
+    @ManyToMany(mappedBy = "examForms")
+    private List<Question> questions;
+
+    public ExamForm(String code, int timeLimit) {
+        this.code = code;
+        this.timeLimit = timeLimit;
+        this.scheduledTests = new ArrayList<ScheduledTest>();
+        this.questions = new ArrayList<Question>();
+    }
+    public ExamForm(){}
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    public List<ScheduledTest> getScheduledTests() {
+        return scheduledTests;
+    }
+    public void setScheduledTests(List<ScheduledTest> scheduledTests) {
+        this.scheduledTests = scheduledTests;
+    }
+    public void addScheduledTest(ScheduledTest scheduledTest){ this.scheduledTests.add(scheduledTest); }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public static List<ExamForm> GenerateExamForms(){
+        List<ExamForm> examForms = new ArrayList<ExamForm>();
+        examForms.add(new ExamForm("1",180));
+        return examForms;
+    }
+}

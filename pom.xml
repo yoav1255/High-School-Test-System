@@ -27,6 +27,7 @@
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
+
 	</dependencyManagement>
 	<build>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
