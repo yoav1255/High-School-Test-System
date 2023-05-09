@@ -29,6 +29,7 @@ public class App extends Application {
         client = SimpleClient.getClient();
         client.openConnection();
         scene = new Scene(loadFXML("primary"), 640, 480);
+        App.stage = stage;
         stage.setScene(scene);
         stage.show();
 
@@ -55,6 +56,17 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "student":
+                Platform.runLater(()->{
+                    setWindowTitle("Student");
+                    try {
+                        setContent("student");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+
         }
     }
 

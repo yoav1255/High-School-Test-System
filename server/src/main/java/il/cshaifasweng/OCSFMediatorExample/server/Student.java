@@ -9,7 +9,7 @@ public class Student extends User {
     @OneToMany(mappedBy = "student")
     private List<StudentTest> studentTests;
 
-    public Student(String id, String first_name, String last_name, String gender, String email, String password) {
+    public Student(String id, String email,String first_name, String last_name, String gender,  String password) {
         super(id, first_name, last_name, gender, email, password);
         this.studentTests = new ArrayList<StudentTest>();
     }

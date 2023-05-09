@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,7 +24,7 @@ public class App
 	private static SimpleServer server;
     private static Session session;
 
-    public static void main( String[] args ) throws IOException
+    public static void main( String[] args ) throws Exception
     {
         server = new SimpleServer(3028);
         System.out.println("server is listening");
@@ -36,6 +37,7 @@ public class App
             generateObjects();
             //
             session.getTransaction().commit(); // Save Everything in the transaction area
+
         } catch (Exception exception){
             if(session!=null){
                 session.getTransaction().rollback();
@@ -45,6 +47,16 @@ public class App
         } finally {
             session.close();
         }
+        //
+        List<Student> students = getAllStudents();
+        for(Student s : students)
+            System.out.println(s.getEmail());
+        //
+
+    }
+
+    public static Session getSession() {
+        return session;
     }
 
     private static SessionFactory getSessionFactory()throws HibernateException{
@@ -137,24 +149,31 @@ public class App
         session.flush();
     }
 
-    private static List<Student> getAllStudents() throws Exception{
-        String queryString = "FROM Student";
+    public static List<Student> getAllStudents() throws Exception{
+
+        List<Student> students = new ArrayList<Student>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT s FROM Student s";
         Query query = session.createQuery(queryString,Student.class);
-        List<Student> students = query.getResultList();
+        students = query.getResultList();
+        //
+        session.close();
         return students;
     }
 
-//    private Student getStudentWithTests(String student_id){
-//        String queryString = "SELECT s.id,s.first_name,s.last_name " +
-//                "FROM Student s LEFT JOIN FETCH s.studentTests st " +
-//                "WHERE s.id = :student_id";
-//        Query query = session.createQuery(queryString);
-//        query.setParameter("student_id",student_id);
-//        return (Student) query.getSingleResult();
-//    }
+    public Student getStudentWithTests(String student_id){
+        String queryString = "SELECT s.id,s.first_name,s.last_name " +
+                "FROM Student s LEFT JOIN FETCH s.studentTests st " +
+                "WHERE s.id = :student_id";
+        Query query = session.createQuery(queryString);
+        query.setParameter("student_id",student_id);
+        return (Student) query.getSingleResult();
+    }
 
 
-    private static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
+    public static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
         Student student = session.get(Student.class,student_id);
         StudentTest studentTest = session.get(StudentTest.class,studentTest_id);
         studentTest.setGrade(newGrade);

@@ -17,4 +17,7 @@ public class PrimaryController {
 		}
     }
 
+	@FXML private void goToAllStudents() throws IOException{
+		App.switchScreen("allStudents");
+	}
 }
