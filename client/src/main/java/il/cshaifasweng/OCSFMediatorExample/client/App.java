@@ -20,16 +20,42 @@ import org.greenrobot.eventbus.Subscribe;
 public class App extends Application {
 
     private static Scene scene;
+    private static Stage stage;
     private SimpleClient client;
 
     @Override
     public void start(Stage stage) throws IOException {
-    	EventBus.getDefault().register(this);
-    	client = SimpleClient.getClient();
-    	client.openConnection();
+        EventBus.getDefault().register(this);
+        client = SimpleClient.getClient();
+        client.openConnection();
         scene = new Scene(loadFXML("primary"), 640, 480);
         stage.setScene(scene);
         stage.show();
+
+        // -------------- //
+
+    }
+
+    public static void setWindowTitle(String title){stage.setTitle(title);}
+    public static void setContent(String pageName) throws IOException{
+        Parent root = loadFXML(pageName);
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+    public static void switchScreen(String screenName){
+        switch (screenName){
+            case "allStudents":
+                Platform.runLater(()->{
+                    setWindowTitle("All Students");
+                    try {
+                        setContent("allStudents");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+        }
     }
 
     static void setRoot(String fxml) throws IOException {
