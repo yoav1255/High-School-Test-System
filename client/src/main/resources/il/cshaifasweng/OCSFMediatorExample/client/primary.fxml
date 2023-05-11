@@ -22,7 +22,7 @@
             </DisplacementMap>
          </effect>
       </ImageView>
-      <Button fx:id="openStudentList" layoutX="468.0" layoutY="30.0" mnemonicParsing="false" onAction="#goToAllStudents" prefHeight="30.0" prefWidth="112.0" style="-fx-background-color: white;" text="הצגת תלמידות" textFill="#560e05" textOverrun="CLIP">
+      <Button fx:id="goToAllStudentsButton" layoutX="468.0" layoutY="30.0" mnemonicParsing="false" onAction="#handkeGoToAllStudentsButtonClick" prefHeight="30.0" prefWidth="112.0" style="-fx-background-color: white;" text="הצגת תלמידות" textFill="#560e05" textOverrun="CLIP">
          <font>
             <Font name="Arial Bold" size="12.0" />
          </font>

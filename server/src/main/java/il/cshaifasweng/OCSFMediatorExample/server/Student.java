@@ -1,11 +1,14 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 import javax.persistence.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Student")
-public class Student extends User {
+public class Student extends User implements Serializable{
+
     @OneToMany(mappedBy = "student")
     private List<StudentTest> studentTests;
 
