@@ -26,7 +26,6 @@ public class Student extends User implements Serializable{
     }
     public void addStudentTests(StudentTest studentTest) { studentTests.add(studentTest); }
 
-
     public static List<Student> GenerateStudents(){
         List<Student> newStudents = new ArrayList<>();
         newStudents.add(new Student("1","yoyo@gmail.com","Eitan","Male","David","123123Y"));

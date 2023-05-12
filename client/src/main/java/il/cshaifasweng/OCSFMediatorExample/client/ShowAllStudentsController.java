@@ -70,8 +70,7 @@ public class ShowAllStudentsController {
         if (event.getClickCount() == 2) { // Check if the user double-clicked the row
             Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
             if (selectedStudent != null) {
-                // Perform some action based on the selected student, such as showing their details
-                //System.out.println("Selected student: " + selectedStudent.getFirstName() + " " + selectedStudent.getLastName());
+
             }
         }
     }
@@ -79,7 +78,7 @@ public class ShowAllStudentsController {
 //    @FXML
 //    private void handleStudentSelection() {
 //        Student selectedStudent = studentListView.getSelectionModel().getSelectedItem();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("oneStudentInfo.fxml"));
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("showOneStudent.fxml"));
 //        StudentDataController controller = loader.getController();
 //        controller.setStudent(selectedStudent);
 //        Parent root = loader.load();

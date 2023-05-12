@@ -48,11 +48,19 @@ public class App
             session.close();
         }
         //
-        List<Student> students = getAllStudents();
-        for(Student s : students)
-            System.out.println(s.getEmail());
-        //
+//        List<Student> students = getAllStudents();
+//        for(Student s : students)
+//            System.out.println(s.getEmail());
+//        //
 
+//        Student student = getAllStudents().get(0);
+//        List<StudentTest> studentTests = getStudentTestsById(student);
+//        StudentTest studentTest1 = studentTests.get(0);
+//        System.out.println(studentTest1.getStudent().getId());
+//        System.out.println(studentTest1.getGrade());
+//        System.out.println(studentTest1.getTeacherId(studentTest1.getScheduledTest()));
+//        System.out.println(studentTest1.getSubjectCode(studentTest1.getScheduledTest()));
+//        System.out.println(studentTest1.getCourseCode(studentTest1.getScheduledTest()));
     }
 
     public static Session getSession() {
@@ -163,13 +171,32 @@ public class App
         return students;
     }
 
-    public Student getStudentWithTests(String student_id){
-        String queryString = "SELECT s.id,s.first_name,s.last_name " +
-                "FROM Student s LEFT JOIN FETCH s.studentTests st " +
-                "WHERE s.id = :student_id";
-        Query query = session.createQuery(queryString);
-        query.setParameter("student_id",student_id);
-        return (Student) query.getSingleResult();
+    public static List<StudentTest> getStudentTestsById(Student student){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
+        query.setParameter("studentToTake", student);
+        List<StudentTest> studentTests = query.getResultList();
+
+        for (StudentTest studentTest : studentTests) {
+            Query query2 = session.createQuery("FROM ScheduledTest s WHERE :studentTest IN elements(s.studentTests)", ScheduledTest.class);
+            query2.setParameter("studentTest", studentTest);
+            ScheduledTest scheduledTest = (ScheduledTest) query2.getSingleResult();
+
+            ExamForm examForm = scheduledTest.getExamForm();
+            studentTest.setSubject(scheduledTest,examForm.getSubject());
+            studentTest.setCourse(scheduledTest,examForm.getCourse());
+
+            Teacher teacher = scheduledTest.getTeacher();
+            studentTest.setTeacher(scheduledTest,teacher);
+        }
+
+        session.getTransaction().commit();
+        session.close();
+
+        return studentTests;
     }
 
 

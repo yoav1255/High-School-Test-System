@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="567.0" prefWidth="792.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ShowOneStudentController">
+   <children>
+      <TableView id="GradesTable" fx:id="GradesTable" layoutX="28.0" layoutY="99.0" prefHeight="413.0" prefWidth="740.0">
+        <columns>
+          <TableColumn id="TableTestid" fx:id="TableTestID" prefWidth="102.06641960144043" text="Test ID" />
+            <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="149.93359375" text="Teacher" />
+            <TableColumn id="TableSubject" fx:id="TableSubject" prefWidth="193.79931831359863" text="Subject" />
+            <TableColumn id="TableCourse" fx:id="TableCourse" prefWidth="193.20066833496094" text="Course" />
+          <TableColumn id="TableGrade" fx:id="TableGrade" minWidth="0.0" prefWidth="100.395751953125" text="Grade" />
+        </columns>
+      </TableView>
+      <Pane layoutY="64.0" prefHeight="5.0" prefWidth="200.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <Text fill="RED" layoutX="16.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Highschool Test System" textAlignment="CENTER" wrappingWidth="421.36446380615234">
+         <font>
+            <Font name="Arial Bold" size="30.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>

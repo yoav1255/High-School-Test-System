@@ -1,12 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "StudentTest")
-public class StudentTest {
+public class StudentTest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -65,6 +66,28 @@ public class StudentTest {
     public void setTimeToComplete(int timeToComplete) {
         this.timeToComplete = timeToComplete;
     }
+    public int getCourseCode(ScheduledTest scheduledTest){
+        int course = scheduledTest.getExamForm().getCourse().getCode();
+        return course;
+    }
+    public int  getSubjectCode(ScheduledTest scheduledTest) {
+        int subject = scheduledTest.getExamForm().getSubject().getCode();
+        return subject;
+    }
+    public String getTeacherId(ScheduledTest scheduledTest){
+        String teacher = scheduledTest.getTeacher().getId();
+        return teacher;
+    }
+    public void setCourse(ScheduledTest scheduledTest,Course course){
+        scheduledTest.getExamForm().setCourse(course);
+    }
+    public void setSubject(ScheduledTest scheduledTest,Subject subject){
+        scheduledTest.getExamForm().setSubject(subject);
+    }
+    public void setTeacher(ScheduledTest scheduledTest,Teacher teacher){
+        scheduledTest.setTeacher(teacher);
+    }
+
     public static List<StudentTest> GenerateStudentTests(){
         List<StudentTest> studentTests = new ArrayList<StudentTest>();
         studentTests.add(new StudentTest(1,85,180));
