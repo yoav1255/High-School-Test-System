@@ -46,6 +46,9 @@ public class ShowOneStudentController {
     public ShowOneStudentController(){
         EventBus.getDefault().register(this);
     }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
     @Subscribe
     @FXML
     public void onShowOneStudentEvent(ShowOneStudentEvent event){
@@ -74,10 +77,7 @@ public class ShowOneStudentController {
                 return new SimpleStringProperty(examFormCode);
             });
             ObservableList<StudentTest> allStudentTests = FXCollections.observableList(studentTests);
-
-
             GradesTable.setItems(allStudentTests);
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -91,6 +91,7 @@ public class ShowOneStudentController {
                 if (selectedStudentTest != null) {
                     SimpleClient.getClient().sendToServer(selectedStudentTest);
                     App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
+                    cleanup();
                 }
             }
         }catch (IOException e){

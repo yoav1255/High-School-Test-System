@@ -40,6 +40,7 @@ public class SimpleClient extends AbstractClient {
 		} else if (msg instanceof StudentTest) {
 			System.out.println("in simple client(studentTest)");
 			StudentTest studentTest = (StudentTest) msg;
+			ShowUpdateStudentController showUpdateStudentController = new ShowUpdateStudentController();
 			EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 		}
 	}

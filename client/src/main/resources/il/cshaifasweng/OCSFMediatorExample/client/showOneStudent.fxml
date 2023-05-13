@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="567.0" prefWidth="792.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ShowOneStudentController">
    <children>
-      <TableView id="GradesTable" fx:id="GradesTable" layoutX="28.0" layoutY="99.0" prefHeight="413.0" prefWidth="740.0">
+      <TableView id="GradesTable" fx:id="GradesTable" layoutX="28.0" layoutY="99.0" onMouseClicked="#handleRowClick" prefHeight="413.0" prefWidth="740.0">
         <columns>
           <TableColumn id="TableTestid" fx:id="TableTestID" prefWidth="102.06641960144043" text="Test ID" />
             <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="149.93359375" text="Teacher" />

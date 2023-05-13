@@ -43,8 +43,8 @@ public class SimpleServer extends AbstractServer {
 			}
 		} else if (msg.getClass().equals(StudentTest.class)) {
 			try{
-				StudentTest studentTest = App.getStudentTest((StudentTest) msg);
-				client.sendToClient(studentTest);
+//				StudentTest studentTest = App.getStudentTest((StudentTest) msg);
+				client.sendToClient((StudentTest) msg);
 				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
 			}catch (Exception e){
 				e.printStackTrace();

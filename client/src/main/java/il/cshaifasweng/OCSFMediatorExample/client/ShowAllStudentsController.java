@@ -40,9 +40,9 @@ public class ShowAllStudentsController {
     public ShowAllStudentsController() {
         EventBus.getDefault().register(this);
     }
-//    public void dispose() {
-//        EventBus.getDefault().unregister(this);
-//    }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
 
     public void setStudentList(List<Student> studentList) {
         this.studentList = studentList;
@@ -74,6 +74,7 @@ public class ShowAllStudentsController {
                 if (selectedStudent != null) {
                     SimpleClient.getClient().sendToServer(selectedStudent);
                     App.switchScreen("showOneStudent");
+                    cleanup();
                 }
             }
         }catch (IOException e){

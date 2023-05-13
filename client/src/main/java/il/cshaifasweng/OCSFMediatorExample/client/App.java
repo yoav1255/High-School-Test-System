@@ -86,6 +86,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showUpdateStudent":
+                Platform.runLater(()->{
+                    setWindowTitle("Update Grade");
+                    try {
+                        setContent("showUpdateStudent");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }

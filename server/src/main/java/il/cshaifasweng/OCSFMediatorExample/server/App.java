@@ -210,17 +210,18 @@ public class App
         return studentTestToReturn;
     }
 
-    public static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
+    public static void updateStudentGrade(StudentTest stud, int newGrade){ //Method checked
+        System.out.println("In update Student Grade!");
+        System.out.println(stud.getGrade()+1);
+
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        Student student = session.get(Student.class,student_id);
-        StudentTest studentTest = session.get(StudentTest.class,studentTest_id);
-        studentTest.setGrade(newGrade);
-        studentTest.setStudent(student);
-        session.saveOrUpdate(studentTest);
-        session.saveOrUpdate(student);
-        session.flush();
+        Query query = session.createQuery("UPDATE StudentTest SET grade = :newGrade WHERE id = :id");
+        query.setParameter("newGrade", newGrade);
+        query.setParameter("id", stud.getId());
+        int updatedCount = query.executeUpdate();
+        System.out.println(updatedCount);
         session.getTransaction().commit();
         session.close();
     }
