@@ -81,19 +81,14 @@ public class ShowAllStudentsController {
             e.printStackTrace();
         }
     }
-
-//    @FXML
-//    private void handleStudentSelection() {
-//        Student selectedStudent = studentListView.getSelectionModel().getSelectedItem();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("showOneStudent.fxml"));
-//        StudentDataController controller = loader.getController();
-//        controller.setStudent(selectedStudent);
-//        Parent root = loader.load();
-//        Scene scene = new Scene(root);
-//        Stage stage = new Stage();
-//        stage.setScene(scene);
-//        stage.show();
-//    }
+    @FXML public void backToMainButton(){
+        try {
+            System.out.println("in btn main");
+            App.switchScreen("primary");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     }
 

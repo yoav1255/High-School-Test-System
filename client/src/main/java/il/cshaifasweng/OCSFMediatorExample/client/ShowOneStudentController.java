@@ -98,4 +98,13 @@ public class ShowOneStudentController {
             e.printStackTrace();
         }
     }
+    @FXML
+    public void backToAllStudentsButton() {
+        try {
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            App.switchScreen("allStudents");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

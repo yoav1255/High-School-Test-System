@@ -18,7 +18,7 @@
             <TableColumn fx:id="email" prefWidth="75.0" text="Email" />
         </columns>
       </TableView>
-        <Button fx:id="goBack" text="Go Back" />
+        <Button fx:id="goBack" onAction="#backToMainButton" text="Go Back" />
     </children>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

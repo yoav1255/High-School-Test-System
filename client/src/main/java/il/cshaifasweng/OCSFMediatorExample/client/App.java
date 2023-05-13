@@ -96,6 +96,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "primary":
+                Platform.runLater(()->{
+                    setWindowTitle("Main");
+                    try {
+                        setContent("primary");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }

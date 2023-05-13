@@ -189,7 +189,7 @@ public class App
             ExamForm examForm = scheduledTest.getExamForm();
             studentTest.setSubject(scheduledTest,examForm.getSubject());
             studentTest.setCourse(scheduledTest,examForm.getCourse());
-
+            studentTest.setStudent(student);
             Teacher teacher = scheduledTest.getTeacher();
             studentTest.setTeacher(scheduledTest,teacher);
         }

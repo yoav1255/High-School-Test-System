@@ -45,14 +45,17 @@ public class ShowUpdateStudentController {
     public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event){
         try{
             ShowUpdateStudentController instance = getInstance();
-            newGrade = new TextField("0");
-            oldGrade = new TextField("0");
-            oldGrade.setText("0");
-            instance.newGrade = new TextField("0");
             System.out.println("in show Update Student controller");
             instance.studentTest = event.getStudentTest();
-            instance.oldGrade = new TextField(String.valueOf(instance.studentTest.getGrade()));
-            instance.oldGrade.setText("0");
+            int grade = instance.studentTest.getGrade();
+//TODO make old grade and newgrade
+            instance.newGrade = new TextField();
+            newGrade = new TextField();
+            instance.oldGrade = new TextField();
+            oldGrade = new TextField();
+            instance.oldGrade.setText(String.valueOf(grade));
+            oldGrade.setText(String.valueOf(grade));
+
             System.out.println("after setting the test");
         }catch (Exception e){
             e.printStackTrace();
@@ -63,21 +66,42 @@ public class ShowUpdateStudentController {
             ShowUpdateStudentController instance = getInstance();
             System.out.println("Handling update button1");
             StudentTest st = instance.studentTest;
-            System.out.println(st);
-            System.out.println(st.getGrade()+5);
-            int newG = Integer.parseInt(newGrade.getText());
-            System.out.println(st.getGrade()-23);
-            App.updateStudentGrade(st,newG);
+            try {
+                int newG = Integer.parseInt(newGrade.getText());
+                if (newG >= 0 && newG <= 100) {
+                    App.updateStudentGrade(st, newG);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText("Update success");
-            alert.setContentText("Grade successfully updated");
-            alert.showAndWait();
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText("Update success");
+                    alert.setContentText("Grade successfully updated");
+                    alert.showAndWait();
 
-            SimpleClient.getClient().sendToServer("#showAllStudents");//TODO go back to the student
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
-            cleanup();
+                    SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
+                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
+                    cleanup();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Illegal input");
+                    alert.setHeaderText("Update Failed");
+                    alert.setContentText("Invalid input, please enter a grade between 0 to 100");
+                    alert.showAndWait();
+                }
+            }catch (NumberFormatException notNum){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Illegal input");
+                alert.setHeaderText("Update Failed");
+                alert.setContentText("Invalid input, please enter a valid number");
+                alert.showAndWait();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @FXML public void goBackButton(){
+        try {
+            SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
         }catch (Exception e){
             e.printStackTrace();
         }
