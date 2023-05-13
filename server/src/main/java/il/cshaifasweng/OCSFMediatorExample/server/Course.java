@@ -86,6 +86,19 @@ public class Course implements Serializable {
     public static List<Course> GenerateCourses(){
         List<Course> courses= new ArrayList<Course>();
         courses.add(new Course(1,"Hedva"));
+        courses.add(new Course(2,"Infi"));
+        courses.add(new Course(3,"Algebra A"));
+        courses.add(new Course(4,"Algebra B"));
+        courses.add(new Course(5,"Programing"));
+        courses.add(new Course(6,"DataBase"));
+        courses.add(new Course(7,"Algorithm"));
+        courses.add(new Course(7,"Business in Science"));
+        courses.add(new Course(7,"Complexity"));
+        courses.add(new Course(7,"Hardware"));
+        courses.add(new Course(7,"Develop C"));
+
+        System.out.println(courses.lastIndexOf(courses));
+
         return courses;
     }
 }

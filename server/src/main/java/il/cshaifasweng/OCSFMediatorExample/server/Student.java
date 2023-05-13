@@ -40,6 +40,13 @@ public class Student extends User implements Serializable{
         newStudents.add(new Student("10","matanP@gmail.com","Matan","Male","Polik","yo2s3r"));
         newStudents.add(new Student("11","orenG@gmail.com","Oren","Male","Golan","123123"));
         newStudents.add(new Student("12","meitarY@gmail.com","Meitar","Female","Yeruham","9o8i7us"));
+        newStudents.add(new Student("13", "shalom@gmail.com", "Shalom","Haim","male","777"));
+        newStudents.add(new Student("14", "ronen@gmail.com", "ronen","Eta","male","9090"));
+        newStudents.add(new Student("16","oded@gmail.com","Oded","Yor","male","86jih"));
+        newStudents.add(new Student("17","haim@gmail.com","Haim","Cohen","male","8976"));
+        newStudents.add(new Student("18","roei@gmail.com","Roei","Shefer","male","kh7t"));
+        newStudents.add(new Student("19","oron@gmail.com","Oron","Tamar","male","jgi7"));
+        newStudents.add(new Student("20","ronit@gmail.com","Ronit","Ashurov","female","ko97"));
 
         return newStudents;
     }
