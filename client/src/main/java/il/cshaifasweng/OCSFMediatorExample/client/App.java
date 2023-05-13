@@ -76,11 +76,11 @@ public class App extends Application {
                     }
                 });
                 break;
-            case "oneStudentInfo":
+            case "showOneStudent":
                 Platform.runLater(()->{
                     setWindowTitle("Student");
                     try {
-                        setContent("oneStudentInfo");
+                        setContent("showOneStudent");
                     }catch (IOException e){
                         e.printStackTrace();
                     }

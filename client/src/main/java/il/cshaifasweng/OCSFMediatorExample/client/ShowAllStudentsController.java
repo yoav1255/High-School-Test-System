@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 
+import java.io.IOException;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -67,11 +68,16 @@ public class ShowAllStudentsController {
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-        if (event.getClickCount() == 2) { // Check if the user double-clicked the row
-            Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
-            if (selectedStudent != null) {
-
+        try {
+            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+                Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
+                if (selectedStudent != null) {
+                    SimpleClient.getClient().sendToServer(selectedStudent);
+                    App.switchScreen("showOneStudent");
+                }
             }
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 

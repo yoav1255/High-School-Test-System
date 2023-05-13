@@ -34,7 +34,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
             //
-            generateObjects();
+            //generateObjects();
             //
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -179,12 +179,13 @@ public class App
         Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
         query.setParameter("studentToTake", student);
         List<StudentTest> studentTests = query.getResultList();
-
+        student.setStudentTests(studentTests);
         for (StudentTest studentTest : studentTests) {
             Query query2 = session.createQuery("FROM ScheduledTest s WHERE :studentTest IN elements(s.studentTests)", ScheduledTest.class);
             query2.setParameter("studentTest", studentTest);
             ScheduledTest scheduledTest = (ScheduledTest) query2.getSingleResult();
 
+            studentTest.setScheduledTest(scheduledTest);
             ExamForm examForm = scheduledTest.getExamForm();
             studentTest.setSubject(scheduledTest,examForm.getSubject());
             studentTest.setCourse(scheduledTest,examForm.getCourse());
@@ -199,8 +200,20 @@ public class App
         return studentTests;
     }
 
+    public static StudentTest getStudentTest(StudentTest studentTest){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        StudentTest studentTestToReturn = session.get(StudentTest.class,studentTest);
+        session.getTransaction().commit();
+        session.close();
+        return studentTestToReturn;
+    }
 
     public static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
         Student student = session.get(Student.class,student_id);
         StudentTest studentTest = session.get(StudentTest.class,studentTest_id);
         studentTest.setGrade(newGrade);
@@ -208,6 +221,8 @@ public class App
         session.saveOrUpdate(studentTest);
         session.saveOrUpdate(student);
         session.flush();
+        session.getTransaction().commit();
+        session.close();
     }
 
 

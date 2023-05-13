@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "StudentTest")
 public class StudentTest implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -66,16 +69,32 @@ public class StudentTest implements Serializable {
     public void setTimeToComplete(int timeToComplete) {
         this.timeToComplete = timeToComplete;
     }
-    public int getCourseCode(ScheduledTest scheduledTest){
-        int course = scheduledTest.getExamForm().getCourse().getCode();
+    public Course getCourseName(ScheduledTest scheduledTest){
+        Course course = scheduledTest.getExamForm().getCourse();
         return course;
     }
-    public int  getSubjectCode(ScheduledTest scheduledTest) {
-        int subject = scheduledTest.getExamForm().getSubject().getCode();
+
+    public String getCourseName(){
+        String course = scheduledTest.getCourseName();
+        return course;
+    }
+    public String getSubjectName(){
+        String subject = scheduledTest.getSubjectName();
         return subject;
     }
-    public String getTeacherId(ScheduledTest scheduledTest){
-        String teacher = scheduledTest.getTeacher().getId();
+    public String getTeacherName(){
+        String teacher = scheduledTest.getTeacherName();
+        return teacher;
+    }
+    public String getExamFormCode(){
+        return scheduledTest.getExamFormCode();
+    }
+    public Subject  getSubject(ScheduledTest scheduledTest) {
+        Subject subject = scheduledTest.getExamForm().getSubject();
+        return subject;
+    }
+    public Teacher getTeacher(ScheduledTest scheduledTest){
+        Teacher teacher = scheduledTest.getTeacher();
         return teacher;
     }
     public void setCourse(ScheduledTest scheduledTest,Course course){

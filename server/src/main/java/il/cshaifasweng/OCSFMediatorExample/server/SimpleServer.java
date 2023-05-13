@@ -28,14 +28,28 @@ public class SimpleServer extends AbstractServer {
 		} else if (msgString.startsWith("#showAllStudents")) {
 			try {
 				List<Student> studentList = App.getAllStudents();
-				//System.out.println(studentList.get(0).getEmail());
-				//WORKS FINE TO THAT POINT
-				// ----------//
 				client.sendToClient(studentList);
 				System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		} else if (msg.getClass().equals(Student.class)) {
+			try{
+				List<StudentTest> studentTests =  App.getStudentTestsById((Student) msg);
+				client.sendToClient(studentTests);
+				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		} else if (msg.getClass().equals(StudentTest.class)) {
+			try{
+				StudentTest studentTest = App.getStudentTest((StudentTest) msg);
+				client.sendToClient(studentTest);
+				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+
 		}
 
 	}

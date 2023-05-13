@@ -1,12 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Subject")
-public class Subject {
+public class Subject implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int code;
