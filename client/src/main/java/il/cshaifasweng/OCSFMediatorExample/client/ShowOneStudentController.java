@@ -1,10 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.server.*;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -34,6 +37,10 @@ public class ShowOneStudentController {
 
     @FXML
     private TableColumn<StudentTest, String> TableTestID;
+    @FXML
+    private Label student_id;
+    @FXML
+    private Label student_name;
     private List<StudentTest> studentTests;
 
     public List<StudentTest> getStudentTests() {
@@ -46,12 +53,22 @@ public class ShowOneStudentController {
     public ShowOneStudentController(){
         EventBus.getDefault().register(this);
     }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
     @Subscribe
     @FXML
     public void onShowOneStudentEvent(ShowOneStudentEvent event){
         try{
-            System.out.println("in show One Student controller");
             setStudentTests(event.getStudentTests());
+            if(studentTests!=null){
+                Student student = studentTests.get(0).getStudent();
+                Platform.runLater(()->{
+                    student_id.setText(student_id.getText() + student.getId());
+                    student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
+                });
+
+            }
             TableGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
             TableCourse.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();
@@ -74,10 +91,7 @@ public class ShowOneStudentController {
                 return new SimpleStringProperty(examFormCode);
             });
             ObservableList<StudentTest> allStudentTests = FXCollections.observableList(studentTests);
-
-
             GradesTable.setItems(allStudentTests);
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -91,8 +105,28 @@ public class ShowOneStudentController {
                 if (selectedStudentTest != null) {
                     SimpleClient.getClient().sendToServer(selectedStudentTest);
                     App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
+                    cleanup();
                 }
             }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoToAllStudentsButtonClick(ActionEvent event){
+        try{
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            App.switchScreen("allStudents");
+            cleanup();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoHomeButtonClick(ActionEvent event){
+        try{
+            App.switchScreen("primary");
+            cleanup();
         }catch (IOException e){
             e.printStackTrace();
         }

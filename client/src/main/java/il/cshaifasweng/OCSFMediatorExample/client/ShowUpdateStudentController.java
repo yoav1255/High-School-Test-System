@@ -1,25 +1,38 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.server.StudentTest;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import il.cshaifasweng.OCSFMediatorExample.server.App;
+
+import java.io.IOException;
+
 
 public class ShowUpdateStudentController {
+    private static ShowUpdateStudentController instance;
     private StudentTest studentTest;
     @FXML
-    TextField oldGrade;
+    private Label oldGrade;
     @FXML
-    TextField newGrade;
+    private TextField newGrade;
 
-    public ShowUpdateStudentController(StudentTest studentTest){
+    public ShowUpdateStudentController(){
         EventBus.getDefault().register(this);
-        this.studentTest=studentTest;
+    }
+    public static ShowUpdateStudentController getInstance() {
+        if (instance == null) {
+            instance = new ShowUpdateStudentController();
+        }
+        return instance;
+    }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
     }
 
     public StudentTest getStudentTest() {
@@ -30,28 +43,89 @@ public class ShowUpdateStudentController {
         this.studentTest = studentTest;
     }
 
+
+//    @FXML void initialize(){
+//        Platform.runLater(()->{
+//            instance.oldGrade = new Label();
+//            oldGrade = new Label();
+//            instance.oldGrade.setText("0");
+//            oldGrade.setText("0");
+//        });
+//    }
     @Subscribe
-    @FXML
     public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event){
         try{
-            System.out.println("in show Update Student controller");
-            setStudentTest(event.getStudentTest());
-            oldGrade.setText(Integer.toString(studentTest.getGrade()));
-            //TODO finish the function
+            ShowUpdateStudentController instance = getInstance();
+            instance.studentTest = event.getStudentTest();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-    @Subscribe
-    @FXML
-    public void handleUpdateButton(){
+    public void handleUpdateButton(javafx.event.ActionEvent event) {
         try {
-            System.out.println("in Update Student controller(update)");
-            int newG = Integer.parseInt(newGrade.getText());
-            App.switchScreen("showOneStudent");
-            EventBus.getDefault().post(new UpdateStudentGradeEvent(newG));
+            ShowUpdateStudentController instance = getInstance();
+            StudentTest st = instance.studentTest;
+            try {
+                int newG = Integer.parseInt(newGrade.getText());
+                if (newG >= 0 && newG <= 100) {
+                    App.updateStudentGrade(st, newG);
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText("Update success");
+                    alert.setContentText("Grade successfully updated");
+                    alert.showAndWait();
+
+                    SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
+                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
+                    cleanup();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Illegal input");
+                    alert.setHeaderText("Update Failed");
+                    alert.setContentText("Invalid input, please enter a grade between 0 to 100");
+                    alert.showAndWait();
+                }
+            }catch (NumberFormatException notNum){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Illegal input");
+                alert.setHeaderText("Update Failed");
+                alert.setContentText("Invalid input, please enter a valid number");
+                alert.showAndWait();
+            }
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @FXML public void goBackButton(){
+        try {
+            SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
+            cleanup();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoToAllStudentsButtonClick(ActionEvent event){
+        try{
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
+            cleanup();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoHomeButtonClick(ActionEvent event){
+        try{
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+            cleanup();
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
 }
+
+
+

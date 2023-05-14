@@ -35,7 +35,7 @@ public class SimpleServer extends AbstractServer {
 			}
 		} else if (msg.getClass().equals(Student.class)) {
 			try{
-				List<StudentTest> studentTests =  App.getStudentTestsById((Student) msg);
+				List<StudentTest> studentTests =  App.getStudentTests((Student) msg);
 				client.sendToClient(studentTests);
 				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 			}catch (Exception e){
@@ -43,8 +43,7 @@ public class SimpleServer extends AbstractServer {
 			}
 		} else if (msg.getClass().equals(StudentTest.class)) {
 			try{
-				StudentTest studentTest = App.getStudentTest((StudentTest) msg);
-				client.sendToClient(studentTest);
+				client.sendToClient((StudentTest) msg);
 				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
 			}catch (Exception e){
 				e.printStackTrace();

@@ -47,20 +47,6 @@ public class App
         } finally {
             session.close();
         }
-        //
-//        List<Student> students = getAllStudents();
-//        for(Student s : students)
-//            System.out.println(s.getEmail());
-//        //
-
-//        Student student = getAllStudents().get(0);
-//        List<StudentTest> studentTests = getStudentTestsById(student);
-//        StudentTest studentTest1 = studentTests.get(0);
-//        System.out.println(studentTest1.getStudent().getId());
-//        System.out.println(studentTest1.getGrade());
-//        System.out.println(studentTest1.getTeacherId(studentTest1.getScheduledTest()));
-//        System.out.println(studentTest1.getSubjectCode(studentTest1.getScheduledTest()));
-//        System.out.println(studentTest1.getCourseCode(studentTest1.getScheduledTest()));
     }
 
     public static Session getSession() {
@@ -171,7 +157,7 @@ public class App
         return students;
     }
 
-    public static List<StudentTest> getStudentTestsById(Student student){
+    public static List<StudentTest> getStudentTests(Student student){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
@@ -189,7 +175,7 @@ public class App
             ExamForm examForm = scheduledTest.getExamForm();
             studentTest.setSubject(scheduledTest,examForm.getSubject());
             studentTest.setCourse(scheduledTest,examForm.getCourse());
-
+            studentTest.setStudent(student);
             Teacher teacher = scheduledTest.getTeacher();
             studentTest.setTeacher(scheduledTest,teacher);
         }
@@ -210,17 +196,14 @@ public class App
         return studentTestToReturn;
     }
 
-    public static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
+    public static void updateStudentGrade(StudentTest stud, int newGrade){ //Method checked
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        Student student = session.get(Student.class,student_id);
-        StudentTest studentTest = session.get(StudentTest.class,studentTest_id);
-        studentTest.setGrade(newGrade);
-        studentTest.setStudent(student);
-        session.saveOrUpdate(studentTest);
-        session.saveOrUpdate(student);
-        session.flush();
+        Query query = session.createQuery("UPDATE StudentTest SET grade = :newGrade WHERE id = :id");
+        query.setParameter("newGrade", newGrade);
+        query.setParameter("id", stud.getId());
+        int updatedCount = query.executeUpdate();
         session.getTransaction().commit();
         session.close();
     }
