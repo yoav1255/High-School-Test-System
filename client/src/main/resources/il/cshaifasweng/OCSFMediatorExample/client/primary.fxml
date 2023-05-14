@@ -14,15 +14,14 @@
          <children>
             <Pane prefHeight="83.0" prefWidth="214.0">
                <children>
-                  <Label alignment="BASELINE_CENTER" layoutX="55.0" layoutY="8.0" prefHeight="43.0" prefWidth="133.0" text="MOYAM">
+                  <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
                      <font>
-                        <Font name="Oriya Sangam MN" size="29.0" />
+                        <Font name="Oriya Sangam MN" size="34.0" />
                      </font>
                   </Label>
-<!--                  <FontAwesomeIconView glyphName="UNIVERSITY" layoutX="20.0" layoutY="39.0" size="30" text="" wrappingWidth="33.85714244842529" />-->
-                  <Label ellipsisString="" layoutX="62.0" layoutY="40.0" prefHeight="23.0" prefWidth="122.0" text="School Test System" textAlignment="CENTER">
+                  <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER">
                      <font>
-                        <Font name="Oriya Sangam MN" size="12.0" />
+                        <Font name="Oriya Sangam MN" size="14.0" />
                      </font>
                   </Label>
                </children>

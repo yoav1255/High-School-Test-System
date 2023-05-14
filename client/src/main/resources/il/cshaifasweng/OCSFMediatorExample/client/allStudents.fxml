@@ -17,21 +17,20 @@
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;">
             <children>
-                <Pane prefHeight="83.0" prefWidth="214.0">
-                    <children>
-                        <Label alignment="BASELINE_CENTER" layoutX="55.0" layoutY="8.0" prefHeight="43.0" prefWidth="133.0" text="MOYAM">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="29.0" />
-                            </font>
-                        </Label>
-<!--                        <FontAwesomeIconView glyphName="UNIVERSITY" layoutX="20.0" layoutY="39.0" size="30" text="" wrappingWidth="33.85714244842529" />-->
-                        <Label ellipsisString="" layoutX="62.0" layoutY="40.0" prefHeight="23.0" prefWidth="122.0" text="School Test System" textAlignment="CENTER">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="12.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </Pane>
+            <Pane prefHeight="83.0" prefWidth="214.0">
+               <children>
+                  <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
+                     <font>
+                        <Font name="Oriya Sangam MN" size="34.0" />
+                     </font>
+                  </Label>
+                  <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER">
+                     <font>
+                        <Font name="Oriya Sangam MN" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
                 <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-background-color: #c76f04; -fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
                     <graphic>
 <!--                        <FontAwesomeIconView glyphName="HOME" size="20" />-->
@@ -68,7 +67,7 @@
                 </Button>
             </children>
         </VBox>
-        <GridPane fx:id="StudentsGR" layoutX="217.0" layoutY="39.0" prefHeight="507.0" prefWidth="740.0">
+        <GridPane fx:id="StudentsGR" layoutX="255.0" layoutY="47.0" prefHeight="517.0" prefWidth="679.0">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
@@ -77,7 +76,7 @@
                 <RowConstraints maxHeight="487.7233467102051" minHeight="10.0" prefHeight="480.58882904052734" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView fx:id="students_table_view" onMouseClicked="#handleRowClick" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                <TableView fx:id="students_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@table-style.css" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn fx:id="id" prefWidth="75.0" text="Id" />
                         <TableColumn fx:id="first_name" prefWidth="75.0" text="First Name" />
