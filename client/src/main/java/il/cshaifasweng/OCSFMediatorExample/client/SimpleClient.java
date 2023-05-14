@@ -28,17 +28,14 @@ public class SimpleClient extends AbstractClient {
 			{
 				Object firstObject = list.get(0);
 				if(firstObject instanceof Student){
-					System.out.println("in simple client(students)");
 					List <Student> listStudent = (List<Student>) msg;
 					EventBus.getDefault().post(new ShowAllStudentsEvent(listStudent));
 				} else if (firstObject instanceof StudentTest) {
-					System.out.println("in Simple client (StudentTest)");
 					List<StudentTest> studentTests = (List<StudentTest>) msg;
 					EventBus.getDefault().post(new ShowOneStudentEvent(studentTests));
 				}
 			}//TODO if its null then we have to decide what to do!!
 		} else if (msg instanceof StudentTest) {
-			System.out.println("in simple client(studentTest)");
 			StudentTest studentTest = (StudentTest) msg;
 			ShowUpdateStudentController showUpdateStudentController = new ShowUpdateStudentController();
 			EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));

@@ -47,20 +47,6 @@ public class App
         } finally {
             session.close();
         }
-        //
-//        List<Student> students = getAllStudents();
-//        for(Student s : students)
-//            System.out.println(s.getEmail());
-//        //
-
-//        Student student = getAllStudents().get(0);
-//        List<StudentTest> studentTests = getStudentTestsById(student);
-//        StudentTest studentTest1 = studentTests.get(0);
-//        System.out.println(studentTest1.getStudent().getId());
-//        System.out.println(studentTest1.getGrade());
-//        System.out.println(studentTest1.getTeacherId(studentTest1.getScheduledTest()));
-//        System.out.println(studentTest1.getSubjectCode(studentTest1.getScheduledTest()));
-//        System.out.println(studentTest1.getCourseCode(studentTest1.getScheduledTest()));
     }
 
     public static Session getSession() {
@@ -171,7 +157,7 @@ public class App
         return students;
     }
 
-    public static List<StudentTest> getStudentTestsById(Student student){
+    public static List<StudentTest> getStudentTests(Student student){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
@@ -211,9 +197,6 @@ public class App
     }
 
     public static void updateStudentGrade(StudentTest stud, int newGrade){ //Method checked
-        System.out.println("In update Student Grade!");
-        System.out.println(stud.getGrade()+1);
-
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
@@ -221,7 +204,6 @@ public class App
         query.setParameter("newGrade", newGrade);
         query.setParameter("id", stud.getId());
         int updatedCount = query.executeUpdate();
-        System.out.println(updatedCount);
         session.getTransaction().commit();
         session.close();
     }

@@ -1,26 +1,29 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.server.StudentTest;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import il.cshaifasweng.OCSFMediatorExample.server.App;
 
-import java.awt.event.ActionEvent;
+import java.io.IOException;
+
 
 public class ShowUpdateStudentController {
     private static ShowUpdateStudentController instance;
     private StudentTest studentTest;
     @FXML
-    private TextField oldGrade;
+    private Label oldGrade;
     @FXML
     private TextField newGrade;
 
     public ShowUpdateStudentController(){
         EventBus.getDefault().register(this);
-        System.out.println("check instances");
     }
     public static ShowUpdateStudentController getInstance() {
         if (instance == null) {
@@ -41,22 +44,19 @@ public class ShowUpdateStudentController {
     }
 
 
+//    @FXML void initialize(){
+//        Platform.runLater(()->{
+//            instance.oldGrade = new Label();
+//            oldGrade = new Label();
+//            instance.oldGrade.setText("0");
+//            oldGrade.setText("0");
+//        });
+//    }
     @Subscribe
     public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event){
         try{
             ShowUpdateStudentController instance = getInstance();
-            System.out.println("in show Update Student controller");
             instance.studentTest = event.getStudentTest();
-            int grade = instance.studentTest.getGrade();
-//TODO make old grade and newgrade
-            instance.newGrade = new TextField();
-            newGrade = new TextField();
-            instance.oldGrade = new TextField();
-            oldGrade = new TextField();
-            instance.oldGrade.setText(String.valueOf(grade));
-            oldGrade.setText(String.valueOf(grade));
-
-            System.out.println("after setting the test");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -64,7 +64,6 @@ public class ShowUpdateStudentController {
     public void handleUpdateButton(javafx.event.ActionEvent event) {
         try {
             ShowUpdateStudentController instance = getInstance();
-            System.out.println("Handling update button1");
             StudentTest st = instance.studentTest;
             try {
                 int newG = Integer.parseInt(newGrade.getText());
@@ -102,7 +101,27 @@ public class ShowUpdateStudentController {
         try {
             SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
             il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
+            cleanup();
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoToAllStudentsButtonClick(ActionEvent event){
+        try{
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
+            cleanup();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoHomeButtonClick(ActionEvent event){
+        try{
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+            cleanup();
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
