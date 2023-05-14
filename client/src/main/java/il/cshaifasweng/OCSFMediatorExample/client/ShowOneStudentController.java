@@ -41,6 +41,8 @@ public class ShowOneStudentController {
     private Label student_id;
     @FXML
     private Label student_name;
+    @FXML
+    private Label statusLB;
     private List<StudentTest> studentTests;
 
     public List<StudentTest> getStudentTests() {
@@ -64,8 +66,9 @@ public class ShowOneStudentController {
             if(studentTests!=null){
                 Student student = studentTests.get(0).getStudent();
                 Platform.runLater(()->{
+                    statusLB.setText(statusLB.getText() + student.getId());
                     student_id.setText(student_id.getText() + student.getId());
-                    student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
+                    student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getGender());
                 });
 
             }
@@ -97,6 +100,9 @@ public class ShowOneStudentController {
         }
     }
 
+    @FXML void initialize(){
+    }
+
     @FXML
     public void handleRowClick(MouseEvent event) {
         try {
@@ -126,6 +132,16 @@ public class ShowOneStudentController {
     void handleGoHomeButtonClick(ActionEvent event){
         try{
             App.switchScreen("primary");
+            cleanup();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleBackButtonClick(ActionEvent event) {
+        try{
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            App.switchScreen("allStudents");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
