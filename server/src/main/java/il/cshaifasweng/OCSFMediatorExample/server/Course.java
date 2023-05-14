@@ -92,10 +92,10 @@ public class Course implements Serializable {
         courses.add(new Course(5,"Programing"));
         courses.add(new Course(6,"DataBase"));
         courses.add(new Course(7,"Algorithm"));
-        courses.add(new Course(7,"Business in Science"));
-        courses.add(new Course(7,"Complexity"));
-        courses.add(new Course(7,"Hardware"));
-        courses.add(new Course(7,"Develop C"));
+        courses.add(new Course(8,"Business in Science"));
+        courses.add(new Course(9,"Complexity"));
+        courses.add(new Course(10,"Hardware"));
+        courses.add(new Course(11,"Develop C"));
 
         System.out.println(courses.lastIndexOf(courses));
 

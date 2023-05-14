@@ -20,6 +20,10 @@ public class ShowUpdateStudentController {
     @FXML
     private Label oldGrade;
     @FXML
+    private Label test_course;
+    @FXML
+    private Label test_id;
+    @FXML
     private TextField newGrade;
 
     public ShowUpdateStudentController(){
@@ -44,14 +48,11 @@ public class ShowUpdateStudentController {
     }
 
 
-//    @FXML void initialize(){
-//        Platform.runLater(()->{
-//            instance.oldGrade = new Label();
-//            oldGrade = new Label();
-//            instance.oldGrade.setText("0");
-//            oldGrade.setText("0");
-//        });
-//    }
+    @FXML void initialize(){
+        test_id.setText(String.valueOf(instance.studentTest.getExamFormCode()));
+        test_course.setText(String.valueOf(instance.studentTest.getCourseName()));
+        oldGrade.setText(String.valueOf(instance.studentTest.getGrade()));
+    }
     @Subscribe
     public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event){
         try{

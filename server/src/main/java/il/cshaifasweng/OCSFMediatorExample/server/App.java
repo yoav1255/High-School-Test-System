@@ -33,9 +33,9 @@ public class App
             SessionFactory sessionFactory = getSessionFactory();
             session=sessionFactory.openSession();
             session.beginTransaction();
-            //
-            //generateObjects();
-            //
+
+//            generateObjects();
+
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception){
@@ -85,7 +85,17 @@ public class App
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
+        courses.get(1).setSubject(subjects.get(0));
+        courses.get(2).setSubject(subjects.get(1));
+        courses.get(3).setSubject(subjects.get(1));
+        courses.get(4).setSubject(subjects.get(2));
+        courses.get(5).setSubject(subjects.get(2));
         subjects.get(0).addCourse(courses.get(0));
+        subjects.get(0).addCourse(courses.get(1));
+        subjects.get(1).addCourse(courses.get(2));
+        subjects.get(1).addCourse(courses.get(3));
+        subjects.get(2).addCourse(courses.get(4));
+        subjects.get(2).addCourse(courses.get(5));
 
 //Update ExamForms
 
@@ -94,13 +104,30 @@ public class App
         subjects.get(0).addExamForm(examForms.get(0));
         courses.get(0).addExamForm(examForms.get(0));
 
+        examForms.get(1).setSubject(subjects.get(1));
+        examForms.get(1).setCourse(courses.get(3));
+        subjects.get(1).addExamForm(examForms.get(1));
+        courses.get(3).addExamForm(examForms.get(1));
+
 //Update ScheduledTest
 
-        for (ScheduledTest s : scheduledTests){
-            s.setExamForm(examForms.get(0));
-            s.setTeacher(teachers.get(0));
-            examForms.get(0).addScheduledTest(s);
-            teachers.get(0).addScheduledTest(s);
+        for (int i = 0 ;i<scheduledTests.size()/3;i++){
+            scheduledTests.get(i).setExamForm(examForms.get(0));
+            scheduledTests.get(i).setTeacher(teachers.get(0));
+            examForms.get(0).addScheduledTest(scheduledTests.get(i));
+            teachers.get(0).addScheduledTest(scheduledTests.get(i));
+        }
+        for (int i = scheduledTests.size()/3 ;i<scheduledTests.size()*2/3;i++){
+            scheduledTests.get(i).setExamForm(examForms.get(1));
+            scheduledTests.get(i).setTeacher(teachers.get(1));
+            examForms.get(1).addScheduledTest(scheduledTests.get(i));
+            teachers.get(1).addScheduledTest(scheduledTests.get(i));
+        }
+        for (int i = scheduledTests.size()*2/3 ;i<scheduledTests.size();i++){
+            scheduledTests.get(i).setExamForm(examForms.get(2));
+            scheduledTests.get(i).setTeacher(teachers.get(2));
+            examForms.get(2).addScheduledTest(scheduledTests.get(i));
+            teachers.get(2).addScheduledTest(scheduledTests.get(i));
         }
 
 //Update Teachers
@@ -110,18 +137,26 @@ public class App
         courses.get(0).addTeacher(teachers.get(0));
         subjects.get(0).addTeacher(teachers.get(0));
 
+        teachers.get(1).addCourses(courses.get(3));
+        teachers.get(1).addSubject(subjects.get(1));
+        courses.get(3).addTeacher(teachers.get(1));
+        subjects.get(1).addTeacher(teachers.get(1));
+
+        teachers.get(2).addCourses(courses.get(4));
+        teachers.get(2).addSubject(subjects.get(2));
+        courses.get(4).addTeacher(teachers.get(2));
+        subjects.get(2).addTeacher(teachers.get(2));
+
 //Update StudentTests
 
-        int i = 0; int j = 6;
-        for(int index = 0; index<studentTests.size();index++){
-            StudentTest s = studentTests.get(index);
-            s.setScheduledTest(scheduledTests.get(i));
-            s.setStudent(students.get(j));
-            scheduledTests.get(i).addStudentTest(s);
-            students.get(j).addStudentTests(s);
-            i++; j++;
-            if(i>=4) i=0;
-            if(j>=12) j=0;
+        for(int k = 0 ; k<2 ; k++) {
+            for (int index = 0; index < 12; index++) {
+                StudentTest s = studentTests.get(index+(k*12));
+                s.setScheduledTest(scheduledTests.get(k*6));
+                s.setStudent(students.get(index));
+                scheduledTests.get(index).addStudentTest(s);
+                students.get(index).addStudentTests(s);
+            }
         }
 
 // ------------ Add objects to DB --------//
