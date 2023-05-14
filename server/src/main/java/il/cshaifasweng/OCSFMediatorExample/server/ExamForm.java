@@ -91,6 +91,19 @@ public class ExamForm implements Serializable {
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();
         examForms.add(new ExamForm("1",180));
+        examForms.add(new ExamForm("2",120));
+        examForms.add(new ExamForm("3",120));
+        examForms.add(new ExamForm("4",180));
+        examForms.add(new ExamForm("5",90));
+        examForms.add(new ExamForm("6",120));
+        examForms.add(new ExamForm("7",90));
+        examForms.add(new ExamForm("8",180));
+        examForms.add(new ExamForm("9",90));
+        examForms.add(new ExamForm("10",180));
+        examForms.add(new ExamForm("11",180));
+        examForms.add(new ExamForm("12",120));
+        examForms.add(new ExamForm("13",180));
+
         return examForms;
     }
 }

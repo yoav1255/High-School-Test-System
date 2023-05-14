@@ -90,6 +90,13 @@ public class Subject implements Serializable {
     public static List<Subject> GenerateSubjects(){
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject(1,"Math"));
+        subjects.add(new Subject(2,"History"));
+        subjects.add(new Subject(3,"Lecture"));
+        subjects.add(new Subject(4,"Hebrew"));
+        subjects.add(new Subject(5,"English"));
+        subjects.add(new Subject(6,"Economic"));
+        subjects.add(new Subject(7,"Sport"));
+
         return subjects;
     }
 }
