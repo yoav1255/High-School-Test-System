@@ -26,11 +26,18 @@ public class PrimaryController {
 		}
     }
 	@FXML
-	void handkeGoToAllStudentsButtonClick(ActionEvent event){
+	void handleGoToAllStudentsButtonClick(ActionEvent event){
 		try{
-			System.out.println("Handling button click");
 			SimpleClient.getClient().sendToServer("#showAllStudents");
 			App.switchScreen("allStudents");
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	@FXML
+	void handleGoHomeButtonClick(ActionEvent event){
+		try{
+			App.switchScreen("primary");
 		}catch (IOException e){
 			e.printStackTrace();
 		}

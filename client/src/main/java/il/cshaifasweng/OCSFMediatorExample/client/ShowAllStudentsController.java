@@ -6,6 +6,7 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -52,9 +53,7 @@ public class ShowAllStudentsController {
     @FXML
     public void onShowAllStudentsEvent(ShowAllStudentsEvent event) {
         try {
-            System.out.println("in show all students controller");
             setStudentList(event.getStudentList());
-            System.out.println(studentList.get(0).getId());
             id.setCellValueFactory(new PropertyValueFactory<Student,String>("id"));
             first_name.setCellValueFactory(new PropertyValueFactory<Student,String>("first_name"));
             last_name.setCellValueFactory(new PropertyValueFactory<Student,String>("last_name"));
@@ -81,19 +80,23 @@ public class ShowAllStudentsController {
             e.printStackTrace();
         }
     }
-
-//    @FXML
-//    private void handleStudentSelection() {
-//        Student selectedStudent = studentListView.getSelectionModel().getSelectedItem();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("showOneStudent.fxml"));
-//        StudentDataController controller = loader.getController();
-//        controller.setStudent(selectedStudent);
-//        Parent root = loader.load();
-//        Scene scene = new Scene(root);
-//        Stage stage = new Stage();
-//        stage.setScene(scene);
-//        stage.show();
-//    }
+    @FXML
+    void handleGoToAllStudentsButtonClick(ActionEvent event){
+        try{
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            App.switchScreen("allStudents");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleGoHomeButtonClick(ActionEvent event){
+        try{
+            App.switchScreen("primary");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
     }
 
