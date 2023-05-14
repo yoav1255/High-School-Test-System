@@ -107,16 +107,26 @@
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="200.0">
                     <children>
-                        <Label fx:id="student_id" layoutX="14.0" layoutY="13.0" prefHeight="30.0" prefWidth="348.0" text="student_id: ">
+                        <Label fx:id="student_id" layoutX="14.0" layoutY="13.0" prefHeight="30.0" prefWidth="279.0" text="student_id: ">
                             <font>
                                 <Font name="Oriya Sangam MN" size="18.0" />
                             </font>
                         </Label>
-                        <Label fx:id="student_name" layoutX="362.0" layoutY="13.0" prefHeight="30.0" prefWidth="362.0" text="student_name: ">
+                        <Label fx:id="student_name" layoutX="293.0" layoutY="13.0" prefHeight="30.0" prefWidth="321.0" text="student_name: ">
                             <font>
                                 <Font name="Oriya Sangam MN" size="18.0" />
                             </font>
                         </Label>
+                  <Button layoutX="905.0" layoutY="52.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="Go back">
+                     <font>
+                        <Font name="Oriya Sangam MN" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="673.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="Go back">
+                     <font>
+                        <Font name="Oriya Sangam MN" size="12.0" />
+                     </font>
+                  </Button>
 <!--                        <FontAwesomeIconView glyphName="USER" layoutX="43.0" layoutY="35.0" size="20" />-->
                     </children>
                 </Pane>
