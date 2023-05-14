@@ -16,6 +16,7 @@ import java.util.List;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+
 /**
  * JavaFX App
  */
@@ -40,6 +41,8 @@ public class App extends Application {
         App.stage = stage;
     }
 
+
+
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
@@ -47,7 +50,7 @@ public class App extends Application {
 
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        scene = new Scene(loadFXML("prototype_screens/Home"), 956, 578);
         App.stage = stage;
         stage.setScene(scene);
         stage.show();

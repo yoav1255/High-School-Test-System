@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<!--?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?-->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.MainView">
+<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.HomeController">
    <children>
       <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;">
          <children>
@@ -20,7 +20,7 @@
                         <Font name="Oriya Sangam MN" size="29.0" />
                      </font>
                   </Label>
-                  <FontAwesomeIconView glyphName="UNIVERSITY" layoutX="20.0" layoutY="39.0" size="30" text="" wrappingWidth="33.85714244842529" />
+                  <!--FontAwesomeIconView glyphName="UNIVERSITY" layoutX="20.0" layoutY="39.0" size="30" text="" wrappingWidth="33.85714244842529" /-->
                   <Label ellipsisString="" layoutX="62.0" layoutY="40.0" prefHeight="23.0" prefWidth="122.0" text="School Test System" textAlignment="CENTER">
                      <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
@@ -29,9 +29,9 @@
                </children>
             </Pane>
             <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handieClicks" prefHeight="50.0" prefWidth="214.0" style="-fx-background-color: #c76f04; -fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
-               <graphic>
+               <!--graphic>
                   <FontAwesomeIconView glyphName="HOME" size="20" />
-               </graphic>
+               </graphic-->
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -46,9 +46,9 @@
                </VBox.margin>
             </Button>
             <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handieClicks" prefHeight="50.0" prefWidth="214.0" style="-fx-background-color: #c76f04; -fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
-               <graphic>
+               <!--graphic>
                   <FontAwesomeIconView glyphName="USERS" size="20" />
-               </graphic>
+               </graphic-->
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -72,11 +72,11 @@
                </font>
             </Label>
             <Button layoutX="720.0" layoutY="5.0" mnemonicParsing="false" opacity="0.0" prefHeight="28.0" prefWidth="32.0">
-               <font>
+               <!--font>
                   <Font name="FontAwesome" size="13.0" />
-               </font>
+               </font-->
             </Button>
-            <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />
+            <!--FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" /-->
          </children>
       </Pane>
       <Pane layoutX="299.0" layoutY="110.0" prefHeight="385.0" prefWidth="512.0">
