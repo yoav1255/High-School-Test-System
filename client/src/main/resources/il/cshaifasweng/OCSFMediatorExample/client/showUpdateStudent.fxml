@@ -131,7 +131,10 @@
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <TextField fx:id="newGrade" layoutX="263.0" layoutY="229.0" prefHeight="26.0" prefWidth="79.0" promptText="new grade" style="-fx-background-radius: 20;" />
+                <TextField fx:id="newGrade" layoutX="261.0" layoutY="228.0" prefHeight="29.0" prefWidth="90.0" promptText="new grade" style="-fx-background-radius: 10;">
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor></TextField>
                 <Button fx:id="test_update_BN" layoutX="358.0" layoutY="229.0" mnemonicParsing="false" onAction="#handleUpdateButton" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="UPDATE">
                     <font>
                         <Font name="Oriya Sangam MN" size="12.0" />

@@ -56,7 +56,7 @@ public class ShowAllStudentsController {
             setStudentList(event.getStudentList());
             id.setCellValueFactory(new PropertyValueFactory<Student,String>("id"));
             first_name.setCellValueFactory(new PropertyValueFactory<Student,String>("first_name"));
-            last_name.setCellValueFactory(new PropertyValueFactory<Student,String>("last_name"));
+            last_name.setCellValueFactory(new PropertyValueFactory<Student,String>("gender"));
             email.setCellValueFactory(new PropertyValueFactory<Student,String>("email"));
             ObservableList<Student> students = FXCollections.observableList(studentList);
             students_table_view.setItems(students);
