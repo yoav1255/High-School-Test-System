@@ -1,10 +1,10 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.server.StudentTest;
-import javafx.application.Platform;
+import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowUpdateStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;

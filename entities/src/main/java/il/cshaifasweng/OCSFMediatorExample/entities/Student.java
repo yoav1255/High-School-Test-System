@@ -1,6 +1,5 @@
-package il.cshaifasweng.OCSFMediatorExample.server;
+package il.cshaifasweng.OCSFMediatorExample.entities;
 import javax.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class Student extends User implements Serializable{
         newStudents.add(new Student("3","danM@gmail.com","Dan","Male","David","123123Y"));
         newStudents.add(new Student("4","adiL@gmail.com","Adi","Female","Levi","11554ss"));
         newStudents.add(new Student("5","liorc@gmail.com","Lior","Female","Cohen","345yyy"));
-        newStudents.add(new Student("6","shaniD@gmail.com","Shani","feMale","David","31ffdd"));
+        newStudents.add(new Student("6","shaniD@gmail.com","Shani","FeMale","David","31ffdd"));
         newStudents.add(new Student("7","yaakovB@gmail.com","Yaakov","Male","Ben-Dor","1pppds2"));
         newStudents.add(new Student("8","lanaF@gmail.com","Lana","Female","Franco","2332211dd"));
         newStudents.add(new Student("9","leaP@gmail.com","Lea","Female","Pomeran","99ol9o"));

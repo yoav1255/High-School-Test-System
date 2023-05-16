@@ -1,5 +1,5 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
-import il.cshaifasweng.OCSFMediatorExample.server.Student;
+package il.cshaifasweng.OCSFMediatorExample.client.Events;
+import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 
 import java.util.List;
 

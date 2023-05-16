@@ -1,9 +1,13 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 
 import java.io.IOException;
 import java.util.List;
 
+import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowAllStudentsEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,11 +15,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import il.cshaifasweng.OCSFMediatorExample.server.*;
 import javafx.scene.input.MouseEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 public class ShowAllStudentsController {
 
@@ -72,7 +74,7 @@ public class ShowAllStudentsController {
                 Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
                 if (selectedStudent != null) {
                     SimpleClient.getClient().sendToServer(selectedStudent);
-                    App.switchScreen("showOneStudent");
+                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
                     cleanup();
                 }
             }
@@ -84,7 +86,7 @@ public class ShowAllStudentsController {
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
             SimpleClient.getClient().sendToServer("#showAllStudents");
-            App.switchScreen("allStudents");
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
         }catch (IOException e){
             e.printStackTrace();
         }

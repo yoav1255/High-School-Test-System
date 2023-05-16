@@ -1,6 +1,10 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.server.*;
+import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowOneStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.Student;
+import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -110,7 +114,7 @@ public class ShowOneStudentController {
                 StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
                 if (selectedStudentTest != null) {
                     SimpleClient.getClient().sendToServer(selectedStudentTest);
-                    App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
+                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
                     cleanup();
                 }
             }
@@ -122,7 +126,7 @@ public class ShowOneStudentController {
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
             SimpleClient.getClient().sendToServer("#showAllStudents");
-            App.switchScreen("allStudents");
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
@@ -131,7 +135,7 @@ public class ShowOneStudentController {
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
         try{
-            App.switchScreen("primary");
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
