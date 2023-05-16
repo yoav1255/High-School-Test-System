@@ -51,6 +51,7 @@
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+		<!-- https://mvnrepository.com/artifact/de.jensd/fontawesomefx -->
 		<dependency>
 			<groupId>de.jensd</groupId>
 			<artifactId>fontawesomefx</artifactId>
@@ -58,11 +59,17 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.controlsfx</groupId>
-			<artifactId>controlsfx</artifactId>
-			<version>11.1.2</version>
+			<groupId>de.jensd</groupId>
+			<artifactId>fontawesomefx-commons</artifactId>
+			<version>9.1.2</version>
 		</dependency>
-    </dependencies>
+		<!-- https://mvnrepository.com/artifact/org.webjars/font-awesome -->
+		<!--dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>font-awesome</artifactId>
+			<version>6.4.0</version>
+		</dependency-->
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
