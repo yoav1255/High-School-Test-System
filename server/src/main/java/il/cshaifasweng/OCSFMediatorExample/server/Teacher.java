@@ -50,6 +50,13 @@ public class Teacher extends User {
     public static List<Teacher> GenerateTeachers(){
         List<Teacher> teachers = new ArrayList<Teacher>();
         teachers.add(new Teacher("1","shosh@gmail.com","Shoshana","Female","Levi","tt2p10"));
+        teachers.add(new Teacher("2","riki@gmail.com","Riki","Female","Gal","rikiGal2"));
+        teachers.add(new Teacher("3","Gili@gmail.com","Gili","Female","Atari","GOlgol7"));
+        teachers.add(new Teacher("4","arikush@gmail.com","Arik","male","Rozen","65arik"));
+        teachers.add(new Teacher("5","eduard@gmail.com","Eduard","male","Luy","opjgg"));
+        teachers.add(new Teacher("6","shani@gmail.com","Shani","Female","Abutbul","lolo"));
+        teachers.add(new Teacher("7","meirav@gmail.com","Meirav","Female","Segal","u86g"));
+
         return teachers;
     }
 }
