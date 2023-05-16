@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,7 +24,7 @@ public class App
 	private static SimpleServer server;
     private static Session session;
 
-    public static void main( String[] args ) throws IOException
+    public static void main( String[] args ) throws Exception
     {
         server = new SimpleServer(3028);
         System.out.println("server is listening");
@@ -32,10 +33,11 @@ public class App
             SessionFactory sessionFactory = getSessionFactory();
             session=sessionFactory.openSession();
             session.beginTransaction();
-            //
-            generateObjects();
-            //
+
+//            generateObjects();
+
             session.getTransaction().commit(); // Save Everything in the transaction area
+
         } catch (Exception exception){
             if(session!=null){
                 session.getTransaction().rollback();
@@ -45,6 +47,10 @@ public class App
         } finally {
             session.close();
         }
+    }
+
+    public static Session getSession() {
+        return session;
     }
 
     private static SessionFactory getSessionFactory()throws HibernateException{
@@ -79,7 +85,17 @@ public class App
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
+        courses.get(1).setSubject(subjects.get(0));
+        courses.get(2).setSubject(subjects.get(1));
+        courses.get(3).setSubject(subjects.get(1));
+        courses.get(4).setSubject(subjects.get(2));
+        courses.get(5).setSubject(subjects.get(2));
         subjects.get(0).addCourse(courses.get(0));
+        subjects.get(0).addCourse(courses.get(1));
+        subjects.get(1).addCourse(courses.get(2));
+        subjects.get(1).addCourse(courses.get(3));
+        subjects.get(2).addCourse(courses.get(4));
+        subjects.get(2).addCourse(courses.get(5));
 
 //Update ExamForms
 
@@ -88,13 +104,30 @@ public class App
         subjects.get(0).addExamForm(examForms.get(0));
         courses.get(0).addExamForm(examForms.get(0));
 
+        examForms.get(1).setSubject(subjects.get(1));
+        examForms.get(1).setCourse(courses.get(3));
+        subjects.get(1).addExamForm(examForms.get(1));
+        courses.get(3).addExamForm(examForms.get(1));
+
 //Update ScheduledTest
 
-        for (ScheduledTest s : scheduledTests){
-            s.setExamForm(examForms.get(0));
-            s.setTeacher(teachers.get(0));
-            examForms.get(0).addScheduledTest(s);
-            teachers.get(0).addScheduledTest(s);
+        for (int i = 0 ;i<scheduledTests.size()/3;i++){
+            scheduledTests.get(i).setExamForm(examForms.get(0));
+            scheduledTests.get(i).setTeacher(teachers.get(0));
+            examForms.get(0).addScheduledTest(scheduledTests.get(i));
+            teachers.get(0).addScheduledTest(scheduledTests.get(i));
+        }
+        for (int i = scheduledTests.size()/3 ;i<scheduledTests.size()*2/3;i++){
+            scheduledTests.get(i).setExamForm(examForms.get(1));
+            scheduledTests.get(i).setTeacher(teachers.get(1));
+            examForms.get(1).addScheduledTest(scheduledTests.get(i));
+            teachers.get(1).addScheduledTest(scheduledTests.get(i));
+        }
+        for (int i = scheduledTests.size()*2/3 ;i<scheduledTests.size();i++){
+            scheduledTests.get(i).setExamForm(examForms.get(2));
+            scheduledTests.get(i).setTeacher(teachers.get(2));
+            examForms.get(2).addScheduledTest(scheduledTests.get(i));
+            teachers.get(2).addScheduledTest(scheduledTests.get(i));
         }
 
 //Update Teachers
@@ -104,18 +137,26 @@ public class App
         courses.get(0).addTeacher(teachers.get(0));
         subjects.get(0).addTeacher(teachers.get(0));
 
+        teachers.get(1).addCourses(courses.get(3));
+        teachers.get(1).addSubject(subjects.get(1));
+        courses.get(3).addTeacher(teachers.get(1));
+        subjects.get(1).addTeacher(teachers.get(1));
+
+        teachers.get(2).addCourses(courses.get(4));
+        teachers.get(2).addSubject(subjects.get(2));
+        courses.get(4).addTeacher(teachers.get(2));
+        subjects.get(2).addTeacher(teachers.get(2));
+
 //Update StudentTests
 
-        int i = 0; int j = 6;
-        for(int index = 0; index<studentTests.size();index++){
-            StudentTest s = studentTests.get(index);
-            s.setScheduledTest(scheduledTests.get(i));
-            s.setStudent(students.get(j));
-            scheduledTests.get(i).addStudentTest(s);
-            students.get(j).addStudentTests(s);
-            i++; j++;
-            if(i>=4) i=0;
-            if(j>=12) j=0;
+        for(int k = 0 ; k<2 ; k++) {
+            for (int index = 0; index < 12; index++) {
+                StudentTest s = studentTests.get(index+(k*12));
+                s.setScheduledTest(scheduledTests.get(k*6));
+                s.setStudent(students.get(index));
+                scheduledTests.get(index).addStudentTest(s);
+                students.get(index).addStudentTests(s);
+            }
         }
 
 // ------------ Add objects to DB --------//
@@ -137,31 +178,69 @@ public class App
         session.flush();
     }
 
-    private static List<Student> getAllStudents() throws Exception{
-        String queryString = "FROM Student";
+    public static List<Student> getAllStudents() throws Exception{
+
+        List<Student> students = new ArrayList<Student>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT s FROM Student s";
         Query query = session.createQuery(queryString,Student.class);
-        List<Student> students = query.getResultList();
+        students = query.getResultList();
+        //
+        session.close();
         return students;
     }
 
-//    private Student getStudentWithTests(String student_id){
-//        String queryString = "SELECT s.id,s.first_name,s.last_name " +
-//                "FROM Student s LEFT JOIN FETCH s.studentTests st " +
-//                "WHERE s.id = :student_id";
-//        Query query = session.createQuery(queryString);
-//        query.setParameter("student_id",student_id);
-//        return (Student) query.getSingleResult();
-//    }
+    public static List<StudentTest> getStudentTests(Student student){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
 
+        Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
+        query.setParameter("studentToTake", student);
+        List<StudentTest> studentTests = query.getResultList();
+        student.setStudentTests(studentTests);
+        for (StudentTest studentTest : studentTests) {
+            Query query2 = session.createQuery("FROM ScheduledTest s WHERE :studentTest IN elements(s.studentTests)", ScheduledTest.class);
+            query2.setParameter("studentTest", studentTest);
+            ScheduledTest scheduledTest = (ScheduledTest) query2.getSingleResult();
 
-    private static void updateStudentGrade(String student_id, int studentTest_id, int newGrade){
-        Student student = session.get(Student.class,student_id);
-        StudentTest studentTest = session.get(StudentTest.class,studentTest_id);
-        studentTest.setGrade(newGrade);
-        studentTest.setStudent(student);
-        session.saveOrUpdate(studentTest);
-        session.saveOrUpdate(student);
-        session.flush();
+            studentTest.setScheduledTest(scheduledTest);
+            ExamForm examForm = scheduledTest.getExamForm();
+            studentTest.setSubject(scheduledTest,examForm.getSubject());
+            studentTest.setCourse(scheduledTest,examForm.getCourse());
+            studentTest.setStudent(student);
+            Teacher teacher = scheduledTest.getTeacher();
+            studentTest.setTeacher(scheduledTest,teacher);
+        }
+
+        session.getTransaction().commit();
+        session.close();
+
+        return studentTests;
+    }
+
+    public static StudentTest getStudentTest(StudentTest studentTest){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        StudentTest studentTestToReturn = session.get(StudentTest.class,studentTest);
+        session.getTransaction().commit();
+        session.close();
+        return studentTestToReturn;
+    }
+
+    public static void updateStudentGrade(StudentTest stud, int newGrade){ //Method checked
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("UPDATE StudentTest SET grade = :newGrade WHERE id = :id");
+        query.setParameter("newGrade", newGrade);
+        query.setParameter("id", stud.getId());
+        int updatedCount = query.executeUpdate();
+        session.getTransaction().commit();
+        session.close();
     }
 
 

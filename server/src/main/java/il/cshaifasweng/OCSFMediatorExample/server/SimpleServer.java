@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
+import java.util.List;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 
@@ -24,6 +25,30 @@ public class SimpleServer extends AbstractServer {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else if (msgString.startsWith("#showAllStudents")) {
+			try {
+				List<Student> studentList = App.getAllStudents();
+				client.sendToClient(studentList);
+				System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (msg.getClass().equals(Student.class)) {
+			try{
+				List<StudentTest> studentTests =  App.getStudentTests((Student) msg);
+				client.sendToClient(studentTests);
+				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		} else if (msg.getClass().equals(StudentTest.class)) {
+			try{
+				client.sendToClient((StudentTest) msg);
+				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+
 		}
 
 	}

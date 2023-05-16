@@ -1,12 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "Course")
-public class Course {
+public class Course implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int code;
@@ -83,6 +86,19 @@ public class Course {
     public static List<Course> GenerateCourses(){
         List<Course> courses= new ArrayList<Course>();
         courses.add(new Course(1,"Hedva"));
+        courses.add(new Course(2,"Infi"));
+        courses.add(new Course(3,"Algebra A"));
+        courses.add(new Course(4,"Algebra B"));
+        courses.add(new Course(5,"Programing"));
+        courses.add(new Course(6,"DataBase"));
+        courses.add(new Course(7,"Algorithm"));
+        courses.add(new Course(8,"Business in Science"));
+        courses.add(new Course(9,"Complexity"));
+        courses.add(new Course(10,"Hardware"));
+        courses.add(new Course(11,"Develop C"));
+
+        System.out.println(courses.lastIndexOf(courses));
+
         return courses;
     }
 }

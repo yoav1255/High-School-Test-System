@@ -1,11 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serial;
+import java.io.Serializable;
 
 @MappedSuperclass
 @Table(name = "User")
 
-public class User {
+public class User implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     private String id;
     private String first_name;

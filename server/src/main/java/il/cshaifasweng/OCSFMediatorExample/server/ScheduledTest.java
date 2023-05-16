@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,7 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "ScheduledTest")
-public class ScheduledTest {
+public class ScheduledTest implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -60,6 +63,9 @@ public class ScheduledTest {
     public ExamForm getExamForm() {
         return examForm;
     }
+    public String getExamFormCode(){
+        return examForm.getExamFormCode();
+    }
 
     public void setExamForm(ExamForm examForm) {
         this.examForm = examForm;
@@ -89,13 +95,33 @@ public class ScheduledTest {
     public void setSubmissions(int submissions) {
         this.submissions = submissions;
     }
+    public String getCourseName(){
+        String course = examForm.getCourseName();
+        return course;
+    }
+    public String getSubjectName(){
+        String subject = examForm.getSubjectName();
+        return subject;
+    }
+    public String getTeacherName(){
+        String teacher = getTeacher().getFirst_name() +" "+ getTeacher().getLast_name();
+        return teacher;
+    }
 
     public static List<ScheduledTest> GenerateScheduledTests(){
         List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
         scheduledTests.add(new ScheduledTest(1,new Date(2023,10,05),new Time(12,20,0),20));
         scheduledTests.add(new ScheduledTest(2,new Date(2022,05,03),new Time(15,0,0),15));
         scheduledTests.add(new ScheduledTest(3,new Date(2022,07,03),new Time(14,0,0),10));
-        scheduledTests.add(new ScheduledTest(4,new Date(2022,05,11),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest(4,new Date(2022,05,11),new Time(10,0,0),15));
+        scheduledTests.add(new ScheduledTest(5,new Date(2022,05,13),new Time(10,0,0),15));
+        scheduledTests.add(new ScheduledTest(6,new Date(2022,05,19),new Time(10,0,0),15));
+        scheduledTests.add(new ScheduledTest(7,new Date(2022,05,17),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest(8,new Date(2022,05,17),new Time(12,0,0),12));
+        scheduledTests.add(new ScheduledTest(9,new Date(2022,05,25),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest(10,new Date(2022,05,30),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest(11,new Date(2022,05,31),new Time(10,0,0),16));
+        scheduledTests.add(new ScheduledTest(12,new Date(2022,06,02),new Time(10,0,0),12));
 
         return scheduledTests;
     }
