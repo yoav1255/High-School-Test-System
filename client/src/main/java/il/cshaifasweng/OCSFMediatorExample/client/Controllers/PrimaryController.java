@@ -1,16 +1,12 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
 
-import il.cshaifasweng.OCSFMediatorExample.server.Student;
+import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.*;
 
 public class PrimaryController {
 	@FXML
