@@ -1,12 +1,14 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "ExamForm")
-public class ExamForm {
+public class ExamForm implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     private String code; //TODO construct the code properly
     private int timeLimit;
@@ -76,10 +78,32 @@ public class ExamForm {
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
+    public String getCourseName(){
+        return course.getName();
+    }
+    public String getSubjectName(){
+        return subject.getName();
+    }
+    public String getExamFormCode(){
+        return code;
+    }
 
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();
         examForms.add(new ExamForm("1",180));
+        examForms.add(new ExamForm("2",120));
+        examForms.add(new ExamForm("3",120));
+        examForms.add(new ExamForm("4",180));
+        examForms.add(new ExamForm("5",90));
+        examForms.add(new ExamForm("6",120));
+        examForms.add(new ExamForm("7",90));
+        examForms.add(new ExamForm("8",180));
+        examForms.add(new ExamForm("9",90));
+        examForms.add(new ExamForm("10",180));
+        examForms.add(new ExamForm("11",180));
+        examForms.add(new ExamForm("12",120));
+        examForms.add(new ExamForm("13",180));
+
         return examForms;
     }
 }

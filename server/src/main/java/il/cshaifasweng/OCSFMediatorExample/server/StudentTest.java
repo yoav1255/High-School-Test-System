@@ -1,12 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import javax.persistence.*;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "StudentTest")
-public class StudentTest {
+public class StudentTest implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -65,6 +69,44 @@ public class StudentTest {
     public void setTimeToComplete(int timeToComplete) {
         this.timeToComplete = timeToComplete;
     }
+    public Course getCourseName(ScheduledTest scheduledTest){
+        Course course = scheduledTest.getExamForm().getCourse();
+        return course;
+    }
+
+    public String getCourseName(){
+        String course = scheduledTest.getCourseName();
+        return course;
+    }
+    public String getSubjectName(){
+        String subject = scheduledTest.getSubjectName();
+        return subject;
+    }
+    public String getTeacherName(){
+        String teacher = scheduledTest.getTeacherName();
+        return teacher;
+    }
+    public String getExamFormCode(){
+        return scheduledTest.getExamFormCode();
+    }
+    public Subject  getSubject(ScheduledTest scheduledTest) {
+        Subject subject = scheduledTest.getExamForm().getSubject();
+        return subject;
+    }
+    public Teacher getTeacher(ScheduledTest scheduledTest){
+        Teacher teacher = scheduledTest.getTeacher();
+        return teacher;
+    }
+    public void setCourse(ScheduledTest scheduledTest,Course course){
+        scheduledTest.getExamForm().setCourse(course);
+    }
+    public void setSubject(ScheduledTest scheduledTest,Subject subject){
+        scheduledTest.getExamForm().setSubject(subject);
+    }
+    public void setTeacher(ScheduledTest scheduledTest,Teacher teacher){
+        scheduledTest.setTeacher(teacher);
+    }
+
     public static List<StudentTest> GenerateStudentTests(){
         List<StudentTest> studentTests = new ArrayList<StudentTest>();
         studentTests.add(new StudentTest(1,85,180));

@@ -1,7 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.server.Student;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +13,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,15 +26,33 @@ public class App extends Application {
     private static Scene scene;
     private static Stage stage;
     private SimpleClient client;
+    public static Scene getScene() {
+        return scene;
+    }
+
+    public static void setScene(Scene scene) {
+        App.scene = scene;
+    }
+
+    public static Stage getStage() {
+        return stage;
+    }
+
+    public static void setStage(Stage stage) {
+        App.stage = stage;
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
+        System.out.println("register successfully with client");
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        scene = new Scene(loadFXML("primary"), 956, 578);
+        App.stage = stage;
         stage.setScene(scene);
         stage.show();
+
 
         // -------------- //
 
@@ -43,7 +65,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    public static void switchScreen(String screenName){
+    public static Object switchScreen(String screenName) throws IOException{
+        Object controller;
         switch (screenName){
             case "allStudents":
                 Platform.runLater(()->{
@@ -55,8 +78,58 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showOneStudent":
+                Platform.runLater(()->{
+                    setWindowTitle("Student");
+                    try {
+                        setContent("showOneStudent");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showUpdateStudent":
+                Platform.runLater(()->{
+                    setWindowTitle("Update Grade");
+                    try {
+                        setContent("showUpdateStudent");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "primary":
+                Platform.runLater(()->{
+                    setWindowTitle("Main");
+                    try {
+                        setContent("primary");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+        }
+    return loadFXML(screenName);
+    }
+    //-------------Menu Functions----------//
+
+    @FXML public void goHomeBtn(){
+        try {
+            switchScreen("primary");
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
+    public void goToAllStudentsBtn(){
+        try{
+            SimpleClient.getClient().sendToServer("#showAllStudents");
+            switchScreen("allStudents");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    //-------------------------------------//
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
@@ -86,7 +159,6 @@ public class App extends Application {
         	);
         	alert.show();
     	});
-    	
     }
 
 	public static void main(String[] args) {

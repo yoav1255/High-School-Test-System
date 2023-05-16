@@ -14,6 +14,14 @@ values
 (10,'matanP@gmail.com','Matan','Male','Polik','yo2s3r'),
 (11,'orenG@gmail.com','Oren','Male','Golan','123123'),
 (12,'meitarY@gmail.com','Meitar','Female','Yeruham','9o8i7us');
+("13", "shalom@gmail.com", "Shalom","Haim","male","777"));
+("14", "ronen@gmail.com", "ronen","Eta","male","9090"));
+("16","oded@gmail.com","Oded","Yor","male","86jih"));
+("17","haim@gmail.com","Haim","Cohen","male","8976"));
+("18","roei@gmail.com","Roei","Shefer","male","kh7t"));
+("19","oron@gmail.com","Oron","Tamar","male","jgi7"));
+("20","ronit@gmail.com","Ronit","Ashurov","female","ko97"));
+
 --
 --
 insert into subject
