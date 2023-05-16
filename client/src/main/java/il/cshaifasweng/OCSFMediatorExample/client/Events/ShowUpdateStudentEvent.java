@@ -1,8 +1,7 @@
-package il.cshaifasweng.OCSFMediatorExample.client;
+package il.cshaifasweng.OCSFMediatorExample.client.Events;
 
-import il.cshaifasweng.OCSFMediatorExample.server.StudentTest;
+import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 
-import java.util.List;
 //
 public class ShowUpdateStudentEvent {
     private StudentTest studentTest;
