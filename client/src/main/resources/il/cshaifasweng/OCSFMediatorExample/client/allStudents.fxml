@@ -90,7 +90,7 @@
                 </TableView>
             <Pane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="statusLB1" layoutX="383.0" layoutY="9.0" text="to show student grades, double click his row">
+                  <Label fx:id="statusLB1" layoutX="383.0" layoutY="-5.0" text="to show student grades, double click his row">
                      <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
                      </font>
