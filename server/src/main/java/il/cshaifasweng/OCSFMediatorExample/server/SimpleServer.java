@@ -11,47 +11,47 @@ import java.util.List;
 
 public class SimpleServer extends AbstractServer {
 
-	public SimpleServer(int port) {
-		super(port);
-		
-	}
-	@Override
-	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		String msgString = msg.toString();
-		if (msgString.startsWith("#warning")) {
-			Warning warning = new Warning("Warning from server!");
-			try {
-				client.sendToClient(warning);
-				System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if (msgString.startsWith("#showAllStudents")) {
-			try {
-				List<Student> studentList = App.getAllStudents();
-				client.sendToClient(studentList);
-				System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (msg.getClass().equals(Student.class)) {
-			try{
-				List<StudentTest> studentTests =  App.getStudentTests((Student) msg);
-				client.sendToClient(studentTests);
-				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-		} else if (msg.getClass().equals(StudentTest.class)) {
-			try{
-				client.sendToClient((StudentTest) msg);
-				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
-			}catch (Exception e){
-				e.printStackTrace();
-			}
+    public SimpleServer(int port) {
+        super(port);
 
-		}
+    }
+    @Override
+    protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
+        String msgString = msg.toString();
+        if (msgString.startsWith("#warning")) {
+            Warning warning = new Warning("Warning from server!");
+            try {
+                client.sendToClient(warning);
+                System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (msgString.startsWith("#showAllStudents")) {
+            try {
+                List<Student> studentList = App.getAllStudents();
+                client.sendToClient(studentList);
+                System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (msgString.startsWith("#fillComboBox")) {
+            try {
+                List<String> examFormCode = App.getListExamFormCode();
+                System.out.println(examFormCode);
+                client.sendToClient(examFormCode);
+                System.out.format("Sent examFormCode to client %s\n", client.getInetAddress().getHostAddress());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (msg.getClass().equals(Student.class)) {
+            try {
+                List<StudentTest> studentTests = App.getStudentTests((Student) msg);
+                client.sendToClient(studentTests);
+                System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-	}
-
+        }
+    }
 }

@@ -191,6 +191,25 @@ public class App
         return students;
     }
 
+    public static List<String> getListExamFormCode(){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        // create a Criteria object for the Teacher class
+        Criteria criteria = session.createCriteria(Teacher.class);
+// set the first result to 0 (i.e., the first row)
+        criteria.setFirstResult(0);
+// set the maximum number of results to 1 (i.e., only one row)
+        criteria.setMaxResults(1);
+// execute the query and get the result
+
+        Teacher firstTeacher = (Teacher) criteria.uniqueResult();
+
+        org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
+        query.setParameterList("subjects", firstTeacher.getSubjects());
+        List<String> codes = query.getResultList();
+        session.close();
+        return codes;
+    }
     public static List<StudentTest> getStudentTests(Student student){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();

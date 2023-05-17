@@ -88,6 +88,11 @@ public class ExamForm implements Serializable {
         return code;
     }
 
+    public List <String> getListExamFormCodes(){
+        List<String> exam=getListExamFormCodes();
+        return exam;
+    }
+
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();
         examForms.add(new ExamForm("1",180));
