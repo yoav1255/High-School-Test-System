@@ -7,6 +7,7 @@ import java.util.List;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowAllStudentsEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -73,8 +74,8 @@ public class ShowAllStudentsController {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                 Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
                 if (selectedStudent != null) {
-                    SimpleClient.getClient().sendToServer(selectedStudent);
-                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests",selectedStudent));
+                    App.switchScreen("showOneStudent");
                     cleanup();
                 }
             }
@@ -85,8 +86,8 @@ public class ShowAllStudentsController {
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+            App.switchScreen("allStudents");
         }catch (IOException e){
             e.printStackTrace();
         }

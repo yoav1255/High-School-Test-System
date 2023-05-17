@@ -3,9 +3,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -100,12 +101,14 @@
                 <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
             <AnchorPane prefHeight="340.0" prefWidth="713.0" GridPane.rowIndex="2">
                <children>
-                  <Label layoutX="14.0" layoutY="45.0" prefHeight="17.0" prefWidth="117.0" text="choose subject" />
-                  <Label layoutX="14.0" layoutY="96.0" prefHeight="17.0" prefWidth="117.0" text="choose courses" />
-                  <Label layoutX="18.0" layoutY="195.0" prefHeight="17.0" prefWidth="110.0" text="choose questions" />
+                  <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="117.0" text="choose subject" />
+                  <Label layoutX="10.0" layoutY="68.0" prefHeight="17.0" prefWidth="117.0" text="choose courses" />
+                  <Label layoutX="14.0" layoutY="195.0" prefHeight="17.0" prefWidth="110.0" text="choose questions" />
                   <Label layoutX="18.0" layoutY="335.0" prefHeight="17.0" prefWidth="110.0" text="time limit" />
-                  <ComboBox layoutX="148.0" layoutY="41.0" prefWidth="150.0" />
-                  <CheckBox layoutX="148.0" layoutY="105.0" mnemonicParsing="false" text="CheckBox" />
+                  <ComboBox fx:id="ComboSubject" layoutX="123.0" layoutY="10.0" onAction="#onSelectSubject" prefWidth="150.0" />
+                  <ListView fx:id="TableCourses" layoutX="124.0" layoutY="44.0" prefHeight="115.0" prefWidth="240.0" />
+                  <ListView fx:id="TableQuestions" layoutX="124.0" layoutY="169.0" prefHeight="135.0" prefWidth="577.0" />
+                  <TextField fx:id="timeLimit" layoutX="124.0" layoutY="340.0" />
                </children>
             </AnchorPane>
             </children>

@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowOneStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import javafx.application.Platform;
@@ -113,8 +114,8 @@ public class ShowOneStudentController {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                 StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
                 if (selectedStudentTest != null) {
-                    SimpleClient.getClient().sendToServer(selectedStudentTest);
-                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTest",selectedStudentTest));
+                    App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
                     cleanup();
                 }
             }
@@ -125,8 +126,8 @@ public class ShowOneStudentController {
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+            App.switchScreen("allStudents");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
@@ -135,7 +136,7 @@ public class ShowOneStudentController {
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
         try{
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+            App.switchScreen("primary");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
@@ -144,7 +145,7 @@ public class ShowOneStudentController {
     @FXML
     void handleBackButtonClick(ActionEvent event) {
         try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
             App.switchScreen("allStudents");
             cleanup();
         }catch (IOException e){

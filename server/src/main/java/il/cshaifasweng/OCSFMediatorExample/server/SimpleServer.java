@@ -1,8 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Student;
-import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
-import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
@@ -18,7 +16,8 @@ public class SimpleServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
-			String msgString = msg.toString();
+			CustomMessage message = (CustomMessage) msg;
+			String msgString = message.getMessage();
 			switch (msgString){
 				case ("#warning"):
 					Warning warning = new Warning("Warning from server!");
@@ -30,20 +29,20 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(studentList);
 					System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
 					break;
-				//case ("#createTest"):
+				case ("#getTeacher"):
+					Teacher teacher = App.getTeacherFromId(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnTeacher",teacher));
+					break;
+				case ("#getStudentTests"):
+					List<StudentTest> studentTests =  App.getStudentTests((Student) message.getData());
+					client.sendToClient(studentTests);
+					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				case ("#getStudentTest"):
+					client.sendToClient((StudentTest) message.getData());
+					System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
+					break;
 
-
-					// continue here if message is a string ....
-			}
-
-
-			if (msg.getClass().equals(Student.class)) {
-				List<StudentTest> studentTests =  App.getStudentTests((Student) msg);
-				client.sendToClient(studentTests);
-				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
-			} else if (msg.getClass().equals(StudentTest.class)) {
-				client.sendToClient((StudentTest) msg);
-				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

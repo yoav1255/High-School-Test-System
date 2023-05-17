@@ -78,7 +78,7 @@ public class ShowUpdateStudentController {
             try {
                 int newG = Integer.parseInt(newGrade.getText());
                 if (newG >= 0 && newG <= 100) {
-                    App.updateStudentGrade(st, newG);
+                    App.updateStudentGrade(st, newG); //TODO: create a server request and update there, send confirmation back
 
                     /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Success");
