@@ -33,7 +33,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+//           generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -64,7 +64,7 @@ public class App
         configuration.addAnnotatedClass(StudentTest.class);
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
-
+        configuration.addAnnotatedClass(QuestionScore.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -81,6 +81,8 @@ public class App
         List<Teacher> teachers = Teacher.GenerateTeachers();
         List<ScheduledTest> scheduledTests = ScheduledTest.GenerateScheduledTests();
         List<StudentTest> studentTests = StudentTest.GenerateStudentTests();
+        //List<Question> questions = Question.GenerateQuestions();
+        //List<QuestionScore> questionScores = QuestionScore.generateQuestionScores();
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
@@ -89,6 +91,9 @@ public class App
         courses.get(3).setSubject(subjects.get(1));
         courses.get(4).setSubject(subjects.get(2));
         courses.get(5).setSubject(subjects.get(2));
+
+//Update Subjects
+
         subjects.get(0).addCourse(courses.get(0));
         subjects.get(0).addCourse(courses.get(1));
         subjects.get(1).addCourse(courses.get(2));
@@ -96,17 +101,86 @@ public class App
         subjects.get(2).addCourse(courses.get(4));
         subjects.get(2).addCourse(courses.get(5));
 
+//Update Questions
+
+//        questions.get(0).setSubject(subjects.get(0));
+//        questions.get(0).setCourses(subjects.get(0).getCourses());
+//        questions.get(1).setSubject(subjects.get(0));
+//        questions.get(1).setCourses(subjects.get(0).getCourses());
+//        questions.get(2).setSubject(subjects.get(0));
+//        questions.get(2).setCourses(subjects.get(0).getCourses());
+//        questions.get(6).setSubject(subjects.get(0));
+//        questions.get(6).setCourses(subjects.get(0).getCourses());
+//
+//        questions.get(3).setSubject(subjects.get(1));
+//        questions.get(3).setCourses(subjects.get(1).getCourses());
+//        questions.get(4).setSubject(subjects.get(1));
+//        questions.get(4).setCourses(subjects.get(1).getCourses());
+//        questions.get(5).setSubject(subjects.get(1));
+//        questions.get(5).setCourses(subjects.get(1).getCourses());
+//        questions.get(7).setSubject(subjects.get(1));
+//        questions.get(7).setCourses(subjects.get(1).getCourses());
+//
+//        questionScores.get(0).setQuestion(questions.get(0));
+//        questionScores.get(1).setQuestion(questions.get(1));
+//        questionScores.get(2).setQuestion(questions.get(2));
+//        questionScores.get(6).setQuestion(questions.get(6));
+//
+//        questionScores.get(3).setQuestion(questions.get(3));
+//        questionScores.get(4).setQuestion(questions.get(4));
+//        questionScores.get(5).setQuestion(questions.get(5));
+//        questionScores.get(7).setQuestion(questions.get(7));
+//
+//        questions.get(0).addQuestionScore(questionScores.get(0));
+//        questions.get(1).addQuestionScore(questionScores.get(1));
+//        questions.get(2).addQuestionScore(questionScores.get(2));
+//        questions.get(6).addQuestionScore(questionScores.get(6));
+//
+//        questions.get(3).addQuestionScore(questionScores.get(3));
+//        questions.get(4).addQuestionScore(questionScores.get(4));
+//        questions.get(5).addQuestionScore(questionScores.get(5));
+//        questions.get(7).addQuestionScore(questionScores.get(7));
+
+
+//        subjects.get(0).addQuestion(questions.get(0));
+//        subjects.get(0).addQuestion(questions.get(1));
+//        subjects.get(0).addQuestion(questions.get(2));
+//        subjects.get(0).addQuestion(questions.get(6));
+//
+//        subjects.get(1).addQuestion(questions.get(3));
+//        subjects.get(1).addQuestion(questions.get(4));
+//        subjects.get(1).addQuestion(questions.get(5));
+//        subjects.get(1).addQuestion(questions.get(7));
+//
+//        for (Course course : subjects.get(0).getCourses()){
+//            course.addQuestion(questions.get(0));
+//            course.addQuestion(questions.get(1));
+//            course.addQuestion(questions.get(2));
+//            course.addQuestion(questions.get(6));
+//        }
+//
+//        for (Course course : subjects.get(1).getCourses()){
+//            course.addQuestion(questions.get(3));
+//            course.addQuestion(questions.get(4));
+//            course.addQuestion(questions.get(5));
+//            course.addQuestion(questions.get(7));
+//        }
+
+
 //Update ExamForms
+
 
         examForms.get(0).setSubject(subjects.get(0));
         examForms.get(0).setCourse(courses.get(0));
         subjects.get(0).addExamForm(examForms.get(0));
         courses.get(0).addExamForm(examForms.get(0));
 
+
         examForms.get(1).setSubject(subjects.get(1));
         examForms.get(1).setCourse(courses.get(3));
         subjects.get(1).addExamForm(examForms.get(1));
         courses.get(3).addExamForm(examForms.get(1));
+
 
 //Update ScheduledTest
 
@@ -164,6 +238,10 @@ public class App
             session.save(subject);
         for(Course course:courses)
             session.save(course);
+//        for (Question question: questions)
+//            session.save(question);
+//        for(QuestionScore questionScore:questionScores)
+//            session.save(questionScore);
         for (ExamForm examForm:examForms)
             session.save(examForm);
         for (ScheduledTest scheduledTest:scheduledTests)
@@ -174,6 +252,7 @@ public class App
             session.save(student);
         for (StudentTest studentTest:studentTests)
             session.save(studentTest);
+
         session.flush();
     }
 
