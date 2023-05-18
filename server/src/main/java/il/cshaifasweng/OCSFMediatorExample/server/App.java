@@ -269,23 +269,17 @@ public class App
         return students;
     }
 
-    public static List<Subject> getSubjectsFromTeacher(Teacher teacher){
+    public static List<Subject> getSubjectsFromTeacherId(String id){
         List<Subject> subjects = new ArrayList<>();
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
+        Teacher teacher = session.get(Teacher.class,id);
         String queryString = "SELECT s FROM Subject s WHERE :teacher IN elements(s.teachers)";
-        Query query = session.createQuery(queryString,Subject.class);
+        Query query = session.createQuery(queryString, Subject.class);
         query.setParameter("teacher",teacher);
         subjects = query.getResultList();
         session.close();
         return subjects;
-    }
-    public static Teacher getTeacherFromId(String id){
-        SessionFactory sessionFactory = getSessionFactory();
-        session = sessionFactory.openSession();
-        Teacher teacher = session.get(Teacher.class,id);
-        session.close();
-        return teacher;
     }
 
     public static List<Course> getCoursesFromSubject(Subject subject){

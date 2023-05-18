@@ -47,9 +47,9 @@ public class SimpleServer extends AbstractServer {
 					App.updateStudentGrade(studentTest);
 					client.sendToClient(new CustomMessage("updateSuccess",""));
 					break;
-				case ("#getTeacher"):
-					Teacher teacher = App.getTeacherFromId(message.getData().toString());
-					client.sendToClient(new CustomMessage("returnTeacher",teacher));
+				case ("#getSubjects"):
+					List<Subject> subjects = App.getSubjectsFromTeacherId(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnSubjects",subjects));
 					break;
 			}
 		} catch (Exception e) {
