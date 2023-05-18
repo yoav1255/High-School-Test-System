@@ -20,14 +20,14 @@ public class ExamForm implements Serializable {
     private Subject subject;
     @OneToMany(mappedBy = "examForm")
     private List<ScheduledTest> scheduledTests;
-    @ManyToMany(mappedBy = "examForms")
-    private List<Question> questions;
+    @OneToMany(mappedBy = "examForm")
+    private List<QuestionScore> questionScores;
 
     public ExamForm(String code, int timeLimit) {
         this.code = code;
         this.timeLimit = timeLimit;
         this.scheduledTests = new ArrayList<ScheduledTest>();
-        this.questions = new ArrayList<Question>();
+        this.questionScores = new ArrayList<QuestionScore>();
     }
     public ExamForm(){}
 
@@ -71,12 +71,12 @@ public class ExamForm implements Serializable {
     }
     public void addScheduledTest(ScheduledTest scheduledTest){ this.scheduledTests.add(scheduledTest); }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<QuestionScore> getQuestionScores() {
+        return questionScores;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+    public void setQuestionScores(List<QuestionScore> questionScores) {
+        this.questionScores = questionScores;
     }
     public String getCourseName(){
         return course.getName();

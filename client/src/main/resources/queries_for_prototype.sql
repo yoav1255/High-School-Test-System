@@ -98,15 +98,18 @@ delete from course;
 delete from subject;
 delete from student;
 
+
 select * from course;
 select * from teacher;
 select * from examform;
 select * from scheduledtest;
 select * from student;
-select * from studenttest;
+select * from studenttest;examformexamform
 select * from subject;
 select * from teacher_course;
 select * from teachers_subjects;
+select * from question;
+select * from question_examforms;
 
 
 

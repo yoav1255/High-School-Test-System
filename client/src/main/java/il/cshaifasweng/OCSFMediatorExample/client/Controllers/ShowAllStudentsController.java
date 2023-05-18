@@ -2,11 +2,16 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 
 import java.io.IOException;
+import java.sql.Time;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
-import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowAllStudentsEvent;
+//import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStudentsEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +23,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class ShowAllStudentsController {
 
@@ -51,7 +57,7 @@ public class ShowAllStudentsController {
         this.studentList = studentList;
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
     public void onShowAllStudentsEvent(ShowAllStudentsEvent event) {
         try {
@@ -73,9 +79,8 @@ public class ShowAllStudentsController {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                 Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
                 if (selectedStudent != null) {
-                    SimpleClient.getClient().sendToServer(selectedStudent);
-                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
-                    cleanup();
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests",selectedStudent));
+                    App.switchScreen("showOneStudent");
                 }
             }
         }catch (IOException e){
@@ -85,8 +90,8 @@ public class ShowAllStudentsController {
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+            App.switchScreen("allStudents");
         }catch (IOException e){
             e.printStackTrace();
         }
