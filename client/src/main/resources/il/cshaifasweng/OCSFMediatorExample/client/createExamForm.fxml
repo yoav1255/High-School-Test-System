@@ -106,9 +106,9 @@
                   <Label layoutX="14.0" layoutY="195.0" prefHeight="17.0" prefWidth="110.0" text="choose questions" />
                   <Label layoutX="18.0" layoutY="335.0" prefHeight="17.0" prefWidth="110.0" text="time limit" />
                   <ComboBox fx:id="ComboSubject" layoutX="123.0" layoutY="10.0" onAction="#onSelectSubject" prefWidth="150.0" />
-                  <ListView fx:id="TableCourses" layoutX="124.0" layoutY="44.0" prefHeight="115.0" prefWidth="240.0" />
                   <ListView fx:id="TableQuestions" layoutX="124.0" layoutY="169.0" prefHeight="135.0" prefWidth="577.0" />
                   <TextField fx:id="timeLimit" layoutX="124.0" layoutY="340.0" />
+                  <ComboBox fx:id="ComboCourse" layoutX="123.0" layoutY="64.0" onAction="#onSelectSubject" prefWidth="150.0" />
                </children>
             </AnchorPane>
             </children>

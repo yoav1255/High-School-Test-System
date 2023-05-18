@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowUpdateStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowUpdateStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import javafx.event.ActionEvent;
@@ -9,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import il.cshaifasweng.OCSFMediatorExample.server.App;
 
 import java.io.IOException;
 
@@ -78,33 +79,15 @@ public class ShowUpdateStudentController {
             try {
                 int newG = Integer.parseInt(newGrade.getText());
                 if (newG >= 0 && newG <= 100) {
-                    App.updateStudentGrade(st, newG); //TODO: create a server request and update there, send confirmation back
-
-                    /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Success");
-                    alert.setHeaderText("Update success");
-                    alert.setContentText("Grade successfully updated");
-                    alert.showAndWait();*/
-
-                    SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
-                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
-                    cleanup();
+                    st.setGrade(newG);
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#updateGrade",st));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests",st.getStudent()));
+                    App.switchScreen("showOneStudent");
                 } else {
-                    /*
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Illegal input");
-                    alert.setHeaderText("Update Failed");
-                    alert.setContentText("Invalid input, please enter a grade between 0 to 100");
-                    alert.showAndWait();*/
                     update_status.setText("Invalid input, please enter a grade between 0 to 100");
                     newGrade.clear();
                 }
             }catch (NumberFormatException notNum){
-                /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Illegal input");
-                alert.setHeaderText("Update Failed");
-                alert.setContentText("Invalid input, please enter a valid number");
-                alert.showAndWait();*/
                 update_status.setText("Invalid input, please enter a valid number");
                 newGrade.clear();
             }
@@ -115,8 +98,7 @@ public class ShowUpdateStudentController {
     @FXML public void goBackButton(){
         try {
             SimpleClient.getClient().sendToServer(instance.studentTest.getStudent());
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("showOneStudent");
-            cleanup();
+            App.switchScreen("showOneStudent");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -125,8 +107,7 @@ public class ShowUpdateStudentController {
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
             SimpleClient.getClient().sendToServer("#showAllStudents");
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("allStudents");
-            cleanup();
+            App.switchScreen("allStudents");
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -134,8 +115,7 @@ public class ShowUpdateStudentController {
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
         try{
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
-            cleanup();
+            App.switchScreen("primary");
         }catch (IOException e){
             e.printStackTrace();
         }

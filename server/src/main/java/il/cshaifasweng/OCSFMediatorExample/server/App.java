@@ -352,12 +352,12 @@ public class App
     }
 
 
-    public static void updateStudentGrade(StudentTest stud, int newGrade){ //Method checked
+    public static void updateStudentGrade(StudentTest stud){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("UPDATE StudentTest SET grade = :newGrade WHERE id = :id");
-        query.setParameter("newGrade", newGrade);
+        query.setParameter("newGrade", stud.getGrade());
         query.setParameter("id", stud.getId());
         int updatedCount = query.executeUpdate();
         session.getTransaction().commit();
