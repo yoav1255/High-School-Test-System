@@ -46,7 +46,6 @@ public class App
         } finally {
             session.close();
         }
-    }
 
     public static Session getSession() {
         return session;
