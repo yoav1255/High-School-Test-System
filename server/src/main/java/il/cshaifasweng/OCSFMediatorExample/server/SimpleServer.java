@@ -17,39 +17,36 @@ public class SimpleServer extends AbstractServer {
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		String msgString = msg.toString();
-		if (msgString.startsWith("#warning")) {
-			Warning warning = new Warning("Warning from server!");
-			try {
-				client.sendToClient(warning);
-				System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (IOException e) {
-				e.printStackTrace();
+		try {
+			String msgString = msg.toString();
+			switch (msgString){
+				case ("#warning"):
+					Warning warning = new Warning("Warning from server!");
+					client.sendToClient(warning);
+					System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				case ("#showAllStudents"):
+					List<Student> studentList = App.getAllStudents();
+					client.sendToClient(studentList);
+					System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				//case ("#createTest"):
+
+
+					// continue here if message is a string ....
 			}
-		} else if (msgString.startsWith("#showAllStudents")) {
-			try {
-				List<Student> studentList = App.getAllStudents();
-				client.sendToClient(studentList);
-				System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (msg.getClass().equals(Student.class)) {
-			try{
+
+
+			if (msg.getClass().equals(Student.class)) {
 				List<StudentTest> studentTests =  App.getStudentTests((Student) msg);
 				client.sendToClient(studentTests);
 				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-		} else if (msg.getClass().equals(StudentTest.class)) {
-			try{
+			} else if (msg.getClass().equals(StudentTest.class)) {
 				client.sendToClient((StudentTest) msg);
 				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
-			}catch (Exception e){
-				e.printStackTrace();
 			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}

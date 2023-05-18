@@ -26,7 +26,7 @@ public class PrimaryController {
 		try{
 			SimpleClient.getClient().sendToServer("#showAllStudents");
 			App.switchScreen("allStudents");
-		}catch (IOException e){
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
@@ -34,7 +34,15 @@ public class PrimaryController {
 	void handleGoHomeButtonClick(ActionEvent event){
 		try{
 			App.switchScreen("primary");
-		}catch (IOException e){
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	@FXML
+	void handleCreateTestButtonClick(ActionEvent event){
+		try{
+			App.switchScreen("createTest");
+		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}

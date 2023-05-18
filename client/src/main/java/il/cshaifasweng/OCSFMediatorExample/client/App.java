@@ -106,6 +106,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "createExamForm":
+                Platform.runLater(()->{
+                    setWindowTitle("Create Exam Form");
+                    try {
+                        setContent("createExamForm");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }
