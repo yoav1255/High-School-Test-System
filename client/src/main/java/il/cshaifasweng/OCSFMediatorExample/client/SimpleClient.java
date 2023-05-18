@@ -1,10 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowUpdateStudentController;
-import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowAllStudentsEvent;
-import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowOneStudentEvent;
-import il.cshaifasweng.OCSFMediatorExample.client.Events.ShowUpdateStudentEvent;
-import il.cshaifasweng.OCSFMediatorExample.client.Events.WarningEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStudentsEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowUpdateStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.WarningEvent;
+import org.greenrobot.eventbus.EventBus;
+
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,26 +25,34 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
-		if (msg.getClass().equals(Warning.class)) {
-			EventBus.getDefault().post(new WarningEvent((Warning) msg));
-		}
-		else if(msg instanceof List ){
-			List list = (List) msg;
-			if(list!=null)
-			{
-				Object firstObject = list.get(0);
-				if(firstObject instanceof Student){
-					List <Student> listStudent = (List<Student>) msg;
+		try {
+			CustomMessage message = (CustomMessage) msg;
+			String msgString = message.getMessage();
+			switch (msgString) {
+				case ("returnWarning"):
+					EventBus.getDefault().post(new WarningEvent((Warning) message.getData()));
+					break;
+				case ("returnStudentList"):
+					List<Student> listStudent = (List<Student>) message.getData();
 					EventBus.getDefault().post(new ShowAllStudentsEvent(listStudent));
-				} else if (firstObject instanceof StudentTest) {
-					List<StudentTest> studentTests = (List<StudentTest>) msg;
+					break;
+				case ("returnStudentTests"):
+					List<StudentTest> studentTests = (List<StudentTest>) message.getData();
 					EventBus.getDefault().post(new ShowOneStudentEvent(studentTests));
-				}
-			}//TODO if its null then we have to decide what to do!!
-		} else if (msg instanceof StudentTest) {
-			StudentTest studentTest = (StudentTest) msg;
-			ShowUpdateStudentController showUpdateStudentController = new ShowUpdateStudentController();
-			EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
+					break;
+				case ("returnStudentTest"):
+					StudentTest studentTest = (StudentTest) message.getData();
+					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
+					break;
+				case ("updateSuccess"):
+					System.out.println("updated grade successfully!");
+					break;
+				case ("returnTeacher"):
+
+					break;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 	}
 	

@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Events.WarningEvent;
+//import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.WarningEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -64,7 +65,6 @@ public class App extends Application {
         stage.show();
     }
     public static Object switchScreen(String screenName) throws IOException{
-        Object controller;
         switch (screenName){
             case "allStudents":
                 Platform.runLater(()->{
@@ -106,26 +106,21 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "createExamForm":
+                Platform.runLater(()->{
+                    setWindowTitle("Create Exam Form");
+                    try {
+                        setContent("createExamForm");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }
     //-------------Menu Functions----------//
 
-    @FXML public void goHomeBtn(){
-        try {
-            switchScreen("primary");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void goToAllStudentsBtn(){
-        try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            switchScreen("allStudents");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 
     //-------------------------------------//
 

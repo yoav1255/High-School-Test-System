@@ -74,6 +74,7 @@ public class Course implements Serializable {
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
+    public void addQuestion(Question question) { questions.add(question); }
 
     public List<Teacher> getTeachers() {
         return teachers;
