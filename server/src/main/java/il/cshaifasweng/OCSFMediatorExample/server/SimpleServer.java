@@ -51,6 +51,10 @@ public class SimpleServer extends AbstractServer {
 			}
 
 		}
+		switch(msgString){
+			case("login_info"):
+
+		}
 
 	}
 

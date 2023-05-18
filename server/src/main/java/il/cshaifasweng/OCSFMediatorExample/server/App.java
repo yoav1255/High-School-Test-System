@@ -12,6 +12,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.javatuples.Tuple;
+
 
 /**
  * Hello world!
@@ -240,6 +242,30 @@ public class App
         int updatedCount = query.executeUpdate();
         session.getTransaction().commit();
         session.close();
+    }
+
+    public static void login_auth(String username, String enteredPassword){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        String query = "SELECT password FROM Students WHERE username = :username";
+        String passwords = session.createNativeQuery(query)
+                .setParameter("username", username)
+                .getResultList().toString();
+
+        if (!passwords.isEmpty()) {
+            // Check if the entered password matches the stored password
+            if (enteredPassword.equals(passwords)) {
+                // Password is correct
+                System.out.println("Login successful!");
+            } else {
+                // Incorrect password
+                System.out.println("Incorrect password!");
+            }
+        } else {
+            // Username does not exist
+            System.out.println("Username does not exist!");
+        }
     }
 
 
