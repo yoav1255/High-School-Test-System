@@ -36,7 +36,7 @@ public class PrimaryController {
 	void handleCreateTestButtonClick(ActionEvent event) {
 		try {
 			String teacherId = "1";
-			SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", teacherId));
+			SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
 			// TODO : send online teacher's id);
 			App.switchScreen("createExamForm");
 		} catch (Exception e) {
@@ -44,18 +44,4 @@ public class PrimaryController {
 		}
 	}
 
-
-	@FXML
-	void handleCreateQuestionButtonClick(ActionEvent event) {
-		try {
-			String teacherId = "1";
-			SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", teacherId));
-			// TODO : send online teacher's id);
-			App.switchScreen("createQuestion");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
-
-
