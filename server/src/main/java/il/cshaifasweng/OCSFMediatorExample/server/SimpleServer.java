@@ -1,14 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class SimpleServer extends AbstractServer {
@@ -53,10 +48,18 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case("#fillComboBox"):
 					List<String> examFormCode = App.getListExamFormCode();
-					System.out.println(examFormCode);
-					client.sendToClient(examFormCode);
+					client.sendToClient(new CustomMessage("returnListCodes",examFormCode));
 					System.out.format("Sent examFormCode to client %s\n", client.getInetAddress().getHostAddress());
-					break;;
+					break;
+					case ("#addScheduleTest"):
+						ScheduledTest scheduledTest=(ScheduledTest) message.getData();
+						App.addScheduleTest(scheduledTest);
+						client.sendToClient(new CustomMessage("addScheduleTestSuccess",""));
+						break;
+				case ("#sendExamFormId"):
+					ExamForm examForm=App.getExamForm((message.getData().toString()));
+					client.sendToClient(new CustomMessage("returnExamForm",examForm));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,4 +69,3 @@ public class SimpleServer extends AbstractServer {
 
 	}
 
-}

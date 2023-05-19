@@ -1,14 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -19,7 +20,7 @@ import org.hibernate.service.ServiceRegistry;
  */
 public class App
 {
-	
+
 	private static SimpleServer server;
     private static Session session;
 
@@ -33,8 +34,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-//           generateObjects();
-
+//            generateObjects();
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception){
@@ -64,6 +64,7 @@ public class App
         configuration.addAnnotatedClass(StudentTest.class);
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
+        configuration.addAnnotatedClass(teachers_subjects.class);
         configuration.addAnnotatedClass(QuestionScore.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
@@ -269,24 +270,56 @@ public class App
         return students;
     }
 
+   public static Teacher getTeacher(){
+       // create a Criteria object for the Teacher class
+       Criteria criteria = session.createCriteria(Teacher.class);
+// set the first result to 0 (i.e., the first row)
+       criteria.setFirstResult(0);
+// set the maximum number of results to 1 (i.e., only one row)
+       criteria.setMaxResults(1);
+// execute the query and get the result
+       Teacher firstTeacher = (Teacher) criteria.uniqueResult();
+
+       return firstTeacher;
+   }
+
     public static List<String> getListExamFormCode(){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        // create a Criteria object for the Teacher class
-        Criteria criteria = session.createCriteria(Teacher.class);
-// set the first result to 0 (i.e., the first row)
-        criteria.setFirstResult(0);
-// set the maximum number of results to 1 (i.e., only one row)
-        criteria.setMaxResults(1);
-// execute the query and get the result
-
-        Teacher firstTeacher = (Teacher) criteria.uniqueResult();
-
+        session.beginTransaction();
+        Teacher firstTeacher = getTeacher();
         org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
         query.setParameterList("subjects", firstTeacher.getSubjects());
         List<String> codes = query.getResultList();
+        session.getTransaction().commit();
         session.close();
+        System.out.println(codes);
         return codes;
+    }
+    public static ExamForm getExamForm(String examFormId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("enter");
+        Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId",ExamForm.class);
+        query.setParameter("examFormId",examFormId );
+        ExamForm examForm=(ExamForm) query.getSingleResult();
+        System.out.println(examForm.getExamFormCode());
+        session.getTransaction().commit();
+        session.close();
+        return examForm;
+    }
+    public static void addScheduleTest(ScheduledTest scheduledTest) throws Exception {
+            SessionFactory sessionFactory = getSessionFactory();
+            session=sessionFactory.openSession();
+            session.beginTransaction();
+            System.out.println(scheduledTest);
+            Teacher teacher=getTeacher();
+            scheduledTest.setTeacher(teacher);
+            session.save(scheduledTest);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println(scheduledTest);
     }
     public static List<Subject> getSubjectsFromTeacher(Teacher teacher){
         List<Subject> subjects = new ArrayList<>();
