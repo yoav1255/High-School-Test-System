@@ -54,6 +54,15 @@ public class SimpleClient extends AbstractClient {
 					List<Question> questions = (List<Question>) message.getData();
 					EventBus.getDefault().post(new ShowCourseQuestionsEvent(questions));
 					break;
+				case ("returnCourse"):
+					Course course =(Course) message.getData();
+					EventBus.getDefault().post(new ShowCourseEvent(course));
+					break;
+				case ("addedExamForm"):
+					ExamForm examForm = (ExamForm) message.getData();
+					System.out.println(examForm.getTimeLimit());
+					EventBus.getDefault().post(new ShowSuccessEvent("Successfully added "+examForm.getExamFormCode()));
+					break;
 
 			}
 		}catch (Exception e){

@@ -32,6 +32,10 @@ public class QuestionScore implements Serializable {
         this.examForm = examForm;
         this.question = question;
     }
+    public QuestionScore(int score, Question question){
+        this.score = score;
+        this.question = question;
+    }
     public QuestionScore(int grade){ this.score = grade;}
     public QuestionScore(){}
 

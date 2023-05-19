@@ -294,13 +294,24 @@ public class App
         courses = session.createQuery(queryString, Course.class)
                         .setParameter("subject",subject)
                                 .getResultList();
+        for(Course course:courses)
+            course.setSubject(subject);
         session.close();
         return courses;
+    }
+    public static Course getCourseFromCourseName(String courseName){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
+        Query q = session.createQuery(querySub, Course.class);
+        q.setParameter("courseName",courseName);
+        Course course = (Course) q.getSingleResult();
+        session.close();
+        return course;
     }
 
     public static List<Question> getQuestionsFromCourseName(String courseName){
         List<Question> questions = new ArrayList<>();
-        System.out.println(courseName);
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
@@ -313,6 +324,14 @@ public class App
         questions = query.getResultList();
         session.close();
         return questions;
+    }
+    public static void addExamForm(ExamForm examForm){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(examForm);
+        session.getTransaction().commit();
+        session.close();
     }
 
     public static List<StudentTest> getStudentTests(Student student){
