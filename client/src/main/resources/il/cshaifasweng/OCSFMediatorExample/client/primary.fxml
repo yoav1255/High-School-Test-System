@@ -65,6 +65,7 @@
                </VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#handleCreateTestButtonClick" prefHeight="48.0" prefWidth="216.0" text="Create new Test" />
+            <Button fx:id="createQuestionBN" mnemonicParsing="false" onAction="#handleCreateQuestionButtonClick" prefHeight="48.0" prefWidth="216.0" text="Create new Question" />
          </children>
       </VBox>
       <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">

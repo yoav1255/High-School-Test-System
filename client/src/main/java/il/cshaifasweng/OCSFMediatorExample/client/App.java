@@ -116,6 +116,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "createQuestion":
+                Platform.runLater(()->{
+                    setWindowTitle("Create Question Form");
+                    try {
+                        setContent("createQuestion");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }

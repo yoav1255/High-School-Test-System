@@ -12,6 +12,9 @@ public class PrimaryController {
 	@FXML
 	private Button goToAllStudentsButton;
 
+	@FXML
+	private Button createQuestionBN;
+
 
 	@FXML
 	void handleGoToAllStudentsButtonClick(ActionEvent event) {
@@ -39,6 +42,18 @@ public class PrimaryController {
 			SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
 			// TODO : send online teacher's id);
 			App.switchScreen("createExamForm");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	void handleCreateQuestionButtonClick(ActionEvent event) {
+		try {
+			String teacherId = "1";
+			SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
+			// TODO : send online teacher's id);
+			App.switchScreen("createQuestion");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
