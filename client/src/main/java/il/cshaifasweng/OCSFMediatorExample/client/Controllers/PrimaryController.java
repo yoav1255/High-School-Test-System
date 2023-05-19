@@ -43,4 +43,19 @@ public class PrimaryController {
 			e.printStackTrace();
 		}
 	}
+
+
+	@FXML
+	void handleCreateQuestionButtonClick(ActionEvent event) {
+		try {
+			String teacherId = "1";
+			SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", teacherId));
+			// TODO : send online teacher's id);
+			App.switchScreen("createQuestion");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
+
+
