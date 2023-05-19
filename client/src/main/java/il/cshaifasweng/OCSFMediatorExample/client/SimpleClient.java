@@ -46,6 +46,15 @@ public class SimpleClient extends AbstractClient {
 					List<Subject> subjects = (List<Subject>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherSubjectsEvent(subjects));
 					break;
+				case ("returnCourses"):
+					List<Course> courses = (List<Course>) message.getData();
+					EventBus.getDefault().post(new ShowSubjectCoursesEvent(courses));
+					break;
+				case ("returnQuestions"):
+					List<Question> questions = (List<Question>) message.getData();
+					EventBus.getDefault().post(new ShowCourseQuestionsEvent(questions));
+					break;
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();
