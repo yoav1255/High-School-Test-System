@@ -5,7 +5,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -97,18 +98,32 @@
                 <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="408.647216796875" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0" />
-                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-            <AnchorPane prefHeight="340.0" prefWidth="713.0" GridPane.rowIndex="2">
+                <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0">
                <children>
-                  <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="117.0" text="choose subject" />
-                  <Label layoutX="10.0" layoutY="68.0" prefHeight="17.0" prefWidth="117.0" text="choose courses" />
-                  <Label layoutX="14.0" layoutY="195.0" prefHeight="17.0" prefWidth="110.0" text="choose questions" />
-                  <Label layoutX="18.0" layoutY="335.0" prefHeight="17.0" prefWidth="110.0" text="time limit" />
-                  <ComboBox fx:id="ComboSubject" layoutX="123.0" layoutY="10.0" onAction="#onSelectSubject" prefWidth="150.0" />
-                  <ListView fx:id="TableQuestions" layoutX="124.0" layoutY="169.0" prefHeight="135.0" prefWidth="577.0" />
-                  <TextField fx:id="timeLimit" layoutX="124.0" layoutY="340.0" />
-                  <ComboBox fx:id="ComboCourse" layoutX="123.0" layoutY="64.0" onAction="#onSelectSubject" prefWidth="150.0" />
+                  <Label layoutX="-2.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose subject" />
+                  <ComboBox fx:id="ComboSubject" layoutX="106.0" layoutY="15.0" onAction="#onSelectSubject" prefWidth="150.0" />
+               </children></Pane>
+                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+               <children>
+                  <Label layoutY="6.0" prefHeight="17.0" prefWidth="117.0" text="choose course" />
+                  <ComboBox fx:id="ComboCourse" layoutX="107.0" layoutY="7.0" onAction="#onSelectCourse" prefWidth="150.0" />
+               </children></Pane>
+            <AnchorPane prefHeight="444.0" prefWidth="713.0" GridPane.rowIndex="2">
+               <children>
+                  <Label layoutX="302.0" layoutY="46.0" prefHeight="17.0" prefWidth="110.0" text="choose questions" />
+                  <Label layoutY="18.0" prefHeight="17.0" prefWidth="110.0" text="time limit" />
+                  <TextField fx:id="timeLimit" layoutX="111.0" layoutY="14.0" />
+                  <TableView fx:id="Table_Questions" layoutX="11.0" layoutY="74.0" onMouseClicked="#handleRowClick" prefHeight="189.0" prefWidth="691.0">
+                    <columns>
+                      <TableColumn fx:id="id" prefWidth="62.0" text="id" />
+                      <TableColumn fx:id="text" prefWidth="227.0" text="Question" />
+                        <TableColumn fx:id="ans0" prefWidth="67.0" text="1" />
+                        <TableColumn fx:id="ans1" prefWidth="70.0" text="2" />
+                        <TableColumn fx:id="ans2" prefWidth="86.0" text="3" />
+                        <TableColumn fx:id="ans3" minWidth="0.0" prefWidth="69.0" text="4" />
+                        <TableColumn fx:id="ansIndex" prefWidth="56.0" text="Answer" />
+                    </columns>
+                  </TableView>
                </children>
             </AnchorPane>
             </children>

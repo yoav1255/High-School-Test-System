@@ -282,11 +282,15 @@ public class App
         return subjects;
     }
 
-    public static List<Course> getCoursesFromSubject(Subject subject){
+    public static List<Course> getCoursesFromSubjectName(String subjectName){
         List<Course> courses = new ArrayList<>();
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        String queryString = "SELECT c FROM Course c WHERE c.subject =:subject";
+        String querySub = "SELECT s FROM Subject s WHERE s.name =:subjectName";
+        Query q = session.createQuery(querySub, Subject.class);
+        q.setParameter("subjectName",subjectName);
+        Subject subject = (Subject) q.getSingleResult();
+        String queryString = "SELECT c FROM Course c JOIN c.subject s WHERE s = :subject ";
         courses = session.createQuery(queryString, Course.class)
                         .setParameter("subject",subject)
                                 .getResultList();
@@ -294,11 +298,16 @@ public class App
         return courses;
     }
 
-    public static List<Question> getQuestionsFromCourse(Course course){
+    public static List<Question> getQuestionsFromCourseName(String courseName){
         List<Question> questions = new ArrayList<>();
+        System.out.println(courseName);
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        String queryString = "SELECT q FROM Question q WHERE :course IN elements(q.courses)";
+        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
+        Query q = session.createQuery(querySub, Course.class);
+        q.setParameter("courseName",courseName);
+        Course course = (Course) q.getSingleResult();
+        String queryString = "SELECT DISTINCT q FROM Course c JOIN c.questions q WHERE c = :course";
         Query query = session.createQuery(queryString, Question.class);
         query.setParameter("course",course);
         questions = query.getResultList();
