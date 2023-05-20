@@ -44,7 +44,6 @@ public class CreateQuestionController {
     private List<Course> courses;
     private List<Subject> subjects;
 
-    // קונסטרקטור ו cleanup
     public CreateQuestionController() {
         courseNames = new ArrayList<>();
         courses = new ArrayList<>();
@@ -124,6 +123,7 @@ public class CreateQuestionController {
             String ans_str = comboAns.getValue();
             int ans_num = Integer.parseInt(ans_str);
             Question myQuestion = new Question(theQuestion.getText(), ans1.getText(), ans2.getText(), ans3.getText(), ans4.getText(), ans_num);
+            //myQuestion.setSubject(); //TODO להוסיף אובייקט מקצוע לשאלה
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestion", myQuestion));
             } catch (IOException e) {

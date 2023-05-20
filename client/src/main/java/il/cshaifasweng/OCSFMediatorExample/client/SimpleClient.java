@@ -56,7 +56,7 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("addQuestionSuccess"):
 					System.out.println("Question added successfully!");
-					EventBus.getDefault().post(new QuestionAddedEvent());
+					EventBus.getDefault().post(new QuestionAddedEvent(""));
 					break;
 
 			}
