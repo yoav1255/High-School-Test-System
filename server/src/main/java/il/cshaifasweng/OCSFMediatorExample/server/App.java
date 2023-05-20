@@ -256,6 +256,19 @@ public class App
         session.flush();
     }
 
+    public static List<ScheduledTest> getScheduledTests() throws Exception{
+
+        List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT s FROM ScheduledTest s";
+        Query query = session.createQuery(queryString,ScheduledTest.class);
+        scheduledTests = query.getResultList();
+        //
+        session.close();
+        return scheduledTests;
+    }
     public static List<Student> getAllStudents() throws Exception{
 
         List<Student> students = new ArrayList<Student>();

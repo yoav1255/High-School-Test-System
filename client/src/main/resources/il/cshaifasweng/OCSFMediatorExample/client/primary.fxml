@@ -73,6 +73,11 @@
                   <Font size="15.0" />
                </font>
             </Button>
+            <Button mnemonicParsing="false" onAction="#handleGoScheduleTestButtonClick" prefHeight="60.0" prefWidth="215.0" text="Scheduled Test List">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
          </children>
       </VBox>
       <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
