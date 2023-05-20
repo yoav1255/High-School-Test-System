@@ -5,6 +5,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -84,8 +87,19 @@ public class ShowScheduleTestController {
             date.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("date"));
             time.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("time"));
             submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("submissions"));
-            examFormId.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("examForm_id"));
+            examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
+                @Override
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
+                    return new SimpleStringProperty(param.getValue().getExamForm().getExamFormCode());
+                }
+            });
             teacherId.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("teacher_id"));
+            teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
+                @Override
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
+                    return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                }
+            });
             ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableList(scheduledTests);
             scheduleTest_table_view.setItems(scheduledTestObservableList);
         }catch (Exception e){
