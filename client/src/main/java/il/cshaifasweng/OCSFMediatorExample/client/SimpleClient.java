@@ -54,6 +54,10 @@ public class SimpleClient extends AbstractClient {
 					List<Question> questions = (List<Question>) message.getData();
 					EventBus.getDefault().post(new ShowCourseQuestionsEvent(questions));
 					break;
+				case ("addQuestionSuccess"):
+					System.out.println("Question added successfully!");
+					EventBus.getDefault().post(new QuestionAddedEvent());
+					break;
 
 			}
 		}catch (Exception e){

@@ -367,7 +367,23 @@ public class App
         session.close();
     }
 
+    public static void addQuestion(Question question){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("INSERT INTO question VALUES(:answer0,:answer1,:answer2,:answer3,:indexAnswer,:text,:subject_id)");
+        query.setParameter("answer0", question.getAnswer0());
+        query.setParameter("answer1", question.getAnswer1());
+        query.setParameter("answer2", question.getAnswer2());
+        query.setParameter("answer3", question.getAnswer3());
+        query.setParameter("indexAnswer", question.getIndexAnswer());
+        query.setParameter("text", question.getText());
+        query.setParameter("subject_id", question.getSubjectId());
+        int updatedCount = query.executeUpdate();
+        session.getTransaction().commit();
+        session.close();
 
+    }
 
 
 }
