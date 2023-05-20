@@ -128,6 +128,8 @@ public class CreateTestController {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExamFormCode",courseName));
             Table_Questions.setDisable(false);
             questionScoreList = new ArrayList<>();
+            updateTables();
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -140,7 +142,6 @@ public class CreateTestController {
     public void onShowCourseQuestions(ShowCourseQuestionsEvent event){
         try {
             List<Question> questions = event.getQuestions();
-
             id.setCellValueFactory(new PropertyValueFactory<>("id"));
             text.setCellValueFactory(new PropertyValueFactory<>("text"));
             ans0.setCellValueFactory(new PropertyValueFactory<>("answer0"));

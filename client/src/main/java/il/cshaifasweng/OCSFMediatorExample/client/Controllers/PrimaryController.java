@@ -35,7 +35,7 @@ public class PrimaryController {
 	@FXML
 	void handleCreateTestButtonClick(ActionEvent event) {
 		try {
-			String teacherId = "1";
+			String teacherId = "2";
 			SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
 			// TODO : send online teacher's id);
 			App.switchScreen("createExamForm");
