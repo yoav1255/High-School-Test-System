@@ -85,7 +85,6 @@ public class CreateTestController {
     void initialize(){
         ComboCourse.setDisable(true);
         Table_Questions.setDisable(true);
-        questionScoreList = new ArrayList<>();
     }
 
     @Subscribe
@@ -103,6 +102,7 @@ public class CreateTestController {
             String subjectName = ComboSubject.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
             ComboCourse.setDisable(false);
+            ComboCourse.setValue("");
             Table_Questions.setDisable(true);
         }catch (Exception e){
             e.printStackTrace();
@@ -127,6 +127,7 @@ public class CreateTestController {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestions", courseName));
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExamFormCode",courseName));
             Table_Questions.setDisable(false);
+            questionScoreList = new ArrayList<>();
         }catch (Exception e){
             e.printStackTrace();
         }
