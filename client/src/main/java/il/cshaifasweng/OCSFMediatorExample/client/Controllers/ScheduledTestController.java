@@ -16,21 +16,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.regex.*;
 
 import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
 public class ScheduledTestController {
-
-    private static ScheduledTestController instance;
 
     public static ExamForm examForm;
     @FXML // fx:id="allStudentsBN"
@@ -63,6 +59,9 @@ public class ScheduledTestController {
     @FXML
     private TextField textFieldsubmission;
 
+    @FXML
+    private TextField scheduleCode;
+
     public ScheduledTestController() {
         EventBus.getDefault().register(this);
     }
@@ -71,16 +70,8 @@ public class ScheduledTestController {
         EventBus.getDefault().unregister(this);
     }
 
-    public static ScheduledTestController getInstance() {
-        if (instance == null) {
-            instance = new ScheduledTestController();
-        }
-        return instance;
-    }
-
-
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() {
         labelTeacher.setText("1");
         scheduleTime.setText("12:00");
         textFieldsubmission.setText("");
@@ -90,6 +81,7 @@ public class ScheduledTestController {
             e.printStackTrace();
         }
     }
+
     @Subscribe
     public void onExamFormEvent(ExamFormEvent event) {
         List<String> examFormList = event.getExamFormEventCode();
@@ -99,64 +91,111 @@ public class ScheduledTestController {
     @FXML
     void comboAction(ActionEvent event) {
         try {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#sendExamFormId",comboBoxExamForm.getValue()));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#sendExamFormId", comboBoxExamForm.getValue()));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @Subscribe
     public void onScheduledTestEvent(ScheduledTestEvent event) {
-        System.out.println("ScheduledTestEvent");
-        ExamForm scheduledTest = event.getScheduledTestEvent();
-        this.examForm = scheduledTest;
+        this.examForm = event.getScheduledTestEvent();
     }
 
-public boolean validateSchesuledForm(DatePicker date,String time,int submission){
-    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-    errorAlert.setHeaderText("Input not valid");
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
-    LocalDateTime now = LocalDateTime.now();
-    String currentDate = date.getValue().toString().replace('-', '0');
-    String today=dtf.format(now);
-    System.out.println(currentDate+""+today);
-    if(Integer.parseInt(currentDate)<Integer.parseInt(today)){
-        errorAlert.setContentText("date not valid");
-        errorAlert.show();
+    public boolean validateDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
+        LocalDateTime now = LocalDateTime.now();
+        if (dataTimescheduleDate.getValue() != null) {
+            String currentDate = dataTimescheduleDate.getValue().toString().replace('-', '0');
+            String today = dtf.format(now);
+            if (Integer.parseInt(currentDate) > Integer.parseInt(today))
+                return true;
+        }
+        dataTimescheduleDate.setStyle("-fx-border-color: red;");
         return false;
     }
-//    String pattern = "^([01]\\d|2[0-3]):[0-5]\\d$";
-////    // Check if the time matches the pattern
-////        if (Pattern.matches(pattern, time)||Integer.parseInt(time.split(":")[0])>=23) {
-////            // Check if the time falls within the 24/7 range
-////            errorAlert.setContentText("time not valid, keep on format 'HH:mm'");
-////            errorAlert.show();
-////            return false;
-////        }
-////            if (submission<0||submission>100){
-////                errorAlert.setContentText("number of submission isnt valid");
-////                errorAlert.show();
-////                return false;
-//            }
-    return true;
-}
+
+    public boolean validateTime() {
+        String pattern = "^([01]\\d|2[0-3]):[0-5]\\d$";
+        // Check if the time matches the pattern
+        if (scheduleTime != null) {
+            if (Pattern.matches(pattern, scheduleTime.getText())) {
+                if (Integer.parseInt(scheduleTime.getText().split(":")[0]) < 24 && Integer.parseInt(scheduleTime.getText().split(":")[1]) < 60) {
+                    return true;
+                }
+            }
+
+        }
+        scheduleTime.setStyle("-fx-border-color:red;");
+        return false;
+    }
+
+    public boolean validatesubmission() {
+        String sumbittionPattern = "\\d+";
+        if (textFieldsubmission != null) {
+            if (Pattern.matches(sumbittionPattern, textFieldsubmission.getText())) {
+                return true;
+            }
+        }
+        textFieldsubmission.setStyle("-fx-border-color:red;");
+        return false;
+    }
+
+    public boolean validateCode() {
+        String patternCode = "[a-zA-Z0-9]{4}";
+        if (scheduleCode != null) {
+            if (Pattern.matches(patternCode, scheduleCode.getText())) {
+                return true;
+            }
+        }
+        scheduleCode.setStyle("-fx-border-color:red;");
+        return false;
+    }
+
+    public boolean validateSchesuledForm() {
+        boolean valid;
+        dataTimescheduleDate.setStyle("-fx-border-color:default;");
+        scheduleTime.setStyle("-fx-border-color:default;");
+        textFieldsubmission.setStyle("-fx-border-color:default;");
+        comboBoxExamForm.setStyle("-fx-border-color:default;");
+        scheduleCode.setStyle("-fx-border-color:default;");
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("ERROR");
+        valid = validateDate() & validateTime() & validatesubmission() & validateCode();
+        if (comboBoxExamForm.getValue() == null) {
+            comboBoxExamForm.setStyle("-fx-border-color:red;");
+            valid = false;
+        }
+        if (!valid) {
+            errorAlert.setContentText("input not valid!");
+            errorAlert.show();
+            return false;
+        }
+        return true;
+    }
 
 
     @FXML
     void sendSchedule(ActionEvent event) {
-        int day = dataTimescheduleDate.getValue().getDayOfMonth();
-        int month = dataTimescheduleDate.getValue().getMonth().getValue();
-        int year = dataTimescheduleDate.getValue().getYear();
-        String time=scheduleTime.getText();
-        boolean valid=validateSchesuledForm(dataTimescheduleDate,time,Integer.parseInt(textFieldsubmission.getText()));
-        System.out.println(valid);
-        if(valid){
-        ScheduledTest scheduledTest=new ScheduledTest(0,new Date(year,month,day), new Time(Integer.parseInt(time.substring(0,2)),Integer.parseInt(time.substring(3,5)),0),Integer.parseInt(textFieldsubmission.getText()));
-        scheduledTest.setExamForm(examForm);
-        try {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest",scheduledTest));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        boolean valid = validateSchesuledForm();
+        if (valid) {
+            int day = dataTimescheduleDate.getValue().getDayOfMonth();
+            int month = dataTimescheduleDate.getValue().getMonth().getValue();
+            int year = dataTimescheduleDate.getValue().getYear();
+            String time = scheduleTime.getText();
+            ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), new Date(year, month, day), new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
+            scheduledTest.setExamForm(examForm);
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest", scheduledTest));
+                Alert success = new Alert(Alert.AlertType.INFORMATION);
+                success.setHeaderText("Success");
+                success.setContentText("added new schedule test Succeed");
+                success.show();
+                il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+                cleanup();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -13,8 +13,7 @@ public class ScheduledTest implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private String id;
     private Date date;
     private Time time; //Todo check Time and Date format
     @ManyToOne
@@ -27,7 +26,7 @@ public class ScheduledTest implements Serializable {
     private Teacher teacher;
     private int submissions;
 
-    public ScheduledTest(int id, Date date, Time time, int submissions) {
+    public ScheduledTest(String id, Date date, Time time, int submissions) {
         this.id = id;
         this.date = date;
         this.time = time;
@@ -36,11 +35,11 @@ public class ScheduledTest implements Serializable {
     }
     public ScheduledTest(){}
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -110,18 +109,18 @@ public class ScheduledTest implements Serializable {
 
     public static List<ScheduledTest> GenerateScheduledTests(){
         List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
-        scheduledTests.add(new ScheduledTest(1,new Date(2023,10,05),new Time(12,20,0),20));
-        scheduledTests.add(new ScheduledTest(2,new Date(2022,05,03),new Time(15,0,0),15));
-        scheduledTests.add(new ScheduledTest(3,new Date(2022,07,03),new Time(14,0,0),10));
-        scheduledTests.add(new ScheduledTest(4,new Date(2022,05,11),new Time(10,0,0),15));
-        scheduledTests.add(new ScheduledTest(5,new Date(2022,05,13),new Time(10,0,0),15));
-        scheduledTests.add(new ScheduledTest(6,new Date(2022,05,19),new Time(10,0,0),15));
-        scheduledTests.add(new ScheduledTest(7,new Date(2022,05,17),new Time(10,0,0),12));
-        scheduledTests.add(new ScheduledTest(8,new Date(2022,05,17),new Time(12,0,0),12));
-        scheduledTests.add(new ScheduledTest(9,new Date(2022,05,25),new Time(10,0,0),12));
-        scheduledTests.add(new ScheduledTest(10,new Date(2022,05,30),new Time(10,0,0),12));
-        scheduledTests.add(new ScheduledTest(11,new Date(2022,05,31),new Time(10,0,0),16));
-        scheduledTests.add(new ScheduledTest(12,new Date(2022,06,02),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("11PO",new Date(2023,10,05),new Time(12,20,0),20));
+        scheduledTests.add(new ScheduledTest("2SDE",new Date(2022,05,03),new Time(15,0,0),15));
+        scheduledTests.add(new ScheduledTest("3D3E",new Date(2022,07,03),new Time(14,0,0),10));
+        scheduledTests.add(new ScheduledTest("4E3E",new Date(2022,05,11),new Time(10,0,0),15));
+        scheduledTests.add(new ScheduledTest("53ED",new Date(2022,05,13),new Time(10,0,0),15));
+        scheduledTests.add(new ScheduledTest("88U7",new Date(2022,05,19),new Time(10,0,0),15));
+        scheduledTests.add(new ScheduledTest("JE83",new Date(2022,05,17),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("H37D",new Date(2022,05,17),new Time(12,0,0),12));
+        scheduledTests.add(new ScheduledTest("NDH7",new Date(2022,05,25),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("BH37",new Date(2022,05,30),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("HDG63",new Date(2022,05,31),new Time(10,0,0),16));
+        scheduledTests.add(new ScheduledTest("12DW",new Date(2022,06,02),new Time(10,0,0),12));
 
         return scheduledTests;
     }

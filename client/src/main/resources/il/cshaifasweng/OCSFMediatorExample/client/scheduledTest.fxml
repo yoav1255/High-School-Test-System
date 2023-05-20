@@ -85,36 +85,45 @@
                 <!--                <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
-      <Label alignment="BASELINE_CENTER" layoutX="254.0" layoutY="79.0" prefHeight="43.0" prefWidth="133.0" style="-fx-background-color: orange;" text="Date">
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="164.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Date">
          <font>
-            <Font name="Oriya Sangam MN" size="29.0" />
+            <Font size="20.0" />
          </font>
       </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="246.0" layoutY="187.0" prefHeight="43.0" prefWidth="133.0" style="-fx-background-color: orange;" text="Time">
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="239.0" prefHeight="23.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Time">
          <font>
-            <Font name="Oriya Sangam MN" size="29.0" />
+            <Font size="20.0" />
          </font>
       </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="246.0" layoutY="289.0" prefHeight="43.0" prefWidth="148.0" style="-fx-background-color: orange;" text="Submission">
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="311.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Submission">
          <font>
-            <Font size="25.0" />
+            <Font size="20.0" />
          </font>
       </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="243.0" layoutY="389.0" prefHeight="36.0" prefWidth="154.0" style="-fx-background-color: orange;" text="Exam Form">
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="395.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Exam Form">
          <font>
-            <Font name="Oriya Sangam MN" size="29.0" />
+            <Font size="20.0" />
          </font>
       </Label>
-      <DatePicker id="dataTimescheduleDate" fx:id="dataTimescheduleDate" layoutX="440.0" layoutY="88.0" />
-      <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="445.0" layoutY="397.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
-      <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="445.0" layoutY="196.0" prefHeight="10.0" prefWidth="48.0" />
-      <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="803.0" layoutY="515.0" mnemonicParsing="false" onAction="#sendSchedule" style="-fx-background-color: black;" text="Schedule Test" textFill="WHITE" />
-      <Label alignment="BASELINE_CENTER" layoutX="246.0" layoutY="484.0" prefHeight="43.0" prefWidth="133.0" style="-fx-background-color: orange;" text="teacher ID">
+      <DatePicker id="dataTimescheduleDate" fx:id="dataTimescheduleDate" layoutX="405.0" layoutY="166.0">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets></DatePicker>
+      <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="410.0" layoutY="397.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
+      <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="421.0" layoutY="241.0" prefHeight="10.0" prefWidth="48.0" />
+      <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="718.0" layoutY="505.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: #FFD700;" text="Schedule Test" textFill="#661515" />
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="482.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="teacher ID">
          <font>
-            <Font name="Oriya Sangam MN" size="29.0" />
+            <Font size="20.0" />
          </font>
       </Label>
-      <Label id="labelTeacher" fx:id="labelTeacher" layoutX="445.0" layoutY="492.0" prefHeight="28.0" prefWidth="99.0" />
-      <TextField id="scheduleTime" fx:id="textFieldsubmission" layoutX="445.0" layoutY="298.0" prefHeight="10.0" prefWidth="48.0" />
+      <Label id="labelTeacher" fx:id="labelTeacher" layoutX="419.0" layoutY="483.0" prefHeight="28.0" prefWidth="99.0" />
+      <TextField id="scheduleTime" fx:id="textFieldsubmission" layoutX="421.0" layoutY="313.0" prefHeight="10.0" prefWidth="48.0" />
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="84.0" prefHeight="19.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Code">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField id="scheduleTime" fx:id="scheduleCode" layoutX="421.0" layoutY="86.0" prefHeight="10.0" prefWidth="48.0" />
     </children>
 </AnchorPane>

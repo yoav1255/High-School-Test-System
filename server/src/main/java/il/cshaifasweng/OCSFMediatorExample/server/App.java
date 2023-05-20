@@ -187,20 +187,20 @@ public class App
         for (int i = 0 ;i<scheduledTests.size()/3;i++){
             scheduledTests.get(i).setExamForm(examForms.get(0));
             scheduledTests.get(i).setTeacher(teachers.get(0));
-            examForms.get(0).addScheduledTest(scheduledTests.get(i));
-            teachers.get(0).addScheduledTest(scheduledTests.get(i));
+//            examForms.get(0).addScheduledTest(scheduledTests.get(i));
+//            teachers.get(0).addScheduledTest(scheduledTests.get(i));
         }
         for (int i = scheduledTests.size()/3 ;i<scheduledTests.size()*2/3;i++){
             scheduledTests.get(i).setExamForm(examForms.get(1));
             scheduledTests.get(i).setTeacher(teachers.get(1));
-            examForms.get(1).addScheduledTest(scheduledTests.get(i));
-            teachers.get(1).addScheduledTest(scheduledTests.get(i));
+//            examForms.get(1).addScheduledTest(scheduledTests.get(i));
+//            teachers.get(1).addScheduledTest(scheduledTests.get(i));
         }
         for (int i = scheduledTests.size()*2/3 ;i<scheduledTests.size();i++){
             scheduledTests.get(i).setExamForm(examForms.get(2));
             scheduledTests.get(i).setTeacher(teachers.get(2));
-            examForms.get(2).addScheduledTest(scheduledTests.get(i));
-            teachers.get(2).addScheduledTest(scheduledTests.get(i));
+//            examForms.get(2).addScheduledTest(scheduledTests.get(i));
+//            teachers.get(2).addScheduledTest(scheduledTests.get(i));
         }
 
 //Update Teachers

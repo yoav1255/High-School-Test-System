@@ -43,4 +43,12 @@ public class PrimaryController {
 			e.printStackTrace();
 		}
 	}
+	@FXML
+	void handleGoSheduledTest(ActionEvent event) {
+		try{
+		App.switchScreen("scheduledTest");
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	}
 }
