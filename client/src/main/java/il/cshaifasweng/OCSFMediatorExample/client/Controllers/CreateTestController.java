@@ -24,10 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CreateTestController {
 
@@ -56,6 +53,9 @@ public class CreateTestController {
     private TableColumn<Question, String> ans3;
     @FXML
     private TableColumn<Question, Integer> ansIndex;
+
+    @FXML
+    private TextField scoreUpdateTextField;
     @FXML
     private TableView<QuestionScore> Table_Chosen;
     @FXML
@@ -86,8 +86,8 @@ public class CreateTestController {
         ComboCourse.setDisable(true);
         Table_Questions.setDisable(true);
         questionScoreList = new ArrayList<>();
-        System.out.println("intialized");
     }
+
     @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
         List<Subject> subjects = event.getSubjects();
@@ -158,62 +158,129 @@ public class CreateTestController {
         }
     }
 
+    public void updateTables(){
+        qId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getQuestion().getId()));
+        qText.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getQuestion().getText()));
+        score.setCellValueFactory(new PropertyValueFactory<>("score"));
+
+        ObservableList<QuestionScore> questionScores = FXCollections.observableArrayList(questionScoreList);
+        Table_Chosen.setItems(questionScores);
+        Table_Chosen.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        Table_Chosen.refresh();
+    }
+
     @FXML
     private void addScore(ActionEvent event) {
         try {
             Platform.runLater(()->{
+                boolean validScore = true;
+                int score = 0;
                 Question selectedQuestion = Table_Questions.getSelectionModel().getSelectedItem();
-                if (selectedQuestion != null) {
-                    String scoreText = scoreTextField.getText();
+                String scoreText = scoreTextField.getText();
+                if (selectedQuestion!=null) {
                     if (!scoreText.isEmpty()) {
-                        int score = Integer.parseInt(scoreText);
-                        QuestionScore qs = new QuestionScore(score);
-                        qs.setQuestion(selectedQuestion);
-                        questionScoreList.add(qs);
-                        scoreTextField.clear();
+                        try {
+                            score = Integer.parseInt(scoreText);
+                            if(score<0 || score>100){
+                                labelMsg.setVisible(true);
+                                validScore=false;
+                                labelMsg.setText("Score not in range!");
+                            }
+                        }catch (NumberFormatException notNum){
+                            labelMsg.setVisible(true);
+                            validScore=false;
+                            labelMsg.setText("Invalid Score!");
+                        }
+                        if(validScore) {
+                            QuestionScore qs = new QuestionScore(score);
+                            qs.setQuestion(selectedQuestion);
+                            questionScoreList.add(qs);
+                            scoreTextField.clear();
+                        }
                     }
                 }
-                qId.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getQuestion().getId()));
-                qText.setCellValueFactory(data-> new SimpleStringProperty(data.getValue().getQuestion().getText()));
-                score.setCellValueFactory(new PropertyValueFactory<>("score"));
-
-                ObservableList<QuestionScore> questionScores = FXCollections.observableArrayList(questionScoreList);
-                Table_Chosen.setItems(questionScores);
-                Table_Chosen.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
+                updateTables();
             });
 
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+    @FXML
+    public void updateScore(ActionEvent event) {
+        try {
+            String scoreText = scoreUpdateTextField.getText();
+            Platform.runLater(() -> {
+                boolean validScore=true;
+                int score = 0;
+                QuestionScore selectedQuestionScore = Table_Chosen.getSelectionModel().getSelectedItem();
+                if (selectedQuestionScore != null) {
+                    if (!scoreText.isEmpty()) {
+                        try {
+                            score = Integer.parseInt(scoreText);
+                            if(score<0 || score>100){
+                                labelMsg.setVisible(true);
+                                labelMsg.setText("Score not in range!");
+                                validScore=false;
+                            }
+                        }catch (NumberFormatException notNum){
+                            validScore=false;
+                            labelMsg.setVisible(true);
+                            labelMsg.setText("Invalid Score!");
+                        }
+                        if(validScore) {
+                            questionScoreList.remove(selectedQuestionScore);
+                            selectedQuestionScore.setScore(score);
+                            questionScoreList.add(selectedQuestionScore);
+                            scoreTextField.clear();
+                        }
+                    }
+                }
+                updateTables();
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public void submitForm(ActionEvent event) {
         try {
-            int timeLim = Integer.parseInt(timeLimit.getText());
-            ExamCode = Integer.toString(cour.getCode()) + Integer.toString(sub.getCode()) + "45";
-            System.out.println(ExamCode);
-            ExamForm examForm = new ExamForm(ExamCode, timeLim);
-            examForm.setQuestionScores(questionScoreList);
-            examForm.setSubject(sub);
-            examForm.setCourse(cour);
-            SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
+            int timeLim = 0;
+            int sum = 0;
             labelMsg.setVisible(true);
-            labelMsg.setText("SUCCESS");
+            try {
+                timeLim = Integer.parseInt(timeLimit.getText());
+            }catch (NumberFormatException notNum){
+                labelMsg.setText("Time limit invalid!");
+            }
+            if(timeLim<=0 || timeLim>500)
+                labelMsg.setText("Time not allowed!");
+            else { // Time is valid
+                Random random = new Random();
+                int randomNumber = random.nextInt(999) + 1;//TODO change it
+                ExamCode = Integer.toString(cour.getCode()) + Integer.toString(sub.getCode()) + Integer.toString(randomNumber);//TODO handle code properly!
+                ExamForm examForm = new ExamForm(ExamCode, timeLim);
+                examForm.setQuestionScores(questionScoreList);
+                examForm.setSubject(sub);
+                examForm.setCourse(cour);
+                for(QuestionScore questionScore:questionScoreList){
+                    questionScore.setExamForm(examForm);
+                    sum+=questionScore.getScore();
+                }
+                if(sum!=100){
+                    labelMsg.setText("Grade must sum to 100!");
+                }
+                else {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
+                    labelMsg.setText("SUCCESS");
+
+                }
+            }
 
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-//    @Subscribe
-//    public void onSuccessEvent(ShowSuccessEvent event){
-//        String msg = event.getMsg();
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle("Success");
-//        alert.setHeaderText(null);
-//        alert.setContentText(msg);
-//        alert.showAndWait();
-//    }
-
 
     @FXML
     void handleBackButtonClick(ActionEvent event) {
@@ -238,6 +305,4 @@ public class CreateTestController {
             e.printStackTrace();
         }
     }
-
-
 }

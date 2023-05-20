@@ -82,7 +82,7 @@ public class App
         List<ScheduledTest> scheduledTests = ScheduledTest.GenerateScheduledTests();
         List<StudentTest> studentTests = StudentTest.GenerateStudentTests();
         List<Question> questions = Question.GenerateQuestions();
-        List<QuestionScore> questionScores = QuestionScore.generateQuestionScores();
+        //List<QuestionScore> questionScores = QuestionScore.generateQuestionScores();
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
@@ -121,25 +121,25 @@ public class App
         questions.get(7).setSubject(subjects.get(1));
         questions.get(7).setCourses(subjects.get(1).getCourses());
 
-        questionScores.get(0).setQuestion(questions.get(0));
-        questionScores.get(1).setQuestion(questions.get(1));
-        questionScores.get(2).setQuestion(questions.get(2));
-        questionScores.get(6).setQuestion(questions.get(6));
-
-        questionScores.get(3).setQuestion(questions.get(3));
-        questionScores.get(4).setQuestion(questions.get(4));
-        questionScores.get(5).setQuestion(questions.get(5));
-        questionScores.get(7).setQuestion(questions.get(7));
-
-        questions.get(0).addQuestionScore(questionScores.get(0));
-        questions.get(1).addQuestionScore(questionScores.get(1));
-        questions.get(2).addQuestionScore(questionScores.get(2));
-        questions.get(6).addQuestionScore(questionScores.get(6));
-
-        questions.get(3).addQuestionScore(questionScores.get(3));
-        questions.get(4).addQuestionScore(questionScores.get(4));
-        questions.get(5).addQuestionScore(questionScores.get(5));
-        questions.get(7).addQuestionScore(questionScores.get(7));
+//        questionScores.get(0).setQuestion(questions.get(0));
+//        questionScores.get(1).setQuestion(questions.get(1));
+//        questionScores.get(2).setQuestion(questions.get(2));
+//        questionScores.get(6).setQuestion(questions.get(6));
+//
+//        questionScores.get(3).setQuestion(questions.get(3));
+//        questionScores.get(4).setQuestion(questions.get(4));
+//        questionScores.get(5).setQuestion(questions.get(5));
+//        questionScores.get(7).setQuestion(questions.get(7));
+//
+//        questions.get(0).addQuestionScore(questionScores.get(0));
+//        questions.get(1).addQuestionScore(questionScores.get(1));
+//        questions.get(2).addQuestionScore(questionScores.get(2));
+//        questions.get(6).addQuestionScore(questionScores.get(6));
+//
+//        questions.get(3).addQuestionScore(questionScores.get(3));
+//        questions.get(4).addQuestionScore(questionScores.get(4));
+//        questions.get(5).addQuestionScore(questionScores.get(5));
+//        questions.get(7).addQuestionScore(questionScores.get(7));
 
         subjects.get(0).addQuestion(questions.get(0));
         subjects.get(0).addQuestion(questions.get(1));
@@ -239,8 +239,8 @@ public class App
             session.save(course);
         for (Question question: questions)
             session.save(question);
-        for(QuestionScore questionScore:questionScores)
-            session.save(questionScore);
+//        for(QuestionScore questionScore:questionScores)
+//            session.save(questionScore);
         for (ExamForm examForm:examForms)
             session.save(examForm);
         for (ScheduledTest scheduledTest:scheduledTests)
@@ -330,6 +330,18 @@ public class App
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.save(examForm);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+    public static void addQuestionScores(List<QuestionScore> questionScores) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(QuestionScore questionScore:questionScores){
+            session.save(questionScore);
+        }
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -385,7 +397,6 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
-
 
 
 

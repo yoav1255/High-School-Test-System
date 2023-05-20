@@ -10,7 +10,8 @@ import java.util.List;
 public class ExamForm implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    private String code; //TODO construct the code properly
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String code; //TODO handle code properly!!
     private int timeLimit;
     @ManyToOne
     @JoinColumn(name="course_id")
@@ -85,7 +86,7 @@ public class ExamForm implements Serializable {
         return subject.getName();
     }
     public String getExamFormCode(){
-        return code;
+        return (code + getCourse().getCode() + getSubject().getCode());
     }
 
     public static List<ExamForm> GenerateExamForms(){

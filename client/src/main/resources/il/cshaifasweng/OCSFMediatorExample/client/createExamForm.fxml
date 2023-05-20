@@ -125,9 +125,9 @@
                         <TableColumn fx:id="ansIndex" prefWidth="56.0" text="Answer" />
                     </columns>
                   </TableView>
-                  <TextField fx:id="scoreTextField" layoutX="494.0" layoutY="208.0" />
+                  <TextField fx:id="scoreTextField" layoutX="608.0" layoutY="208.0" prefHeight="25.0" prefWidth="35.0" />
                   <Button fx:id="addButton" layoutX="659.0" layoutY="208.0" mnemonicParsing="false" onAction="#addScore" text="ADD" />
-                  <TableView fx:id="Table_Chosen" layoutX="11.0" layoutY="236.0" prefHeight="123.0" prefWidth="298.0">
+                  <TableView fx:id="Table_Chosen" layoutX="11.0" layoutY="236.0" prefHeight="168.0" prefWidth="298.0">
                     <columns>
                         <TableColumn fx:id="qId" prefWidth="54.0" text="ID" />
                       <TableColumn fx:id="qText" prefWidth="195.0" text="Question" />
@@ -135,8 +135,10 @@
                     </columns>
                   </TableView>
                   <Label layoutX="14.0" layoutY="212.0" prefHeight="17.0" prefWidth="110.0" text="chosen questions" />
-                  <Button layoutX="331.0" layoutY="359.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
+                  <Button layoutX="643.0" layoutY="368.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
                   <Label fx:id="labelMsg" layoutX="502.0" layoutY="363.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+                  <TextField fx:id="scoreUpdateTextField" layoutX="322.0" layoutY="368.0" prefHeight="25.0" prefWidth="35.0" />
+                  <Button fx:id="updateButton" layoutX="365.0" layoutY="368.0" mnemonicParsing="false" onAction="#updateScore" text="Update" />
                </children>
             </AnchorPane>
             </children>
