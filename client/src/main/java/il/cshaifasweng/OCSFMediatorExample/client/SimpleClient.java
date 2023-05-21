@@ -39,7 +39,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 					break;
 				case ("updateSuccess"):
-					System.out.println("updated grade successfully!");
+					System.out.println("updated successfully!");
 					break;
 				case ("returnTeacher"):
 					break;

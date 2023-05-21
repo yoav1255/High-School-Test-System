@@ -2,7 +2,6 @@ package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 
-import java.util.List;
 
 public class ScheduledTestEvent {
     private ExamForm examForm;

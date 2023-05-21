@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+
 import java.util.List;
 
 public class ShowScheduleTestController {
@@ -84,8 +85,13 @@ public class ShowScheduleTestController {
         try {
             setScheduledTests(event.getScheduledTestList());
             id.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("id"));
-            date.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("date"));
-            time.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("time"));
+            date.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("date") );
+//            time.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("time"));
+            time.setCellValueFactory(cellData -> {
+                String formattedTime = cellData.getValue().getTime().toString();
+                formattedTime = formattedTime.substring(0, 5);
+                return new SimpleStringProperty(formattedTime);
+            });
             submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("submissions"));
             examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
                 @Override
@@ -93,7 +99,6 @@ public class ShowScheduleTestController {
                     return new SimpleStringProperty(param.getValue().getExamForm().getExamFormCode());
                 }
             });
-            teacherId.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("teacher_id"));
             teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
                 @Override
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
@@ -109,17 +114,18 @@ public class ShowScheduleTestController {
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-//        try {
-//            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
-//                ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
-//                if (selectedTest != null) {
-//                    SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTest",selectedTest));
-//                    App.switchScreen("ShowOneTest");
-//                }
-//            }
-//        }catch (IOException e){
-//            e.printStackTrace();
-       // }
+        try {
+            if (event.getClickCount() == 2&&scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
+                ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
+                if ("1".equals(selectedTest.getTeacher().getId())){
+                        System.out.println(selectedTest.getTeacher().getId());
+                        ScheduledTestController.updateSelectedRow(selectedTest);
+                        App.switchScreen("scheduledTest");
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML

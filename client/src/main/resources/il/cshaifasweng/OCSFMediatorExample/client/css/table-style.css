@@ -37,8 +37,8 @@
 
 }
 .table-row-cell:hover {
-    -fx-background-color: #ff0000;
-    -fx-text-background-color: #ff0000;
+    -fx-background-color: #cc0000;
+    -fx-text-background-color: #cc0000;
 }
 .table-row-cell:odd{
     -fx-background-color: #e8d18f;
