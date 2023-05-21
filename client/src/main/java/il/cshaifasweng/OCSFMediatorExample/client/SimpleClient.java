@@ -47,7 +47,13 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new loginEvent(login_auth));
 					break;
 				case ("studentHome"),("teacherHome"),("managerHome"):
+					System.out.println("in simple client "+ (String)message.getData());
 					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
+					break;
+				case ("returnIdToPage"):
+					String id = message.getData().toString();
+					System.out.println("in s.c return id to page " + id);
+					EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 					break;
 				case ("returnSubjects"):
 					List<Subject> subjects = (List<Subject>) message.getData();

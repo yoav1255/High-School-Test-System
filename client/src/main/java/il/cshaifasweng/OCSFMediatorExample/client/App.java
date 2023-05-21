@@ -106,6 +106,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showExamForms":
+                Platform.runLater(()->{
+                    setWindowTitle("Exam Forms");
+                    try {
+                        setContent("showExamForms");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "createExamForm":
                 Platform.runLater(()->{
                     setWindowTitle("Create Exam Form");

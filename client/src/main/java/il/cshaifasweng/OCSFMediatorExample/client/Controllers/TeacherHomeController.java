@@ -1,5 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
+import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.event.ActionEvent;
@@ -68,8 +71,15 @@ public class TeacherHomeController {
     }
 
     public void handleShowExamFormsButtonClick(ActionEvent event) {
-    }
 
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+            App.switchScreen("showExamForms");
+            cleanup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void handleShowScheduledTestsButtonClick(ActionEvent event) {
     }
 
