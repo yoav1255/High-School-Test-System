@@ -196,6 +196,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showAllQuestions":
+                Platform.runLater(()->{
+                    setWindowTitle("All Questions");
+                    try {
+                        setContent("showAllQuestions");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }

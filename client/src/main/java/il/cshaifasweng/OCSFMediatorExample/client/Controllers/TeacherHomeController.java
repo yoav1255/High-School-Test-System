@@ -63,14 +63,20 @@ public class TeacherHomeController {
 
     }
 
+    @FXML
     public void handleShowQuestionsButtonClick(ActionEvent event) {
-        try{
+        Platform.runLater(()-> {
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+            try {
+                App.switchScreen("showAllQuestions");
+                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
+    @FXML
     public void handleShowExamFormsButtonClick(ActionEvent event) {
         Platform.runLater(()->{
             try {
