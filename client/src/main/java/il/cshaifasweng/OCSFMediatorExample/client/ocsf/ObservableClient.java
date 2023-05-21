@@ -4,6 +4,8 @@
 
 package il.cshaifasweng.OCSFMediatorExample.client.ocsf;
 
+import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AdaptableClient;
+
 import java.util.*;
 import java.io.*;
 import java.net.*;

@@ -47,7 +47,7 @@ public class App extends Application {
         System.out.println("register successfully with client");
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("primary"), 956, 578);
+        scene = new Scene(loadFXML("login"), 574, 423);
         App.stage = stage;
         stage.setScene(scene);
         stage.show();
@@ -106,6 +106,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showExamForms":
+                Platform.runLater(()->{
+                    setWindowTitle("Exam Forms");
+                    try {
+                        setContent("showExamForms");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "createExamForm":
                 Platform.runLater(()->{
                     setWindowTitle("Create Exam Form");
@@ -116,11 +126,81 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "login":
+                Platform.runLater(()->{
+                    setWindowTitle("Login");
+                    try {
+                        setContent("login");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "studentHome":
+                Platform.runLater(()->{
+                    setWindowTitle("StudentHome");
+                    try {
+                        setContent("studentHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacherHome":
+                Platform.runLater(()->{
+                    setWindowTitle("TeacherHome");
+                    try {
+                        setContent("teacherHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "managerHome":
+                Platform.runLater(()->{
+                    setWindowTitle("ManagerHome");
+                    try {
+                        setContent("managerHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "scheduledTest":
+                Platform.runLater(()->{
+                    setWindowTitle("Schedule Test ");
+                    try {
+                        setContent("scheduledTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showScheduleTest":
+                Platform.runLater(()->{
+                    setWindowTitle("Schedule Test List ");
+                    try {
+                        setContent("showScheduleTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "createQuestion":
                 Platform.runLater(()->{
                     setWindowTitle("Create Question Form");
                     try {
                         setContent("createQuestion");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showAllQuestions":
+                Platform.runLater(()->{
+                    setWindowTitle("All Questions");
+                    try {
+                        setContent("showAllQuestions");
                     }catch (IOException e){
                         e.printStackTrace();
                     }

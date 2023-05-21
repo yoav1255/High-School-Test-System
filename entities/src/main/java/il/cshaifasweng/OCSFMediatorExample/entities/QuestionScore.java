@@ -24,7 +24,6 @@ public class QuestionScore implements Serializable {
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
-
     private int score;
     public QuestionScore(int score, ExamForm examForm, Question question) {
 
@@ -32,7 +31,11 @@ public class QuestionScore implements Serializable {
         this.examForm = examForm;
         this.question = question;
     }
-    public QuestionScore(int grade){ this.score = grade;}
+    public QuestionScore(int score, Question question){
+        this.score = score;
+        this.question = question;
+    }
+    public QuestionScore(int score){ this.score = score;}
     public QuestionScore(){}
 
     public int getId() {

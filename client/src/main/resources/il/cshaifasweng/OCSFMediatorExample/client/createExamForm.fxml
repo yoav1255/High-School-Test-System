@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.CreateTestController">
+    <children>
+        <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
+            <children>
+                <Pane prefHeight="83.0" prefWidth="214.0">
+                    <children>
+                        <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="34.0" />
+                            </font>
+                        </Label>
+                        <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </Pane>
+                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
+                    <graphic>
+                        <!--                        <FontAwesomeIconView glyphName="HOME" size="20" />-->
+                    </graphic>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                    <font>
+                        <Font name="Oriya Sangam MN" size="15.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="1.0" top="1.0" />
+                    </VBox.margin>
+                </Button>
+                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
+                    <graphic>
+                        <!--                        <FontAwesomeIconView glyphName="USERS" size="20" />-->
+                    </graphic>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                    <font>
+                        <Font name="Oriya Sangam MN" size="15.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="1.0" top="1.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
+        <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
+            <children>
+                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/students_list/student">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="13.0" />
+                    </font>
+                </Label>
+                <Button fx:id="backBN" layoutX="698.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="12.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <!--                <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
+            </children>
+        </Pane>
+        <GridPane fx:id="OneStudentGR" layoutX="231.0" layoutY="55.0" prefHeight="498.0" prefWidth="713.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="175.0" minHeight="10.0" prefHeight="53.20177459716797" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="40.79822540283203" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="408.647216796875" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0">
+               <children>
+                  <Label layoutX="-2.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose subject" />
+                  <ComboBox fx:id="ComboSubject" layoutX="86.0" layoutY="14.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="110.0" />
+                  <Label layoutX="213.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose course" />
+                  <ComboBox fx:id="ComboCourse" layoutX="295.0" layoutY="14.0" onAction="#onSelectCourse" prefHeight="25.0" prefWidth="124.0" />
+                  <Label layoutX="432.0" layoutY="18.0" prefHeight="17.0" prefWidth="71.0" text="time limit" />
+                  <TextField fx:id="timeLimit" layoutX="499.0" layoutY="10.0" />
+               </children></Pane>
+                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+               <children>
+                  <Label layoutX="298.0" layoutY="9.0" prefHeight="17.0" prefWidth="110.0" text="choose questions" />
+                  <Label layoutX="143.0" layoutY="30.0" prefHeight="17.0" prefWidth="473.0" text="click on a question and write the maximum score for the question and then press ADD" />
+               </children></Pane>
+            <AnchorPane prefHeight="444.0" prefWidth="713.0" GridPane.rowIndex="2">
+               <children>
+                  <TableView fx:id="Table_Questions" layoutX="11.0" layoutY="14.0" prefHeight="189.0" prefWidth="691.0">
+                    <columns>
+                      <TableColumn fx:id="id" prefWidth="46.0" text="ID" />
+                      <TableColumn fx:id="text" prefWidth="243.0" text="Question" />
+                        <TableColumn fx:id="ans0" prefWidth="67.0" text="1" />
+                        <TableColumn fx:id="ans1" prefWidth="70.0" text="2" />
+                        <TableColumn fx:id="ans2" prefWidth="86.0" text="3" />
+                        <TableColumn fx:id="ans3" minWidth="0.0" prefWidth="69.0" text="4" />
+                        <TableColumn fx:id="ansIndex" prefWidth="56.0" text="Answer" />
+                    </columns>
+                  </TableView>
+                  <TextField fx:id="scoreTextField" layoutX="608.0" layoutY="208.0" prefHeight="25.0" prefWidth="35.0" />
+                  <Button fx:id="addButton" layoutX="659.0" layoutY="208.0" mnemonicParsing="false" onAction="#addScore" text="ADD" />
+                  <TableView fx:id="Table_Chosen" layoutX="11.0" layoutY="236.0" prefHeight="168.0" prefWidth="298.0">
+                    <columns>
+                        <TableColumn fx:id="qId" prefWidth="54.0" text="ID" />
+                      <TableColumn fx:id="qText" prefWidth="195.0" text="Question" />
+                      <TableColumn fx:id="score" prefWidth="48.0" text="Score" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="14.0" layoutY="212.0" prefHeight="17.0" prefWidth="110.0" text="chosen questions" />
+                  <Button layoutX="643.0" layoutY="368.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
+                  <Label fx:id="labelMsg" layoutX="502.0" layoutY="363.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+                  <TextField fx:id="scoreUpdateTextField" layoutX="322.0" layoutY="368.0" prefHeight="25.0" prefWidth="35.0" />
+                  <Button fx:id="updateButton" layoutX="365.0" layoutY="368.0" mnemonicParsing="false" onAction="#updateScore" text="Update" />
+               </children>
+            </AnchorPane>
+            </children>
+        </GridPane>
+    </children>
+</AnchorPane>

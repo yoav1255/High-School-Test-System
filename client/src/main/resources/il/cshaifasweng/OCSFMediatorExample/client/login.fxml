@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="423.0" prefWidth="574.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.loginController">
+    <children>
+        <Pane prefHeight="423.0" prefWidth="173.0" style="-fx-background-color: #ffab2e;">
+            <children>
+                <Pane layoutX="-12.0" layoutY="58.0" prefHeight="104.0" prefWidth="198.0">
+                    <children>
+                        <Label alignment="BASELINE_CENTER" layoutX="18.0" layoutY="2.0" prefHeight="55.0" prefWidth="161.0" text="MOYAM">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="31.0" />
+                            </font>
+                        </Label>
+                        <Label ellipsisString="" layoutX="30.0" layoutY="46.0" prefHeight="25.0" prefWidth="149.0" text="School Test System" textAlignment="CENTER">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="14.0" />
+                            </font>
+                        </Label>
+                        <Pane layoutX="31.0" layoutY="46.0" prefHeight="2.0" prefWidth="135.0" style="-fx-background-color: black;" />
+                    </children>
+                </Pane>
+            </children>
+        </Pane>
+        <Pane layoutX="172.0" layoutY="-1.0" prefHeight="423.0" prefWidth="402.0" style="-fx-background-color: white;">
+            <children>
+                <Label layoutX="110.0" layoutY="129.0" text="User ID :">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="14.0" />
+                    </font>
+                </Label>
+                <Label layoutX="96.0" layoutY="171.0" text="Password :">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="14.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="user_id" layoutX="179.0" layoutY="124.0" prefHeight="30.0" prefWidth="134.0" promptText="id">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="13.0" />
+                    </font>
+                </TextField>
+                <PasswordField fx:id="user_password" layoutX="179.0" layoutY="167.0" prefHeight="30.0" prefWidth="134.0" promptText="password">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="13.0" />
+                    </font>
+                </PasswordField>
+                <Label fx:id="error_msg" alignment="CENTER" layoutX="74.0" layoutY="273.0" prefHeight="17.0" prefWidth="264.0" text="wrong id/password, please try again!" textFill="#e11111">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="13.0" />
+                    </font>
+                </Label>
+                <Button fx:id="loginBN" graphicTextGap="0.0" layoutX="105.0" layoutY="313.0" mnemonicParsing="false" onAction="#loginButton" prefHeight="34.0" prefWidth="219.0" style="-fx-background-color: #ffab2e; -fx-background-radius: 10; -fx-border-color: BLACK; -fx-border-radius: 10; -fx-text-alignment: center;" text="L O G I N">
+                    <font>
+                        <Font name="Arial Rounded MT Bold" size="17.0" />
+                    </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <effect>
+                  <DropShadow blurType="ONE_PASS_BOX" height="32.79" offsetX="2.0" radius="10.7375" width="12.16">
+                     <color>
+                        <Color opacity="0.3537285029888153" />
+                     </color>
+                  </DropShadow>
+               </effect>
+                </Button>
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>

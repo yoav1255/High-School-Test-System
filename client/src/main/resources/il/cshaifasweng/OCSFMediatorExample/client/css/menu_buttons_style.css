@@ -14,6 +14,6 @@
     -fx-background-radius: 15;
     -fx-border-radius: 15;
     -fx-padding: 0 0 0 20;
-    -fx-alignment: left-center;
+    /*-fx-alignment: left-center;*/
     -fx-cursor: hand;
 }

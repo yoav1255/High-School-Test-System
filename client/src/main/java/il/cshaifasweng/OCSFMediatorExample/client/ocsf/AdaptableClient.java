@@ -4,10 +4,6 @@
 
 package il.cshaifasweng.OCSFMediatorExample.client.ocsf;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
 /**
 * The <code> AdaptableClient </code> is a class
 * that extends the <code> AbstractClient </code> in place of

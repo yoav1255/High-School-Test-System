@@ -104,13 +104,16 @@ select * from teacher;
 select * from examform;
 select * from scheduledtest;
 select * from student;
-select * from studenttest;examformexamform
+select * from studenttest;
 select * from subject;
 select * from teacher_course;
 select * from teachers_subjects;
 select * from question;
 select * from question_examforms;
 
+
+delete from examform where code = "1145";
+delete from examform where code = "2145";
 
 
 SET SQL_SAFE_UPDATES = 0;
