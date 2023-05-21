@@ -369,8 +369,6 @@ public class App
 
     public static void addQuestion(Question question){
 
-        System.out.println("app addQuestion");
-        System.out.println(question.getAnswer0());
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();

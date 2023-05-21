@@ -60,7 +60,6 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnQuestions",questions));
 					break;
 				case ("#addQuestion"):
-					System.out.println("server - addQuestion");
 					Question question = (Question)message.getData();
 					App.addQuestion(question);
 					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
