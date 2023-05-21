@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.greenrobot.eventbus.EventBus;
@@ -17,9 +18,18 @@ public class ShowExamFormsController {
     public ShowExamFormsController(){
 
         EventBus.getDefault().register(this);
+        this.id = "check";
+        System.out.println("in constructor");
     }
-    public void cleanup() {
-        EventBus.getDefault().unregister(this);
+//    public void cleanup() {
+//        EventBus.getDefault().unregister(this);
+//    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getId(){
+        return id;
     }
 
     public void handleGoHomeButtonClick(ActionEvent event) {
@@ -28,19 +38,20 @@ public class ShowExamFormsController {
     @Subscribe
     @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
-        id = event.getId();
-        System.out.println("in show exam forms control on event "+ id);
+        setId(event.getId());
     }
 
+    @FXML
     public void handleAddExamForm(ActionEvent event) {
-        try {
-            System.out.println("handle add exam form "+id);
-            App.switchScreen("createExamForm");
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
-            // TODO : send online teacher's id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            Platform.runLater(()->{
+            try {
+                App.switchScreen("createExamForm");
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
+                // TODO : send online teacher's id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
+    }
 }

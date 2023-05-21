@@ -77,9 +77,9 @@ public class CreateTestController {
 
 
     public CreateTestController(){ EventBus.getDefault().register(this); }
-    public void cleanup() {
-        EventBus.getDefault().unregister(this);
-    }
+//    public void cleanup() {
+//        EventBus.getDefault().unregister(this);
+//    }
 
     @FXML
     void initialize(){
@@ -98,6 +98,7 @@ public class CreateTestController {
         ComboSubject.setItems(items);
     }
 
+    @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
             String subjectName = ComboSubject.getValue();
@@ -121,6 +122,7 @@ public class CreateTestController {
         }
         ComboCourse.setItems(items);
     }
+    @FXML
     public void onSelectCourse(ActionEvent event) {
         try {
             String courseName = ComboCourse.getValue();
@@ -245,6 +247,7 @@ public class CreateTestController {
             e.printStackTrace();
         }
     }
+    @FXML
     public void submitForm(ActionEvent event) {
         try {
             int timeLim = 0;
@@ -276,7 +279,6 @@ public class CreateTestController {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
                     labelMsg.setText("SUCCESS");
-
                 }
             }
 

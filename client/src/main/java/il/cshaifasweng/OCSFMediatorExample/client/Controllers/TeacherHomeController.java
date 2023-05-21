@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,9 +33,9 @@ public class TeacherHomeController {
         EventBus.getDefault().register(this);
     }
 
-    public void cleanup() {
-        EventBus.getDefault().unregister(this);
-    }
+//    public void cleanup() {
+//        EventBus.getDefault().unregister(this);
+//    }
 
     public void setId(String id){this.id = id;}
 
@@ -71,15 +72,14 @@ public class TeacherHomeController {
     }
 
     public void handleShowExamFormsButtonClick(ActionEvent event) {
-
-        try {
-            System.out.println("in btn click "+id);
-            App.switchScreen("showExamForms");
-            SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
-            //cleanup();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Platform.runLater(()->{
+            try {
+                App.switchScreen("showExamForms");
+                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
     public void handleShowScheduledTestsButtonClick(ActionEvent event) {
     }

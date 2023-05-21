@@ -34,9 +34,9 @@ public class loginController {
     public loginController(){
         EventBus.getDefault().register(this);
     }
-    public void cleanup() {
-        EventBus.getDefault().unregister(this);
-    }
+//    public void cleanup() {
+//        EventBus.getDefault().unregister(this);
+//    }
 
     private String user_type;
     private void setUserType(String user_type){this.user_type = user_type;}
@@ -60,7 +60,7 @@ public class loginController {
             case ("student"):
                 SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", user_id.getText()));
                 App.switchScreen("studentHome");
-                cleanup();
+//                cleanup();
                 break;
             case ("teacher"):
                 SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
