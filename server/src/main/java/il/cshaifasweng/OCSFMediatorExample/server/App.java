@@ -38,7 +38,8 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+            //generateObjects();
+
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception){
@@ -461,6 +462,7 @@ public class App
         return studentTestToReturn;
     }
 
+
     public static void updateStudentGrade(StudentTest stud){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -520,6 +522,27 @@ public class App
         return userType;
     }
 
+    public static void addQuestion(Question question){
+
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.save(question);
+/*        Subject subject = question.getSubject();
+        subject.addQuestion(question);*//*
+        List<Course> courses= question.getCourses();
+        for(Course course:courses){
+            course.addQuestion(question);
+            session.saveOrUpdate(course);
+        }
+        session.saveOrUpdate(subject);*/
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+
+    }
+
     public static void updateScheduleTest(ScheduledTest scheduledTest) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -533,5 +556,6 @@ public class App
         session.close();
         System.out.println(scheduledTest);
     }
+
 
 }

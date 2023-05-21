@@ -68,8 +68,6 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnIdToPage",message.getData()));
 					break;
 				case ("#getSubjects"):
-					System.out.println(" here ");
-					System.out.println("in #get subjects simple server" + message.getData().toString());
 					List<Subject> subjects = App.getSubjectsFromTeacherId(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnSubjects",subjects));
 					break;
@@ -77,10 +75,14 @@ public class SimpleServer extends AbstractServer {
 					List<Course> courses = App.getCoursesFromSubjectName(message.getData().toString());
 					System.out.println(courses.get(0).getName());
 					client.sendToClient(new CustomMessage("returnCourses",courses));
-					break;
 				case ("#getQuestions"):
 					List<Question> questions = App.getQuestionsFromCourseName(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnQuestions",questions));
+					break;
+				case ("#addQuestion"):
+					Question question = (Question)message.getData();
+					App.addQuestion(question);
+					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
 					break;
 				case ("#getCourseFromName"):
 					Course course =App.getCourseFromCourseName(message.getData().toString());
