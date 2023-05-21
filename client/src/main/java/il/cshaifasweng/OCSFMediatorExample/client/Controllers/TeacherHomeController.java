@@ -73,9 +73,10 @@ public class TeacherHomeController {
     public void handleShowExamFormsButtonClick(ActionEvent event) {
 
         try {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+            System.out.println("in btn click "+id);
             App.switchScreen("showExamForms");
-            cleanup();
+            SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+            //cleanup();
         } catch (Exception e) {
             e.printStackTrace();
         }

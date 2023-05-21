@@ -17,8 +17,11 @@ public class ShowExamFormsController {
     public ShowExamFormsController(){
 
         EventBus.getDefault().register(this);
-        System.out.println(" in constructor ");
     }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
+
     public void handleGoHomeButtonClick(ActionEvent event) {
     }
 
@@ -26,15 +29,15 @@ public class ShowExamFormsController {
     @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         id = event.getId();
-        System.out.println("in show exam forms control on event"+ id);
+        System.out.println("in show exam forms control on event "+ id);
     }
 
-    public void handleAddExamForm(ActionEvent event) throws IOException {
+    public void handleAddExamForm(ActionEvent event) {
         try {
             System.out.println("handle add exam form "+id);
+            App.switchScreen("createExamForm");
             SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
             // TODO : send online teacher's id);
-            App.switchScreen("createExamForm");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -64,8 +64,9 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("managerHome", message.getData()));
 					break;
 				case ("#SendIdToExamForms"):
-					System.out.println("In simple server send id to exam forms "+message.getData().toString());
-					client.sendToClient(new CustomMessage("returnIdToPage",message.getData().toString()));
+					System.out.println("In simple server send id to exam forms "+message.getData());
+					client.sendToClient(new CustomMessage("returnIdToPage",message.getData()));
+					break;
 				case ("#getSubjects"):
 					System.out.println(" here ");
 					System.out.println("in #get subjects simple server" + message.getData().toString());

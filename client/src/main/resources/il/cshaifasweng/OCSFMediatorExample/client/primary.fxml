@@ -64,7 +64,7 @@
                   <Insets bottom="1.0" top="1.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#handleCreateTestButtonClick" prefHeight="48.0" prefWidth="216.0" text="Create new Test" />
+            <Button mnemonicParsing="false"  prefHeight="48.0" prefWidth="216.0" text="Create new Test" />
          </children>
       </VBox>
       <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">

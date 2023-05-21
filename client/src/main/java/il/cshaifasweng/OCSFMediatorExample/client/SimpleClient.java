@@ -56,6 +56,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 					break;
 				case ("returnSubjects"):
+					System.out.println("in s.c return subjects");
 					List<Subject> subjects = (List<Subject>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherSubjectsEvent(subjects));
 					break;

@@ -89,6 +89,7 @@ public class CreateTestController {
 
     @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
+        System.out.println("on show subjects event in create test");
         List<Subject> subjects = event.getSubjects();
         ObservableList<String> items = FXCollections.observableArrayList();
         for(Subject subject:subjects){
