@@ -12,7 +12,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.javatuples.Tuple;
 
 
 /**
@@ -350,40 +349,61 @@ public class App
         return studentTestToReturn;
     }
 
-    public static void updateStudentGrade(StudentTest stud, int newGrade){ //Method checked
+    public static void updateStudentGrade(StudentTest stud){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("UPDATE StudentTest SET grade = :newGrade WHERE id = :id");
-        query.setParameter("newGrade", newGrade);
+        query.setParameter("newGrade", stud.getGrade());
         query.setParameter("id", stud.getId());
         int updatedCount = query.executeUpdate();
         session.getTransaction().commit();
         session.close();
     }
 
-    public static void login_auth(String username, String enteredPassword){
+    public static String login_auth(String username, String password){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        String query = "SELECT password FROM Students WHERE username = :username";
-        String passwords = session.createNativeQuery(query)
-                .setParameter("username", username)
-                .getResultList().toString();
 
-        if (!passwords.isEmpty()) {
-            // Check if the entered password matches the stored password
-            if (enteredPassword.equals(passwords)) {
-                // Password is correct
-                System.out.println("Login successful!");
-            } else {
-                // Incorrect password
-                System.out.println("Incorrect password!");
-            }
-        } else {
-            // Username does not exist
-            System.out.println("Username does not exist!");
+// Check in the student table
+        String studentQuery = "SELECT 'student' as type FROM Student WHERE id = :username AND password = :password";
+        List<String> studentResults = session.createNativeQuery(studentQuery)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+// Check in the manager table
+        String managerQuery = "SELECT 'manager' as type FROM principal WHERE id = :username AND password = :password";
+        List<String> managerResults = session.createNativeQuery(managerQuery)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+// Check in the teacher table
+        String teacherQuery = "SELECT 'teacher' as type FROM Teacher WHERE id = :username AND password = :password";
+        List<String> teacherResults = session.createNativeQuery(teacherQuery)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+// Combine the results and determine the user type
+        String userType = null;
+
+        if (!studentResults.isEmpty()) {
+            userType = studentResults.get(0);
+        } else if (!managerResults.isEmpty()) {
+            userType = managerResults.get(0);
+        } else if (!teacherResults.isEmpty()) {
+            userType = teacherResults.get(0);
         }
+
+        if (userType != null) {
+            // User exists, userType contains the user type
+            System.out.format("%s %s connecting to system", userType, username);
+        }
+        if(userType == null){userType = "wrong";}
+        return userType;
     }
 
 

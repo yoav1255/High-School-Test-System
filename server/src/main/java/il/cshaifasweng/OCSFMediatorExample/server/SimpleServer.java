@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import com.mysql.cj.xdevapi.Client;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
@@ -9,6 +10,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleServer extends AbstractServer {
@@ -51,15 +53,24 @@ public class SimpleServer extends AbstractServer {
 					Teacher teacher = App.getTeacherFromId(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnTeacher",teacher));
 					break;
+				case ("#login"):
+					ArrayList<String> auth = (ArrayList<String>) message.getData();
+					String user_type = App.login_auth(auth.get(0), auth.get(1));
+					client.sendToClient(new CustomMessage("returnLogin", user_type));
+					break;
+				case ("#studentHome"):
+					client.sendToClient(new CustomMessage("studentHome", message.getData()));
+					break;
+				case ("#teacherHome"):
+					client.sendToClient(new CustomMessage("teacherHome", message.getData()));
+					break;
+				case ("#managerHome"):
+					client.sendToClient(new CustomMessage("managerHome", message.getData()));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		switch(msgString){
-			case("login_info"):
-
-		}
-
 	}
 
 }

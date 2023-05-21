@@ -1,14 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowUpdateStudentController;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStudentsEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowUpdateStudentEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.WarningEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
+
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
-import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
@@ -49,6 +45,13 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("returnTeacher"):
 
+					break;
+				case ("returnLogin"):
+					String login_auth = (String) message.getData();
+					EventBus.getDefault().post(new loginEvent(login_auth));
+					break;
+				case ("studentHome"),("teacherHome"),("managerHome"):
+					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
 					break;
 			}
 		}catch (Exception e){
