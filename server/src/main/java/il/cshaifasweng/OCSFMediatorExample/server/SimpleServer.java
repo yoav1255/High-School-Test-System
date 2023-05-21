@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import com.mysql.cj.xdevapi.Client;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
@@ -9,6 +10,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleServer extends AbstractServer {
@@ -47,6 +49,24 @@ public class SimpleServer extends AbstractServer {
 					App.updateStudentGrade(studentTest);
 					client.sendToClient(new CustomMessage("updateSuccess",""));
 					break;
+				case ("#getTeacher"):
+					Teacher teacher = App.getTeacherFromId(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnTeacher",teacher));
+					break;
+				case ("#login"):
+					ArrayList<String> auth = (ArrayList<String>) message.getData();
+					String user_type = App.login_auth(auth.get(0), auth.get(1));
+					client.sendToClient(new CustomMessage("returnLogin", user_type));
+					break;
+				case ("#studentHome"):
+					client.sendToClient(new CustomMessage("studentHome", message.getData()));
+					break;
+				case ("#teacherHome"):
+					client.sendToClient(new CustomMessage("teacherHome", message.getData()));
+					break;
+				case ("#managerHome"):
+					client.sendToClient(new CustomMessage("managerHome", message.getData()));
+					break;
 				case ("#getSubjects"):
 					List<Subject> subjects = App.getSubjectsFromTeacherId(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnSubjects",subjects));
@@ -72,7 +92,6 @@ public class SimpleServer extends AbstractServer {
 					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
 					App.addQuestionScores(questionScores);
 					break;
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

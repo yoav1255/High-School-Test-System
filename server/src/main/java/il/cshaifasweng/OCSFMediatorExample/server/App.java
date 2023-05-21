@@ -13,6 +13,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+
 /**
  * Hello world!
  *
@@ -33,7 +34,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-//           generateObjects();
+//            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -168,18 +169,15 @@ public class App
 
 //Update ExamForms
 
-
         examForms.get(0).setSubject(subjects.get(0));
         examForms.get(0).setCourse(courses.get(0));
         subjects.get(0).addExamForm(examForms.get(0));
         courses.get(0).addExamForm(examForms.get(0));
 
-
         examForms.get(1).setSubject(subjects.get(1));
         examForms.get(1).setCourse(courses.get(3));
         subjects.get(1).addExamForm(examForms.get(1));
         courses.get(3).addExamForm(examForms.get(1));
-
 
 //Update ScheduledTest
 
@@ -385,7 +383,6 @@ public class App
         return studentTestToReturn;
     }
 
-
     public static void updateStudentGrade(StudentTest stud){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -398,6 +395,49 @@ public class App
         session.close();
     }
 
+    public static String login_auth(String username, String password){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
 
+// Check in the student table
+        String studentQuery = "SELECT 'student' as type FROM Student WHERE id = :username AND password = :password";
+        List<String> studentResults = session.createNativeQuery(studentQuery)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+// Check in the manager table
+        String managerQuery = "SELECT 'manager' as type FROM principal WHERE id = :username AND password = :password";
+        List<String> managerResults = session.createNativeQuery(managerQuery)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+// Check in the teacher table
+        String teacherQuery = "SELECT 'teacher' as type FROM Teacher WHERE id = :username AND password = :password";
+        List<String> teacherResults = session.createNativeQuery(teacherQuery)
+                .setParameter("username", username)
+                .setParameter("password", password)
+                .getResultList();
+
+// Combine the results and determine the user type
+        String userType = null;
+
+        if (!studentResults.isEmpty()) {
+            userType = studentResults.get(0);
+        } else if (!managerResults.isEmpty()) {
+            userType = managerResults.get(0);
+        } else if (!teacherResults.isEmpty()) {
+            userType = teacherResults.get(0);
+        }
+
+        if (userType != null) {
+            // User exists, userType contains the user type
+            System.out.format("%s %s connecting to system", userType, username);
+        }
+        if(userType == null){userType = "wrong";}
+        return userType;
+    }
 
 }

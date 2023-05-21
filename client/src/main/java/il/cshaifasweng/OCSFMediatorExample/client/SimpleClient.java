@@ -42,6 +42,13 @@ public class SimpleClient extends AbstractClient {
 				case ("updateSuccess"):
 					System.out.println("updated grade successfully!");
 					break;
+				case ("returnLogin"):
+					String login_auth = (String) message.getData();
+					EventBus.getDefault().post(new loginEvent(login_auth));
+					break;
+				case ("studentHome"),("teacherHome"),("managerHome"):
+					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
+					break;
 				case ("returnSubjects"):
 					List<Subject> subjects = (List<Subject>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherSubjectsEvent(subjects));
@@ -63,7 +70,6 @@ public class SimpleClient extends AbstractClient {
 					System.out.println(examForm.getTimeLimit());
 					EventBus.getDefault().post(new ShowSuccessEvent("Successfully added "+examForm.getExamFormCode()));
 					break;
-
 			}
 		}catch (Exception e){
 			e.printStackTrace();

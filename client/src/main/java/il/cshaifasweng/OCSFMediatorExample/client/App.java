@@ -47,7 +47,7 @@ public class App extends Application {
         System.out.println("register successfully with client");
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("primary"), 956, 578);
+        scene = new Scene(loadFXML("login"), 574, 423);
         App.stage = stage;
         stage.setScene(scene);
         stage.show();
@@ -111,6 +111,46 @@ public class App extends Application {
                     setWindowTitle("Create Exam Form");
                     try {
                         setContent("createExamForm");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "login":
+                Platform.runLater(()->{
+                    setWindowTitle("Login");
+                    try {
+                        setContent("login");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "studentHome":
+                Platform.runLater(()->{
+                    setWindowTitle("StudentHome");
+                    try {
+                        setContent("studentHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacherHome":
+                Platform.runLater(()->{
+                    setWindowTitle("TeacherHome");
+                    try {
+                        setContent("teacherHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "managerHome":
+                Platform.runLater(()->{
+                    setWindowTitle("ManagerHome");
+                    try {
+                        setContent("managerHome");
                     }catch (IOException e){
                         e.printStackTrace();
                     }
