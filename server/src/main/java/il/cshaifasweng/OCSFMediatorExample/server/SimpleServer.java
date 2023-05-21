@@ -49,10 +49,6 @@ public class SimpleServer extends AbstractServer {
 					App.updateStudentGrade(studentTest);
 					client.sendToClient(new CustomMessage("updateSuccess",""));
 					break;
-				case ("#getTeacher"):
-					Teacher teacher = App.getTeacherFromId(message.getData().toString());
-					client.sendToClient(new CustomMessage("returnTeacher",teacher));
-					break;
 				case ("#login"):
 					ArrayList<String> auth = (ArrayList<String>) message.getData();
 					String user_type = App.login_auth(auth.get(0), auth.get(1));

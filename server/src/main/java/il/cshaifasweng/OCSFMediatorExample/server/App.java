@@ -437,6 +437,8 @@ public class App
             System.out.format("%s %s connecting to system", userType, username);
         }
         if(userType == null){userType = "wrong";}
+        session.getTransaction().commit();
+        session.close();
         return userType;
     }
 

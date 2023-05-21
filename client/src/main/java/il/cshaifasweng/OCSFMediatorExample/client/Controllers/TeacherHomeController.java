@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -58,4 +59,20 @@ public class TeacherHomeController {
 
     }
 
+    public void handleShowQuestionsButtonClick(ActionEvent event) {
+        try{
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void handleShowExamFormsButtonClick(ActionEvent event) {
+    }
+
+    public void handleShowScheduledTestsButtonClick(ActionEvent event) {
+    }
+
+    public void handleShowStatsButtonClick(ActionEvent event) {
+    }
 }
