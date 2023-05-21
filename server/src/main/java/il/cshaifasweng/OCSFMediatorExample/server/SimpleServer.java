@@ -94,6 +94,34 @@ public class SimpleServer extends AbstractServer {
 					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
 					App.addQuestionScores(questionScores);
 					break;
+				case ("#getTeacher"):
+					Teacher teacher = App.getTeacherFromId(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnTeacher", teacher));
+					break;
+				case ("#fillComboBox"):
+					List<String> examFormCode = App.getListExamFormCode();
+					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
+					client.sendToClient(new CustomMessage("sentExamFormCodeSuccess", ""));
+					break;
+				case ("#addScheduleTest"):
+					ScheduledTest scheduledTest = (ScheduledTest) message.getData();
+					App.addScheduleTest(scheduledTest);
+					client.sendToClient(new CustomMessage("addScheduleTestSuccess", ""));
+					break;
+				case ("#sendExamFormId"):
+					ExamForm examForm = App.getExamForm((message.getData().toString()));
+					client.sendToClient(new CustomMessage("returnExamForm", examForm));
+					break;
+
+				case ("#showScheduleTest"):
+					List<ScheduledTest> scheduledTests = App.getScheduledTests();
+					client.sendToClient(new CustomMessage("returnScheduledTestList", scheduledTests));
+					break;
+				case ("#updateScheduleTest"):
+					System.out.println("i got here");
+					App.updateScheduleTest( (ScheduledTest) message.getData());
+					client.sendToClient(new CustomMessage("updateSuccess", ""));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

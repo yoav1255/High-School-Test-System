@@ -166,6 +166,26 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "scheduledTest":
+                Platform.runLater(()->{
+                    setWindowTitle("Schedule Test ");
+                    try {
+                        setContent("scheduledTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showScheduleTest":
+                Platform.runLater(()->{
+                    setWindowTitle("Schedule Test List ");
+                    try {
+                        setContent("showScheduleTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     return loadFXML(screenName);
     }

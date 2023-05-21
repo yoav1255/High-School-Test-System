@@ -40,7 +40,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 					break;
 				case ("updateSuccess"):
-					System.out.println("updated grade successfully!");
+					System.out.println("updated successfully!");
 					break;
 				case ("returnLogin"):
 					String login_auth = (String) message.getData();
@@ -76,6 +76,21 @@ public class SimpleClient extends AbstractClient {
 					ExamForm examForm = (ExamForm) message.getData();
 					System.out.println(examForm.getTimeLimit());
 					EventBus.getDefault().post(new ShowSuccessEvent("Successfully added "+examForm.getExamFormCode()));
+					break;
+				case ("returnListCodes"):
+					List <String> examFormCode=(List<String>) message.getData();
+					EventBus.getDefault().post(new ExamFormEvent(examFormCode));
+					break;
+				case("addScheduleTestSuccess"):
+					System.out.println("added new schedule test successfuly!");
+					break;
+				case ("returnExamForm"):
+					ExamForm examForm=(ExamForm) message.getData();
+					EventBus.getDefault().post(new ScheduledTestEvent(examForm));
+					break;
+				case ("returnScheduledTestList"):
+					List<ScheduledTest> scheduledTests = (List<ScheduledTest>) message.getData();
+					EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
 					break;
 			}
 		}catch (Exception e){

@@ -1,9 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
+import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import org.hibernate.HibernateException;
@@ -35,7 +38,6 @@ public class App
             session.beginTransaction();
 
 //            generateObjects();
-
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception){
@@ -169,15 +171,18 @@ public class App
 
 //Update ExamForms
 
+
         examForms.get(0).setSubject(subjects.get(0));
         examForms.get(0).setCourse(courses.get(0));
         subjects.get(0).addExamForm(examForms.get(0));
         courses.get(0).addExamForm(examForms.get(0));
 
+
         examForms.get(1).setSubject(subjects.get(1));
         examForms.get(1).setCourse(courses.get(3));
         subjects.get(1).addExamForm(examForms.get(1));
         courses.get(3).addExamForm(examForms.get(1));
+
 
 //Update ScheduledTest
 
@@ -253,6 +258,19 @@ public class App
         session.flush();
     }
 
+    public static List<ScheduledTest> getScheduledTests() throws Exception{
+
+        List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT s FROM ScheduledTest s";
+        Query query = session.createQuery(queryString,ScheduledTest.class);
+        scheduledTests = query.getResultList();
+        //
+        session.close();
+        return scheduledTests;
+    }
     public static List<Student> getAllStudents() throws Exception{
 
         List<Student> students = new ArrayList<Student>();
@@ -267,6 +285,58 @@ public class App
         return students;
     }
 
+
+   public static Teacher getTeacher(){
+       // create a Criteria object for the Teacher class
+       Criteria criteria = session.createCriteria(Teacher.class);
+// set the first result to 0 (i.e., the first row)
+       criteria.setFirstResult(0);
+// set the maximum number of results to 1 (i.e., only one row)
+       criteria.setMaxResults(1);
+// execute the query and get the result
+       Teacher firstTeacher = (Teacher) criteria.uniqueResult();
+
+       return firstTeacher;
+   }
+
+    public static List<String> getListExamFormCode(){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Teacher firstTeacher = getTeacher();
+        org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
+        query.setParameterList("subjects", firstTeacher.getSubjects());
+        List<String> codes = query.getResultList();
+        session.getTransaction().commit();
+        session.close();
+        System.out.println(codes);
+        return codes;
+    }
+    public static ExamForm getExamForm(String examFormId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("enter");
+        Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId",ExamForm.class);
+        query.setParameter("examFormId",examFormId );
+        ExamForm examForm=(ExamForm) query.getSingleResult();
+        System.out.println(examForm.getExamFormCode());
+        session.getTransaction().commit();
+        session.close();
+        return examForm;
+    }
+    public static void addScheduleTest(ScheduledTest scheduledTest) throws Exception {
+            SessionFactory sessionFactory = getSessionFactory();
+            session=sessionFactory.openSession();
+            session.beginTransaction();
+            System.out.println(scheduledTest);
+            Teacher teacher=getTeacher();
+            scheduledTest.setTeacher(teacher);
+            session.save(scheduledTest);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println(scheduledTest);
+    }
     public static List<Subject> getSubjectsFromTeacherId(String id){
         List<Subject> subjects = new ArrayList<>();
         SessionFactory sessionFactory = getSessionFactory();
@@ -278,6 +348,13 @@ public class App
         subjects = query.getResultList();
         session.close();
         return subjects;
+    }
+    public static Teacher getTeacherFromId(String id){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        Teacher teacher = session.get(Teacher.class,id);
+        session.close();
+        return teacher;
     }
 
     public static List<Course> getCoursesFromSubjectName(String subjectName){
@@ -440,6 +517,20 @@ public class App
         session.getTransaction().commit();
         session.close();
         return userType;
+    }
+
+    public static void updateScheduleTest(ScheduledTest scheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("UPDATE ScheduledTest SET date = :newDate, time=:newTime,submissions=:newSubmission WHERE id = :newId");
+        query.setParameter("newDate", scheduledTest.getDate());
+        query.setParameter("newTime", scheduledTest.getTime());
+        query.setParameter("newSubmission", scheduledTest.getSubmissions());
+        query.setParameter("newId", scheduledTest.getId());
+        session.getTransaction().commit();
+        session.close();
+        System.out.println(scheduledTest);
     }
 
 }
