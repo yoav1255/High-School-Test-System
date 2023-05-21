@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,8 +72,11 @@ public class CreateQuestionController {
         comboAns.getItems().add("3");
         comboAns.getItems().add("4");
 
+
         courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
+
+
     }
 
     @Subscribe
@@ -163,6 +167,10 @@ public class CreateQuestionController {
                 .collect(Collectors.toList());
 
         myQuestion.setCourses(filteredCourses);
+
+        for (String a : courseNames){
+            System.out.println(a);
+        }
 
         Subject selectedSubject = null;
         String selectedName = comboSubject.getValue();

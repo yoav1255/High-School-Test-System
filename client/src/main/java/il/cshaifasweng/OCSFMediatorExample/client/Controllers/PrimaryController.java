@@ -40,7 +40,7 @@ public class PrimaryController {
 		try {
 			String teacherId = "1";
 			SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
-			// TODO : send online teacher's id);
+			// TODO : send online teacher's id;
 			App.switchScreen("createExamForm");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -52,7 +52,7 @@ public class PrimaryController {
 		try {
 			String teacherId = "1";
 			SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
-			// TODO : send online teacher's id);
+			// TODO : send online teacher's id;
 			App.switchScreen("createQuestion");
 		} catch (Exception e) {
 			e.printStackTrace();
