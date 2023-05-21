@@ -53,7 +53,6 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#getCourses"):
 					List<Course> courses = App.getCoursesFromSubjectName(message.getData().toString());
-					System.out.println(courses.get(0).getName());
 					client.sendToClient(new CustomMessage("returnCourses",courses));
 					break;
 				case ("#getQuestions"):
@@ -61,6 +60,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnQuestions",questions));
 					break;
 				case ("#addQuestion"):
+					System.out.println("server - addQuestion");
 					Question question = (Question)message.getData();
 					App.addQuestion(question);
 					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
