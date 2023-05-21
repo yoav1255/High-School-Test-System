@@ -114,6 +114,7 @@ public class CreateQuestionController {
         ObservableList<String> selectedItems = courseOptions.getSelectionModel().getSelectedItems();
         courseNames.clear();
         courseNames.addAll(selectedItems);
+        //TODO לתקן את הבחירה המרובה של הקורסים
     }
 
     @FXML
