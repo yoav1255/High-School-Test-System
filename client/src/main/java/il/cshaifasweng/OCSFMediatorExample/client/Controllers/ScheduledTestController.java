@@ -10,6 +10,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.Events.ExamFormEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ScheduledTestEvent;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -177,26 +178,29 @@ public class ScheduledTestController {
 
     @FXML
     void sendSchedule(ActionEvent event) {
-        boolean valid = validateSchesuledForm();
-        if (valid) {
-            int day = dataTimescheduleDate.getValue().getDayOfMonth();
-            int month = dataTimescheduleDate.getValue().getMonth().getValue();
-            int year = dataTimescheduleDate.getValue().getYear();
-            String time = scheduleTime.getText();
-            ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), new Date(year, month, day), new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
-            scheduledTest.setExamForm(examForm);
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest", scheduledTest));
-                Alert success = new Alert(Alert.AlertType.INFORMATION);
-                success.setHeaderText("Success");
-                success.setContentText("added new schedule test Succeed");
-                success.show();
-                il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
-                cleanup();
-            } catch (IOException e) {
-                e.printStackTrace();
+        Platform.runLater(()->{
+            boolean valid = validateSchesuledForm();
+            if (valid) {
+                int day = dataTimescheduleDate.getValue().getDayOfMonth();
+                int month = dataTimescheduleDate.getValue().getMonth().getValue();
+                int year = dataTimescheduleDate.getValue().getYear();
+                String time = scheduleTime.getText();
+                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), new Date(year, month, day), new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
+                scheduledTest.setExamForm(examForm);
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest", scheduledTest));
+                    Alert success = new Alert(Alert.AlertType.INFORMATION);
+                    success.setHeaderText("Success");
+                    success.setContentText("added new schedule test Succeed");
+                    success.show();
+                    il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+                    cleanup();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        });
+
     }
 
 
