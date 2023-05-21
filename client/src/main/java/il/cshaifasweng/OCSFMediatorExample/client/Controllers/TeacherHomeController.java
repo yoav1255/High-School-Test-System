@@ -81,7 +81,16 @@ public class TeacherHomeController {
             }
         });
     }
+    @FXML
     public void handleShowScheduledTestsButtonClick(ActionEvent event) {
+        Platform.runLater(()->{
+            try{
+                App.switchScreen("showScheduleTest");
+                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
     }
 
     public void handleShowStatsButtonClick(ActionEvent event) {

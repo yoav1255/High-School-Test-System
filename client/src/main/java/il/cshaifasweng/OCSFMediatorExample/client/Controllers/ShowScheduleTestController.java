@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -155,6 +156,16 @@ public class ShowScheduleTestController {
         }
     }
 
+    @FXML
+    public void goToScheduleNewTest(ActionEvent event) {
+        Platform.runLater(()->{
+            try {
+                App.switchScreen("scheduledTest");
+            }catch (Exception e){
+
+            }
+        });
+    }
 }
 
 

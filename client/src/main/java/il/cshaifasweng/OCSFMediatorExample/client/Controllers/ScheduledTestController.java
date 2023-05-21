@@ -11,6 +11,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ExamFormEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ScheduledTestEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -68,6 +69,15 @@ public class ScheduledTestController {
 
     @FXML
     private TextField scheduleCode;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public ScheduledTestController() {
         EventBus.getDefault().register(this);
@@ -81,6 +91,11 @@ public class ScheduledTestController {
             instance = new ScheduledTestController();
         }
         return instance;
+    }
+    @Subscribe
+    @FXML
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        setId(event.getId());
     }
 
     @FXML

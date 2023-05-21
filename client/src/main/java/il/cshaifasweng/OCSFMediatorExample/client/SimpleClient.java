@@ -85,8 +85,8 @@ public class SimpleClient extends AbstractClient {
 					System.out.println("added new schedule test successfuly!");
 					break;
 				case ("returnExamForm"):
-					ExamForm examForm=(ExamForm) message.getData();
-					EventBus.getDefault().post(new ScheduledTestEvent(examForm));
+					ExamForm examForm1=(ExamForm) message.getData();
+					EventBus.getDefault().post(new ScheduledTestEvent(examForm1));
 					break;
 				case ("returnScheduledTestList"):
 					List<ScheduledTest> scheduledTests = (List<ScheduledTest>) message.getData();
