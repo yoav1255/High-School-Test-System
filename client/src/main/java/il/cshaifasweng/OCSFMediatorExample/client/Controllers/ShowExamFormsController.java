@@ -45,6 +45,7 @@ public class ShowExamFormsController {
     public void handleAddExamForm(ActionEvent event) {
             Platform.runLater(()->{
             try {
+                System.out.println("btn to add exam form "+ id);
                 App.switchScreen("createExamForm");
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
                 // TODO : send online teacher's id);
