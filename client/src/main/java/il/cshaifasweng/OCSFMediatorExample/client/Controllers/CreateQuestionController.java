@@ -181,7 +181,6 @@ public class CreateQuestionController {
     }
     @Subscribe
     public void onQuestionAddedEvent(QuestionAddedEvent event) {
-        System.out.println("createquest - QuestionAddedEvent");
         try {
             App.switchScreen("primary");
         } catch (Exception e) {

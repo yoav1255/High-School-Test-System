@@ -376,14 +376,14 @@ public class App
         session.beginTransaction();
 
         session.save(question);
-        Subject subject = question.getSubject();
-        subject.addQuestion(question);
+/*        Subject subject = question.getSubject();
+        subject.addQuestion(question);*//*
         List<Course> courses= question.getCourses();
         for(Course course:courses){
             course.addQuestion(question);
             session.saveOrUpdate(course);
         }
-        session.saveOrUpdate(subject);
+        session.saveOrUpdate(subject);*/
         session.flush();
         session.getTransaction().commit();
         session.close();
