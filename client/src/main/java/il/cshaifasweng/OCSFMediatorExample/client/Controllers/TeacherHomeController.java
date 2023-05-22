@@ -69,7 +69,7 @@ public class TeacherHomeController {
 
             try {
                 App.switchScreen("showAllQuestions");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
             } catch (Exception e) {
                 e.printStackTrace();
             }

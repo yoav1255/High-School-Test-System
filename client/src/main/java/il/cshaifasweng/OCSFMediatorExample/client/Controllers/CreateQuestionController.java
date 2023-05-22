@@ -63,19 +63,18 @@ public class CreateQuestionController {
         Platform.runLater(() -> {
             courseOptions.setVisible(false);
             courseOptions.getItems().clear();
+
+            confirmBN.setDisable(true);
+            courseOptions.setDisable(true);
+            comboAns.getItems().add("1");
+            comboAns.getItems().add("2");
+            comboAns.getItems().add("3");
+            comboAns.getItems().add("4");
+
+            courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
+
         });
-
-        confirmBN.setDisable(true);
-        courseOptions.setDisable(true);
-        comboAns.getItems().add("1");
-        comboAns.getItems().add("2");
-        comboAns.getItems().add("3");
-        comboAns.getItems().add("4");
-
-
-        courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
-
 
     }
 
