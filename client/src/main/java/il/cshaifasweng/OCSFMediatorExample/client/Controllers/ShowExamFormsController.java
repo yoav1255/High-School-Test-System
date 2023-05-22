@@ -10,20 +10,24 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 
 public class ShowExamFormsController {
-    private String id;
+    private String id ;
+    private static int instances = 0;
     public ShowExamFormsController(){
 
         EventBus.getDefault().register(this);
-        this.id = "check";
-        System.out.println("in constructor");
+        instances++;
+        System.out.println("in exam forms "+instances);
     }
-//    public void cleanup() {
-//        EventBus.getDefault().unregister(this);
-//    }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+        instances--;
+        System.out.println("in exam forms "+instances);
+    }
 
     public void setId(String id) {
         this.id = id;
@@ -33,9 +37,18 @@ public class ShowExamFormsController {
     }
 
     public void handleGoHomeButtonClick(ActionEvent event) {
+        try{
+            String teacherId = this.id;
+            System.out.println("go home "+teacherId);
+            App.switchScreen("teacherHome");
+            //SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome",teacherId));
+            cleanup();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN )
     @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         setId(event.getId());
@@ -43,16 +56,24 @@ public class ShowExamFormsController {
 
     @FXML
     public void handleAddExamForm(ActionEvent event) {
-            Platform.runLater(()->{
+        Platform.runLater(()->{
             try {
-                System.out.println("btn to add exam form "+ id);
+                String teacherId = this.id;
+                System.out.println("btn to add exam form "+ teacherId);
                 App.switchScreen("createExamForm");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
                 // TODO : send online teacher's id);
+                cleanup();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
 
+    }
+@FXML
+    public void onSelectSubject(ActionEvent event) {
+    }
+@FXML
+    public void onSelectCourse(ActionEvent event) {
     }
 }

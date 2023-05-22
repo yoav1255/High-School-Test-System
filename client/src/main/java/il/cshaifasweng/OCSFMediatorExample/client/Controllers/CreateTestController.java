@@ -22,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.*;
@@ -77,9 +78,9 @@ public class CreateTestController {
 
 
     public CreateTestController(){ EventBus.getDefault().register(this); }
-//    public void cleanup() {
-//        EventBus.getDefault().unregister(this);
-//    }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
 
     @FXML
     void initialize(){
@@ -87,7 +88,7 @@ public class CreateTestController {
         Table_Questions.setDisable(true);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
         System.out.println("on show subjects event in create test");
         List<Subject> subjects = event.getSubjects();
@@ -279,9 +280,9 @@ public class CreateTestController {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
                     labelMsg.setText("SUCCESS");
+                    cleanup();
                 }
             }
-
         }catch (Exception e){
             e.printStackTrace();
         }

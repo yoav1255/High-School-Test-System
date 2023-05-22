@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class TeacherHomeController {
 
@@ -28,14 +29,23 @@ public class TeacherHomeController {
     private Label statusLB;
 
     private String id;
+    private static int instances = 0;
 
     public TeacherHomeController(){
+
+    }
+    @FXML
+    void initialize(){
         EventBus.getDefault().register(this);
+        instances++;
+        System.out.println("in teacher "+ instances);
     }
 
-//    public void cleanup() {
-//        EventBus.getDefault().unregister(this);
-//    }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+        instances--;
+        System.out.println("in teacher "+ instances);
+    }
 
     public void setId(String id){this.id = id;}
 
@@ -43,14 +53,18 @@ public class TeacherHomeController {
     @FXML
     @Subscribe
     public void onUserHomeEvent(UserHomeEvent event){
-        setId(event.getUserID());
-        initializeIfIdNotNull();
+            setId(event.getUserID());
+            System.out.println("on show teacher event id "+ this.id );
+            initializeIfIdNotNull();
     }
 
     private void initializeIfIdNotNull() {
-        if (id != null) {
-            idLabel.setText("ID: " + id);
-        }
+        //Platform.runLater(()->{
+            if (id != null) {
+                System.out.println("in intialize Function id "+this.id);
+                idLabel.setText("ID: " + this.id);
+            }
+        //});
     }
 
     @FXML
@@ -70,6 +84,7 @@ public class TeacherHomeController {
             try {
                 App.switchScreen("showAllQuestions");
                 SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                cleanup();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -78,6 +93,7 @@ public class TeacherHomeController {
 
     @FXML
     public void handleShowExamFormsButtonClick(ActionEvent event) {
+        cleanup();
         Platform.runLater(()->{
             try {
                 App.switchScreen("showExamForms");
@@ -93,6 +109,7 @@ public class TeacherHomeController {
             try{
                 App.switchScreen("showScheduleTest");
                 SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                cleanup();
             }catch (Exception e){
                 e.printStackTrace();
             }
