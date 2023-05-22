@@ -82,12 +82,11 @@ public class ShowScheduleTestController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
-    public void ShowScheduleTestEvent(ShowScheduleTestEvent event) {
+    public void onShowScheduleTestEvent(ShowScheduleTestEvent event) {
         try {
             setScheduledTests(event.getScheduledTestList());
             id.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("id"));
             date.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("date") );
-//            time.setCellValueFactory(new PropertyValueFactory<ScheduledTest,String>("time"));
             time.setCellValueFactory(cellData -> {
                 String formattedTime = cellData.getValue().getTime().toString();
                 formattedTime = formattedTime.substring(0, 5);
@@ -97,7 +96,7 @@ public class ShowScheduleTestController {
             examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
                 @Override
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    return new SimpleStringProperty(param.getValue().getExamForm().getExamFormCode());
+                    return new SimpleStringProperty(param.getValue().getExamForm().getCode());
                 }
             });
             teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
@@ -119,7 +118,6 @@ public class ShowScheduleTestController {
             if (event.getClickCount() == 2&&scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
                 ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
                 if ("1".equals(selectedTest.getTeacher().getId())){
-                        System.out.println(selectedTest.getTeacher().getId());
                         ScheduledTestController.updateSelectedRow(selectedTest);
                         App.switchScreen("scheduledTest");
                 }
@@ -161,6 +159,7 @@ public class ShowScheduleTestController {
         Platform.runLater(()->{
             try {
                 App.switchScreen("scheduledTest");
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
             }catch (Exception e){
 
             }

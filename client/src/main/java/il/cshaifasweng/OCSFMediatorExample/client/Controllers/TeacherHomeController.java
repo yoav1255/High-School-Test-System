@@ -86,7 +86,7 @@ public class TeacherHomeController {
         Platform.runLater(()->{
             try{
                 App.switchScreen("showScheduleTest");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
             }catch (Exception e){
                 e.printStackTrace();
             }

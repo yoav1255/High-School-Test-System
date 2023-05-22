@@ -118,7 +118,6 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnScheduledTestList", scheduledTests));
 					break;
 				case ("#updateScheduleTest"):
-					System.out.println("i got here");
 					App.updateScheduleTest( (ScheduledTest) message.getData());
 					client.sendToClient(new CustomMessage("updateSuccess", ""));
 					break;

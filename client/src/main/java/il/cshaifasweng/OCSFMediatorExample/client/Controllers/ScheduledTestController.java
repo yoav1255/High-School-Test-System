@@ -32,9 +32,6 @@ import java.util.List;
 import java.util.Date;
 
 public class ScheduledTestController {
-    private static ScheduledTestController instance;
-
-    private ScheduledTest scheduled_test;
     public static ExamForm examForm;
     public static ScheduledTest scheduledTest;
     @FXML // fx:id="allStudentsBN"
@@ -86,12 +83,6 @@ public class ScheduledTestController {
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
-    public static ScheduledTestController getInstance() {
-        if (instance == null) {
-            instance = new ScheduledTestController();
-        }
-        return instance;
-    }
     @Subscribe
     @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
@@ -111,7 +102,7 @@ public class ScheduledTestController {
             labelTeacher.setText(scheduledTest.getTeacher().getId());
             scheduleTime.setText(scheduledTest.getTime().toString().substring(0,5));
             textFieldsubmission.setText(String.valueOf(scheduledTest.getSubmissions()));
-            comboBoxExamForm.setValue(scheduledTest.getExamForm().getExamFormCode());
+            comboBoxExamForm.setValue(scheduledTest.getExamForm().getCode());
             dataTimescheduleDate.setValue(scheduledTest.getDate());
 
         }
@@ -148,7 +139,6 @@ public class ScheduledTestController {
     }
     public static void updateSelectedRow(ScheduledTest selectedRow){
         scheduledTest=selectedRow;
-       System.out.println(selectedRow);
     }
     public boolean validateDate() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
@@ -236,17 +226,12 @@ public class ScheduledTestController {
              year = dataTimescheduleDate.getValue().getYear();
             time = scheduleTime.getText();
         if (scheduledTest!=null) {
-            System.out.println("is valid and on the page000");
             scheduledTest.setDate(LocalDate.of(year, month, day));
             scheduledTest.setTime(new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
             scheduledTest.setSubmissions(Integer.parseInt(textFieldsubmission.getText()));
             scheduledTest.setExamForm(examForm);
-//            ScheduledTestController instance = getInstance();
-//            ScheduledTest st = instance.scheduled_test;
             ScheduledTest scheduledTest1=scheduledTest;
             try {
-                System.out.println("send to client 111");
-
                 SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest1));
                 Alert success = new Alert(Alert.AlertType.INFORMATION);
                 success.setHeaderText("Success");

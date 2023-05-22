@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,5 +36,16 @@ public class PrimaryController {
 		}
 	}
 
+	@FXML
+	void handleShowScheduleTest(ActionEvent event) {
+		Platform.runLater(() -> {
+			try {
+				App.switchScreen("showScheduleTest");
+				SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 
+	}
 }

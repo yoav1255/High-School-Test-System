@@ -521,17 +521,16 @@ public class App
     }
 
     public static void updateScheduleTest(ScheduledTest scheduledTest) {
-        SessionFactory sessionFactory = getSessionFactory();
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        Query query = session.createQuery("UPDATE ScheduledTest SET date = :newDate, time=:newTime,submissions=:newSubmission WHERE id = :newId");
-        query.setParameter("newDate", scheduledTest.getDate());
-        query.setParameter("newTime", scheduledTest.getTime());
-        query.setParameter("newSubmission", scheduledTest.getSubmissions());
-        query.setParameter("newId", scheduledTest.getId());
-        session.getTransaction().commit();
-        session.close();
-        System.out.println(scheduledTest);
+        try {
+            SessionFactory sessionFactory = getSessionFactory();
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.update(scheduledTest);
+            session.getTransaction().commit();
+            session.close();
+            System.out.println(scheduledTest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
 }
