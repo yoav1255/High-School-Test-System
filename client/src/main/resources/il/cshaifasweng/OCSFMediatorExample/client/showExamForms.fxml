@@ -83,8 +83,8 @@
                 <TableView id="GradesTable" fx:id="ExamForms_Table" layoutX="28.0" layoutY="99.0" prefHeight="348.0" prefWidth="713.0" stylesheets="@css/table-style.css" GridPane.rowIndex="2">
                     <columns>
                         <TableColumn id="TableTestid" fx:id="TableTestID" prefWidth="93.35415649414062" text="Test ID" />
-                        <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="189.64578247070312" text="Teacher" />
-                        <TableColumn id="TableSubject" fx:id="TableSubject" prefWidth="164.0" text="Subject" />
+                        <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="189.64578247070312" text="Teacher created" />
+                        <TableColumn id="TableSubject" fx:id="TableSubject" prefWidth="164.0" text="Questions amount" />
                         <TableColumn id="TableCourse" fx:id="TableCourse" prefWidth="193.20066833496094" text="Course" />
                         <TableColumn id="TableGrade" fx:id="TableGrade" minWidth="0.0" prefWidth="100.395751953125" text="Grade" />
                     </columns>

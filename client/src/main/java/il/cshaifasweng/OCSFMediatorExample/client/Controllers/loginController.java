@@ -52,7 +52,7 @@ public class loginController {
     @FXML void initialize(){
         error_msg.setVisible(false);
     }
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
     public void onloginEvent(loginEvent event) {
 
@@ -76,7 +76,13 @@ public class loginController {
 //                        cleanup();
                             try {
                                 App.switchScreen("teacherHome");
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
+                                Platform.runLater(()->{
+                                    try{
+                                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                });
                             }catch (Exception e){
                                 e.printStackTrace();
                             }

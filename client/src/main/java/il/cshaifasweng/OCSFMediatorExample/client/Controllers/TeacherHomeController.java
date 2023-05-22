@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -13,6 +14,8 @@ import javafx.scene.control.Label;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.IOException;
 
 public class TeacherHomeController {
 
@@ -51,7 +54,7 @@ public class TeacherHomeController {
 
 
     @FXML
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserHomeEvent(UserHomeEvent event){
             setId(event.getUserID());
             System.out.println("on show teacher event id "+ this.id );
@@ -59,12 +62,12 @@ public class TeacherHomeController {
     }
 
     private void initializeIfIdNotNull() {
-        //Platform.runLater(()->{
+        Platform.runLater(()->{
             if (id != null) {
                 System.out.println("in intialize Function id "+this.id);
                 idLabel.setText("ID: " + this.id);
             }
-        //});
+        });
     }
 
     @FXML
@@ -79,29 +82,36 @@ public class TeacherHomeController {
 
     @FXML
     public void handleShowQuestionsButtonClick(ActionEvent event) {
-        Platform.runLater(()-> {
-
             try {
                 App.switchScreen("showAllQuestions");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                Platform.runLater(()->{
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
                 cleanup();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
     }
 
     @FXML
     public void handleShowExamFormsButtonClick(ActionEvent event) {
-        cleanup();
-        Platform.runLater(()->{
-            try {
-                App.switchScreen("showExamForms");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            cleanup();
+            App.switchScreen("showExamForms");
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @FXML
     public void handleShowScheduledTestsButtonClick(ActionEvent event) {
