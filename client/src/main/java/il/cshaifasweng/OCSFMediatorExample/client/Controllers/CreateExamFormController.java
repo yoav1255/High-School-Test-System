@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -61,15 +62,15 @@ public class CreateExamFormController {
     @FXML
     private TextField scoreTextField;
     @FXML
-    private Button addButton;
-    @FXML
     private TextField timeLimit;
+
     private List<QuestionScore> questionScoreList;
     private String ExamCode;
     private Subject sub;
     private Course cour;
     private String teacherId;
     private ExamForm examForm;
+    private int courseChaged;
 
 
     public CreateExamFormController(){ EventBus.getDefault().register(this); }
@@ -81,8 +82,15 @@ public class CreateExamFormController {
     void initialize(){
         ComboCourse.setDisable(true);
         Table_Questions.setDisable(true);
+        courseChaged=0;
+        questionScoreList = new ArrayList<>();
     }
 
+@Subscribe(threadMode = ThreadMode.MAIN)
+public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        teacherId = event.getId();
+        System.out.println("Teacher id in create exam form :" + teacherId);
+}
 @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
         System.out.println("on show subjects event in create test");
@@ -94,7 +102,10 @@ public class CreateExamFormController {
         ComboSubject.setItems(items);
 
         if(examForm!=null){ // We are in update mode
-            ComboSubject.setValue(examForm.getSubjectName());
+            Platform.runLater(()->{
+                ComboSubject.setValue(examForm.getSubjectName());
+                timeLimit.setText(Integer.toString( examForm.getTimeLimit()));
+            });
         }
     }
 @FXML
@@ -110,9 +121,11 @@ public class CreateExamFormController {
         try {
             String subjectName = ComboSubject.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
-            ComboCourse.setDisable(false);
-            ComboCourse.setValue("");
-            Table_Questions.setDisable(true);
+            Platform.runLater(()->{
+                ComboCourse.setDisable(false);
+                ComboCourse.setValue("");
+                Table_Questions.setDisable(true);
+            });
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -127,22 +140,29 @@ public class CreateExamFormController {
         for(Course course:courses){
             items.add(course.getName());
         }
-        ComboCourse.setItems(items);
+        Platform.runLater(()->{
+            ComboCourse.setItems(items);
+        });
 
         if(examForm!=null){ // We are in update mode
-            ComboCourse.setValue(examForm.getCourseName());
+            Platform.runLater(()->{
+                ComboCourse.setValue(examForm.getCourseName());
+            });
         }
     }
     @FXML
     public void onSelectCourse(ActionEvent event) {
         try {
+            System.out.println(courseChaged);
             String courseName = ComboCourse.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseFromName",courseName));
             SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestions", courseName));
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExamFormCode",courseName));
             Table_Questions.setDisable(false);
-            questionScoreList = new ArrayList<>();
-            updateTables();
+            if(questionScoreList!=null) {
+                questionScoreList.clear();
+                updateTables();
+            }
 
         }catch (Exception e){
             e.printStackTrace();
@@ -167,10 +187,19 @@ public class CreateExamFormController {
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questions);
             Table_Questions.setItems(questions1);
             Table_Questions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
+            courseChaged++;
             if(examForm!=null){ //We are in update mode
                 //TODO: run later??
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+                System.out.println("course changes "+courseChaged);
+                if(courseChaged==1){ // course has not changed since initializaion with values
+                    Platform.runLater(()->{
+                        try {
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -296,10 +325,14 @@ public class CreateExamFormController {
                     labelMsg.setText("Grade must sum to 100!");
                 }
                 else {
+                    cleanup();
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-                    labelMsg.setText("SUCCESS");
-                    cleanup();
+                    JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    App.switchScreen("showExamForms");
+                    Platform.runLater(()->{
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    });
                 }
             }
         }catch (Exception e){
@@ -309,24 +342,29 @@ public class CreateExamFormController {
 
     @FXML
     void handleBackButtonClick(ActionEvent event) {
-        //TODO func
+            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (input == JOptionPane.YES_OPTION){
+                cleanup();
+                try {
+                    App.switchScreen("showExamForms");
+                Platform.runLater(()->{
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
         try{
-            App.switchScreen("primary");
+            App.switchScreen("teacherHome");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
         }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) {
-        try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            App.switchScreen("allStudents");
-        }catch (IOException e){
             e.printStackTrace();
         }
     }

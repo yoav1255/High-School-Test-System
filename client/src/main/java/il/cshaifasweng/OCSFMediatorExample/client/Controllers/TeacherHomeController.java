@@ -61,6 +61,12 @@ public class TeacherHomeController {
             initializeIfIdNotNull();
     }
 
+    @Subscribe
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        setId(event.getId());
+        System.out.println("on show teacher event id "+ this.id );
+        initializeIfIdNotNull();
+    }
     private void initializeIfIdNotNull() {
         Platform.runLater(()->{
             if (id != null) {
