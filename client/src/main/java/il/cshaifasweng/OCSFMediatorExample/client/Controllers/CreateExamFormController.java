@@ -87,6 +87,11 @@ public class CreateExamFormController {
     }
 
 @Subscribe(threadMode = ThreadMode.MAIN)
+public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        teacherId = event.getId();
+        System.out.println("Teacher id in create exam form :" + teacherId);
+}
+@Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
         System.out.println("on show subjects event in create test");
         List<Subject> subjects = event.getSubjects();
