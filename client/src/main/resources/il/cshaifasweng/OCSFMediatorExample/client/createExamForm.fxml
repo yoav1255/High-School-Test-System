@@ -51,7 +51,7 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
+                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
                     <graphic>
                         <!--                        <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
