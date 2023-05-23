@@ -4,6 +4,7 @@ public class MoveIdToNextPageEvent {
     private String id;
 
     public MoveIdToNextPageEvent(String id) {
+        System.out.println("In event move id to next page "+id);
         this.id = id;
     }
 

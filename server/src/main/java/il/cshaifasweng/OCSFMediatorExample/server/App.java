@@ -573,4 +573,15 @@ public class App
         session.close();
         return examForms;
     }
+
+    public static List<QuestionScore> getQuestionScoresFromExamForm(ExamForm examForm) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT qs FROM QuestionScore qs WHERE qs.examForm =:examForm";
+        Query query = session.createQuery(queryString,QuestionScore.class);
+        query.setParameter("examForm",examForm);
+        List<QuestionScore> questionScores = query.getResultList();
+        session.close();
+        return questionScores;
+    }
 }

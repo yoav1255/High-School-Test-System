@@ -12,6 +12,8 @@ public class Teacher extends User {
     private List <Course> courses;
     @OneToMany(mappedBy = "teacher")
     private List<ScheduledTest> scheduledTests;
+    @OneToMany(mappedBy = "teacher")
+    private List<ExamForm> examForms;
 
     public Teacher(String id, String email, String first_name, String gender, String last_name, String password) {
         super(id, first_name, last_name, gender, email, password);
@@ -47,6 +49,17 @@ public class Teacher extends User {
         this.scheduledTests = scheduledTests;
     }
     public void addScheduledTest(ScheduledTest scheduledTest){ scheduledTests.add(scheduledTest); }
+
+    public List<ExamForm> getExamForms() {
+        return examForms;
+    }
+
+    public void setExamForms(List<ExamForm> examForms) {
+        this.examForms = examForms;
+    }
+    public void addExamForm(ExamForm examForm){ examForms.add(examForm); }
+
+
     public static List<Teacher> GenerateTeachers(){
         List<Teacher> teachers = new ArrayList<Teacher>();
         teachers.add(new Teacher("1","shosh@gmail.com","Shoshana","Female","Levi","tt2p10"));

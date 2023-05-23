@@ -2,17 +2,17 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Course;
-import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
-import il.cshaifasweng.OCSFMediatorExample.entities.Subject;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.greenrobot.eventbus.EventBus;
@@ -38,12 +38,9 @@ public class ShowExamFormsController {
 
     @FXML
     private TableColumn<ExamForm, Course> TableCourse;
-//
-//    @FXML
-//    private TableColumn<ExamForm, ?> TableGrade;
 
     @FXML
-    private TableColumn<ExamForm, Integer> TableQuestionsNum;
+    private TableColumn<ExamForm, String> TableQuestionsNum;
 
     @FXML
     private TableColumn<ExamForm, String> TableTeacher;
@@ -93,8 +90,16 @@ public class ShowExamFormsController {
 @Subscribe(threadMode = ThreadMode.MAIN )
 @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
-        setId(event.getId());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+        System.out.println("before platform");
+        Platform.runLater(()->{
+            System.out.println("in platform");
+            setId(event.getId());
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 @Subscribe(threadMode = ThreadMode.MAIN)
 @FXML
@@ -102,7 +107,10 @@ public class ShowExamFormsController {
         System.out.println("on show subjects event in show examForms");
         List<Subject> subjects = event.getSubjects();
         ObservableList<String> items = FXCollections.observableArrayList();
-        for(Subject subject:subjects){
+        Platform.runLater(()->{
+            ExamForms_Table.setDisable(true);
+        });
+    for(Subject subject:subjects){
             items.add(subject.getName());
         }
         ComboSubject.setItems(items);
@@ -146,14 +154,74 @@ public class ShowExamFormsController {
     }
 }
 
-@Subscribe
+@Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowCourseEvent(ShowCourseEvent event){
         this.cour = event.getCourse();
     }
-@Subscribe
+@Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowExamFormsEvent(ShowExamFormsEvent event){
-            //TODO keep it from here
+    try {
+        List<ExamForm> examForms = event.getExamForms();
+
+        TableTestID.setCellValueFactory(cellData -> {
+            ExamForm examForm = cellData.getValue();
+            String code = examForm.getExamFormCode();
+            return new SimpleStringProperty(code);
+        });
+
+//        TableTeacher.setCellValueFactory(cellData -> {
+//            String teacherName = "no teacher yet";
+//            ExamForm examForm = cellData.getValue();
+//            Teacher teacher = examForm.getTeacher()!=null?examForm.getTeacher():;
+//            if(teacher!=null) {
+//                teacherName = teacher.getFirst_name() + " " + teacher.getLast_name(); // TODO change the entities: teacher and exam form
+//            }
+//            return new SimpleStringProperty(teacherName);
+//        });
+//        TableQuestionsNum.setCellValueFactory(cellData -> {
+//            ExamForm examForm = cellData.getValue();
+//            String num =  Integer.toString(examForm.getQuestionScores().size()); // TODO change the entities: teacher and exam form
+//            return new SimpleStringProperty(num);
+//        });
+
+        ObservableList<ExamForm> examForms1 = FXCollections.observableArrayList(examForms);
+        ExamForms_Table.setItems(examForms1);
+        ExamForms_Table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+
+    }catch (Exception e){
+        e.printStackTrace();
     }
+}
+
+
+    @FXML
+    void handleRowClick(MouseEvent event) {
+        try {
+            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+                ExamForm selectedExam = ExamForms_Table.getSelectionModel().getSelectedItem();
+                if (selectedExam != null) {
+                    List<Object> setTeacherAndExam = new ArrayList<>();
+                    setTeacherAndExam.add(id);
+                    setTeacherAndExam.add(selectedExam);
+                    App.switchScreen("createExamForm");
+                    Platform.runLater(()->{
+                        try {
+                            EventBus.getDefault().post(new ShowUpdateExamFormEvent(setTeacherAndExam));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
 
 @FXML
     public void handleAddExamForm(ActionEvent event) {
