@@ -97,6 +97,8 @@
                         <Font name="Oriya Sangam MN" size="12.0" />
                      </font>
                   </Label>
+                  <Button fx:id="testHasntPerformed" layoutX="29.0" layoutY="1.0" mnemonicParsing="false" onAction="#ShowTestHasntPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test not yet performed" />
+                  <Button fx:id="testPerformed" layoutX="179.0" layoutY="1.0" mnemonicParsing="false" onAction="#ShowTestPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test  performed" />
                </children>
             </Pane>
             </children>
