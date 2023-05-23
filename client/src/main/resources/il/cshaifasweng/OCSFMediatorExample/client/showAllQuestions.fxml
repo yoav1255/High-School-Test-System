@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowExamFormsController">
+<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowQuestionsController">
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
@@ -33,7 +32,7 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
+                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
                     <graphic>
                         <!--                        <FontAwesomeIconView glyphName="HOME" size="20" />-->
                     </graphic>
@@ -80,11 +79,11 @@
                 <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="408.647216796875" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView id="GradesTable" fx:id="ExamForms_Table" layoutX="28.0" layoutY="99.0" onMouseClicked="#handleRowClick" prefHeight="348.0" prefWidth="713.0" stylesheets="@css/table-style.css" GridPane.rowIndex="2">
+                <TableView id="GradesTable" fx:id="GradesTable" layoutX="28.0" layoutY="99.0" prefHeight="422.0" prefWidth="740.0" stylesheets="@css/table-style.css" GridPane.rowIndex="2">
                     <columns>
                         <TableColumn id="TableTestid" fx:id="TableTestID" prefWidth="93.35415649414062" text="Test ID" />
-                        <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="189.64578247070312" text="Teacher created" />
-                        <TableColumn id="TableSubject" fx:id="TableSubject" prefWidth="164.0" text="Questions amount" />
+                        <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="189.64578247070312" text="Teacher" />
+                        <TableColumn id="TableSubject" fx:id="TableSubject" prefWidth="164.0" text="Subject" />
                         <TableColumn id="TableCourse" fx:id="TableCourse" prefWidth="193.20066833496094" text="Course" />
                         <TableColumn id="TableGrade" fx:id="TableGrade" minWidth="0.0" prefWidth="100.395751953125" text="Grade" />
                     </columns>
@@ -93,16 +92,28 @@
                     </columnResizePolicy>
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
-               <children>
-                  <Button layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" text="create test" />
-               </children>
+                    <children>
+                        <Label fx:id="student_id" layoutX="14.0" layoutY="13.0" prefHeight="30.0" prefWidth="348.0" text="Student ID: ">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="18.0" />
+                            </font>
+                        </Label>
+                        <Label fx:id="student_name" layoutX="362.0" layoutY="13.0" prefHeight="30.0" prefWidth="362.0" text="Student Name: ">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="18.0" />
+                            </font>
+                        </Label>
+                        <!--                        <FontAwesomeIconView glyphName="USER" layoutX="43.0" layoutY="35.0" size="20" />-->
+                    </children>
                 </Pane>
                 <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                     <children>
-                  <Label layoutX="284.0" layoutY="11.0" prefHeight="17.0" prefWidth="83.0" text="choose subject" />
-                  <ComboBox fx:id="ComboSubject" layoutX="367.0" layoutY="7.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="110.0" />
-                  <Label layoutX="487.0" layoutY="11.0" prefHeight="17.0" prefWidth="83.0" text="choose course" />
-                  <ComboBox fx:id="ComboCourse" layoutX="570.0" layoutY="7.0" onAction="#onSelectCourse" prefHeight="25.0" prefWidth="124.0" />
+                        <Label layoutX="384.0" layoutY="12.0" text="if you want to change grade - double click the grade">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="12.0" />
+                            </font>
+                        </Label>
+                        <Button layoutX="14.0" layoutY="7.0" mnemonicParsing="false" onAction="#GoToAddQuestion" text="create Question" />
                     </children>
                 </Pane>
             </children>

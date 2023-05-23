@@ -5,8 +5,6 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,19 +12,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.*;
 
-public class CreateTestController {
+public class CreateExamFormController {
 
     @FXML
     private Label labelMsg;
@@ -74,12 +68,14 @@ public class CreateTestController {
     private String ExamCode;
     private Subject sub;
     private Course cour;
+    private String teacherId;
+    private ExamForm examForm;
 
 
-    public CreateTestController(){ EventBus.getDefault().register(this); }
-//    public void cleanup() {
-//        EventBus.getDefault().unregister(this);
-//    }
+    public CreateExamFormController(){ EventBus.getDefault().register(this); }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
 
     @FXML
     void initialize(){
@@ -87,7 +83,7 @@ public class CreateTestController {
         Table_Questions.setDisable(true);
     }
 
-    @Subscribe
+@Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
         System.out.println("on show subjects event in create test");
         List<Subject> subjects = event.getSubjects();
@@ -96,7 +92,18 @@ public class CreateTestController {
             items.add(subject.getName());
         }
         ComboSubject.setItems(items);
+
+        if(examForm!=null){ // We are in update mode
+            ComboSubject.setValue(examForm.getSubjectName());
+        }
     }
+@FXML
+@Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowUpdateExamFormEvent(ShowUpdateExamFormEvent event){
+    List<Object> teacherAndExam = event.getSetTeacherAndExam();
+    teacherId = teacherAndExam.get(0).toString();
+    examForm = (ExamForm) teacherAndExam.get(1);
+}
 
     @FXML
     public void onSelectSubject(ActionEvent event) {
@@ -111,7 +118,7 @@ public class CreateTestController {
         }
     }
 
-    @Subscribe
+@Subscribe
     public void onShowSubjectCourses(ShowSubjectCoursesEvent event){
         List<Course> courses = event.getCourses();
         if(!courses.isEmpty())
@@ -121,6 +128,10 @@ public class CreateTestController {
             items.add(course.getName());
         }
         ComboCourse.setItems(items);
+
+        if(examForm!=null){ // We are in update mode
+            ComboCourse.setValue(examForm.getCourseName());
+        }
     }
     @FXML
     public void onSelectCourse(ActionEvent event) {
@@ -137,11 +148,11 @@ public class CreateTestController {
             e.printStackTrace();
         }
     }
-    @Subscribe
+@Subscribe
     public void onShowCourseEvent(ShowCourseEvent event){
         this.cour = event.getCourse();
     }
-    @Subscribe
+@Subscribe
     public void onShowCourseQuestions(ShowCourseQuestionsEvent event){
         try {
             List<Question> questions = event.getQuestions();
@@ -157,10 +168,19 @@ public class CreateTestController {
             Table_Questions.setItems(questions1);
             Table_Questions.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-
+            if(examForm!=null){ //We are in update mode
+                //TODO: run later??
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+@Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowExamFormQuestionScoresEvent(ShowExamFormQuestionScoresEvent event){
+        questionScoreList = event.getQuestionScores();
+        updateTables();
     }
 
     public void updateTables(){
@@ -279,9 +299,9 @@ public class CreateTestController {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
                     labelMsg.setText("SUCCESS");
+                    cleanup();
                 }
             }
-
         }catch (Exception e){
             e.printStackTrace();
         }

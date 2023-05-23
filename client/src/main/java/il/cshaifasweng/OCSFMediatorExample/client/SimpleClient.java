@@ -56,7 +56,6 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 					break;
 				case ("returnSubjects"):
-					System.out.println("in s.c return subjects");
 					List<Subject> subjects = (List<Subject>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherSubjectsEvent(subjects));
 					break;
@@ -92,6 +91,17 @@ public class SimpleClient extends AbstractClient {
 					List<ScheduledTest> scheduledTests = (List<ScheduledTest>) message.getData();
 					EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
 					break;
+				case ("addQuestionSuccess"):
+					System.out.println("Question added successfully!");
+					EventBus.getDefault().post(new QuestionAddedEvent(""));
+					break;
+				case("returnExamForms"):
+					List<ExamForm> examForms = (List<ExamForm>) message.getData();
+					EventBus.getDefault().post(new ShowExamFormsEvent(examForms));
+					break;
+				case ("returnQuestionScores"):
+					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
+					EventBus.getDefault().post(new ShowExamFormQuestionScoresEvent(questionScores));
 			}
 		}catch (Exception e){
 			e.printStackTrace();

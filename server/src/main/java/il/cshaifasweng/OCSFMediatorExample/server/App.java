@@ -38,7 +38,8 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+            //generateObjects();
+
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception){
@@ -520,6 +521,27 @@ public class App
         return userType;
     }
 
+    public static void addQuestion(Question question){
+
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.save(question);
+/*        Subject subject = question.getSubject();
+        subject.addQuestion(question);*//*
+        List<Course> courses= question.getCourses();
+        for(Course course:courses){
+            course.addQuestion(question);
+            session.saveOrUpdate(course);
+        }
+        session.saveOrUpdate(subject);*/
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+
+    }
+
     public static void updateScheduleTest(ScheduledTest scheduledTest) {
         try {
             SessionFactory sessionFactory = getSessionFactory();
@@ -532,5 +554,33 @@ public class App
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<ExamForm> getCourseExamForms(String courseName) {
+        List<ExamForm> examForms = new ArrayList<>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
+        Query q = session.createQuery(querySub, Course.class);
+        q.setParameter("courseName",courseName);
+        Course course = (Course) q.getSingleResult();
+
+        String queryString = "SELECT DISTINCT e FROM Course c JOIN c.examForms e WHERE c = :course";
+        Query query = session.createQuery(queryString, ExamForm.class);
+        query.setParameter("course",course);
+        examForms = query.getResultList();
+        session.close();
+        return examForms;
+    }
+
+    public static List<QuestionScore> getQuestionScoresFromExamForm(ExamForm examForm) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT qs FROM QuestionScore qs WHERE qs.examForm =:examForm";
+        Query query = session.createQuery(queryString,QuestionScore.class);
+        query.setParameter("examForm",examForm);
+        List<QuestionScore> questionScores = query.getResultList();
+        session.close();
+        return questionScores;
     }
 }
