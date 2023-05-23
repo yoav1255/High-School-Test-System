@@ -1,11 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
@@ -301,13 +298,14 @@ public class App
        return firstTeacher;
    }
 
-    public static List<String> getListExamFormCode(){
+    public static List<String> getListExamFormCode(String teacherId){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        Teacher firstTeacher = getTeacher();
+//        Teacher teacher = getTeacher();
+        Teacher teacher=getTeacherFromId(teacherId);
         org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
-        query.setParameterList("subjects", firstTeacher.getSubjects());
+        query.setParameterList("subjects", teacher.getSubjects());
         List<String> codes = query.getResultList();
         session.getTransaction().commit();
         session.close();
@@ -332,7 +330,8 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
             System.out.println(scheduledTest);
-            Teacher teacher=getTeacher();
+//            Teacher teacher=getTeacherFromId();
+            Teacher teacher=App.getTeacher();
             scheduledTest.setTeacher(teacher);
             session.save(scheduledTest);
             session.getTransaction().commit();

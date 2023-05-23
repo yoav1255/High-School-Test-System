@@ -40,10 +40,10 @@ public class PrimaryController {
 	}
 
 	@FXML
-	void handleShowScheduleTest(ActionEvent event) {
+	void handleShowScheduleTest(ActionEvent event) throws IOException {
+		App.switchScreen("showScheduleTest");
 		Platform.runLater(() -> {
 			try {
-				App.switchScreen("showScheduleTest");
 				SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
 			} catch (Exception e) {
 				e.printStackTrace();

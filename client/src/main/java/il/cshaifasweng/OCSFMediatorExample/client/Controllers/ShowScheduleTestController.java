@@ -4,6 +4,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,7 +31,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ShowScheduleTestController {
-
+    private  String idTeacher;
 
     @FXML // fx:id="allStudentsBN"
     private Button allStudentsBN; // Value injected by FXMLLoader
@@ -69,19 +71,33 @@ public class ShowScheduleTestController {
 
     private List<ScheduledTest> scheduledTests;
 
+
+    public String getId() {
+        return this.idTeacher;
+    }
+
+    public void setId(String id) {
+        this.idTeacher = id;
+    }
+
+
     public ShowScheduleTestController() {
         EventBus.getDefault().register(this);
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
-
+    @Subscribe
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        System.out.println("Ok"+event.getId());
+        this.idTeacher=event.getId();
+        System.out.println(idTeacher);
+    }
     public void setScheduledTests(List<ScheduledTest> scheduledTests) {
         this.scheduledTests = scheduledTests;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    @FXML
     public void onShowScheduleTestEvent(ShowScheduleTestEvent event) {
         try {
             setScheduledTests(event.getScheduledTestList());
@@ -96,13 +112,24 @@ public class ShowScheduleTestController {
             examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
                 @Override
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    return new SimpleStringProperty(param.getValue().getExamForm().getCode());
+                    try {
+
+                        return new SimpleStringProperty(param.getValue().getExamForm().getCode());
+                    } catch (NullPointerException e) {
+                        // Handle the exception here (e.g., set a default value)
+                        return new SimpleStringProperty("N/A");
+                    }
                 }
             });
             teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>(){
                 @Override
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                    try {
+                        return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                    } catch (NullPointerException e) {
+                    // Handle the exception here (e.g., set a default value)
+                    return new SimpleStringProperty("N/A");
+                }
                 }
             });
             ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableList(scheduledTests);
@@ -117,9 +144,22 @@ public class ShowScheduleTestController {
         try {
             if (event.getClickCount() == 2&&scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
                 ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
-                if ("1".equals(selectedTest.getTeacher().getId())){
-                        ScheduledTestController.updateSelectedRow(selectedTest);
-                        App.switchScreen("scheduledTest");
+                System.out.println(idTeacher);
+                if (idTeacher.equals(selectedTest.getTeacher().getId())){
+//                        ScheduledTestController.updateSelectedRow(selectedTest);
+                          App.switchScreen("scheduledTest");
+                    Platform.runLater(()->{
+                        try {
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", idTeacher));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                        EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+
+
+                    });
+
                 }
             }
         }catch (IOException e){
@@ -129,12 +169,13 @@ public class ShowScheduleTestController {
 
     @FXML
     void handleGoScheduleTestButtonClick(ActionEvent event){
-        try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
-            App.switchScreen("showScheduleTest");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+//        try{
+//            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+//
+//            App.switchScreen("showScheduleTest");
+//        }catch (IOException e){
+//            e.printStackTrace();
+//        }
     }
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event){
@@ -160,6 +201,7 @@ public class ShowScheduleTestController {
             try {
                 App.switchScreen("scheduledTest");
                 SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToScheduleTest",idTeacher));
             }catch (Exception e){
 
             }
