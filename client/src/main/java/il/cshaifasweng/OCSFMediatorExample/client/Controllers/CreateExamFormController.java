@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -61,8 +62,6 @@ public class CreateExamFormController {
     @FXML
     private TextField scoreTextField;
     @FXML
-    private Button addButton;
-    @FXML
     private TextField timeLimit;
 
     private List<QuestionScore> questionScoreList;
@@ -84,6 +83,7 @@ public class CreateExamFormController {
         ComboCourse.setDisable(true);
         Table_Questions.setDisable(true);
         courseChaged=0;
+        questionScoreList = new ArrayList<>();
     }
 
 @Subscribe(threadMode = ThreadMode.MAIN)
@@ -320,10 +320,14 @@ public class CreateExamFormController {
                     labelMsg.setText("Grade must sum to 100!");
                 }
                 else {
+                    cleanup();
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-                    labelMsg.setText("SUCCESS");
-                    cleanup();
+                    JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    App.switchScreen("showExamForms");
+                    Platform.runLater(()->{
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    });
                 }
             }
         }catch (Exception e){
@@ -333,24 +337,29 @@ public class CreateExamFormController {
 
     @FXML
     void handleBackButtonClick(ActionEvent event) {
-        //TODO func
+            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (input == JOptionPane.YES_OPTION){
+                cleanup();
+                try {
+                    App.switchScreen("showExamForms");
+                Platform.runLater(()->{
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
         try{
-            App.switchScreen("primary");
+            App.switchScreen("teacherHome");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
         }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) {
-        try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            App.switchScreen("allStudents");
-        }catch (IOException e){
             e.printStackTrace();
         }
     }
