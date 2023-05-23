@@ -80,7 +80,7 @@
                 <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="408.647216796875" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView id="GradesTable" fx:id="tableView" layoutX="28.0" layoutY="99.0" prefHeight="422.0" prefWidth="740.0" stylesheets="@css/table-style.css" GridPane.rowIndex="2">
+                <TableView id="GradesTable" fx:id="tableView" layoutX="28.0" layoutY="99.0" onMouseClicked="#handleRowClick" prefHeight="422.0" prefWidth="740.0" stylesheets="@css/table-style.css" GridPane.rowIndex="2">
                     <columns>
                         <TableColumn id="TableTestid" fx:id="tableQuestID" minWidth="5.0" prefWidth="25.599960327148438" text="ID" />
                         <TableColumn id="TableTeacher" fx:id="tableText" prefWidth="177.60003662109375" text="Text" />
@@ -96,7 +96,7 @@
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
                <children>
                         <Button layoutX="22.0" layoutY="13.0" mnemonicParsing="false" onAction="#GoToAddQuestion" text="Create new question" />
-                        <Label layoutX="394.0" layoutY="16.0" prefHeight="17.0" prefWidth="321.0" text="if you want to change a question- double click the it">
+                        <Label layoutX="394.0" layoutY="16.0" prefHeight="17.0" prefWidth="321.0" text="if you wish to change a question- double click the it">
                             <font>
                                 <Font name="Oriya Sangam MN" size="12.0" />
                             </font>

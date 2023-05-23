@@ -2,14 +2,8 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Course;
-import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Question;
-import il.cshaifasweng.OCSFMediatorExample.entities.Subject;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowCourseQuestionsEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSubjectCoursesEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowTeacherSubjectsEvent;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -19,15 +13,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShowQuestionsController {
-    private static String id="hi";
+    private String id = new String();
     public String getId() {return id;}
     public void setId(String id) {
         this.id = id;
@@ -64,7 +60,6 @@ public class ShowQuestionsController {
     @FXML
     private TableColumn<Question, String> tableAns4;
 
-
     @Subscribe
     public void onShowCourseQuestions(ShowCourseQuestionsEvent event){
         try {
@@ -86,7 +81,6 @@ public class ShowQuestionsController {
             e.printStackTrace();
         }
     }
-
     public ShowQuestionsController() {
         EventBus.getDefault().register(this);
         courseNames = new ArrayList<>(); // The selected courses names.
@@ -100,11 +94,10 @@ public class ShowQuestionsController {
         ans2 = new ArrayList<>();
         ans3 = new ArrayList<>();
         ans4 = new ArrayList<>();
-
-
-
     }
-
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
     @FXML
     void initialize() {
         Platform.runLater(() -> {
@@ -113,7 +106,6 @@ public class ShowQuestionsController {
         });
 
     }
-
     @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event) {
         subjects.clear();
@@ -124,7 +116,6 @@ public class ShowQuestionsController {
         }
         comboSubject.setItems(items);
     }
-
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
@@ -135,7 +126,6 @@ public class ShowQuestionsController {
             e.printStackTrace();
         }
     }
-
     @Subscribe
     public void onShowSubjectCourses(ShowSubjectCoursesEvent event) {
         courses.clear();
@@ -146,7 +136,6 @@ public class ShowQuestionsController {
         }
         comboCourse.setItems(items);
     }
-
     @FXML
     public void onSelectCourse(ActionEvent event){
         try {
@@ -157,36 +146,74 @@ public class ShowQuestionsController {
         }
 
     }
-
     public void handleHomeButtonClick(ActionEvent event){
         try {
+            String teacherId = this.id;
+            cleanup();
             App.switchScreen("teacherHome");
+            Platform.runLater(() -> {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
-        System.out.println("on event "+event.getId());
         setId(event.getId());
-        System.out.println("check 2 " +id);
-    }
-
-
-    @FXML
-    public void GoToAddQuestion(ActionEvent event) {
-    Platform.runLater(()->{
         try {
-            System.out.println("btn to add Question form "+ id);
-            App.switchScreen("createQuestion");
             SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
-            // TODO : send online teacher's id);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    });
     }
+    @FXML
+    public void GoToAddQuestion(ActionEvent event) {
+        try {
+            cleanup();
+            App.switchScreen("createQuestion");
+            Platform.runLater(() -> {
+                try {
+                    String teacherId = this.id;
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void handleRowClick(MouseEvent event) {
+        try {
+            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+                Question selectedQuestion = tableView.getSelectionModel().getSelectedItem();
+                if (selectedQuestion != null) {
+
+                    List<Object> setTeacherAndQuestion = new ArrayList<>();
+                    setTeacherAndQuestion.add(id);
+                    setTeacherAndQuestion.add(selectedQuestion);
+                    cleanup();
+                    App.switchScreen("createQuestion");
+                    Platform.runLater(()->{
+                        try {
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+                            Platform.runLater(()->{
+                                EventBus.getDefault().post(new ShowUpdateQuestFormEvent(setTeacherAndQuestion));
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

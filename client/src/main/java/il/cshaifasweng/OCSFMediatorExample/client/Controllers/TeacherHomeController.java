@@ -128,4 +128,14 @@ public class TeacherHomeController {
 
     public void handleShowStatsButtonClick(ActionEvent event) {
     }
+
+    @Subscribe
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        setId(event.getId());
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
