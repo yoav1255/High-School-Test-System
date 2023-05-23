@@ -23,6 +23,9 @@ public class ExamForm implements Serializable {
     private List<ScheduledTest> scheduledTests;
     @OneToMany(mappedBy = "examForm")
     private List<QuestionScore> questionScores;
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     public ExamForm(String code, int timeLimit) {
         this.code = code;
@@ -87,6 +90,14 @@ public class ExamForm implements Serializable {
     }
     public String getExamFormCode(){
         return (code + getCourse().getCode() + getSubject().getCode());
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     public List <String> getListExamFormCodes(){

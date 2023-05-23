@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 //import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
+import il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherHomeController;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.WarningEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -40,13 +41,23 @@ public class App extends Application {
     public static void setStage(Stage stage) {
         App.stage = stage;
     }
+    private static int instances = 0;
 
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+        instances--;
+        System.out.println("app instance: "+instances);
+    }
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
+        instances++;
+        System.out.println("in start " + instances);
+        System.out.println("app instance: "+instances);
         System.out.println("register successfully with client");
         client = SimpleClient.getClient();
         client.openConnection();
+//        cleanup();
         scene = new Scene(loadFXML("login"), 574, 423);
         App.stage = stage;
         stage.setScene(scene);
@@ -207,7 +218,7 @@ public class App extends Application {
                 });
                 break;
         }
-    return;
+//    return loadFXML(screenName);
     }
     //-------------Menu Functions----------//
 
@@ -220,6 +231,7 @@ public class App extends Application {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        System.out.println(" load fxml page: "+fxml);
         return fxmlLoader.load();
     }
     
@@ -228,7 +240,7 @@ public class App extends Application {
     @Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
-    	EventBus.getDefault().unregister(this);
+        cleanup();
 		super.stop();
 	}
     

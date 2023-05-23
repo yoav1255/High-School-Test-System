@@ -124,6 +124,15 @@ public class SimpleServer extends AbstractServer {
 					App.updateScheduleTest( (ScheduledTest) message.getData());
 					client.sendToClient(new CustomMessage("updateSuccess", ""));
 					break;
+				case ("#getCourseExamForms"):
+					List<ExamForm> examForms = App.getCourseExamForms(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnExamForms",examForms));
+					break;
+				case ("#getQuestionScores"):
+					ExamForm examForm1 = (ExamForm) message.getData();
+					List<QuestionScore> questionScoreList = App.getQuestionScoresFromExamForm(examForm1);
+					client.sendToClient(new CustomMessage("returnQuestionScores",questionScoreList));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

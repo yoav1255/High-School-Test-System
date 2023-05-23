@@ -551,5 +551,31 @@ public class App
         System.out.println(scheduledTest);
     }
 
+    public static List<ExamForm> getCourseExamForms(String courseName) {
+        List<ExamForm> examForms = new ArrayList<>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
+        Query q = session.createQuery(querySub, Course.class);
+        q.setParameter("courseName",courseName);
+        Course course = (Course) q.getSingleResult();
 
+        String queryString = "SELECT DISTINCT e FROM Course c JOIN c.examForms e WHERE c = :course";
+        Query query = session.createQuery(queryString, ExamForm.class);
+        query.setParameter("course",course);
+        examForms = query.getResultList();
+        session.close();
+        return examForms;
+    }
+
+    public static List<QuestionScore> getQuestionScoresFromExamForm(ExamForm examForm) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT qs FROM QuestionScore qs WHERE qs.examForm =:examForm";
+        Query query = session.createQuery(queryString,QuestionScore.class);
+        query.setParameter("examForm",examForm);
+        List<QuestionScore> questionScores = query.getResultList();
+        session.close();
+        return questionScores;
+    }
 }
