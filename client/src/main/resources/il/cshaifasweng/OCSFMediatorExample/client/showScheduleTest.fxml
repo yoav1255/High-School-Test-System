@@ -65,11 +65,6 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-            <Button fx:id="scheduleTestLIst" mnemonicParsing="false" onAction="#handleGoScheduleTestButtonClick" prefHeight="60.0" prefWidth="215.0" text="Scheduled Test List">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
             <Button mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Schedule New Test" />
             </children>
         </VBox>

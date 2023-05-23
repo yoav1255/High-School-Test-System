@@ -6,11 +6,8 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ExamFormEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ScheduledTestEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
 import javafx.application.Platform;
 
 import javafx.collections.FXCollections;
@@ -33,10 +30,10 @@ import java.util.Date;
 public class ScheduledTestController {
     private String id;
 
-    public ExamForm examForm;
+    private ExamForm examForm;
 
-    public Teacher teacher;
-    public ScheduledTest selectedTest;
+    private Teacher teacher;
+    private ScheduledTest selectedTest;
     @FXML // fx:id="allStudentsBN"
     private Button allStudentsBN; // Value injected by FXMLLoader
 
@@ -93,10 +90,16 @@ public class ScheduledTestController {
     }
 
     @Subscribe
+    public void onTeacherFromIdEvent(TeacherFromIdEvent event){
+        teacher=event.getTeacherFromId();
+    }
+    @Subscribe
     public void onExamFormEvent(ExamFormEvent event) {
         System.out.println("Is Number Two");
         List<String> examFormList = event.getExamFormEventCode();
         comboBoxExamForm.setItems(FXCollections.observableArrayList(examFormList));
+        scheduleTime.setText("12:00");
+
     }
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
@@ -104,54 +107,24 @@ public class ScheduledTestController {
         System.out.println("Id is Number One" + id);
 
         System.out.println("fiilcombobox= " + getId());
-//        Platform.runLater(() -> {
-//            try {
-//                SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", id));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        });
-
-
     }
-
-
 
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
-        System.out.println("Is Number Three");
         setSelectedTest(event.getSelectedTestEvent());
-        System.out.println("in selectedScheduleTest" + selectedTest);
+        scheduleCode.setText(selectedTest.getId());
+        scheduleCode.setEditable(false);
+        scheduleCode.setStyle("-fx-background-color: grey;");
+        labelTeacher.setText(selectedTest.getTeacher().getId());
+        scheduleTime.setText(selectedTest.getTime().toString().substring(0, 5));
+        textFieldsubmission.setText(String.valueOf(selectedTest.getSubmissions()));
+        dataTimescheduleDate.setValue(selectedTest.getDate());
         try {
             comboBoxExamForm.setValue(selectedTest.getExamForm().getCode());
         } catch (NullPointerException e) {
             // Handle the exception here (e.g., set a default value)
             comboBoxExamForm.setValue("");
         }
-    }
-
-    @FXML
-    public void initialize() {
-        if (selectedTest == null) {
-//            labelTeacher.setText(id);
-            scheduleTime.setText("12:00");
-            textFieldsubmission.setText("");
-        } else {
-            scheduleCode.setText(selectedTest.getId());
-            scheduleCode.setEditable(false);
-            scheduleCode.setStyle("-fx-background-color: grey;");
-            labelTeacher.setText(selectedTest.getTeacher().getId());
-            scheduleTime.setText(selectedTest.getTime().toString().substring(0, 5));
-            textFieldsubmission.setText(String.valueOf(selectedTest.getSubmissions()));
-            dataTimescheduleDate.setValue(selectedTest.getDate());
-
-        }
-
-//        try {
-//        SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", ""));
-//    } catch (IOException e) {
-//        e.printStackTrace();
-//    }
     }
 
 
@@ -207,9 +180,9 @@ public class ScheduledTestController {
     }
 
     public boolean validatesubmission() {
-        String sumbittionPattern = "\\d+";
+        String sumbissionPattern = "\\d+";
         if (textFieldsubmission != null) {
-            if (Pattern.matches(sumbittionPattern, textFieldsubmission.getText())) {
+            if (Pattern.matches(sumbissionPattern, textFieldsubmission.getText())) {
                 return true;
             }
         }
@@ -268,6 +241,7 @@ public class ScheduledTestController {
                 selectedTest.setTime(new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
                 selectedTest.setSubmissions(Integer.parseInt(textFieldsubmission.getText()));
                 selectedTest.setExamForm(examForm);
+                selectedTest.setTeacher(teacher);
                 ScheduledTest scheduledTest1 = selectedTest;
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest1));
@@ -276,16 +250,22 @@ public class ScheduledTestController {
                     success.setContentText("update schedule test Succeed");
                     success.show();
                     App.switchScreen("showScheduleTest");
+                    Platform.runLater(()->{
+                        try {
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                     cleanup();
-                    selectedTest = null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
                 ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
                 scheduledTest.setExamForm(examForm);
-//            System.out.println("Teacher= "+teacher);
-//            scheduledTest.setTeacher(teacher);
+                scheduledTest.setTeacher(teacher);
 
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest", scheduledTest));
@@ -294,6 +274,14 @@ public class ScheduledTestController {
                     success.setContentText("added new schedule test Succeed");
                     success.show();
                     App.switchScreen("showScheduleTest");
+                    Platform.runLater(()->{
+                        try {
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                     cleanup();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -304,13 +292,13 @@ public class ScheduledTestController {
 
 
     @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
-        try {
+    void handleGoHomeButtonClick(ActionEvent event) throws IOException {
             il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+
+            });
             cleanup();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -319,6 +307,7 @@ public class ScheduledTestController {
             Platform.runLater(()->{
                 try {
                     SimpleClient.getClient().sendToServer("#showAllStudents");
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

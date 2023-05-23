@@ -151,13 +151,12 @@ public class ShowScheduleTestController {
                     Platform.runLater(()->{
                         try {
                             SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", idTeacher));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", idTeacher));
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                         EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
                         EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
-
-
                     });
 
                 }
@@ -168,40 +167,38 @@ public class ShowScheduleTestController {
     }
 
     @FXML
-    void handleGoScheduleTestButtonClick(ActionEvent event){
-//        try{
-//            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
-//
-//            App.switchScreen("showScheduleTest");
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-    }
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event){
-        try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+    void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
             App.switchScreen("allStudents");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+            Platform.runLater(()->{
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
     }
     @FXML
-    void handleGoHomeButtonClick(ActionEvent event){
-        try{
+    void handleGoHomeButtonClick(ActionEvent event) throws IOException {
             App.switchScreen("primary");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
     }
 
     @FXML
-    public void goToScheduleNewTest(ActionEvent event) {
+    public void goToScheduleNewTest(ActionEvent event) throws IOException {
+        App.switchScreen("scheduledTest");
         Platform.runLater(()->{
             try {
-                App.switchScreen("scheduledTest");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToScheduleTest",idTeacher));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#scheduledTest", ""));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", idTeacher));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", idTeacher));
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
             }catch (Exception e){
 
             }

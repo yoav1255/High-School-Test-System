@@ -80,6 +80,10 @@ public class SimpleClient extends AbstractClient {
 					List <String> examFormCode=(List<String>) message.getData();
 					EventBus.getDefault().post(new ExamFormEvent(examFormCode));
 					break;
+				case ("returnTeacher"):
+					Teacher teacher=(Teacher) message.getData();
+					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
+					break;
 				case("addScheduleTestSuccess"):
 					System.out.println("added new schedule test successfuly!");
 					break;

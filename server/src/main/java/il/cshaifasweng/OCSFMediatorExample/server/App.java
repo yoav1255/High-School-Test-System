@@ -302,14 +302,12 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-//        Teacher teacher = getTeacher();
-        Teacher teacher=getTeacherFromId(teacherId);
+        Teacher teacher = session.get(Teacher.class,teacherId);
         org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
         query.setParameterList("subjects", teacher.getSubjects());
         List<String> codes = query.getResultList();
         session.getTransaction().commit();
         session.close();
-        System.out.println(codes);
         return codes;
     }
     public static ExamForm getExamForm(String examFormId) {
@@ -330,9 +328,9 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
             System.out.println(scheduledTest);
-//            Teacher teacher=getTeacherFromId();
-            Teacher teacher=App.getTeacher();
-            scheduledTest.setTeacher(teacher);
+////            Teacher teacher=getTeacherFromId();
+//            Teacher teacher=App.getTeacher();
+//            scheduledTest.setTeacher(teacher);
             session.save(scheduledTest);
             session.getTransaction().commit();
             session.close();
