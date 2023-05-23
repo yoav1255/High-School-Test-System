@@ -55,9 +55,13 @@ public class ShowQuestionsController {
     private TableColumn<Question, Integer> tableQuestID;
     @FXML
     private TableColumn<Question, String> tableText;
+    @FXML
     private TableColumn<Question, String> tableAns1;
+    @FXML
     private TableColumn<Question, String> tableAns2;
+    @FXML
     private TableColumn<Question, String> tableAns3;
+    @FXML
     private TableColumn<Question, String> tableAns4;
 
 
@@ -66,12 +70,12 @@ public class ShowQuestionsController {
         try {
             questions.clear();
             questions = event.getQuestions();
-            tableQuestID.setCellValueFactory(new PropertyValueFactory<>("ID"));
-            tableText.setCellValueFactory(new PropertyValueFactory<>("Text"));
-            tableAns1.setCellValueFactory(new PropertyValueFactory<>("Answer 1"));
-            tableAns2.setCellValueFactory(new PropertyValueFactory<>("Answer 2"));
-            tableAns3.setCellValueFactory(new PropertyValueFactory<>("Answer 3"));
-            tableAns4.setCellValueFactory(new PropertyValueFactory<>("Answer 4"));
+            tableQuestID.setCellValueFactory(new PropertyValueFactory<>("id"));
+            tableText.setCellValueFactory(new PropertyValueFactory<>("text"));
+            tableAns1.setCellValueFactory(new PropertyValueFactory<>("answer0"));
+            tableAns2.setCellValueFactory(new PropertyValueFactory<>("answer1"));
+            tableAns3.setCellValueFactory(new PropertyValueFactory<>("answer2"));
+            tableAns4.setCellValueFactory(new PropertyValueFactory<>("answer3"));
 
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questions);
             tableView.setItems(questions1);

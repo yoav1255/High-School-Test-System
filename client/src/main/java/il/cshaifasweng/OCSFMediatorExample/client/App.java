@@ -64,7 +64,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    public static Object switchScreen(String screenName) throws IOException{
+    public static void switchScreen(String screenName) throws IOException{
         switch (screenName){
             case "allStudents":
                 Platform.runLater(()->{
@@ -207,7 +207,7 @@ public class App extends Application {
                 });
                 break;
         }
-    return loadFXML(screenName);
+    return;
     }
     //-------------Menu Functions----------//
 

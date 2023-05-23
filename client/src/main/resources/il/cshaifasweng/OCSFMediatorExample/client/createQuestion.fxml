@@ -70,7 +70,7 @@
       </VBox>
       <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/create question">
+            <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/teacher/questions/create question">
                <font>
                   <Font name="Oriya Sangam MN" size="13.0" />
                </font>
