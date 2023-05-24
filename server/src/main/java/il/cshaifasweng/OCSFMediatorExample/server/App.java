@@ -314,11 +314,9 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
         session.beginTransaction();
-        System.out.println("enter");
         Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId",ExamForm.class);
         query.setParameter("examFormId",examFormId );
         ExamForm examForm=(ExamForm) query.getSingleResult();
-        System.out.println(examForm.getExamFormCode());
         session.getTransaction().commit();
         session.close();
         return examForm;

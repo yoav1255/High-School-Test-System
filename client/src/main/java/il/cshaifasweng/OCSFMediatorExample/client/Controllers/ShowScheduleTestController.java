@@ -94,9 +94,7 @@ public class ShowScheduleTestController {
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
-        System.out.println("Ok" + event.getId());
         this.idTeacher = event.getId();
-        System.out.println(idTeacher);
     }
 
     public void setScheduledTests(List<ScheduledTest> scheduledTests) {
@@ -188,7 +186,6 @@ public class ShowScheduleTestController {
         try {
             if (event.getClickCount() == 2 && scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
                 ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
-                System.out.println(idTeacher);
                 if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId())) {
                     App.switchScreen("scheduledTest");
                     Platform.runLater(() -> {

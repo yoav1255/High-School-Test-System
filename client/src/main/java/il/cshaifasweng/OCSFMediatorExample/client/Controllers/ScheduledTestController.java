@@ -95,18 +95,13 @@ public class ScheduledTestController {
     }
     @Subscribe
     public void onExamFormEvent(ExamFormEvent event) {
-        System.out.println("Is Number Two");
         List<String> examFormList = event.getExamFormEventCode();
         comboBoxExamForm.setItems(FXCollections.observableArrayList(examFormList));
-        scheduleTime.setText("12:00");
-
     }
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
         setId(event.getId());
-        System.out.println("Id is Number One" + id);
-
-        System.out.println("fiilcombobox= " + getId());
+        scheduleTime.setText("12:00");
     }
 
     @Subscribe
@@ -143,14 +138,10 @@ public class ScheduledTestController {
 
     @Subscribe
     public void onScheduledTestEvent(ScheduledTestEvent event) {
-        System.out.println("Is Number Four");
         this.examForm = (ExamForm) event.getScheduledTestEvent();
 
     }
 
-    //    public static void updateSelectedRow(ScheduledTest selectedRow){
-//        scheduledTest=selectedRow;
-//    }
     public boolean validateDate() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
         LocalDateTime now = LocalDateTime.now();
@@ -197,7 +188,7 @@ public class ScheduledTestController {
                 return true;
             }
         }
-        scheduleTime.setStyle("-fx-border-color: #cc0000;");
+        scheduleCode.setStyle("-fx-border-color: #cc0000;");
         return false;
     }
 
