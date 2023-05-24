@@ -98,6 +98,7 @@ delete from course;
 delete from subject;
 delete from student;
 
+
 select * from course;
 select * from teacher;
 select * from examform;
@@ -107,7 +108,12 @@ select * from studenttest;
 select * from subject;
 select * from teacher_course;
 select * from teachers_subjects;
+select * from question;
+select * from question_examforms;
 
+
+delete from examform where code = "1145";
+delete from examform where code = "2145";
 
 
 SET SQL_SAFE_UPDATES = 0;

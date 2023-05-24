@@ -57,6 +57,11 @@
 			<artifactId>fontawesomefx</artifactId>
 			<version>8.9</version>
 		</dependency>
+		<dependency>
+			<groupId>org.javatuples</groupId>
+			<artifactId>javatuples</artifactId>
+			<version>1.2</version>
+		</dependency>
 
 		<dependency>
 			<groupId>de.jensd</groupId>

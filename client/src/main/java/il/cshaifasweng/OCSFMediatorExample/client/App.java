@@ -1,9 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.server.Student;
+//import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
+import il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherHomeController;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.WarningEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +14,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,14 +41,24 @@ public class App extends Application {
     public static void setStage(Stage stage) {
         App.stage = stage;
     }
+    private static int instances = 0;
 
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+        instances--;
+        System.out.println("app instance: "+instances);
+    }
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
+        instances++;
+        System.out.println("in start " + instances);
+        System.out.println("app instance: "+instances);
         System.out.println("register successfully with client");
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("primary"), 956, 578);
+//        cleanup();
+        scene = new Scene(loadFXML("login"), 574, 423);
         App.stage = stage;
         stage.setScene(scene);
         stage.show();
@@ -65,8 +75,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    public static Object switchScreen(String screenName) throws IOException{
-        Object controller;
+    public static void switchScreen(String screenName) throws IOException{
         switch (screenName){
             case "allStudents":
                 Platform.runLater(()->{
@@ -108,26 +117,111 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showExamForms":
+                Platform.runLater(()->{
+                    setWindowTitle("Exam Forms");
+                    try {
+                        setContent("showExamForms");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "createExamForm":
+                Platform.runLater(()->{
+                    setWindowTitle("Create Exam Form");
+                    try {
+                        setContent("createExamForm");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "login":
+                Platform.runLater(()->{
+                    setWindowTitle("Login");
+                    try {
+                        setContent("login");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "studentHome":
+                Platform.runLater(()->{
+                    setWindowTitle("StudentHome");
+                    try {
+                        setContent("studentHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacherHome":
+                Platform.runLater(()->{
+                    setWindowTitle("TeacherHome");
+                    try {
+                        setContent("teacherHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "managerHome":
+                Platform.runLater(()->{
+                    setWindowTitle("ManagerHome");
+                    try {
+                        setContent("managerHome");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "scheduledTest":
+                Platform.runLater(()->{
+                    setWindowTitle("Schedule Test ");
+                    try {
+                        setContent("scheduledTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showScheduleTest":
+                Platform.runLater(()->{
+                    setWindowTitle("Schedule Test List ");
+                    try {
+                        setContent("showScheduleTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "createQuestion":
+                Platform.runLater(()->{
+                    setWindowTitle("Create Question Form");
+                    try {
+                        setContent("createQuestion");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showAllQuestions":
+                Platform.runLater(()->{
+                    setWindowTitle("All Questions");
+                    try {
+                        setContent("showAllQuestions");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
-    return loadFXML(screenName);
+//    return loadFXML(screenName);
     }
     //-------------Menu Functions----------//
 
-    @FXML public void goHomeBtn(){
-        try {
-            switchScreen("primary");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    public void goToAllStudentsBtn(){
-        try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            switchScreen("allStudents");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 
     //-------------------------------------//
 
@@ -137,6 +231,7 @@ public class App extends Application {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        System.out.println(" load fxml page: "+fxml);
         return fxmlLoader.load();
     }
     
@@ -145,7 +240,7 @@ public class App extends Application {
     @Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
-    	EventBus.getDefault().unregister(this);
+        cleanup();
 		super.stop();
 	}
     

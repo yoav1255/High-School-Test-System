@@ -23,7 +23,6 @@ public class PrimaryController {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			//////oren/////
 		}
     }
 	@FXML

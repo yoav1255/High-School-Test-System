@@ -1,12 +1,17 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import com.mysql.cj.xdevapi.Client;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-
-import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 
 public class SimpleServer extends AbstractServer {
 
@@ -16,39 +21,121 @@ public class SimpleServer extends AbstractServer {
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		String msgString = msg.toString();
-		if (msgString.startsWith("#warning")) {
-			Warning warning = new Warning("Warning from server!");
-			try {
-				client.sendToClient(warning);
-				System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if (msgString.startsWith("#showAllStudents")) {
-			try {
-				List<Student> studentList = App.getAllStudents();
-				client.sendToClient(studentList);
-				System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (msg.getClass().equals(Student.class)) {
-			try{
-				List<StudentTest> studentTests =  App.getStudentTests((Student) msg);
-				client.sendToClient(studentTests);
-				System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-		} else if (msg.getClass().equals(StudentTest.class)) {
-			try{
-				client.sendToClient((StudentTest) msg);
-				System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
-			}catch (Exception e){
-				e.printStackTrace();
-			}
+		try {
+			CustomMessage message = (CustomMessage) msg;
+			String msgString = message.getMessage();
+			switch (msgString){
+				case ("#warning"):
+					Warning warning = new Warning("Warning from server!");
+					client.sendToClient(new CustomMessage("returnWarning",warning));
+					System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				case ("#showAllStudents"):
+					List<Student> studentList = App.getAllStudents();
+					client.sendToClient(new CustomMessage("returnStudentList",studentList));
+					System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				case ("#getStudentTests"):
+					List<StudentTest> studentTests =  App.getStudentTests((Student) message.getData());
+					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
+					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				case ("#getStudentTest"):
+					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
+					System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
+					break;
+				case("#updateGrade"):
+					StudentTest studentTest = (StudentTest) message.getData();
+					App.updateStudentGrade(studentTest);
+					client.sendToClient(new CustomMessage("updateSuccess",""));
+					break;
+				case ("#login"):
+					ArrayList<String> auth = (ArrayList<String>) message.getData();
+					String user_type = App.login_auth(auth.get(0), auth.get(1));
+					client.sendToClient(new CustomMessage("returnLogin", user_type));
+					break;
+				case ("#studentHome"):
+					client.sendToClient(new CustomMessage("studentHome", message.getData()));
+					break;
+				case ("#teacherHome"):
+					client.sendToClient(new CustomMessage("teacherHome", message.getData()));
+					break;
+				case ("#managerHome"):
+					client.sendToClient(new CustomMessage("managerHome", message.getData()));
+					break;
+				case ("#SendIdToExamForms"):
+					System.out.println("In simple server send id to exam forms "+message.getData());
+					client.sendToClient(new CustomMessage("returnIdToPage",message.getData()));
+					break;
+				case ("#getSubjects"):
+					List<Subject> subjects = App.getSubjectsFromTeacherId(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnSubjects",subjects));
+					break;
+				case ("#getCourses"):
+					List<Course> courses = App.getCoursesFromSubjectName(message.getData().toString());
+					System.out.println(courses.get(0).getName());
+					client.sendToClient(new CustomMessage("returnCourses",courses));
+				case ("#getQuestions"):
+					List<Question> questions = App.getQuestionsFromCourseName(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnQuestions",questions));
+					break;
+				case ("#addQuestion"):
+					Question question = (Question)message.getData();
+					App.addQuestion(question);
+					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
+					break;
+				case ("#getCourseFromName"):
+					Course course =App.getCourseFromCourseName(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnCourse",course));
+					break;
+				case ("#addExamForm"):
+					ExamForm examForm = (ExamForm) message.getData();
+					App.addExamForm(examForm);
+					break;
+				case ("#addQuestionScores"):
+					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
+					App.addQuestionScores(questionScores);
+					break;
+				case ("#getTeacher"):
+					Teacher teacher = App.getTeacherFromId(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnTeacher", teacher));
+					break;
+				case ("#fillComboBox"):
+					List<String> examFormCode = App.getListExamFormCode();
+					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
+					client.sendToClient(new CustomMessage("sentExamFormCodeSuccess", ""));
+					break;
+				case ("#addScheduleTest"):
+					ScheduledTest scheduledTest = (ScheduledTest) message.getData();
+					App.addScheduleTest(scheduledTest);
+					client.sendToClient(new CustomMessage("addScheduleTestSuccess", ""));
+					break;
+				case ("#sendExamFormId"):
+					ExamForm examForm2 = App.getExamForm((message.getData().toString()));
+					client.sendToClient(new CustomMessage("returnExamForm", examForm2));
+					break;
 
+				case ("#showScheduleTest"):
+					List<ScheduledTest> scheduledTests = App.getScheduledTests();
+					client.sendToClient(new CustomMessage("returnScheduledTestList", scheduledTests));
+					break;
+				case ("#updateScheduleTest"):
+					System.out.println("i got here");
+					App.updateScheduleTest( (ScheduledTest) message.getData());
+					client.sendToClient(new CustomMessage("updateSuccess", ""));
+					break;
+				case ("#getCourseExamForms"):
+					List<ExamForm> examForms = App.getCourseExamForms(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnExamForms",examForms));
+					break;
+				case ("#getQuestionScores"):
+					ExamForm examForm1 = (ExamForm) message.getData();
+					List<QuestionScore> questionScoreList = App.getQuestionScoresFromExamForm(examForm1);
+					client.sendToClient(new CustomMessage("returnQuestionScores",questionScoreList));
+					break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}

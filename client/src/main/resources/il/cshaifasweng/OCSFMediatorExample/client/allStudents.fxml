@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ShowAllStudentsController">
+<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowAllStudentsController">
     <children>
-        <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@menu_buttons_style.css">
+        <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
             <Pane prefHeight="83.0" prefWidth="214.0">
                <children>
@@ -76,7 +76,7 @@
                 <RowConstraints maxHeight="487.7233467102051" minHeight="10.0" prefHeight="480.58882904052734" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView fx:id="students_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@table-style.css" GridPane.rowIndex="1">
+                <TableView fx:id="students_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn fx:id="id" prefWidth="75.0" text="Id" />
                         <TableColumn fx:id="first_name" prefWidth="75.0" text="First Name" />
