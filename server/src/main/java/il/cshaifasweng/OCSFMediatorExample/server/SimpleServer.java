@@ -40,6 +40,11 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
 					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 					break;
+				case ("#getStudentTestsFromSchedule"):
+					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
+					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests1));
+					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+					break;
 				case ("#getStudentTest"):
 					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
 					System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());

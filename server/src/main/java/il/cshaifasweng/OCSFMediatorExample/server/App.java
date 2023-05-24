@@ -422,7 +422,6 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-
         Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
         query.setParameter("studentToTake", student);
         List<StudentTest> studentTests = query.getResultList();
@@ -441,6 +440,18 @@ public class App
             studentTest.setTeacher(scheduledTest,teacher);
         }
 
+        session.getTransaction().commit();
+        session.close();
+
+        return studentTests;
+    }
+    public static List<StudentTest> getStudentTestsFromScheduled(ScheduledTest scheduledTest){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("FROM StudentTest s WHERE s.scheduledTest = :scheduledTest", StudentTest.class);
+        query.setParameter("scheduledTest", scheduledTest);
+        List<StudentTest> studentTests = query.getResultList();
         session.getTransaction().commit();
         session.close();
 

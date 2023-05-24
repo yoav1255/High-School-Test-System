@@ -217,6 +217,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "testGrade":
+                Platform.runLater(()->{
+                    setWindowTitle("Test Grades");
+                    try {
+                        setContent("testGrade");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
 //    return loadFXML(screenName);
     }
