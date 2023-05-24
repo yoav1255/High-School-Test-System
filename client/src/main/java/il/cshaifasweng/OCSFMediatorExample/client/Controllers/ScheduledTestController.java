@@ -293,7 +293,7 @@ public class ScheduledTestController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("primary");
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
             Platform.runLater(()->{
                 EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 

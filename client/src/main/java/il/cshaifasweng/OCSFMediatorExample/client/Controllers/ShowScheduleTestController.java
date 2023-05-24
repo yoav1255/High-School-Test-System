@@ -171,15 +171,18 @@ public class ShowScheduleTestController {
     }
 
     @FXML
-    void ShowTestHasntPerformed(ActionEvent event) {
+    void showTestHasntPerformed(ActionEvent event) {
         ShowScheduleTest("ShowTestHasntPerformed");
     }
 
     @FXML
-    void ShowTestPerformed(ActionEvent event) {
+    void showTestPerformed(ActionEvent event) {
         ShowScheduleTest("ShowTestPerformed");
     }
-
+    @FXML
+    void showAllTest(ActionEvent event) {
+        ShowScheduleTest("ShowAllTests");
+    }
     @FXML
     public void handleRowClick(MouseEvent event) {
         try {
@@ -221,7 +224,7 @@ public class ShowScheduleTestController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
-        App.switchScreen("primary");
+        App.switchScreen("teacherHome");
         Platform.runLater(() -> {
             try {
                 EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
