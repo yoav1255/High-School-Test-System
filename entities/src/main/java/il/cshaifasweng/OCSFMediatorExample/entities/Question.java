@@ -29,6 +29,8 @@ public class Question implements Serializable {
     private Subject subject;
     @OneToMany(mappedBy = "question")
     private List<QuestionScore> questionScores;
+    @ManyToMany(mappedBy = "questions")
+    private List <StudentTest> studentTests;
 
     public Question(String text, String answer0, String answer1, String answer2, String answer3, int indexAnswer) {
         this.text = text;

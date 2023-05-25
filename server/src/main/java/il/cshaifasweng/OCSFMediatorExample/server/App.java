@@ -578,4 +578,29 @@ public class App
         session.close();
         return questionScores;
     }
+
+    public static ScheduledTest getScheduleTestWithInfo(String id){
+        ScheduledTest scheduledTest;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        scheduledTest = session.get(ScheduledTest.class,id);
+        String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
+        Query query = session.createQuery(qString, ExamForm.class);
+        query.setParameter("scheduleTest",scheduledTest);
+        ExamForm examForm = (ExamForm) query.getSingleResult();
+
+        String hql = "SELECT qs FROM QuestionScore qs " +
+                "JOIN FETCH qs.question " +
+                "WHERE qs.examForm = :examForm";
+
+        List<QuestionScore> questionScores = session.createQuery(hql)
+                .setParameter("examForm", examForm)
+                .getResultList();
+
+        examForm.setQuestionScores(questionScores);
+        scheduledTest.setExamForm(examForm);
+        session.close();
+        return scheduledTest;
+    }
 }

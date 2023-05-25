@@ -20,6 +20,11 @@ public class StudentTest implements Serializable {
     @ManyToOne
     @JoinColumn(name = "scheduledTest_id")
     private ScheduledTest scheduledTest;
+    @ManyToMany
+    @JoinTable(name="questions_studentAnswers",
+            joinColumns = @JoinColumn(name="student_id"),
+            inverseJoinColumns = @JoinColumn(name="question_code"))
+    private List<Question> questions;
     private int grade;
     private int timeToComplete; //TODO check how to use Duration properly
 
