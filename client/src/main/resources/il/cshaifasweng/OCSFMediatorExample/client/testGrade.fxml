@@ -96,6 +96,7 @@
                         <Font name="Oriya Sangam MN" size="12.0" />
                      </font>
                   </Label>
+                  <Button fx:id="backBtn" layoutX="14.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleBackBtn" prefHeight="28.0" prefWidth="51.0" style="-fx-background-color: orange; -fx-background-radius: 80;" text="Back" />
                </children>
             </Pane>
             </children>
