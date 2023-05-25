@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.loginEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -78,7 +79,8 @@ public class loginController {
                                 App.switchScreen("teacherHome");
                                 Platform.runLater(()->{
                                     try{
-                                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
+                                        EventBus.getDefault().post(new UserHomeEvent(user_id.getText()));
+                                        //SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
