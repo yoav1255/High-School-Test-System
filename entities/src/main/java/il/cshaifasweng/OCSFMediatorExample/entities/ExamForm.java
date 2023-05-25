@@ -13,6 +13,8 @@ public class ExamForm implements Serializable {
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code; //TODO handle code properly!!
     private int timeLimit;
+    private String teacherNotes;
+    private String studentNotes;
     @ManyToOne
     @JoinColumn(name="course_id")
     private Course course;
@@ -27,9 +29,12 @@ public class ExamForm implements Serializable {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    public ExamForm(String code, int timeLimit) {
+
+    public ExamForm(String code, int timeLimit,String teacherNotes,String studentNotes) {
         this.code = code;
         this.timeLimit = timeLimit;
+        this.teacherNotes = teacherNotes;
+        this.studentNotes = studentNotes;
         this.scheduledTests = new ArrayList<ScheduledTest>();
         this.questionScores = new ArrayList<QuestionScore>();
     }
@@ -45,6 +50,22 @@ public class ExamForm implements Serializable {
 
     public int getTimeLimit() {
         return timeLimit;
+    }
+
+    public String getTeacherNotes() {
+        return teacherNotes;
+    }
+
+    public void setTeacherNotes(String teacherNotes) {
+        this.teacherNotes = teacherNotes;
+    }
+
+    public String getStudentNotes() {
+        return studentNotes;
+    }
+
+    public void setStudentNotes(String studentNotes) {
+        this.studentNotes = studentNotes;
     }
 
     public void setTimeLimit(int timeLimit) {
@@ -107,19 +128,19 @@ public class ExamForm implements Serializable {
 
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();
-        examForms.add(new ExamForm("1",180));
-        examForms.add(new ExamForm("2",120));
-        examForms.add(new ExamForm("3",120));
-        examForms.add(new ExamForm("4",180));
-        examForms.add(new ExamForm("5",90));
-        examForms.add(new ExamForm("6",120));
-        examForms.add(new ExamForm("7",90));
-        examForms.add(new ExamForm("8",180));
-        examForms.add(new ExamForm("9",90));
-        examForms.add(new ExamForm("10",180));
-        examForms.add(new ExamForm("11",180));
-        examForms.add(new ExamForm("12",120));
-        examForms.add(new ExamForm("13",180));
+        examForms.add(new ExamForm("1",180,"",""));
+        examForms.add(new ExamForm("2",120,"",""));
+        examForms.add(new ExamForm("3",120,"",""));
+        examForms.add(new ExamForm("4",180,"",""));
+        examForms.add(new ExamForm("5",90,"",""));
+        examForms.add(new ExamForm("6",120,"",""));
+        examForms.add(new ExamForm("7",90,"",""));
+        examForms.add(new ExamForm("8",180,"",""));
+        examForms.add(new ExamForm("9",90,"",""));
+        examForms.add(new ExamForm("10",180,"",""));
+        examForms.add(new ExamForm("11",180,"",""));
+        examForms.add(new ExamForm("12",120,"",""));
+        examForms.add(new ExamForm("13",180,"",""));
 
         return examForms;
     }
