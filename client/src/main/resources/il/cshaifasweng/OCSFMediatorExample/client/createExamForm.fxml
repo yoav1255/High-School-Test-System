@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.CreateExamFormController">
+<AnchorPane prefHeight="870.0" prefWidth="967.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.CreateExamFormController">
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
@@ -51,7 +51,7 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
+                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
                     <graphic>
                         <!--                        <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
@@ -70,7 +70,7 @@
                 </Button>
             </children>
         </VBox>
-        <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
+        <Pane layoutX="207.0" layoutY="2.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
             <children>
                 <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/students_list/student">
                     <font>
@@ -143,5 +143,9 @@
             </AnchorPane>
             </children>
         </GridPane>
+      <Label layoutX="317.0" layoutY="561.0" prefHeight="18.0" prefWidth="117.0" text="notes for the teacher" />
+      <Label layoutX="314.0" layoutY="662.0" prefHeight="18.0" prefWidth="124.0" text="notes for the students" />
+      <TextField fx:id="notesTeacher" layoutX="317.0" layoutY="579.0" prefHeight="83.0" prefWidth="451.0" />
+      <TextField fx:id="notesStudents" layoutX="314.0" layoutY="680.0" prefHeight="83.0" prefWidth="451.0" />
     </children>
 </AnchorPane>

@@ -90,10 +90,9 @@ public class ShowExamFormsController {
 @Subscribe(threadMode = ThreadMode.MAIN )
 @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
-        System.out.println("before platform");
         Platform.runLater(()->{
-            System.out.println("in platform");
             setId(event.getId());
+            System.out.println("Teacher id in show exam forms: "+id);
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
             } catch (IOException e) {
@@ -232,6 +231,7 @@ public class ShowExamFormsController {
             Platform.runLater(()->{
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

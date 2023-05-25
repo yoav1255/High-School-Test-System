@@ -55,52 +55,47 @@ public class loginController {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
-    public void onloginEvent(loginEvent event) {
-
+    public void onloginEvent(loginEvent event) throws IOException {
         setUserType(event.getUserType());
-                switch (user_type) {
-                    case ("wrong"):
-                        error_msg.setVisible(true);
-                        break;
-                    case ("student"):
-                        cleanup();
-                        Platform.runLater(()->{
-                            try {
-                                App.switchScreen("studentHome");
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", user_id.getText()));
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        });
-                        break;
-                    case ("teacher"):
-//                        cleanup();
-                            try {
-                                App.switchScreen("teacherHome");
-                                Platform.runLater(()->{
-                                    try{
-                                        EventBus.getDefault().post(new UserHomeEvent(user_id.getText()));
-                                        //SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    }
-                                });
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        break;
-                    case ("manager"):
-                        cleanup();
-                        Platform.runLater(()->{
-                            try {
-                                App.switchScreen("managerHome");
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", user_id.getText()));
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        });
-                        break;
-                }
+
+        switch (user_type) {
+            case ("wrong"):
+                error_msg.setVisible(true);
+                break;
+            case ("student"):
+                cleanup();
+                App.switchScreen("studentHome");
+                Platform.runLater(()->{
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", user_id.getText()));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case ("teacher"):
+                cleanup();
+                App.switchScreen("teacherHome");
+                Platform.runLater(()->{
+                    try{
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", user_id.getText()));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case ("manager"):
+                cleanup();
+                App.switchScreen("managerHome");
+                Platform.runLater(()->{
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", user_id.getText()));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+        }
     }
 
     @FXML
