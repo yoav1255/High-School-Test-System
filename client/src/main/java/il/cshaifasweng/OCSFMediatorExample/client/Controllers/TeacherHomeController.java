@@ -34,47 +34,43 @@ public class TeacherHomeController {
     private String id;
     private static int instances = 0;
 
-    public TeacherHomeController() {
+    public TeacherHomeController(){
 
     }
-
     @FXML
-    void initialize() {
+    void initialize(){
         EventBus.getDefault().register(this);
         instances++;
-        System.out.println("in teacher " + instances);
+        System.out.println("in teacher "+ instances);
     }
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
         instances--;
-        System.out.println("in teacher " + instances);
+        System.out.println("in teacher "+ instances);
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public void setId(String id){this.id = id;}
 
 
     @FXML
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserHomeEvent(UserHomeEvent event) {
-        setId(event.getUserID());
-        System.out.println("on show teacher event id " + this.id);
-        initializeIfIdNotNull();
+    public void onUserHomeEvent(UserHomeEvent event){
+            setId(event.getUserID());
+            System.out.println("on show teacher event id "+ this.id );
+            initializeIfIdNotNull();
     }
 
     @Subscribe
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         setId(event.getId());
-        System.out.println("on show teacher event id " + this.id);
+        System.out.println("on show teacher event id "+ this.id );
         initializeIfIdNotNull();
     }
-
     private void initializeIfIdNotNull() {
-        Platform.runLater(() -> {
+        Platform.runLater(()->{
             if (id != null) {
-                System.out.println("in intialize Function id " + this.id);
+                System.out.println("in intialize Function id "+this.id);
                 idLabel.setText("ID: " + this.id);
             }
         });
@@ -92,19 +88,19 @@ public class TeacherHomeController {
 
     @FXML
     public void handleShowQuestionsButtonClick(ActionEvent event) {
-        try {
-            App.switchScreen("showAllQuestions");
-            Platform.runLater(() -> {
-                try {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms", id));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            cleanup();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            try {
+                App.switchScreen("showAllQuestions");
+                Platform.runLater(()->{
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                cleanup();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     @FXML
@@ -112,7 +108,7 @@ public class TeacherHomeController {
         try {
             cleanup();
             App.switchScreen("showExamForms");
-            Platform.runLater(() -> {
+            Platform.runLater(()->{
                 try {
                     EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
                 } catch (Exception e) {
@@ -123,22 +119,26 @@ public class TeacherHomeController {
             e.printStackTrace();
         }
     }
-
     @FXML
-    public void handleShowScheduledTestsButtonClick(ActionEvent event) {
-        Platform.runLater(() -> {
-            try {
-                App.switchScreen("showScheduleTest");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms", id));
-                cleanup();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+    public void handleShowScheduledTestsButtonClick(ActionEvent event) throws IOException {
+        try {
+            cleanup();
+            App.switchScreen("showScheduleTest");
+
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleShowStatsButtonClick(ActionEvent event) {
-
     }
-
 }

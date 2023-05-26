@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowScheduleTestController">
+<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.TestGradesController">
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
@@ -65,7 +65,7 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-            <Button mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Schedule New Test" />
+            <Button mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Scheduled Test List" />
             </children>
         </VBox>
         <GridPane fx:id="scheduleTestGP" layoutX="255.0" layoutY="47.0" prefHeight="517.0" prefWidth="679.0">
@@ -79,12 +79,11 @@
             <children>
                 <TableView fx:id="scheduleTest_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
-                        <TableColumn fx:id="id" prefWidth="75.0" text="Id" />
-                        <TableColumn fx:id="date" prefWidth="75.0" text="Date" />
-                        <TableColumn fx:id="time" prefWidth="75.0" text="Time" />
-                        <TableColumn fx:id="submission" prefWidth="75.0" text="Submissions" />
-                  <TableColumn fx:id="examFormId" prefWidth="75.0" text="Exam Form Id" />
-                  <TableColumn fx:id="teacherId" prefWidth="75.0" text="Teacher ID" />
+                        <TableColumn fx:id="studentId" prefWidth="75.0" text="Student Id" />
+                        <TableColumn fx:id="studentName" prefWidth="75.0" text="Student Name" />
+                        <TableColumn fx:id="timeTook" prefWidth="75.0" text="Time took" />
+                  <TableColumn fx:id="gender" prefWidth="75.0" text="Gender" />
+                  <TableColumn fx:id="grade" prefWidth="75.0" text="Grade" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -97,9 +96,7 @@
                         <Font name="Oriya Sangam MN" size="12.0" />
                      </font>
                   </Label>
-                  <Button fx:id="testHasntPerformed" layoutX="1.0" layoutY="1.0" mnemonicParsing="false" onAction="#showTestHasntPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test not yet performed" />
-                  <Button fx:id="testPerformed" layoutX="150.0" layoutY="1.0" mnemonicParsing="false" onAction="#showTestPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test  performed" />
-                  <Button fx:id="showAllTest" layoutX="260.0" layoutY="1.0" mnemonicParsing="false" onAction="#showAllTest" style="-fx-background-color: white; -fx-border-color: orange;" text="All Test" />
+                  <Button fx:id="backBtn" layoutX="14.0" layoutY="-3.0" mnemonicParsing="false" onAction="#handleBackBtn" prefHeight="28.0" prefWidth="51.0" style="-fx-background-color: orange; -fx-background-radius: 80;" text="Back" />
                </children>
             </Pane>
             </children>

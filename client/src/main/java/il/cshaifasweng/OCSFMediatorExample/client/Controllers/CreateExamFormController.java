@@ -30,6 +30,10 @@ public class CreateExamFormController {
     @FXML
     private ComboBox<String> ComboCourse;
     @FXML
+    private TextField notesStudents;
+    @FXML
+    private TextField notesTeacher;
+    @FXML
     private TableView<Question> Table_Questions;
 
     @FXML
@@ -84,6 +88,8 @@ public class CreateExamFormController {
         Table_Questions.setDisable(true);
         courseChaged=0;
         questionScoreList = new ArrayList<>();
+        notesStudents.setText("");
+        notesTeacher.setText("");
     }
 
 @Subscribe(threadMode = ThreadMode.MAIN)
@@ -105,6 +111,10 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
             Platform.runLater(()->{
                 ComboSubject.setValue(examForm.getSubjectName());
                 timeLimit.setText(Integer.toString( examForm.getTimeLimit()));
+                if(examForm.getTeacherNotes()!=null)
+                    notesTeacher.setText(examForm.getTeacherNotes());
+                if(examForm.getStudentNotes()!=null)
+                    notesStudents.setText(examForm.getStudentNotes());
             });
         }
     }
@@ -313,7 +323,9 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
                 Random random = new Random();
                 int randomNumber = random.nextInt(999) + 1;//TODO change it
                 ExamCode = Integer.toString(cour.getCode()) + Integer.toString(sub.getCode()) + Integer.toString(randomNumber);//TODO handle code properly!
-                ExamForm examForm = new ExamForm(ExamCode, timeLim);
+                System.out.println(notesStudents.getText());
+                System.out.println(notesTeacher.getText());
+                ExamForm examForm = new ExamForm(ExamCode, timeLim,notesTeacher.getText(),notesStudents.getText());
                 examForm.setQuestionScores(questionScoreList);
                 examForm.setSubject(sub);
                 examForm.setCourse(cour);
