@@ -39,13 +39,15 @@ public class StudentExecuteExamController {
     private ToggleGroup toggleGroup;
 
     @FXML
-    private ListView<QuestionScore> questionsListView;
+    private ListView<Question_Answer> questionsListView;
 
     private String id;
     private ScheduledTest scheduledTest;
     private StudentTest studentTest;
     private List<QuestionScore> questionScoreList;
     private Student student;
+    List<Question_Answer> questionAnswers ;
+
 
 
     public StudentExecuteExamController() {
@@ -58,15 +60,10 @@ public class StudentExecuteExamController {
         EventBus.getDefault().unregister(this);
     }
 
-
-//    @Subscribe
-//    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
-//
-//    }
-
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
+        questionAnswers= new ArrayList<>();
         System.out.println("on selected student event");
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
@@ -79,81 +76,86 @@ public class StudentExecuteExamController {
 
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) {
-        System.out.println("on selected test event");
         scheduledTest = event.getSelectedTestEvent();
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
-        ObservableList<QuestionScore> questionScoreObservableList = FXCollections.observableArrayList(questionScoreList);
-        questionsListView.setItems(questionScoreObservableList);
 
-        questionsListView.setCellFactory(param -> new ListCell<QuestionScore>() {
+        for (QuestionScore questionScore : questionScoreList) {
+            Question_Answer questionAnswer = new Question_Answer();
+            questionAnswer.setStudentTest(studentTest);
+            questionAnswer.setQuestion(questionScore);
+            questionAnswer.setAnswer(-1); // Initialize with no answer selected
 
+            questionAnswers.add(questionAnswer);
+        }
+
+        ObservableList<Question_Answer> questionAnswerObservableList = FXCollections.observableArrayList(questionAnswers);
+        questionsListView.setItems(questionAnswerObservableList);
+
+        questionsListView.setCellFactory(param -> new ListCell<Question_Answer>() {
             @Override
-            protected void updateItem(QuestionScore questionScore, boolean empty) {
+            protected void updateItem(Question_Answer questionAnswer, boolean empty) {
+                super.updateItem(questionAnswer, empty);
 
-                super.updateItem(questionScore, empty);
-
-                if (empty || questionScore == null) {
+                if (empty || questionAnswer == null) {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    String questionText = questionScore.getQuestion().getText();
-                    String answer0 = questionScore.getQuestion().getAnswer0();
-                    String answer1 = questionScore.getQuestion().getAnswer1();
-                    String answer2 = questionScore.getQuestion().getAnswer2();
-                    String answer3 = questionScore.getQuestion().getAnswer3();
-                    int score = questionScore.getScore();
+                    String questionText = questionAnswer.getQuestion().getQuestion().getText();
+                    String answer0 = questionAnswer.getQuestion().getQuestion().getAnswer0();
+                    String answer1 = questionAnswer.getQuestion().getQuestion().getAnswer1();
+                    String answer2 = questionAnswer.getQuestion().getQuestion().getAnswer2();
+                    String answer3 = questionAnswer.getQuestion().getQuestion().getAnswer3();
 
-                    //Platform.runLater(()->{
-                        VBox vbox = new VBox();
-                        vbox.setSpacing(10);
+                    VBox vbox = new VBox();
+                    vbox.setSpacing(10);
 
-                        Label questionLabel = new Label("Question:      " + questionText);
-                        vbox.getChildren().add(questionLabel);
+                    Label questionLabel = new Label("Question:      " + questionText);
+                    vbox.getChildren().add(questionLabel);
 
-                        toggleGroup = new ToggleGroup();
+                    toggleGroup = new ToggleGroup();
 
-                        RadioButton answer1RadioButton = new RadioButton("1.    "+answer0);
-                        answer1RadioButton.setToggleGroup(toggleGroup);
-                        vbox.getChildren().add(answer1RadioButton);
+                    RadioButton answer1RadioButton = new RadioButton("1.    " + answer0);
+                    answer1RadioButton.setToggleGroup(toggleGroup);
+                    vbox.getChildren().add(answer1RadioButton);
 
-                        RadioButton answer2RadioButton = new RadioButton("2.     "+answer1);
-                        answer2RadioButton.setToggleGroup(toggleGroup);
-                        vbox.getChildren().add(answer2RadioButton);
+                    RadioButton answer2RadioButton = new RadioButton("2.     " + answer1);
+                    answer2RadioButton.setToggleGroup(toggleGroup);
+                    vbox.getChildren().add(answer2RadioButton);
 
-                        RadioButton answer3RadioButton = new RadioButton("3.     "+answer2);
-                        answer3RadioButton.setToggleGroup(toggleGroup);
-                        vbox.getChildren().add(answer3RadioButton);
+                    RadioButton answer3RadioButton = new RadioButton("3.     " + answer2);
+                    answer3RadioButton.setToggleGroup(toggleGroup);
+                    vbox.getChildren().add(answer3RadioButton);
 
-                        RadioButton answer4RadioButton = new RadioButton("4.     "+answer3);
-                        answer4RadioButton.setToggleGroup(toggleGroup);
-                        vbox.getChildren().add(answer4RadioButton);
+                    RadioButton answer4RadioButton = new RadioButton("4.     " + answer3);
+                    answer4RadioButton.setToggleGroup(toggleGroup);
+                    vbox.getChildren().add(answer4RadioButton);
 
-                        Label scoreLabel = new Label("Grade: " + score);
-                        vbox.getChildren().add(scoreLabel);
+                    Label scoreLabel = new Label("Grade: " + questionAnswer.getQuestion().getScore());
+                    vbox.getChildren().add(scoreLabel);
 
-                        setGraphic(vbox);
-                        toggleGroups.add(toggleGroup);
-                    //});
-
+                    setGraphic(vbox);
+                    toggleGroups.add(toggleGroup);
                 }
             }
         });
-
-
     }
 
     @FXML
     public void submitTestBtn(ActionEvent event) {
-        ObservableList<QuestionScore> questionScores = questionsListView.getItems();
-        for (int i=0;i<questionScores.size();i++) {
+        ObservableList<Question_Answer> questionAnswers1 = questionsListView.getItems();
+        for (int i=0;i<questionAnswers1.size();i++) {
             ToggleGroup toggleGroup1 = toggleGroups.get(i);
             RadioButton selectedRadioButton = (RadioButton) toggleGroup1.getSelectedToggle();
             if (selectedRadioButton != null) {
-                String selectedAnswer = selectedRadioButton.getText();
+                int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
+                Question_Answer questionAnswer = new Question_Answer(questionAnswers1.get(i).getQuestion(),studentTest,answerIndex);
+                questionAnswers.add(questionAnswer);
                 // Here you can process the selected answer for each question
                 // For example, you can store it in a data structure or perform some action based on the answer
-                System.out.println("Question: " + questionScores.get(i).getQuestion().getText());
-                System.out.println("Selected Answer: " + selectedAnswer);
+                System.out.println("Question: " + questionAnswers1.get(i).getQuestion().getQuestion().getText());
+                System.out.println("Selected Answer: " + selectedRadioButton.getText());
+            }else {
+                System.out.println("No answer selected for question: " + questionAnswers1.get(i).getQuestion().getQuestion().getText());
             }
         }
     }
