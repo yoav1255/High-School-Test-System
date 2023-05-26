@@ -135,10 +135,9 @@ public class CreateQuestionController {
     }
 
     @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
-        int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-        if (input == JOptionPane.YES_OPTION) {
+    void handleCancelButtonClick(ActionEvent event) {
+        if (comboSubject.getItems() == null && theQuestion.getText() == null && ans1.getText() == null && ans2.getText() == null
+                && ans3.getText() == null && ans4.getText() == null && comboAns.getItems()==null) {
             try {
                 String teacherId = this.id;
                 cleanup();
@@ -149,14 +148,28 @@ public class CreateQuestionController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (input == JOptionPane.YES_OPTION) {
+                try {
+                    String teacherId = this.id;
+                    cleanup();
+                    App.switchScreen("showAllQuestions");
+                    Platform.runLater(() -> {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @FXML
-    void handleCancelButtonClick(ActionEvent event) {
-        int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-        if (input == JOptionPane.YES_OPTION) {
+    void handleGoHomeButtonClick(ActionEvent event) {
+        if (comboSubject.getValue() == null && theQuestion.getText() == null && ans1.getText() == null && ans2.getText() == null
+                && ans3.getText() == null && ans4.getText() == null && comboAns.getValue()==null) {
             try {
                 String teacherId = this.id;
                 cleanup();
@@ -167,7 +180,25 @@ public class CreateQuestionController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (input == JOptionPane.YES_OPTION) {
+                try {
+                    String teacherId = this.id;
+                    cleanup();
+                    App.switchScreen("teacherHome");
+                    Platform.runLater(() -> {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+
+
     }
 
     public void confirm() {
@@ -200,7 +231,6 @@ public class CreateQuestionController {
     @Subscribe
     public void onQuestionAddedEvent(QuestionAddedEvent event) {
         try {
-            cleanup();
             String teacherId = this.id;
             cleanup();
             App.switchScreen("showAllQuestions");
@@ -224,11 +254,21 @@ public class CreateQuestionController {
     }
 
 
-    @Subscribe
+/*    @Subscribe
     public void onShowUpdateQuestFormEvent(ShowUpdateQuestFormEvent event){
+        List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
         Platform.runLater(()->{
-        List<Object> setTeacherAndExam = event.getSetTeacherAndExam();
-        Question updateQuestion = (Question)setTeacherAndExam.get(0);
+            try {
+                id = (String)setTeacherAndQuest.get(0);
+                System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiii "+ id);
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Platform.runLater(()->{
+        Question updateQuestion = (Question)setTeacherAndQuest.get(1);
         theQuestion.setText(updateQuestion.getText());
         ans1.setText(updateQuestion.getAnswer0());
         ans2.setText(updateQuestion.getAnswer1());
@@ -237,11 +277,10 @@ public class CreateQuestionController {
 
 
 
-
         });
 
         //   comboAns.setItems(updateQuestion.getIndexAnswer());
 
-    }
+    }*/
 
 }

@@ -8,9 +8,9 @@ public class ShowUpdateQuestFormEvent {
     public ShowUpdateQuestFormEvent(List<Object> setTeacherAndQuest) {
         this.setTeacherAndQuest = setTeacherAndQuest;
     }
-
-    public List<Object> getSetTeacherAndExam() {
+    public List<Object> getSetTeacherAndQuest() {
         return setTeacherAndQuest;
     }
 }
+
 
