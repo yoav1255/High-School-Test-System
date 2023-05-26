@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CreateQuestionController {
@@ -136,8 +137,8 @@ public class CreateQuestionController {
 
     @FXML
     void handleCancelButtonClick(ActionEvent event) {
-        if (comboSubject.getItems() == null && theQuestion.getText() == null && ans1.getText() == null && ans2.getText() == null
-                && ans3.getText() == null && ans4.getText() == null && comboAns.getItems()==null) {
+        if (theQuestion.getText().isEmpty() && ans1.getText().isEmpty() && ans2.getText().isEmpty()
+                && ans3.getText().isEmpty() && ans4.getText().isEmpty()) {
             try {
                 String teacherId = this.id;
                 cleanup();
@@ -168,8 +169,9 @@ public class CreateQuestionController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
-        if (comboSubject.getValue() == null && theQuestion.getText() == null && ans1.getText() == null && ans2.getText() == null
-                && ans3.getText() == null && ans4.getText() == null && comboAns.getValue()==null) {
+
+        if (theQuestion.getText().isEmpty() && ans1.getText().isEmpty() && ans2.getText().isEmpty()
+                && ans3.getText().isEmpty() && ans4.getText().isEmpty()) {
             try {
                 String teacherId = this.id;
                 cleanup();
@@ -254,13 +256,12 @@ public class CreateQuestionController {
     }
 
 
-/*    @Subscribe
+    @Subscribe
     public void onShowUpdateQuestFormEvent(ShowUpdateQuestFormEvent event){
         List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
         Platform.runLater(()->{
             try {
                 id = (String)setTeacherAndQuest.get(0);
-                System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiii "+ id);
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -275,12 +276,17 @@ public class CreateQuestionController {
         ans3.setText(updateQuestion.getAnswer2());
         ans4.setText(updateQuestion.getAnswer3());
 
+        Subject selectedSub = updateQuestion.getSubject();
 
+        comboSubject.setValue(selectedSub.getName());
+        courseOptions.setVisible(true);
+        comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
 
+        // TODO set course
         });
 
         //   comboAns.setItems(updateQuestion.getIndexAnswer());
 
-    }*/
+    }
 
 }

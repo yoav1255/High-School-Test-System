@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -158,14 +159,17 @@ public class ShowQuestionsController {
             e.printStackTrace();
         }
     }
-    @Subscribe
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
-        setId(event.getId());
-        try {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Subscribe(threadMode = ThreadMode.MAIN )
+    @FXML
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+        Platform.runLater(()->{
+            setId(event.getId());
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
     @FXML
     public void GoToAddQuestion(ActionEvent event) {
@@ -188,6 +192,7 @@ public class ShowQuestionsController {
     void handleRowClick(MouseEvent event) {
         try {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+
                 Question selectedQuestion = tableView.getSelectionModel().getSelectedItem();
                 if (selectedQuestion != null) {
 
