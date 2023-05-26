@@ -95,7 +95,7 @@
                   <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="117.0" text="Choose subject:" />
                   <Label layoutX="332.0" layoutY="5.0" prefHeight="18.0" prefWidth="88.0" text="Choose courses:" />
                   <Label layoutX="10.0" layoutY="59.0" prefHeight="17.0" prefWidth="110.0" text="Write the question:" />
-                  <ComboBox fx:id="comboSubject" layoutX="123.0" layoutY="10.0" onAction="#onSelectSubject" prefWidth="150.0" />
+                  <ComboBox fx:id="comboSubject" layoutX="123.0" layoutY="10.0" onAction="#onSelectSubject" prefWidth="150.0" promptText="click here" />
                   <TextField fx:id="theQuestion" layoutX="124.0" layoutY="46.0" prefHeight="39.0" prefWidth="577.0" />
                   <Label layoutX="14.0" layoutY="103.0" prefHeight="17.0" prefWidth="110.0" text="Answer 1:" />
                   <Label layoutX="14.0" layoutY="151.0" prefHeight="17.0" prefWidth="110.0" text="Answer 2:" />
@@ -109,7 +109,7 @@
                   <ComboBox fx:id="comboAns" layoutX="203.0" layoutY="311.0" onAction="#onSelectSubject" prefWidth="150.0" />
                   <Button fx:id="cancelBN" layoutX="533.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefHeight="25.0" prefWidth="81.0" text="Cancel" />
                   <Button fx:id="confirmBN" layoutX="631.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleConfirmButtonClick" prefHeight="25.0" prefWidth="81.0" text="Confirm" />
-                  <ListView fx:id="courseOptions" layoutX="492.0" layoutY="-15.0" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView fx:id="courseOptions" layoutX="500.0" layoutY="-28.0" prefHeight="120.0" prefWidth="200.0" />
                   <Label layoutX="306.0" layoutY="22.0" prefHeight="18.0" prefWidth="140.0" text="Hold Ctrl for multyple selection">
                      <font>
                         <Font size="10.0" />
