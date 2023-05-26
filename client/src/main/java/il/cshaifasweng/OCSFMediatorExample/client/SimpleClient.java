@@ -105,6 +105,11 @@ public class SimpleClient extends AbstractClient {
 					ScheduledTest scheduledTest = (ScheduledTest)message.getData();
 					EventBus.getDefault().post(new SelectedTestEvent(scheduledTest));
 					break;
+				case ("returnStudent"):
+					Student student = (Student) message.getData();
+					System.out.println("s.c " +student.getGender());
+					EventBus.getDefault().post(new SelectedStudentEvent(student));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();

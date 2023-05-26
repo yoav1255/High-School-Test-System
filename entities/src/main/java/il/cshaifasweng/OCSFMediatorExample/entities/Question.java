@@ -29,8 +29,8 @@ public class Question implements Serializable {
     private Subject subject;
     @OneToMany(mappedBy = "question")
     private List<QuestionScore> questionScores;
-    @ManyToMany(mappedBy = "questions")
-    private List <StudentTest> studentTests;
+    @OneToMany(mappedBy = "question")
+    private List <Question_Answer> questionAnswers;
 
     public Question(String text, String answer0, String answer1, String answer2, String answer3, int indexAnswer) {
         this.text = text;
@@ -123,12 +123,21 @@ public class Question implements Serializable {
         return questionScores;
     }
 
+    public List<Question_Answer> getQuestionAnswers() {
+        return questionAnswers;
+    }
+
+    public void setQuestionAnswers(List<Question_Answer> questionAnswers) {
+        this.questionAnswers = questionAnswers;
+    }
+
     public void setQuestionScores(List<QuestionScore> questionScores) {
         this.questionScores = questionScores;
     }
     public void addQuestionScore(QuestionScore questionScore){
         questionScores.add(questionScore);
     }
+
 
     public static List<Question> GenerateQuestions(){
         List<Question> questions = new ArrayList<>();

@@ -35,7 +35,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -67,6 +67,8 @@ public class App
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(QuestionScore.class);
+        configuration.addAnnotatedClass(Question_Answer.class);
+
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -602,5 +604,14 @@ public class App
         scheduledTest.setExamForm(examForm);
         session.close();
         return scheduledTest;
+    }
+
+    public static Student getStudent(String id){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        Student student = session.get(Student.class,id);
+        session.close();
+        System.out.println(student.getEmail());
+        return student;
     }
 }

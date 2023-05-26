@@ -1,10 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Question;
-import il.cshaifasweng.OCSFMediatorExample.entities.QuestionScore;
-import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
-import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -17,6 +16,7 @@ import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,21 +33,25 @@ public class StudentExecuteExamController {
     private Label text_Id;
     @FXML
     private Button submitButton;
-
+    @FXML
     private List<ToggleGroup> toggleGroups = new ArrayList<>();
     @FXML
     private ToggleGroup toggleGroup;
 
     @FXML
     private ListView<QuestionScore> questionsListView;
+
     private String id;
     private ScheduledTest scheduledTest;
     private StudentTest studentTest;
     private List<QuestionScore> questionScoreList;
+    private Student student;
 
 
     public StudentExecuteExamController() {
         EventBus.getDefault().register(this);
+        System.out.println("on constructor");
+
     }
 
     public void cleanup() {
@@ -55,16 +59,27 @@ public class StudentExecuteExamController {
     }
 
 
+//    @Subscribe
+//    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+//
+//    }
+
     @Subscribe
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
-        id = event.getId();
+    public void onSelectedStudentEvent(SelectedStudentEvent event){
+        student =event.getStudent();
+        System.out.println("on selected student event");
         Platform.runLater(() -> {
-            text_Id.setText(text_Id.getText() + id);
+            text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
+        student = event.getStudent();
+        System.out.println("in event: "+student.getFirst_name());
+        studentTest = new StudentTest();
+        studentTest.setStudent(student);
     }
 
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) {
+        System.out.println("on selected test event");
         scheduledTest = event.getSelectedTestEvent();
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
         ObservableList<QuestionScore> questionScoreObservableList = FXCollections.observableArrayList(questionScoreList);
@@ -130,17 +145,16 @@ public class StudentExecuteExamController {
     @FXML
     public void submitTestBtn(ActionEvent event) {
         ObservableList<QuestionScore> questionScores = questionsListView.getItems();
-        int i=0;
-        for (QuestionScore questionScore : questionScores) {
-            RadioButton selectedRadioButton = (RadioButton) toggleGroups.get(i).getSelectedToggle();
+        for (int i=0;i<questionScores.size();i++) {
+            ToggleGroup toggleGroup1 = toggleGroups.get(i);
+            RadioButton selectedRadioButton = (RadioButton) toggleGroup1.getSelectedToggle();
             if (selectedRadioButton != null) {
                 String selectedAnswer = selectedRadioButton.getText();
                 // Here you can process the selected answer for each question
                 // For example, you can store it in a data structure or perform some action based on the answer
-                System.out.println("Question: " + questionScore.getQuestion().getText());
+                System.out.println("Question: " + questionScores.get(i).getQuestion().getText());
                 System.out.println("Selected Answer: " + selectedAnswer);
             }
-            i++;
         }
     }
 }

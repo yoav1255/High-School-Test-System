@@ -77,7 +77,8 @@ public class ExamEntryController {
             App.switchScreen("studentExecuteExam");
             Platform.runLater(()->{
                 try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    //EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo",codeInput));
 
                 } catch (IOException e) {

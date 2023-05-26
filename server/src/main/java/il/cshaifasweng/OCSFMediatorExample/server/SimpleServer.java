@@ -137,6 +137,10 @@ public class SimpleServer extends AbstractServer {
 					ScheduledTest scheduledTest1 = App.getScheduleTestWithInfo(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnScheduleTestWithInfo",scheduledTest1));
 					break;
+				case ("#getStudent"):
+					Student student = App.getStudent(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnStudent",student));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
