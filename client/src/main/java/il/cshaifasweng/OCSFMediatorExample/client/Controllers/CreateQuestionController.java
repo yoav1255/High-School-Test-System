@@ -282,7 +282,6 @@ public class CreateQuestionController {
         courseOptions.setVisible(true);
         comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
 
-        // TODO set course
         });
 
         //   comboAns.setItems(updateQuestion.getIndexAnswer());
