@@ -47,7 +47,7 @@
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
-                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Grades">
+                <Button fx:id="GradesButton" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToGradesButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Grades">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
@@ -81,14 +81,14 @@
                 <!--            <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
-        <Pane layoutX="299.0" layoutY="110.0" prefHeight="385.0" prefWidth="512.0">
+        <Pane layoutX="331.0" layoutY="111.0" prefHeight="385.0" prefWidth="512.0">
             <children>
                 <Label layoutX="150.0" layoutY="110.0" text="Hello Student !">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="idLabel" layoutX="212.0" layoutY="135.0" text="ID : ">
+                <Label fx:id="idLabel" layoutX="298.0" layoutY="110.0" text="ID : ">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>

@@ -36,7 +36,7 @@ public class SimpleServer extends AbstractServer {
 					System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
 					break;
 				case ("#getStudentTests"):
-					List<StudentTest> studentTests =  App.getStudentTests((Student) message.getData());
+					List<StudentTest> studentTests =  App.getStudentTests(App.getStudent((String) message.getData()));
 					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
 					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 					break;

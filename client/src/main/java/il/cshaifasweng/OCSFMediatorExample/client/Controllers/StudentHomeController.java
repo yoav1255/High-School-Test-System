@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
@@ -16,7 +18,7 @@ import java.io.IOException;
 public class StudentHomeController {
 
     @FXML
-    private Button allStudentsBN;
+    private Button GradesButton;
 
     @FXML
     private Button homeBN;
@@ -65,8 +67,15 @@ public class StudentHomeController {
     }
 
     @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) {
-
+    void handleGoToGradesButtonClick(ActionEvent event) throws IOException {
+        App.switchScreen("showOneStudent");
+        Platform.runLater(()->{
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class ShowOneStudentController {
+    @FXML
+    private Button HomeButton;
 
     @FXML
     private TableView<StudentTest> GradesTable;
@@ -50,6 +53,8 @@ public class ShowOneStudentController {
     private Label statusLB;
     private List<StudentTest> studentTests;
 
+    private String id;
+
     public List<StudentTest> getStudentTests() {
         return studentTests;
     }
@@ -57,6 +62,8 @@ public class ShowOneStudentController {
     public void setStudentTests(List<StudentTest> studentTests) {
         this.studentTests = studentTests;
     }
+
+    public void setStudentID(String ids){id = ids;}
     public ShowOneStudentController(){
         EventBus.getDefault().register(this);
     }
@@ -70,6 +77,7 @@ public class ShowOneStudentController {
             setStudentTests(event.getStudentTests());
             if(studentTests!=null){
                 Student student = studentTests.get(0).getStudent();
+                setStudentID(student.getId());
                 Platform.runLater(()->{
                     statusLB.setText(statusLB.getText() + student.getId());
                     student_id.setText(student_id.getText() + student.getId());
@@ -123,7 +131,7 @@ public class ShowOneStudentController {
             e.printStackTrace();
         }
     }
-    @FXML
+    /*@FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
             SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
@@ -132,24 +140,28 @@ public class ShowOneStudentController {
         }catch (IOException e){
             e.printStackTrace();
         }
+    }*/
+    @FXML
+    void handleGoHomeButtonClick(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("studentHome");
+        Platform.runLater(()->{
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", id));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        });
     }
     @FXML
-    void handleGoHomeButtonClick(ActionEvent event){
-        try{
-            App.switchScreen("primary");
-            cleanup();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    void handleBackButtonClick(ActionEvent event) {
-        try{
+    void handleBackButtonClick(ActionEvent event) throws IOException {
+        handleGoHomeButtonClick(event);
+        /*try{
             SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
             App.switchScreen("allStudents");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
-        }
+        }*/
     }
 }
