@@ -82,6 +82,7 @@ public class StudentExecuteExamController {
         for (QuestionScore questionScore : questionScoreList) {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
+            System.out.println("check question score "+questionScore.getId());
             questionAnswer.setQuestion(questionScore);
             questionAnswer.setAnswer(-1); // Initialize with no answer selected
 
@@ -130,11 +131,28 @@ public class StudentExecuteExamController {
                     answer4RadioButton.setToggleGroup(toggleGroup);
                     vbox.getChildren().add(answer4RadioButton);
 
-                    Label scoreLabel = new Label("Grade: " + questionAnswer.getQuestion().getScore());
+                    Label scoreLabel = new Label("Points: " + questionAnswer.getQuestion().getScore());
                     vbox.getChildren().add(scoreLabel);
 
                     setGraphic(vbox);
                     toggleGroups.add(toggleGroup);
+
+                    //
+
+                    // Listen for changes in the selected toggle
+                    toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+                        RadioButton selectedRadioButton = (RadioButton) newValue;
+                        if (selectedRadioButton != null) {
+                            int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
+                            questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
+                            System.out.println("Question: " + questionAnswer.getQuestion().getQuestion().getText());
+                            System.out.println("Selected Answer: " + selectedRadioButton.getText());
+                        } else {
+                            System.out.println("No answer selected for question: " + questionAnswer.getQuestion().getQuestion().getText());
+                        }
+                    });
+
+                    //
                 }
             }
         });
@@ -142,22 +160,11 @@ public class StudentExecuteExamController {
 
     @FXML
     public void submitTestBtn(ActionEvent event) {
-        ObservableList<Question_Answer> questionAnswers1 = questionsListView.getItems();
-        for (int i=0;i<questionAnswers1.size();i++) {
-            ToggleGroup toggleGroup1 = toggleGroups.get(i);
-            RadioButton selectedRadioButton = (RadioButton) toggleGroup1.getSelectedToggle();
-            if (selectedRadioButton != null) {
-                int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
-                Question_Answer questionAnswer = new Question_Answer(questionAnswers1.get(i).getQuestion(),studentTest,answerIndex);
-                questionAnswers.add(questionAnswer);
-                // Here you can process the selected answer for each question
-                // For example, you can store it in a data structure or perform some action based on the answer
-                System.out.println("Question: " + questionAnswers1.get(i).getQuestion().getQuestion().getText());
-                System.out.println("Selected Answer: " + selectedRadioButton.getText());
-            }else {
-                System.out.println("No answer selected for question: " + questionAnswers1.get(i).getQuestion().getQuestion().getText());
-            }
-        }
+        studentTest.setScheduledTest(scheduledTest);
+        studentTest.setQuestionAnswers(questionAnswers);
+        // student test is ready
+        //TODO add the grade for the test
+        //TODO add timer and add timeToComplete field
     }
 }
 
