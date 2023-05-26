@@ -73,6 +73,8 @@ public class ShowScheduleTestController {
     private TableColumn<ScheduledTest, String> time; // Value injected by FXMLLoader
 
     private List<ScheduledTest> scheduledTests;
+    private boolean edit = false;
+    private boolean showGrades = false;
 
 
     public String getId() {
@@ -147,6 +149,8 @@ public class ShowScheduleTestController {
         if (show.equals("ShowAllTests")) {
             ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableList(scheduledTests);
             scheduleTest_table_view.setItems(scheduledTestObservableList);
+            this.edit = false;
+            this.showGrades = false;
         } else {
             ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableArrayList();
 
@@ -158,9 +162,13 @@ public class ShowScheduleTestController {
                 if (show.equals("ShowTestHasntPerformed")) {
                     if (Integer.parseInt(currentDate) > Integer.parseInt(today))
                         scheduledTestObservableList.add(scheduledTest);
+                    this.showGrades = false;
+                    this.edit = true;
                 } else if (show.equals("ShowTestPerformed")) {
                     if (Integer.parseInt(currentDate) <= Integer.parseInt(today))
                         scheduledTestObservableList.add(scheduledTest);
+                    this.showGrades = true;
+                    this.edit = false;
                 }
             }
             scheduleTest_table_view.setItems(scheduledTestObservableList);
@@ -177,16 +185,18 @@ public class ShowScheduleTestController {
     void showTestPerformed(ActionEvent event) {
         ShowScheduleTest("ShowTestPerformed");
     }
+
     @FXML
     void showAllTest(ActionEvent event) {
         ShowScheduleTest("ShowAllTests");
     }
+
     @FXML
     public void handleRowClick(MouseEvent event) {
         try {
             if (event.getClickCount() == 2 && scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
                 ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
-                if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId())) {
+                if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && edit == true) {
                     App.switchScreen("scheduledTest");
                     Platform.runLater(() -> {
                         try {
@@ -199,6 +209,18 @@ public class ShowScheduleTestController {
                         EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
                     });
 
+                } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true) {
+                    App.switchScreen("testGrade");
+                    System.out.println("HOO");
+                    Platform.runLater(() -> {
+                        try {
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                        EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+                    });
                 }
             }
         } catch (IOException e) {
