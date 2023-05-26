@@ -90,14 +90,16 @@ public class ScheduledTestController {
     }
 
     @Subscribe
-    public void onTeacherFromIdEvent(TeacherFromIdEvent event){
-        teacher=event.getTeacherFromId();
+    public void onTeacherFromIdEvent(TeacherFromIdEvent event) {
+        teacher = event.getTeacherFromId();
     }
+
     @Subscribe
     public void onExamFormEvent(ExamFormEvent event) {
         List<String> examFormList = event.getExamFormEventCode();
         comboBoxExamForm.setItems(FXCollections.observableArrayList(examFormList));
     }
+
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
         setId(event.getId());
@@ -126,7 +128,7 @@ public class ScheduledTestController {
     @FXML
     void comboAction(ActionEvent event) {
         if (comboBoxExamForm.getValue() != null) {
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#sendExamFormId", comboBoxExamForm.getValue()));
                 } catch (IOException e) {
@@ -241,10 +243,10 @@ public class ScheduledTestController {
                     success.setContentText("update schedule test Succeed");
                     success.show();
                     App.switchScreen("showScheduleTest");
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         try {
                             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -265,10 +267,10 @@ public class ScheduledTestController {
                     success.setContentText("added new schedule test Succeed");
                     success.show();
                     App.switchScreen("showScheduleTest");
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         try {
                             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -284,28 +286,45 @@ public class ScheduledTestController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
-            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
-            Platform.runLater(()->{
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+        il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
+        Platform.runLater(() -> {
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 
-            });
-            cleanup();
+        });
+        cleanup();
     }
 
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
         App.switchScreen("allStudents");
-            Platform.runLater(()->{
-                try {
-                    SimpleClient.getClient().sendToServer("#showAllStudents");
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        Platform.runLater(() -> {
+            try {
+                SimpleClient.getClient().sendToServer("#showAllStudents");
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-            });
-            cleanup();
+        });
+        cleanup();
 
     }
+
+    @FXML
+    void handleBackBtn(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showScheduleTest");
+
+        Platform.runLater(() -> {
+            try {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 
 }

@@ -24,6 +24,10 @@ public class QuestionScore implements Serializable {
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @OneToMany(mappedBy = "question")
+    private List <Question_Answer> questionAnswers;
+
     private int score;
     public QuestionScore(int score, ExamForm examForm, Question question) {
 

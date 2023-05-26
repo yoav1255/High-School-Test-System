@@ -35,7 +35,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -67,6 +67,8 @@ public class App
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(QuestionScore.class);
+        configuration.addAnnotatedClass(Question_Answer.class);
+
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -422,7 +424,6 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-
         Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
         query.setParameter("studentToTake", student);
         List<StudentTest> studentTests = query.getResultList();
@@ -441,6 +442,18 @@ public class App
             studentTest.setTeacher(scheduledTest,teacher);
         }
 
+        session.getTransaction().commit();
+        session.close();
+
+        return studentTests;
+    }
+    public static List<StudentTest> getStudentTestsFromScheduled(ScheduledTest scheduledTest){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        Query query = session.createQuery("FROM StudentTest s WHERE s.scheduledTest = :scheduledTest", StudentTest.class);
+        query.setParameter("scheduledTest", scheduledTest);
+        List<StudentTest> studentTests = query.getResultList();
         session.getTransaction().commit();
         session.close();
 
@@ -577,5 +590,39 @@ public class App
         List<QuestionScore> questionScores = query.getResultList();
         session.close();
         return questionScores;
+    }
+
+    public static ScheduledTest getScheduleTestWithInfo(String id){
+        ScheduledTest scheduledTest;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        scheduledTest = session.get(ScheduledTest.class,id);
+        String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
+        Query query = session.createQuery(qString, ExamForm.class);
+        query.setParameter("scheduleTest",scheduledTest);
+        ExamForm examForm = (ExamForm) query.getSingleResult();
+
+        String hql = "SELECT qs FROM QuestionScore qs " +
+                "JOIN FETCH qs.question " +
+                "WHERE qs.examForm = :examForm";
+
+        List<QuestionScore> questionScores = session.createQuery(hql)
+                .setParameter("examForm", examForm)
+                .getResultList();
+
+        examForm.setQuestionScores(questionScores);
+        scheduledTest.setExamForm(examForm);
+        session.close();
+        return scheduledTest;
+    }
+
+    public static Student getStudent(String id){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        Student student = session.get(Student.class,id);
+        session.close();
+        System.out.println(student.getEmail());
+        return student;
     }
 }

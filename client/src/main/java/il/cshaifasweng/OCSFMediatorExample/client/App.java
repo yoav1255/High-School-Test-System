@@ -11,10 +11,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import javafx.stage.StageStyle;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -68,6 +70,34 @@ public class App extends Application {
 
     }
 
+    public static void openPopup(String screenName) throws IOException{
+
+        switch (screenName){
+            case ("examEntry"):
+                Platform.runLater(()->{
+                    try {
+                        setPopUpContent("examEntry");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        }
+    }
+    public static void setPopUpContent(String pageName) throws IOException{
+        try {
+            Parent popupRoot = loadFXML(pageName);
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initStyle(StageStyle.UTILITY);
+
+            Scene popupScene = new Scene(popupRoot);
+            popupStage.setTitle(pageName);
+            popupStage.setScene(popupScene);
+            popupStage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void setWindowTitle(String title){stage.setTitle(title);}
     public static void setContent(String pageName) throws IOException{
         Parent root = loadFXML(pageName);
@@ -75,6 +105,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
     public static void switchScreen(String screenName) throws IOException{
         switch (screenName){
             case "allStudents":
@@ -212,6 +243,36 @@ public class App extends Application {
                     setWindowTitle("All Questions");
                     try {
                         setContent("showAllQuestions");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "studentExecuteExam":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Exam");
+                    try {
+                        setContent("studentExecuteExam");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "examEntry":
+                Platform.runLater(()->{
+                    setWindowTitle("Enter Exam");
+                    try {
+                        setContent("examEntry");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "testGrade":
+                Platform.runLater(()->{
+                    setWindowTitle("Test Grades");
+                    try {
+                        setContent("testGrade");
                     }catch (IOException e){
                         e.printStackTrace();
                     }

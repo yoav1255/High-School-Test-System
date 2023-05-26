@@ -40,6 +40,11 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
 					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 					break;
+				case ("#getStudentTestsFromSchedule"):
+					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
+					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests1));
+					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+					break;
 				case ("#getStudentTest"):
 					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
 					System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
@@ -132,6 +137,14 @@ public class SimpleServer extends AbstractServer {
 					ScheduledTest selectedTest =(ScheduledTest) message.getData();
 					System.out.println("return SChedule Test " + selectedTest);
 					EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+					break;
+				case("#getScheduleTestWithInfo"):
+					ScheduledTest scheduledTest1 = App.getScheduleTestWithInfo(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnScheduleTestWithInfo",scheduledTest1));
+					break;
+				case ("#getStudent"):
+					Student student = App.getStudent(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnStudent",student));
 					break;
 			}
 		} catch (Exception e) {
