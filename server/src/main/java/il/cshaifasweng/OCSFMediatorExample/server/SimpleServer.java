@@ -83,7 +83,8 @@ public class SimpleServer extends AbstractServer {
 				case ("#addQuestion"):
 					Question question = (Question)message.getData();
 					App.addQuestion(question);
-					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
+					String questId = String.valueOf(question.getId());
+					client.sendToClient(new CustomMessage("addQuestionSuccess",questId));
 					break;
 				case ("#getCourseFromName"):
 					Course course =App.getCourseFromCourseName(message.getData().toString());
