@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowUpdateStudentController;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import org.greenrobot.eventbus.EventBus;
 
@@ -50,11 +49,6 @@ public class SimpleClient extends AbstractClient {
 					System.out.println("in simple client "+ (String)message.getData());
 					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
 					break;
-				case ("returnIdToPage"):
-					String id = message.getData().toString();
-					System.out.println("in s.c return id to page " + id);
-					EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-					break;
 				case ("returnSubjects"):
 					List<Subject> subjects = (List<Subject>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherSubjectsEvent(subjects));
@@ -73,12 +67,15 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("addedExamForm"):
 					ExamForm examForm = (ExamForm) message.getData();
-					System.out.println(examForm.getTimeLimit());
 					EventBus.getDefault().post(new ShowSuccessEvent("Successfully added "+examForm.getExamFormCode()));
 					break;
 				case ("returnListCodes"):
 					List <String> examFormCode=(List<String>) message.getData();
 					EventBus.getDefault().post(new ExamFormEvent(examFormCode));
+					break;
+				case ("returnTeacher"):
+					Teacher teacher=(Teacher) message.getData();
+					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
 					break;
 				case("addScheduleTestSuccess"):
 					System.out.println("added new schedule test successfuly!");
@@ -92,8 +89,8 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
 					break;
 				case ("addQuestionSuccess"):
-					System.out.println("Question added successfully!");
-					EventBus.getDefault().post(new QuestionAddedEvent(""));
+					String questId = (String) message.getData();
+					EventBus.getDefault().post(new QuestionAddedEvent(questId));
 					break;
 				case("returnExamForms"):
 					List<ExamForm> examForms = (List<ExamForm>) message.getData();
@@ -102,6 +99,19 @@ public class SimpleClient extends AbstractClient {
 				case ("returnQuestionScores"):
 					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
 					EventBus.getDefault().post(new ShowExamFormQuestionScoresEvent(questionScores));
+					break;
+				case ("returnScheduleTestWithInfo"):
+					ScheduledTest scheduledTest = (ScheduledTest)message.getData();
+					EventBus.getDefault().post(new SelectedTestEvent(scheduledTest));
+					break;
+				case ("returnStudent"):
+					Student student = (Student) message.getData();
+					System.out.println("s.c " +student.getGender());
+					EventBus.getDefault().post(new SelectedStudentEvent(student));
+					break;
+				case ("savedQuestionAnswers"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();

@@ -40,6 +40,11 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
 					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 					break;
+				case ("#getStudentTestsFromSchedule"):
+					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
+					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests1));
+					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
+					break;
 				case ("#getStudentTest"):
 					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
 					System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
@@ -63,10 +68,6 @@ public class SimpleServer extends AbstractServer {
 				case ("#managerHome"):
 					client.sendToClient(new CustomMessage("managerHome", message.getData()));
 					break;
-				case ("#SendIdToExamForms"):
-					System.out.println("In simple server send id to exam forms "+message.getData());
-					client.sendToClient(new CustomMessage("returnIdToPage",message.getData()));
-					break;
 				case ("#getSubjects"):
 					List<Subject> subjects = App.getSubjectsFromTeacherId(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnSubjects",subjects));
@@ -82,7 +83,8 @@ public class SimpleServer extends AbstractServer {
 				case ("#addQuestion"):
 					Question question = (Question)message.getData();
 					App.addQuestion(question);
-					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
+					String questId = String.valueOf(question.getId());
+					client.sendToClient(new CustomMessage("addQuestionSuccess",questId));
 					break;
 				case ("#getCourseFromName"):
 					Course course =App.getCourseFromCourseName(message.getData().toString());
@@ -97,13 +99,13 @@ public class SimpleServer extends AbstractServer {
 					App.addQuestionScores(questionScores);
 					break;
 				case ("#getTeacher"):
-					Teacher teacher = App.getTeacherFromId(message.getData().toString());
+					Teacher teacher = App.getTeacherFromId((String) message.getData().toString());
 					client.sendToClient(new CustomMessage("returnTeacher", teacher));
 					break;
 				case ("#fillComboBox"):
-					List<String> examFormCode = App.getListExamFormCode();
+					System.out.println("WE GOT TO THE SIMPLE SERVER");
+					List<String> examFormCode = App.getListExamFormCode((String) message.getData().toString());
 					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
-					client.sendToClient(new CustomMessage("sentExamFormCodeSuccess", ""));
 					break;
 				case ("#addScheduleTest"):
 					ScheduledTest scheduledTest = (ScheduledTest) message.getData();
@@ -120,7 +122,6 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnScheduledTestList", scheduledTests));
 					break;
 				case ("#updateScheduleTest"):
-					System.out.println("i got here");
 					App.updateScheduleTest( (ScheduledTest) message.getData());
 					client.sendToClient(new CustomMessage("updateSuccess", ""));
 					break;
@@ -133,6 +134,32 @@ public class SimpleServer extends AbstractServer {
 					List<QuestionScore> questionScoreList = App.getQuestionScoresFromExamForm(examForm1);
 					client.sendToClient(new CustomMessage("returnQuestionScores",questionScoreList));
 					break;
+				case ("SendSelectedTest"):
+					ScheduledTest selectedTest =(ScheduledTest) message.getData();
+					System.out.println("return SChedule Test " + selectedTest);
+					EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+					break;
+				case("#getScheduleTestWithInfo"):
+					ScheduledTest scheduledTest1 = App.getScheduleTestWithInfo(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnScheduleTestWithInfo",scheduledTest1));
+					break;
+				case ("#getStudent"):
+					Student student = App.getStudent(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnStudent",student));
+					break;
+				case ("#saveQuestionAnswers"):
+					App.saveQuestionAnswers((List<Object>) message.getData());
+					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
+					break;
+				case ("#saveQuestionScores"):
+					App.saveQuestionScores((List<QuestionScore>) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest_QuestionAnswers","Success"));
+					break;
+				case ("#saveStudentTest"):
+					App.saveStudentTest((List<Object>) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest","Success"));
+					break;
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

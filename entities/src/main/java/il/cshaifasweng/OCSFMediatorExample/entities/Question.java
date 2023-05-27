@@ -27,8 +27,9 @@ public class Question implements Serializable {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<QuestionScore> questionScores;
+
 
     public Question(String text, String answer0, String answer1, String answer2, String answer3, int indexAnswer) {
         this.text = text;
@@ -127,6 +128,7 @@ public class Question implements Serializable {
     public void addQuestionScore(QuestionScore questionScore){
         questionScores.add(questionScore);
     }
+
 
     public static List<Question> GenerateQuestions(){
         List<Question> questions = new ArrayList<>();

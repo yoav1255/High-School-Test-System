@@ -27,7 +27,7 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Enter Test">
+                <Button fx:id="enterTestBtn" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleEnterTestClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Enter Test">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="HOME" size="20" />-->
                     </graphic>

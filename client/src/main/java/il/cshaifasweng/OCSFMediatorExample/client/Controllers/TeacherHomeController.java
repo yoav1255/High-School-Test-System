@@ -92,12 +92,11 @@ public class TeacherHomeController {
                 App.switchScreen("showAllQuestions");
                 Platform.runLater(()->{
                     try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
-                cleanup();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -120,18 +119,26 @@ public class TeacherHomeController {
         }
     }
     @FXML
-    public void handleShowScheduledTestsButtonClick(ActionEvent event) {
-        Platform.runLater(()->{
-            try{
-                App.switchScreen("showScheduleTest");
-                SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
-                cleanup();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        });
+    public void handleShowScheduledTestsButtonClick(ActionEvent event) throws IOException {
+        try {
+            cleanup();
+            App.switchScreen("showScheduleTest");
+
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleShowStatsButtonClick(ActionEvent event) {
     }
+
 }
