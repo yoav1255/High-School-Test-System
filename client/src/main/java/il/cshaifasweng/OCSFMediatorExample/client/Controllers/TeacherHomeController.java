@@ -92,12 +92,11 @@ public class TeacherHomeController {
                 App.switchScreen("showAllQuestions");
                 Platform.runLater(()->{
                     try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#SendIdToExamForms",id));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
-                cleanup();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -141,4 +140,5 @@ public class TeacherHomeController {
 
     public void handleShowStatsButtonClick(ActionEvent event) {
     }
+
 }

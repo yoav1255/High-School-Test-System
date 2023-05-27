@@ -536,14 +536,8 @@ public class App
         session.beginTransaction();
 
         session.save(question);
-/*        Subject subject = question.getSubject();
-        subject.addQuestion(question);*//*
-        List<Course> courses= question.getCourses();
-        for(Course course:courses){
-            course.addQuestion(question);
-            session.saveOrUpdate(course);
-        }
-        session.saveOrUpdate(subject);*/
+
+
         session.flush();
         session.getTransaction().commit();
         session.close();
@@ -625,4 +619,53 @@ public class App
         System.out.println(student.getEmail());
         return student;
     }
+    public static void saveQuestionAnswers(List<Object> items){
+        Student student = (Student) items.get(0);
+        StudentTest studentTest = (StudentTest) items.get(1);
+
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(student);
+        session.saveOrUpdate(studentTest);
+        session.flush();
+        for(int i=2;i<items.size();i++){
+            Question_Answer item = (Question_Answer) items.get(i);
+            System.out.println("saving question answer "+ item.getId());
+            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
+            System.out.println("in question answer st id "+ item.getStudentTest().getId());
+            session.save(item);
+        }
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+
+    public static void saveQuestionScores(List<QuestionScore> items){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(QuestionScore item:items){
+            System.out.println("saving Question score "+ item.getId());
+            session.saveOrUpdate(item);
+        }
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+    public static void saveStudentTest(List<Object> student_studentTest){
+        Student student = (Student) student_studentTest.get(0);
+        StudentTest studentTest = (StudentTest) student_studentTest.get(1);
+
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("saving student test "+ studentTest.getId());
+        session.saveOrUpdate(student);
+        session.saveOrUpdate(studentTest);
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+
 }

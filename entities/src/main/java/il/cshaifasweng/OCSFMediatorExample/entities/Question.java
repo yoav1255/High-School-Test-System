@@ -27,7 +27,7 @@ public class Question implements Serializable {
     @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<QuestionScore> questionScores;
 
 

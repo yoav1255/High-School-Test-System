@@ -25,7 +25,7 @@ public class QuestionScore implements Serializable {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "questionScore", cascade = CascadeType.ALL)
     private List <Question_Answer> questionAnswers;
 
     private int score;
@@ -34,6 +34,7 @@ public class QuestionScore implements Serializable {
         this.score = score;
         this.examForm = examForm;
         this.question = question;
+        this.questionAnswers = new ArrayList<>();
     }
     public QuestionScore(int score, Question question){
         this.score = score;
@@ -72,6 +73,16 @@ public class QuestionScore implements Serializable {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public List<Question_Answer> getQuestionAnswers() {
+        //TODO remove the first line!!!!!!!!!
+        questionAnswers = new ArrayList<>();
+        return questionAnswers;
+    }
+
+    public void setQuestionAnswers(List<Question_Answer> questionAnswers) {
+        this.questionAnswers = questionAnswers;
     }
 
     public static List<QuestionScore> generateQuestionScores(){

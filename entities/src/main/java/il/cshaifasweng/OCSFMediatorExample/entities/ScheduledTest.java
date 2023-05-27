@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,7 @@ public class ScheduledTest implements Serializable {
     @Id
     private String id;
     private LocalDate date;
-    private Time time; //Todo check Time and Date format
+    private LocalTime time; //Todo check Time and Date format
     @ManyToOne
     @JoinColumn(name = "examForm_id")
     private ExamForm examForm;
@@ -27,7 +28,7 @@ public class ScheduledTest implements Serializable {
     private Teacher teacher;
     private int submissions;
 
-    public ScheduledTest(String id, LocalDate date, Time time, int submissions) {
+    public ScheduledTest(String id, LocalDate date, LocalTime time, int submissions) {
         this.id = id;
         this.date = date;
         this.time = time;
@@ -52,11 +53,11 @@ public class ScheduledTest implements Serializable {
         this.date = date;
     }
 
-    public Time getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
@@ -108,20 +109,21 @@ public class ScheduledTest implements Serializable {
         return teacher;
     }
 
+
     public static List<ScheduledTest> GenerateScheduledTests(){
         List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
-        scheduledTests.add(new ScheduledTest("11PO",  LocalDate.of(2023,10,05),new Time(12,20,0),20));
-        scheduledTests.add(new ScheduledTest("2SDE",LocalDate.of(2022,05,03),new Time(15,0,0),15));
-        scheduledTests.add(new ScheduledTest("3D3E",LocalDate.of(2022,07,03),new Time(14,0,0),10));
-        scheduledTests.add(new ScheduledTest("4E3E",LocalDate.of(2022,05,11),new Time(10,0,0),15));
-        scheduledTests.add(new ScheduledTest("53ED",LocalDate.of(2022,05,13),new Time(10,0,0),15));
-        scheduledTests.add(new ScheduledTest("88U7",LocalDate.of(2022,05,19),new Time(10,0,0),15));
-        scheduledTests.add(new ScheduledTest("JE83",LocalDate.of(2022,05,17),new Time(10,0,0),12));
-        scheduledTests.add(new ScheduledTest("H37D",LocalDate.of(2022,05,17),new Time(12,0,0),12));
-        scheduledTests.add(new ScheduledTest("NDH7",LocalDate.of(2022,05,25),new Time(10,0,0),12));
-        scheduledTests.add(new ScheduledTest("BH37",LocalDate.of(2022,05,30),new Time(10,0,0),12));
-        scheduledTests.add(new ScheduledTest("HDG63",LocalDate.of(2022,05,31),new Time(10,0,0),16));
-        scheduledTests.add(new ScheduledTest("12DW",LocalDate.of(2022,06,02),new Time(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("11PO",  LocalDate.of(2023,10,05), LocalTime.of(12,20,0),20));
+        scheduledTests.add(new ScheduledTest("2SDE",LocalDate.of(2022,05,03),LocalTime.of(15,0,0),15));
+        scheduledTests.add(new ScheduledTest("3D3E",LocalDate.of(2022,07,03),LocalTime.of(14,0,0),10));
+        scheduledTests.add(new ScheduledTest("4E3E",LocalDate.of(2022,05,11),LocalTime.of(10,0,0),15));
+        scheduledTests.add(new ScheduledTest("53ED",LocalDate.of(2022,05,13),LocalTime.of(10,0,0),15));
+        scheduledTests.add(new ScheduledTest("88U7",LocalDate.of(2022,05,19),LocalTime.of(10,0,0),15));
+        scheduledTests.add(new ScheduledTest("JE83",LocalDate.of(2022,05,17),LocalTime.of(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("H37D",LocalDate.of(2022,05,17),LocalTime.of(12,0,0),12));
+        scheduledTests.add(new ScheduledTest("NDH7",LocalDate.of(2022,05,25),LocalTime.of(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("BH37",LocalDate.of(2022,05,30),LocalTime.of(10,0,0),12));
+        scheduledTests.add(new ScheduledTest("HDG63",LocalDate.of(2022,05,31),LocalTime.of(10,0,0),16));
+        scheduledTests.add(new ScheduledTest("12DW",LocalDate.of(2022,06,02),LocalTime.of(10,0,0),12));
 
         return scheduledTests;
     }

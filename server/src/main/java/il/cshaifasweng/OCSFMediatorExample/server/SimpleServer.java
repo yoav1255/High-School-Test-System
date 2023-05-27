@@ -83,7 +83,8 @@ public class SimpleServer extends AbstractServer {
 				case ("#addQuestion"):
 					Question question = (Question)message.getData();
 					App.addQuestion(question);
-					client.sendToClient(new CustomMessage("addQuestionSuccess",""));
+					String questId = String.valueOf(question.getId());
+					client.sendToClient(new CustomMessage("addQuestionSuccess",questId));
 					break;
 				case ("#getCourseFromName"):
 					Course course =App.getCourseFromCourseName(message.getData().toString());
@@ -146,6 +147,19 @@ public class SimpleServer extends AbstractServer {
 					Student student = App.getStudent(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnStudent",student));
 					break;
+				case ("#saveQuestionAnswers"):
+					App.saveQuestionAnswers((List<Object>) message.getData());
+					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
+					break;
+				case ("#saveQuestionScores"):
+					App.saveQuestionScores((List<QuestionScore>) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest_QuestionAnswers","Success"));
+					break;
+				case ("#saveStudentTest"):
+					App.saveStudentTest((List<Object>) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest","Success"));
+					break;
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

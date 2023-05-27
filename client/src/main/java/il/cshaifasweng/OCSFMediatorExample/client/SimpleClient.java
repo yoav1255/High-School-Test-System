@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowUpdateStudentController;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import org.greenrobot.eventbus.EventBus;
 
@@ -90,8 +89,8 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
 					break;
 				case ("addQuestionSuccess"):
-					System.out.println("Question added successfully!");
-					EventBus.getDefault().post(new QuestionAddedEvent(""));
+					String questId = (String) message.getData();
+					EventBus.getDefault().post(new QuestionAddedEvent(questId));
 					break;
 				case("returnExamForms"):
 					List<ExamForm> examForms = (List<ExamForm>) message.getData();
@@ -109,6 +108,9 @@ public class SimpleClient extends AbstractClient {
 					Student student = (Student) message.getData();
 					System.out.println("s.c " +student.getGender());
 					EventBus.getDefault().post(new SelectedStudentEvent(student));
+					break;
+				case ("savedQuestionAnswers"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
 					break;
 			}
 		}catch (Exception e){
