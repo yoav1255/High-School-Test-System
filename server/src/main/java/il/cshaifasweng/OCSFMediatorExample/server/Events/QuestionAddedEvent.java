@@ -9,7 +9,6 @@ public class QuestionAddedEvent {
 
     public QuestionAddedEvent(String str) {
         this.str = str;
-        System.out.println("QuestionAddedEvent happend!");
     }
 
 }

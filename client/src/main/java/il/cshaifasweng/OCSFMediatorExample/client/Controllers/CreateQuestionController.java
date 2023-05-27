@@ -232,14 +232,14 @@ public class CreateQuestionController {
     }
     @Subscribe
     public void onQuestionAddedEvent(QuestionAddedEvent event) {
-        int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + String.valueOf(event.getStr()), "Information",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+
         try {
             String teacherId = this.id;
+            String QuestId = String.valueOf(event.getStr());
             cleanup();
             App.switchScreen("showAllQuestions");
             Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                EventBus.getDefault().post(new MoveIdQuestionAddedEvent(teacherId, QuestId));
             });
         } catch (Exception e) {
             e.printStackTrace();
