@@ -147,7 +147,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnStudent",student));
 					break;
 				case ("#saveQuestionAnswers"):
-					App.saveQuestionAnswers((List<Question_Answer>) message.getData());
+					App.saveQuestionAnswers((List<Object>) message.getData());
 					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
 					break;
 				case ("#saveQuestionScores"):
@@ -155,7 +155,7 @@ public class SimpleServer extends AbstractServer {
 					//client.sendToClient(new CustomMessage("savedStudentTest_QuestionAnswers","Success"));
 					break;
 				case ("#saveStudentTest"):
-					App.saveStudentTest((StudentTest) message.getData());
+					App.saveStudentTest((List<Object>) message.getData());
 					//client.sendToClient(new CustomMessage("savedStudentTest","Success"));
 					break;
 

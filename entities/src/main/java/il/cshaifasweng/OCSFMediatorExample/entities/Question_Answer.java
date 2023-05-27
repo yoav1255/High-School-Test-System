@@ -12,15 +12,15 @@ public class Question_Answer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn(name = "question_id")
-    private QuestionScore question;
+    @JoinColumn(name = "questionScore_id")
+    private QuestionScore questionScore;
     @ManyToOne
     @JoinColumn(name = "studentTest_id")
     private StudentTest studentTest;
     private int answer;
 
-    public Question_Answer(QuestionScore question, StudentTest studentTest, int answer) {
-        this.question = question;
+    public Question_Answer(QuestionScore questionScore, StudentTest studentTest, int answer) {
+        this.questionScore = questionScore;
         this.studentTest = studentTest;
         this.answer = answer;
     }
@@ -37,12 +37,12 @@ public class Question_Answer implements Serializable {
         this.id = id;
     }
 
-    public QuestionScore getQuestion() {
-        return question;
+    public QuestionScore getQuestionScore() {
+        return questionScore;
     }
 
-    public void setQuestion(QuestionScore question) {
-        this.question = question;
+    public void setQuestionScore(QuestionScore questionScore) {
+        this.questionScore = questionScore;
     }
 
     public StudentTest getStudentTest() {

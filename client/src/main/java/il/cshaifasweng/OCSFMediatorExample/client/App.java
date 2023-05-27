@@ -1,11 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 //import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
-import il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherHomeController;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.WarningEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

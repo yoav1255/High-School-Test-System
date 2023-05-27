@@ -69,10 +69,10 @@ public class StudentExecuteExamController {
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
-        student = event.getStudent();
         System.out.println("in event: "+student.getFirst_name());
         studentTest = new StudentTest();
         studentTest.setStudent(student);
+        student.getStudentTests().add(studentTest);
     }
 
     @Subscribe
@@ -84,7 +84,7 @@ public class StudentExecuteExamController {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
             System.out.println("check question score "+questionScore.getId());
-            questionAnswer.setQuestion(questionScore);
+            questionAnswer.setQuestionScore(questionScore);
             questionAnswer.setAnswer(-1); // Initialize with no answer selected
             questionScore.getQuestionAnswers().add(questionAnswer);
 
@@ -103,11 +103,11 @@ public class StudentExecuteExamController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    String questionText = questionAnswer.getQuestion().getQuestion().getText();
-                    String answer0 = questionAnswer.getQuestion().getQuestion().getAnswer0();
-                    String answer1 = questionAnswer.getQuestion().getQuestion().getAnswer1();
-                    String answer2 = questionAnswer.getQuestion().getQuestion().getAnswer2();
-                    String answer3 = questionAnswer.getQuestion().getQuestion().getAnswer3();
+                    String questionText = questionAnswer.getQuestionScore().getQuestion().getText();
+                    String answer0 = questionAnswer.getQuestionScore().getQuestion().getAnswer0();
+                    String answer1 = questionAnswer.getQuestionScore().getQuestion().getAnswer1();
+                    String answer2 = questionAnswer.getQuestionScore().getQuestion().getAnswer2();
+                    String answer3 = questionAnswer.getQuestionScore().getQuestion().getAnswer3();
 
                     VBox vbox = new VBox();
                     vbox.setSpacing(10);
@@ -133,7 +133,7 @@ public class StudentExecuteExamController {
                     answer4RadioButton.setToggleGroup(toggleGroup);
                     vbox.getChildren().add(answer4RadioButton);
 
-                    Label scoreLabel = new Label("Points: " + questionAnswer.getQuestion().getScore());
+                    Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
                     vbox.getChildren().add(scoreLabel);
 
                     setGraphic(vbox);
@@ -147,10 +147,10 @@ public class StudentExecuteExamController {
                         if (selectedRadioButton != null) {
                             int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
                             questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
-                            System.out.println("Question: " + questionAnswer.getQuestion().getQuestion().getText());
+                            System.out.println("Question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                             System.out.println("Selected Answer: " + selectedRadioButton.getText());
                         } else {
-                            System.out.println("No answer selected for question: " + questionAnswer.getQuestion().getQuestion().getText());
+                            System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
                     });
 
@@ -164,32 +164,31 @@ public class StudentExecuteExamController {
     public void submitTestBtn(ActionEvent event) throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
-        List<QuestionScore> questionScores = new ArrayList<>();
         int sum =0;
         // student test is ready
         //TODO add timer and add timeToComplete field
         //TODO add scroll bar/pane
 
         for(Question_Answer questionAnswer:questionAnswers){
-            int points = questionAnswer.getQuestion().getScore();
+            int points = questionAnswer.getQuestionScore().getScore();
             int indexAnsStudent = questionAnswer.getAnswer();
-            int indexCorrect = questionAnswer.getQuestion().getQuestion().getIndexAnswer();
+            int indexCorrect = questionAnswer.getQuestionScore().getQuestion().getIndexAnswer();
             if(indexAnsStudent == indexCorrect){
                 sum+=points;
             }
-            questionScores.add(questionAnswer.getQuestion());
         }
         studentTest.setGrade(sum);
+        List<Object> student_studentTest_questionAnswers = new ArrayList<>();
+        student_studentTest_questionAnswers.add(student);
+        student_studentTest_questionAnswers.add(studentTest);
+        for(Question_Answer questionAnswer:questionAnswers){
+            student_studentTest_questionAnswers.add(questionAnswer);
+        }
 
-        SimpleClient.getClient().sendToServer(new CustomMessage("#saveStudentTest",studentTest));
-        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionScores",questionScores));
-        Platform.runLater(()->{
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",questionAnswers));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        //SimpleClient.getClient().sendToServer(new CustomMessage("#saveStudentTest",student_studentTest));
+//        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionScores",questionScoreList));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
+
     }
 
 @Subscribe

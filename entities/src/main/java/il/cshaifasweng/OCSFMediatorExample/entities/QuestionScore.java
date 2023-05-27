@@ -25,7 +25,7 @@ public class QuestionScore implements Serializable {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "questionScore", cascade = CascadeType.ALL)
     private List <Question_Answer> questionAnswers;
 
     private int score;

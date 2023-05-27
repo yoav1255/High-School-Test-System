@@ -20,7 +20,7 @@ public class StudentTest implements Serializable {
     @ManyToOne
     @JoinColumn(name = "scheduledTest_id")
     private ScheduledTest scheduledTest;
-    @OneToMany(mappedBy = "studentTest")
+    @OneToMany(mappedBy = "studentTest" , cascade = CascadeType.ALL)
     private List<Question_Answer> questionAnswers;
 
     private int grade;
