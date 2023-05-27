@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
+import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
@@ -17,7 +18,12 @@ import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.sql.Time;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,6 +168,14 @@ public class StudentExecuteExamController {
 
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
+        LocalTime timeStart = scheduledTest.getTime();
+        LocalTime currentTime = LocalTime.now();
+        Duration timeToComplete = Duration.between(timeStart,currentTime);
+        System.out.println("Hour "+ timeToComplete.toHours());
+        System.out.println("Minutes "+ timeToComplete.toMinutes());
+        System.out.println("Seconds "+ timeToComplete.toSeconds());
+
+        studentTest.setTimeToComplete(timeToComplete);
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
         int sum =0;
@@ -185,15 +199,19 @@ public class StudentExecuteExamController {
             student_studentTest_questionAnswers.add(questionAnswer);
         }
 
-        //SimpleClient.getClient().sendToServer(new CustomMessage("#saveStudentTest",student_studentTest));
-//        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionScores",questionScoreList));
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
-
     }
 
 @Subscribe
-    public void onShowSuccessEvent(ShowSuccessEvent event){
+    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
         System.out.println("good");
+        cleanup();
+        App.switchScreen("studentHome");
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+        });
+
     }
 }
 
