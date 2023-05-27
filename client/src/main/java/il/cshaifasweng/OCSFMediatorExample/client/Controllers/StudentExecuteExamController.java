@@ -175,7 +175,7 @@ public class StudentExecuteExamController {
         System.out.println("Minutes "+ timeToComplete.toMinutes());
         System.out.println("Seconds "+ timeToComplete.toSeconds());
 
-        studentTest.setTimeToComplete(timeToComplete);
+        studentTest.setTimeToComplete(timeToComplete.toMillis());
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
         int sum =0;

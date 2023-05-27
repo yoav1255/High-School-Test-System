@@ -25,9 +25,9 @@ public class StudentTest implements Serializable {
     private List<Question_Answer> questionAnswers;
 
     private int grade;
-    private Duration timeToComplete; //TODO check how to use Duration properly
+    private long timeToComplete; //TODO check how to use Duration properly
 
-    public StudentTest(int id, int grade, Duration timeToComplete) {
+    public StudentTest(int id, int grade, long timeToComplete) {
         this.id = id;
         this.grade = grade;
         this.timeToComplete = timeToComplete;
@@ -67,11 +67,11 @@ public class StudentTest implements Serializable {
         this.grade = grade;
     }
 
-    public Duration getTimeToComplete() {
+    public long getTimeToComplete() {
         return timeToComplete;
     }
 
-    public void setTimeToComplete(Duration timeToComplete) {
+    public void setTimeToComplete(long timeToComplete) {
         this.timeToComplete = timeToComplete;
     }
     public Course getCourseName(ScheduledTest scheduledTest){
@@ -123,31 +123,31 @@ public class StudentTest implements Serializable {
 
     public static List<StudentTest> GenerateStudentTests(){
         List<StudentTest> studentTests = new ArrayList<StudentTest>();
-        studentTests.add(new StudentTest(1,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(2,90,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(3,87,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(4,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(5,49,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(6,67,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(7,99,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(8,100,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(9,54,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(10,72,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(11,83,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(12,65,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(13,97,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(14,57,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(15,75,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(16,47,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(17,66,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(18,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(19,99,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(20,93,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(21,76,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(22,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(23,83,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(24,100,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
-        studentTests.add(new StudentTest(25,100,Duration.ofHours(2).plusMinutes(30).plusSeconds(15)));
+        studentTests.add(new StudentTest(1,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(2,90,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(3,87,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(4,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(5,49,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(6,67,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(7,99,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(8,100,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(9,54,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(10,72,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(11,83,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(12,65,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(13,97,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(14,57,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(15,75,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(16,47,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(17,66,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(18,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(19,99,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(20,93,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(21,76,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(22,85,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(23,83,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(24,100,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
+        studentTests.add(new StudentTest(25,100,Duration.ofHours(2).plusMinutes(30).plusSeconds(15).toMillis()));
 
         return studentTests;
     }
