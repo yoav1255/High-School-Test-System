@@ -3,9 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.QuestionAddedEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSubjectCoursesEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowTeacherSubjectsEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -13,12 +11,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class CreateQuestionController {
@@ -45,6 +46,11 @@ public class CreateQuestionController {
     private List<String> courseNames;
     private List<Course> courses;
     private List<Subject> subjects;
+    private String id = new String();
+    public String getId() {return id;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public CreateQuestionController() {
         EventBus.getDefault().register(this);
@@ -62,17 +68,19 @@ public class CreateQuestionController {
         Platform.runLater(() -> {
             courseOptions.setVisible(false);
             courseOptions.getItems().clear();
+
+            confirmBN.setDisable(true);
+            courseOptions.setDisable(true);
+            comboAns.getItems().add("1");
+            comboAns.getItems().add("2");
+            comboAns.getItems().add("3");
+            comboAns.getItems().add("4");
+
+            courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
+
         });
 
-        confirmBN.setDisable(true);
-        courseOptions.setDisable(true);
-        comboAns.getItems().add("1");
-        comboAns.getItems().add("2");
-        comboAns.getItems().add("3");
-        comboAns.getItems().add("4");
-
-        courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
     }
 
     @Subscribe
@@ -128,29 +136,71 @@ public class CreateQuestionController {
     }
 
     @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
-        int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-        if (input == JOptionPane.YES_OPTION) {
+    void handleCancelButtonClick(ActionEvent event) {
+        if (theQuestion.getText().isEmpty() && ans1.getText().isEmpty() && ans2.getText().isEmpty()
+                && ans3.getText().isEmpty() && ans4.getText().isEmpty()) {
             try {
-                App.switchScreen("primary");
+                String teacherId = this.id;
+                cleanup();
+                App.switchScreen("showAllQuestions");
+                Platform.runLater(() -> {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                });
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        } else {
+            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (input == JOptionPane.YES_OPTION) {
+                try {
+                    String teacherId = this.id;
+                    cleanup();
+                    App.switchScreen("showAllQuestions");
+                    Platform.runLater(() -> {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     @FXML
-    void handleCancelButtonClick(ActionEvent event) {
-        int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-        if (input == JOptionPane.YES_OPTION) {
+    void handleGoHomeButtonClick(ActionEvent event) {
+
+        if (theQuestion.getText().isEmpty() && ans1.getText().isEmpty() && ans2.getText().isEmpty()
+                && ans3.getText().isEmpty() && ans4.getText().isEmpty()) {
             try {
-             App.switchScreen("primary");
+                String teacherId = this.id;
+                cleanup();
+                App.switchScreen("teacherHome");
+                Platform.runLater(() -> {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+            if (input == JOptionPane.YES_OPTION) {
+                try {
+                    String teacherId = this.id;
+                    cleanup();
+                    App.switchScreen("teacherHome");
+                    Platform.runLater(() -> {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+
+
     }
 
     public void confirm() {
@@ -183,11 +233,59 @@ public class CreateQuestionController {
     @Subscribe
     public void onQuestionAddedEvent(QuestionAddedEvent event) {
         try {
-            App.switchScreen("primary");
+            String teacherId = this.id;
+            cleanup();
+            App.switchScreen("showAllQuestions");
+            Platform.runLater(() -> {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    @Subscribe
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        setId(event.getId());
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", this.id));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Subscribe
+    public void onShowUpdateQuestFormEvent(ShowUpdateQuestFormEvent event){
+        List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
+        Platform.runLater(()->{
+            try {
+                id = (String)setTeacherAndQuest.get(0);
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Platform.runLater(()->{
+        Question updateQuestion = (Question)setTeacherAndQuest.get(1);
+        theQuestion.setText(updateQuestion.getText());
+        ans1.setText(updateQuestion.getAnswer0());
+        ans2.setText(updateQuestion.getAnswer1());
+        ans3.setText(updateQuestion.getAnswer2());
+        ans4.setText(updateQuestion.getAnswer3());
+
+        Subject selectedSub = updateQuestion.getSubject();
+
+        comboSubject.setValue(selectedSub.getName());
+        courseOptions.setVisible(true);
+        comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
+
+        });
+
+        //   comboAns.setItems(updateQuestion.getIndexAnswer());
+
+    }
 
 }
