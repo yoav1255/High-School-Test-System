@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 //
-import il.cshaifasweng.OCSFMediatorExample.server.Student;
+//import il.cshaifasweng.OCSFMediatorExample.server.Student;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
