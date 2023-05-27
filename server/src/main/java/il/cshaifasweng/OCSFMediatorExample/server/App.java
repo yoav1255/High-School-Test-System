@@ -619,13 +619,20 @@ public class App
         System.out.println(student.getEmail());
         return student;
     }
-    public static void saveQuestionAnswers(List<Question_Answer> items){
+    public static void saveQuestionAnswers(List<Object> items){
+        Student student = (Student) items.get(0);
+        StudentTest studentTest = (StudentTest) items.get(1);
+
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        for(Question_Answer item:items){
+        session.saveOrUpdate(student);
+        session.saveOrUpdate(studentTest);
+        session.flush();
+        for(int i=2;i<items.size();i++){
+            Question_Answer item = (Question_Answer) items.get(i);
             System.out.println("saving question answer "+ item.getId());
-            System.out.println("in question answer q.s id "+ item.getQuestion().getId());
+            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
             System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
@@ -646,11 +653,15 @@ public class App
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
     }
-    public static void saveStudentTest(StudentTest studentTest){
+    public static void saveStudentTest(List<Object> student_studentTest){
+        Student student = (Student) student_studentTest.get(0);
+        StudentTest studentTest = (StudentTest) student_studentTest.get(1);
+
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         System.out.println("saving student test "+ studentTest.getId());
+        session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
         session.flush();
         session.getTransaction().commit(); // Save Everything in the transaction area

@@ -8,7 +8,7 @@ import java.util.List;
 @Table(name = "Student")
 public class Student extends User implements Serializable{
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<StudentTest> studentTests;
 
     public Student(String id, String email,String first_name, String gender, String last_name, String password) {

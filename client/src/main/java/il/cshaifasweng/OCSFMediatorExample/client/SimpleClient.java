@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowUpdateStudentController;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import org.greenrobot.eventbus.EventBus;
 
