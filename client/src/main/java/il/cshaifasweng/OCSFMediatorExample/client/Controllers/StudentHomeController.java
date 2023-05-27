@@ -1,12 +1,17 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
+import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.IOException;
 
 public class StudentHomeController {
 
@@ -39,13 +44,10 @@ public class StudentHomeController {
     @Subscribe
     public void onUserHomeEvent(UserHomeEvent event){
         setId(event.getUserID());
-        initializeIfIdNotNull();
+        Platform.runLater(()->{
+            initializeIfIdNotNull();
+        });
     }
-
-    /*@FXML void initialize(){
-        //idLabel.setText("ID : " + id);
-        initializeIfIdNotNull();
-    }*/
 
     private void initializeIfIdNotNull() {
         if (id != null) {
@@ -54,7 +56,11 @@ public class StudentHomeController {
     }
 
     @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
+    void handleEnterTestClick(ActionEvent event) throws IOException {
+        App.switchScreen("examEntry");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+        });
 
     }
 

@@ -20,6 +20,9 @@ public class StudentTest implements Serializable {
     @ManyToOne
     @JoinColumn(name = "scheduledTest_id")
     private ScheduledTest scheduledTest;
+    @OneToMany(mappedBy = "studentTest")
+    private List<Question_Answer> questionAnswers;
+
     private int grade;
     private int timeToComplete; //TODO check how to use Duration properly
 
@@ -27,6 +30,7 @@ public class StudentTest implements Serializable {
         this.id = id;
         this.grade = grade;
         this.timeToComplete = timeToComplete;
+        this.questionAnswers = new ArrayList<>();
     }
     public StudentTest(){}
 
@@ -96,6 +100,7 @@ public class StudentTest implements Serializable {
     public Teacher getTeacher(ScheduledTest scheduledTest){
         Teacher teacher = scheduledTest.getTeacher();
         return teacher;
+
     }
     public void setCourse(ScheduledTest scheduledTest,Course course){
         scheduledTest.getExamForm().setCourse(course);
@@ -105,6 +110,14 @@ public class StudentTest implements Serializable {
     }
     public void setTeacher(ScheduledTest scheduledTest,Teacher teacher){
         scheduledTest.setTeacher(teacher);
+    }
+
+    public List<Question_Answer> getQuestionAnswers() {
+        return questionAnswers;
+    }
+
+    public void setQuestionAnswers(List<Question_Answer> questionAnswers) {
+        this.questionAnswers = questionAnswers;
     }
 
     public static List<StudentTest> GenerateStudentTests(){

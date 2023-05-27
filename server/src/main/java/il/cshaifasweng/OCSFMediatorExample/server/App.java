@@ -35,7 +35,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -67,6 +67,8 @@ public class App
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(QuestionScore.class);
+        configuration.addAnnotatedClass(Question_Answer.class);
+
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -583,4 +585,76 @@ public class App
         session.close();
         return questionScores;
     }
+
+    public static ScheduledTest getScheduleTestWithInfo(String id){
+        ScheduledTest scheduledTest;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        scheduledTest = session.get(ScheduledTest.class,id);
+        String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
+        Query query = session.createQuery(qString, ExamForm.class);
+        query.setParameter("scheduleTest",scheduledTest);
+        ExamForm examForm = (ExamForm) query.getSingleResult();
+
+        String hql = "SELECT qs FROM QuestionScore qs " +
+                "JOIN FETCH qs.question " +
+                "WHERE qs.examForm = :examForm";
+
+        List<QuestionScore> questionScores = session.createQuery(hql)
+                .setParameter("examForm", examForm)
+                .getResultList();
+
+        examForm.setQuestionScores(questionScores);
+        scheduledTest.setExamForm(examForm);
+        session.close();
+        return scheduledTest;
+    }
+
+    public static Student getStudent(String id){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        Student student = session.get(Student.class,id);
+        session.close();
+        System.out.println(student.getEmail());
+        return student;
+    }
+    public static void saveQuestionAnswers(List<Question_Answer> items){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(Question_Answer item:items){
+            System.out.println("saving question answer "+ item.getId());
+            System.out.println("in question answer q.s id "+ item.getQuestion().getId());
+            System.out.println("in question answer st id "+ item.getStudentTest().getId());
+            session.save(item);
+        }
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+
+    public static void saveQuestionScores(List<QuestionScore> items){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(QuestionScore item:items){
+            System.out.println("saving Question score "+ item.getId());
+            session.saveOrUpdate(item);
+        }
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+    public static void saveStudentTest(StudentTest studentTest){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("saving student test "+ studentTest.getId());
+        session.saveOrUpdate(studentTest);
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+
 }

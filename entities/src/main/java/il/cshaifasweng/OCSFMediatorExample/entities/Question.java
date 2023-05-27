@@ -30,6 +30,7 @@ public class Question implements Serializable {
     @OneToMany(mappedBy = "question")
     private List<QuestionScore> questionScores;
 
+
     public Question(String text, String answer0, String answer1, String answer2, String answer3, int indexAnswer) {
         this.text = text;
         this.answer1 = answer1;
@@ -127,6 +128,7 @@ public class Question implements Serializable {
     public void addQuestionScore(QuestionScore questionScore){
         questionScores.add(questionScore);
     }
+
 
     public static List<Question> GenerateQuestions(){
         List<Question> questions = new ArrayList<>();

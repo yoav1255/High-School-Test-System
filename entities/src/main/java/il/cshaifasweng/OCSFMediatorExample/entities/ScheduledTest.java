@@ -108,6 +108,7 @@ public class ScheduledTest implements Serializable {
         return teacher;
     }
 
+
     public static List<ScheduledTest> GenerateScheduledTests(){
         List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
         scheduledTests.add(new ScheduledTest("11PO",  LocalDate.of(2023,10,05),new Time(12,20,0),20));

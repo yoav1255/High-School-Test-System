@@ -139,6 +139,27 @@ public class SimpleServer extends AbstractServer {
 					System.out.println("return SChedule Test " + selectedTest);
 					EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
 					break;
+				case("#getScheduleTestWithInfo"):
+					ScheduledTest scheduledTest1 = App.getScheduleTestWithInfo(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnScheduleTestWithInfo",scheduledTest1));
+					break;
+				case ("#getStudent"):
+					Student student = App.getStudent(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnStudent",student));
+					break;
+				case ("#saveQuestionAnswers"):
+					App.saveQuestionAnswers((List<Question_Answer>) message.getData());
+					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
+					break;
+				case ("#saveQuestionScores"):
+					App.saveQuestionScores((List<QuestionScore>) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest_QuestionAnswers","Success"));
+					break;
+				case ("#saveStudentTest"):
+					App.saveStudentTest((StudentTest) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest","Success"));
+					break;
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
