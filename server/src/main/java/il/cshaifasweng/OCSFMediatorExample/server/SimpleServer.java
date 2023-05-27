@@ -146,6 +146,19 @@ public class SimpleServer extends AbstractServer {
 					Student student = App.getStudent(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnStudent",student));
 					break;
+				case ("#saveQuestionAnswers"):
+					App.saveQuestionAnswers((List<Question_Answer>) message.getData());
+					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
+					break;
+				case ("#saveQuestionScores"):
+					App.saveQuestionScores((List<QuestionScore>) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest_QuestionAnswers","Success"));
+					break;
+				case ("#saveStudentTest"):
+					App.saveStudentTest((StudentTest) message.getData());
+					//client.sendToClient(new CustomMessage("savedStudentTest","Success"));
+					break;
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

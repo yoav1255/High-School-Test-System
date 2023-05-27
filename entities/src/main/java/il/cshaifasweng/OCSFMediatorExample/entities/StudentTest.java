@@ -30,6 +30,7 @@ public class StudentTest implements Serializable {
         this.id = id;
         this.grade = grade;
         this.timeToComplete = timeToComplete;
+        this.questionAnswers = new ArrayList<>();
     }
     public StudentTest(){}
 

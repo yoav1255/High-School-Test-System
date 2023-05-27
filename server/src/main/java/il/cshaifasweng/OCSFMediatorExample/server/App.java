@@ -625,4 +625,42 @@ public class App
         System.out.println(student.getEmail());
         return student;
     }
+    public static void saveQuestionAnswers(List<Question_Answer> items){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(Question_Answer item:items){
+            System.out.println("saving question answer "+ item.getId());
+            System.out.println("in question answer q.s id "+ item.getQuestion().getId());
+            System.out.println("in question answer st id "+ item.getStudentTest().getId());
+            session.save(item);
+        }
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+
+    public static void saveQuestionScores(List<QuestionScore> items){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        for(QuestionScore item:items){
+            System.out.println("saving Question score "+ item.getId());
+            session.saveOrUpdate(item);
+        }
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+    public static void saveStudentTest(StudentTest studentTest){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("saving student test "+ studentTest.getId());
+        session.saveOrUpdate(studentTest);
+        session.flush();
+        session.getTransaction().commit(); // Save Everything in the transaction area
+        session.close();
+    }
+
 }

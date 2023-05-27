@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -85,6 +86,7 @@ public class StudentExecuteExamController {
             System.out.println("check question score "+questionScore.getId());
             questionAnswer.setQuestion(questionScore);
             questionAnswer.setAnswer(-1); // Initialize with no answer selected
+            questionScore.getQuestionAnswers().add(questionAnswer);
 
             questionAnswers.add(questionAnswer);
         }
@@ -159,12 +161,40 @@ public class StudentExecuteExamController {
     }
 
     @FXML
-    public void submitTestBtn(ActionEvent event) {
+    public void submitTestBtn(ActionEvent event) throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
+        List<QuestionScore> questionScores = new ArrayList<>();
+        int sum =0;
         // student test is ready
-        //TODO add the grade for the test
         //TODO add timer and add timeToComplete field
+        //TODO add scroll bar/pane
+
+        for(Question_Answer questionAnswer:questionAnswers){
+            int points = questionAnswer.getQuestion().getScore();
+            int indexAnsStudent = questionAnswer.getAnswer();
+            int indexCorrect = questionAnswer.getQuestion().getQuestion().getIndexAnswer();
+            if(indexAnsStudent == indexCorrect){
+                sum+=points;
+            }
+            questionScores.add(questionAnswer.getQuestion());
+        }
+        studentTest.setGrade(sum);
+
+        SimpleClient.getClient().sendToServer(new CustomMessage("#saveStudentTest",studentTest));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionScores",questionScores));
+        Platform.runLater(()->{
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",questionAnswers));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+@Subscribe
+    public void onShowSuccessEvent(ShowSuccessEvent event){
+        System.out.println("good");
     }
 }
 

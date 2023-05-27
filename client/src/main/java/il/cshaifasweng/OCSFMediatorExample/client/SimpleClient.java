@@ -110,6 +110,9 @@ public class SimpleClient extends AbstractClient {
 					System.out.println("s.c " +student.getGender());
 					EventBus.getDefault().post(new SelectedStudentEvent(student));
 					break;
+				case ("savedQuestionAnswers"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();
