@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,6 +220,23 @@ public class ShowQuestionsController {
         }
     }
 
+    @Subscribe
+    public void onMoveIdQuestionAddedEvent(MoveIdQuestionAddedEvent event){
+        Platform.runLater(()->{
+            setId(event.getTeacherId());
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        displayMsg(String.valueOf(event.getQuestId()));
+    }
 
-
+    public void displayMsg(String QuestId) {
+        Platform.runLater(() -> {
+            int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        });
+    }
 }
