@@ -62,6 +62,7 @@ public class ExamEntryController {
 
 @FXML
     public void EnterTest_btn(ActionEvent event) throws IOException {
+        cleanup();
         String idInput = text_id.getText();
         String codeInput = text_testCode.getText();
         if(!idInput.equals(id) || (!scheduleTestIds.contains(codeInput))){ //if the id doesn't match with the user id

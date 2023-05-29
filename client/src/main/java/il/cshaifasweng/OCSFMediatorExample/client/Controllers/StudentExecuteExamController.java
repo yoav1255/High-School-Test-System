@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.Subscribe;
 import javax.swing.*;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,8 @@ public class StudentExecuteExamController {
     @FXML
     private Label text_Id;
     @FXML
+    private Label timeLeftText;
+    @FXML
     private Button submitButton;
     @FXML
     private List<ToggleGroup> toggleGroups = new ArrayList<>();
@@ -48,7 +51,8 @@ public class StudentExecuteExamController {
     private StudentTest studentTest;
     private List<QuestionScore> questionScoreList;
     private Student student;
-    List<Question_Answer> questionAnswers ;
+    private List<Question_Answer> questionAnswers ;
+    private long timeLeft;
 
 
 
@@ -202,13 +206,28 @@ public class StudentExecuteExamController {
 
     }
 
+
+
 @Subscribe
     public void onTimerStartEvent(TimerStartEvent event){
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
+            long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
+            LocalDateTime startTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+            LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
+
         }
     }
+
+@Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event){
+        timeLeft = event.getTimeLeft();
+        Platform.runLater(()->{
+            timeLeftText.setText(Long.toString( timeLeft));
+        });
+}
+
 @Subscribe
     public void onTimerFinishedEvent(TimerFinishedEvent event){
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))

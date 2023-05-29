@@ -206,11 +206,13 @@ public class SimpleServer extends AbstractServer {
 							LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
 
 							Timer timer = new Timer();
+
 							try {
 								sendToAllClients(new CustomMessage("timerStarted", scheduledTest));
 							}catch (Exception e){
 								e.printStackTrace();
 							}
+
 							System.out.println("timer started for test : "+ scheduledTest.getId());
 							// timer started
 							// now we apply what the timer will do through its whole lifecycle
@@ -218,16 +220,25 @@ public class SimpleServer extends AbstractServer {
 								@Override
 								public void run() {
 									LocalDateTime currentDateTime = LocalDateTime.now();
+									long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
+
+									try {
+										sendToAllClients(new CustomMessage("timeLeft",timeLeft));
+									}catch (Exception e){
+										e.printStackTrace();
+									}
+
 									if (currentDateTime.isAfter(endTime)) {
 										System.out.println("current date time " + currentDateTime);
 										System.out.println("end time " + endTime);
 
-										System.out.println("checking the time left " + Duration.between(currentDateTime,endTime).toMinutes());
+										System.out.println("checking the time left " + timeLeft);
 										try {
-												sendToAllClients(new CustomMessage("timerFinished",scheduledTest));
+											sendToAllClients(new CustomMessage("timerFinished",scheduledTest));
 										}catch (Exception e){
 											e.printStackTrace();
 										}
+
 										timer.cancel(); // Stop the timer when the time limit is reached
 										scheduledTest.setStatus(2);
 										App.addScheduleTest(scheduledTest);
@@ -237,7 +248,7 @@ public class SimpleServer extends AbstractServer {
 							};
 
 
-							timer.schedule(task, 0, 3000); // Check every 3 seconds (adjust the delay as needed)
+							timer.schedule(task, 0, 10000); // Check every 10 seconds (adjust the delay as needed)
 						}
 					}
 				}
