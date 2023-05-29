@@ -108,6 +108,18 @@ public class SimpleClient extends AbstractClient {
 				case ("savedQuestionAnswers"):
 					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
 					break;
+				case ("timerStarted"):
+					System.out.println("in simple client!");
+					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
+					System.out.println("in simple client! timer started for test "+scheduledTest1.getId());
+					EventBus.getDefault().postSticky(new TimerStartEvent(scheduledTest1));
+					break;
+				case ("timerFinished"):
+					System.out.println("in simple client!");
+					ScheduledTest scheduledTest2 = (ScheduledTest) message.getData();
+					System.out.println("in simple client! timer started for test "+scheduledTest2.getId());
+					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();

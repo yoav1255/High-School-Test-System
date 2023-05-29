@@ -61,60 +61,6 @@ public class App
             session.close();
         }
 
-        //TODO : if the teacher added a new scheduletest we need to get schedule tests again
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(new Runnable() { // do this code every 20 seconds
-            @Override
-            public void run() {
-                try {
-                    scheduledTests = App.getScheduledTestsActive();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                assert scheduledTests != null;
-                for (ScheduledTest scheduledTest : scheduledTests) {
-
-                    if(scheduledTest.getStatus()==0) { // before test
-                        LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
-
-                        if (currentDateTime.isAfter(scheduledDateTime)) {
-                            long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
-                            scheduledTest.setStatus(1); // set as during test
-                            addScheduleTest(scheduledTest);
-                            LocalDateTime startTime = scheduledDateTime;
-                            LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
-
-                            Timer timer = new Timer();
-                            EventBus.getDefault().post(new TimerStartEvent(scheduledTest));
-                            System.out.println("timer started for test : "+ scheduledTest.getId());
-                            // timer started
-                            // now we apply what the timer will do through its whole lifecycle
-                            TimerTask task = new TimerTask() {
-                                @Override
-                                public void run() {
-                                    LocalDateTime currentDateTime = LocalDateTime.now();
-                                    if (currentDateTime.isAfter(endTime)) {
-                                        System.out.println("current date time " + currentDateTime);
-                                        System.out.println("end time " + endTime);
-
-                                        System.out.println("checking the time left " + Duration.between(currentDateTime,endTime).toMinutes());
-//                                        EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest));
-                                        timer.cancel(); // Stop the timer when the time limit is reached
-                                        scheduledTest.setStatus(2);
-                                        addScheduleTest(scheduledTest);
-                                        System.out.println("Status "+ scheduledTest.getStatus());
-                                    }
-                                }
-                            };
-
-
-                            timer.schedule(task, 0, 3000); // Check every 3 seconds (adjust the delay as needed)
-                        }
-                    }
-                }
-            }
-        }, 0, 20, TimeUnit.SECONDS);
     }
 
 
@@ -266,7 +212,7 @@ public class App
             return scheduledTests;
     }
 
-    private static List<ScheduledTest> getScheduledTestsActive() throws Exception{
+    static List<ScheduledTest> getScheduledTestsActive() throws Exception{
         List<ScheduledTest> scheduledTests;
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();

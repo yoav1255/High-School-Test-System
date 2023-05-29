@@ -170,7 +170,6 @@ public class StudentExecuteExamController {
         int sum =0;
         // student test is ready
         //TODO add timer and add timeToComplete field
-        //TODO add scroll bar/pane
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();

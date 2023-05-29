@@ -6,18 +6,41 @@ import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.hibernate.SessionFactory;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SimpleServer extends AbstractServer {
+	private static List<ScheduledTest> scheduledTests;
+	private List<ConnectionToClient> clients;
+
 
 	public SimpleServer(int port) {
 		super(port);
-		
+		clients = new ArrayList<>();
+		scheduleTestTimerHandler();
+
+	}
+	@Override
+	protected void clientConnected(ConnectionToClient client) {
+		clients.add(client);
+	}
+
+	@Override
+	protected synchronized void clientDisconnected(ConnectionToClient client) {
+		clients.remove(client);
 	}
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
@@ -157,6 +180,69 @@ public class SimpleServer extends AbstractServer {
 			e.printStackTrace();
 		}
 
+	}
+	public void scheduleTestTimerHandler(){
+		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+		executorService.scheduleAtFixedRate(new Runnable() { // do this code every 20 seconds
+			@Override
+			public void run() {
+				try {
+					scheduledTests = App.getScheduledTestsActive();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				LocalDateTime currentDateTime = LocalDateTime.now();
+				assert scheduledTests != null;
+				for (ScheduledTest scheduledTest : scheduledTests) {
+
+					if(scheduledTest.getStatus()==0) { // before test
+						LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+
+						if (currentDateTime.isAfter(scheduledDateTime)) {
+							long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
+							scheduledTest.setStatus(1); // set as during test
+							App.addScheduleTest(scheduledTest);
+							LocalDateTime startTime = scheduledDateTime;
+							LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
+
+							Timer timer = new Timer();
+							try {
+								sendToAllClients(new CustomMessage("timerStarted", scheduledTest));
+							}catch (Exception e){
+								e.printStackTrace();
+							}
+							System.out.println("timer started for test : "+ scheduledTest.getId());
+							// timer started
+							// now we apply what the timer will do through its whole lifecycle
+							TimerTask task = new TimerTask() {
+								@Override
+								public void run() {
+									LocalDateTime currentDateTime = LocalDateTime.now();
+									if (currentDateTime.isAfter(endTime)) {
+										System.out.println("current date time " + currentDateTime);
+										System.out.println("end time " + endTime);
+
+										System.out.println("checking the time left " + Duration.between(currentDateTime,endTime).toMinutes());
+										try {
+												sendToAllClients(new CustomMessage("timerFinished",scheduledTest));
+										}catch (Exception e){
+											e.printStackTrace();
+										}
+										timer.cancel(); // Stop the timer when the time limit is reached
+										scheduledTest.setStatus(2);
+										App.addScheduleTest(scheduledTest);
+										System.out.println("Status "+ scheduledTest.getStatus());
+									}
+								}
+							};
+
+
+							timer.schedule(task, 0, 3000); // Check every 3 seconds (adjust the delay as needed)
+						}
+					}
+				}
+			}
+		}, 0, 20, TimeUnit.SECONDS);
 	}
 
 }
