@@ -39,14 +39,12 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 					break;
 				case ("updateSuccess"):
-					System.out.println("updated successfully!");
 					break;
 				case ("returnLogin"):
 					String login_auth = (String) message.getData();
 					EventBus.getDefault().post(new loginEvent(login_auth));
 					break;
 				case ("studentHome"),("teacherHome"),("managerHome"):
-					System.out.println("in simple client "+ (String)message.getData());
 					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
 					break;
 				case ("returnSubjects"):
@@ -78,7 +76,6 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
 					break;
 				case("addScheduleTestSuccess"):
-					System.out.println("added new schedule test successfuly!");
 					break;
 				case ("returnExamForm"):
 					ExamForm examForm1=(ExamForm) message.getData();
@@ -106,7 +103,6 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("returnStudent"):
 					Student student = (Student) message.getData();
-					System.out.println("s.c " +student.getGender());
 					EventBus.getDefault().post(new SelectedStudentEvent(student));
 					break;
 				case ("savedQuestionAnswers"):

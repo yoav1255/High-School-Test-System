@@ -95,11 +95,9 @@ public class CreateExamFormController {
 @Subscribe(threadMode = ThreadMode.MAIN)
 public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         teacherId = event.getId();
-        System.out.println("Teacher id in create exam form :" + teacherId);
 }
 @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
-        System.out.println("on show subjects event in create test");
         List<Subject> subjects = event.getSubjects();
         ObservableList<String> items = FXCollections.observableArrayList();
         for(Subject subject:subjects){
@@ -163,7 +161,6 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
     @FXML
     public void onSelectCourse(ActionEvent event) {
         try {
-            System.out.println(courseChaged);
             String courseName = ComboCourse.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseFromName",courseName));
             SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestions", courseName));
@@ -200,7 +197,6 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
             courseChaged++;
             if(examForm!=null){ //We are in update mode
                 //TODO: run later??
-                System.out.println("course changes "+courseChaged);
                 if(courseChaged==1){ // course has not changed since initializaion with values
                     Platform.runLater(()->{
                         try {
@@ -323,8 +319,6 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
                 Random random = new Random();
                 int randomNumber = random.nextInt(999) + 1;//TODO change it
                 ExamCode = Integer.toString(cour.getCode()) + Integer.toString(sub.getCode()) + Integer.toString(randomNumber);//TODO handle code properly!
-                System.out.println(notesStudents.getText());
-                System.out.println(notesTeacher.getText());
                 ExamForm examForm = new ExamForm(ExamCode, timeLim,notesTeacher.getText(),notesStudents.getText());
                 examForm.setQuestionScores(questionScoreList);
                 examForm.setSubject(sub);

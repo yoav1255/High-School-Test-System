@@ -32,7 +32,6 @@ public class ExamEntryController {
 
     public ExamEntryController() {
         EventBus.getDefault().register(this);
-        System.out.println("in exam entry controller");
         scheduleTestIds = new ArrayList<>();
         Platform.runLater(()->{
             msg.setVisible(false);

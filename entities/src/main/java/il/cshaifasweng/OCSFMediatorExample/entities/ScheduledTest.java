@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 @Entity
 @Table(name = "ScheduledTest")
@@ -21,13 +22,14 @@ public class ScheduledTest implements Serializable {
     @ManyToOne
     @JoinColumn(name = "examForm_id")
     private ExamForm examForm;
-    @OneToMany(mappedBy = "scheduledTest")
+    @OneToMany(mappedBy = "scheduledTest",cascade = CascadeType.ALL)
     private List<StudentTest> studentTests;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
     private int submissions;
     private int status; // 0 -> not started , 1 -> during test , 2 -> finished
+
 
     public ScheduledTest(String id, LocalDate date, LocalTime time, int submissions) {
         this.id = id;

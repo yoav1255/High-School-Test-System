@@ -37,12 +37,10 @@ public class loginController {
     public loginController(){
         EventBus.getDefault().register(this);
         instances++;
-        System.out.println("login instance: "+instances);
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
         instances--;
-        System.out.println("login instance: "+instances);
     }
 
     private String user_type;

@@ -21,7 +21,7 @@ public class StudentTest implements Serializable {
     @ManyToOne
     @JoinColumn(name = "scheduledTest_id")
     private ScheduledTest scheduledTest;
-    @OneToMany(mappedBy = "studentTest" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentTest" )
     private List<Question_Answer> questionAnswers;
 
     private int grade;

@@ -28,26 +28,21 @@ public class SimpleServer extends AbstractServer {
 				case ("#warning"):
 					Warning warning = new Warning("Warning from server!");
 					client.sendToClient(new CustomMessage("returnWarning",warning));
-					System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
 					break;
 				case ("#showAllStudents"):
 					List<Student> studentList = App.getAllStudents();
 					client.sendToClient(new CustomMessage("returnStudentList",studentList));
-					System.out.format("Sent Students to client %s\n", client.getInetAddress().getHostAddress());
 					break;
 				case ("#getStudentTests"):
 					List<StudentTest> studentTests =  App.getStudentTests((Student) message.getData());
 					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
-					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 					break;
 				case ("#getStudentTestsFromSchedule"):
 					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
 					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests1));
-					System.out.format("Sent student tests to client %s\n", client.getInetAddress().getHostAddress());
 					break;
 				case ("#getStudentTest"):
 					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
-					System.out.format("Sent student test to client %s\n", client.getInetAddress().getHostAddress());
 					break;
 				case("#updateGrade"):
 					StudentTest studentTest = (StudentTest) message.getData();
@@ -74,7 +69,6 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#getCourses"):
 					List<Course> courses = App.getCoursesFromSubjectName(message.getData().toString());
-					System.out.println(courses.get(0).getName());
 					client.sendToClient(new CustomMessage("returnCourses",courses));
 				case ("#getQuestions"):
 					List<Question> questions = App.getQuestionsFromCourseName(message.getData().toString());
@@ -103,7 +97,6 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnTeacher", teacher));
 					break;
 				case ("#fillComboBox"):
-					System.out.println("WE GOT TO THE SIMPLE SERVER");
 					List<String> examFormCode = App.getListExamFormCode((String) message.getData().toString());
 					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
 					break;
@@ -136,7 +129,6 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("SendSelectedTest"):
 					ScheduledTest selectedTest =(ScheduledTest) message.getData();
-					System.out.println("return SChedule Test " + selectedTest);
 					EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
 					break;
 				case("#getScheduleTestWithInfo"):

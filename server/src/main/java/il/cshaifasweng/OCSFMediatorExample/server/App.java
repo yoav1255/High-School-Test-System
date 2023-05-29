@@ -1,10 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Query;
 
@@ -30,13 +35,15 @@ public class App
 	
 	private static SimpleServer server;
     private static Session session;
+    private static final SessionFactory sessionFactory = getSessionFactory();
+    private static List<ScheduledTest> scheduledTests;
 
     public static void main( String[] args ) throws Exception {
         server = new SimpleServer(3028);
         System.out.println("server is listening");
         server.listen();
         try {
-            SessionFactory sessionFactory = getSessionFactory();
+            //SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
 
@@ -54,45 +61,63 @@ public class App
             session.close();
         }
 
-        List<ScheduledTest> scheduledTests = getScheduledTests();
-
-        for (ScheduledTest scheduledTest : scheduledTests) {
-
-            if(scheduledTest.getStatus()==0) { // before test
+        //TODO : if the teacher added a new scheduletest we need to get schedule tests again
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(new Runnable() { // do this code every 20 seconds
+            @Override
+            public void run() {
+                try {
+                    scheduledTests = App.getScheduledTestsActive();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 LocalDateTime currentDateTime = LocalDateTime.now();
-                LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+                assert scheduledTests != null;
+                for (ScheduledTest scheduledTest : scheduledTests) {
 
-                if (currentDateTime.isAfter(scheduledDateTime)) {
-                    long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
-                    scheduledTest.setStatus(1); // set as during test
+                    if(scheduledTest.getStatus()==0) { // before test
+                        LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
 
-                    LocalDateTime startTime = scheduledDateTime;
-                    LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
+                        if (currentDateTime.isAfter(scheduledDateTime)) {
+                            long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
+                            scheduledTest.setStatus(1); // set as during test
+                            addScheduleTest(scheduledTest);
+                            LocalDateTime startTime = scheduledDateTime;
+                            LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
 
-                    Timer timer = new Timer();
-                    EventBus.getDefault().postSticky(new TimerStartEvent(scheduledTest));
-                    System.out.println("timer started for test : "+ scheduledTest.getId());
-                    // timer started
-                    // now we apply what the timer will do through the whole lifecycle of the timer
-                    TimerTask task = new TimerTask() {
-                        @Override
-                        public void run() {
-                            LocalDateTime currentDateTime = LocalDateTime.now();
-                            if (currentDateTime.isAfter(endTime)) {
-                                System.out.println("checking the time left " + endTime +" - "+ currentDateTime);
-                                EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest));
-                                timer.cancel(); // Stop the timer when the time limit is reached
-                                scheduledTest.setStatus(2);
-                                //TODO update scheduleTest in the db
-                            }
+                            Timer timer = new Timer();
+                            EventBus.getDefault().post(new TimerStartEvent(scheduledTest));
+                            System.out.println("timer started for test : "+ scheduledTest.getId());
+                            // timer started
+                            // now we apply what the timer will do through its whole lifecycle
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    LocalDateTime currentDateTime = LocalDateTime.now();
+                                    if (currentDateTime.isAfter(endTime)) {
+                                        System.out.println("current date time " + currentDateTime);
+                                        System.out.println("end time " + endTime);
+
+                                        System.out.println("checking the time left " + Duration.between(currentDateTime,endTime).toMinutes());
+//                                        EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest));
+                                        timer.cancel(); // Stop the timer when the time limit is reached
+                                        scheduledTest.setStatus(2);
+                                        addScheduleTest(scheduledTest);
+                                        System.out.println("Status "+ scheduledTest.getStatus());
+                                    }
+                                }
+                            };
+
+
+                            timer.schedule(task, 0, 3000); // Check every 3 seconds (adjust the delay as needed)
                         }
-                    };
-
-                    timer.schedule(task, 0, 3000); // Check every 3 seconds (adjust the delay as needed)
+                    }
                 }
             }
-        }
+        }, 0, 20, TimeUnit.SECONDS);
     }
+
+
 
     public static Session getSession() {
         return session;
@@ -237,7 +262,24 @@ public class App
         for (ScheduledTest scheduledTest : scheduledTests) {
             int timeLimit = scheduledTest.getExamForm().getTimeLimit();
         }
+        session.close();
             return scheduledTests;
+    }
+
+    private static List<ScheduledTest> getScheduledTestsActive() throws Exception{
+        List<ScheduledTest> scheduledTests;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et WHERE st.status IN(1,0)";
+        Query query = session.createQuery(hql, ScheduledTest.class);
+        scheduledTests = query.getResultList();
+
+        for (ScheduledTest scheduledTest : scheduledTests) {
+            int timeLimit = scheduledTest.getExamForm().getTimeLimit();
+        }
+        session.close();
+        return scheduledTests;
     }
     public static List<Student> getAllStudents() throws Exception{
 
@@ -290,18 +332,25 @@ public class App
         session.close();
         return examForm;
     }
-    public static void addScheduleTest(ScheduledTest scheduledTest) throws Exception {
-            SessionFactory sessionFactory = getSessionFactory();
-            session=sessionFactory.openSession();
-            session.beginTransaction();
-            System.out.println(scheduledTest);
-////            Teacher teacher=getTeacherFromId();
-//            Teacher teacher=App.getTeacher();
-//            scheduledTest.setTeacher(teacher);
-            session.save(scheduledTest);
-            session.getTransaction().commit();
-            session.close();
-            System.out.println(scheduledTest);
+    public static void addScheduleTest(ScheduledTest scheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(scheduledTest);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+    public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        for(ScheduledTest scheduledTest:scheduledTests) {
+            System.out.println("update "+scheduledTest.getId() + " status "+ scheduledTest.getStatus());
+            session.saveOrUpdate(scheduledTest);
+        }
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
     }
     public static List<Subject> getSubjectsFromTeacherId(String id){
         List<Subject> subjects = new ArrayList<>();
@@ -488,7 +537,7 @@ public class App
 
         if (userType != null) {
             // User exists, userType contains the user type
-            System.out.format("%s %s connecting to system", userType, username);
+//            System.out.format("%s %s connecting to system", userType, username);
         }
         if(userType == null){userType = "wrong";}
         session.getTransaction().commit();
@@ -519,7 +568,6 @@ public class App
             session.update(scheduledTest);
             session.getTransaction().commit();
             session.close();
-            System.out.println(scheduledTest);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -588,7 +636,6 @@ public class App
         List<StudentTest> studentTests = query.getResultList();
         student.setStudentTests(studentTests);
         session.close();
-        System.out.println(student.getEmail());
         return student;
     }
     public static void saveQuestionAnswers(List<Object> items){
@@ -603,9 +650,6 @@ public class App
         session.flush();
         for(int i=2;i<items.size();i++){
             Question_Answer item = (Question_Answer) items.get(i);
-            System.out.println("saving question answer "+ item.getId());
-            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
-            System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
         session.flush();
@@ -618,7 +662,6 @@ public class App
         session = sessionFactory.openSession();
         session.beginTransaction();
         for(QuestionScore item:items){
-            System.out.println("saving Question score "+ item.getId());
             session.saveOrUpdate(item);
         }
         session.flush();
@@ -632,7 +675,6 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        System.out.println("saving student test "+ studentTest.getId());
         session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
         session.flush();

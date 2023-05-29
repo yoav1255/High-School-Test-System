@@ -54,7 +54,6 @@ public class StudentExecuteExamController {
 
     public StudentExecuteExamController() {
         EventBus.getDefault().register(this);
-        System.out.println("on constructor");
 
     }
 
@@ -66,11 +65,9 @@ public class StudentExecuteExamController {
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
         questionAnswers= new ArrayList<>();
-        System.out.println("on selected student event");
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
-        System.out.println("in event: "+student.getFirst_name());
         studentTest = new StudentTest();
         studentTest.setStudent(student);
         student.getStudentTests().add(studentTest);
@@ -84,7 +81,6 @@ public class StudentExecuteExamController {
         for (QuestionScore questionScore : questionScoreList) {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
-            System.out.println("check question score "+questionScore.getId());
             questionAnswer.setQuestionScore(questionScore);
             questionAnswer.setAnswer(-1); // Initialize with no answer selected
             questionScore.getQuestionAnswers().add(questionAnswer);
@@ -148,8 +144,6 @@ public class StudentExecuteExamController {
                         if (selectedRadioButton != null) {
                             int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
                             questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
-                            System.out.println("Question: " + questionAnswer.getQuestionScore().getQuestion().getText());
-                            System.out.println("Selected Answer: " + selectedRadioButton.getText());
                         } else {
                             System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
@@ -204,7 +198,7 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
         });
 
     }
