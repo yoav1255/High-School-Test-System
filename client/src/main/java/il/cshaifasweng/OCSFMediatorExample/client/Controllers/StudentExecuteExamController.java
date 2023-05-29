@@ -3,10 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,9 +17,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.sql.Time;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,6 +207,21 @@ public class StudentExecuteExamController {
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
         });
 
+    }
+
+@Subscribe
+    public void onTimerStartEvent(TimerStartEvent event){
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
+        {
+            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
+        }
+    }
+@Subscribe
+    public void onTimerFinishedEvent(TimerFinishedEvent event){
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
+        {
+            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+        }
     }
 }
 

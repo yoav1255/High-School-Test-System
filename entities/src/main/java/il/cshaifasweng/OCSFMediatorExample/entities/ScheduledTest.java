@@ -27,6 +27,7 @@ public class ScheduledTest implements Serializable {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
     private int submissions;
+    private int status; // 0 -> not started , 1 -> during test , 2 -> finished
 
     public ScheduledTest(String id, LocalDate date, LocalTime time, int submissions) {
         this.id = id;
@@ -34,6 +35,7 @@ public class ScheduledTest implements Serializable {
         this.time = time;
         this.studentTests = new ArrayList<StudentTest>();
         this.submissions = submissions;
+        status = 0;
     }
     public ScheduledTest(){}
 
@@ -109,6 +111,16 @@ public class ScheduledTest implements Serializable {
         return teacher;
     }
 
+    public int getStatus() {
+        if(this.status != 0 && this.status!=1){
+            this.status =2;
+        }
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public static List<ScheduledTest> GenerateScheduledTests(){
         List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();

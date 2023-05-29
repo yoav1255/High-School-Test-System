@@ -74,10 +74,12 @@ public class ExamEntryController {
             //TODO add more validation checks
         }
         else{ // valid id and valid schedule test id
+            //TODO check if status == 1 .
+            //if status is 0 write the time and date that test starts
+            //if status is 2 write that the test isnt available anymore
             App.switchScreen("studentExecuteExam");
             Platform.runLater(()->{
                 try {
-                    //EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
                     SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo",codeInput));
 
