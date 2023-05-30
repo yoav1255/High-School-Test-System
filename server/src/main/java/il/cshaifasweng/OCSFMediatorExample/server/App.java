@@ -35,7 +35,7 @@ public class App
             session=sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
