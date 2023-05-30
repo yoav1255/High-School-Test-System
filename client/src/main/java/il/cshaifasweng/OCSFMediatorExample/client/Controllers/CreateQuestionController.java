@@ -133,6 +133,7 @@ public class CreateQuestionController {
             JOptionPane.showMessageDialog(null, "Error! Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
         } else
             confirm();
+        // TODO להוסיף בדיקה האם השאלה כבר קיימת במאגר, ואם קיימת להחזיר את המספר המזהה שלה
     }
 
     @FXML
