@@ -1,11 +1,22 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.TimerFinishedEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.TimerStartEvent;
+import org.greenrobot.eventbus.EventBus;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -24,23 +35,24 @@ public class App
 	
 	private static SimpleServer server;
     private static Session session;
+    private static final SessionFactory sessionFactory = getSessionFactory();
+    private static List<ScheduledTest> scheduledTests;
 
-    public static void main( String[] args ) throws Exception
-    {
+    public static void main( String[] args ) throws Exception {
         server = new SimpleServer(3028);
         System.out.println("server is listening");
         server.listen();
-        try{
-            SessionFactory sessionFactory = getSessionFactory();
-            session=sessionFactory.openSession();
+        try {
+            //SessionFactory sessionFactory = getSessionFactory();
+            session = sessionFactory.openSession();
             session.beginTransaction();
 
             generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
-        } catch (Exception exception){
-            if(session!=null){
+        } catch (Exception exception) {
+            if (session != null) {
                 session.getTransaction().rollback();
             }
             System.err.println("An error occured, changes have been rolled back.");
@@ -48,7 +60,10 @@ public class App
         } finally {
             session.close();
         }
+
     }
+
+
 
     public static Session getSession() {
         return session;
@@ -81,12 +96,8 @@ public class App
         List<Student> students = Student.GenerateStudents();
         List<Subject> subjects = Subject.GenerateSubjects();
         List<Course> courses = Course.GenerateCourses();
-        List<ExamForm> examForms = ExamForm.GenerateExamForms();
         List<Teacher> teachers = Teacher.GenerateTeachers();
-        List<ScheduledTest> scheduledTests = ScheduledTest.GenerateScheduledTests();
-        List<StudentTest> studentTests = StudentTest.GenerateStudentTests();
         List<Question> questions = Question.GenerateQuestions();
-        //List<QuestionScore> questionScores = QuestionScore.generateQuestionScores();
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
@@ -125,26 +136,6 @@ public class App
         questions.get(7).setSubject(subjects.get(1));
         questions.get(7).setCourses(subjects.get(1).getCourses());
 
-//        questionScores.get(0).setQuestion(questions.get(0));
-//        questionScores.get(1).setQuestion(questions.get(1));
-//        questionScores.get(2).setQuestion(questions.get(2));
-//        questionScores.get(6).setQuestion(questions.get(6));
-//
-//        questionScores.get(3).setQuestion(questions.get(3));
-//        questionScores.get(4).setQuestion(questions.get(4));
-//        questionScores.get(5).setQuestion(questions.get(5));
-//        questionScores.get(7).setQuestion(questions.get(7));
-//
-//        questions.get(0).addQuestionScore(questionScores.get(0));
-//        questions.get(1).addQuestionScore(questionScores.get(1));
-//        questions.get(2).addQuestionScore(questionScores.get(2));
-//        questions.get(6).addQuestionScore(questionScores.get(6));
-//
-//        questions.get(3).addQuestionScore(questionScores.get(3));
-//        questions.get(4).addQuestionScore(questionScores.get(4));
-//        questions.get(5).addQuestionScore(questionScores.get(5));
-//        questions.get(7).addQuestionScore(questionScores.get(7));
-
         subjects.get(0).addQuestion(questions.get(0));
         subjects.get(0).addQuestion(questions.get(1));
         subjects.get(0).addQuestion(questions.get(2));
@@ -169,43 +160,6 @@ public class App
             course.addQuestion(questions.get(7));
         }
 
-
-//Update ExamForms
-
-
-        examForms.get(0).setSubject(subjects.get(0));
-        examForms.get(0).setCourse(courses.get(0));
-        subjects.get(0).addExamForm(examForms.get(0));
-        courses.get(0).addExamForm(examForms.get(0));
-
-
-        examForms.get(1).setSubject(subjects.get(1));
-        examForms.get(1).setCourse(courses.get(3));
-        subjects.get(1).addExamForm(examForms.get(1));
-        courses.get(3).addExamForm(examForms.get(1));
-
-
-//Update ScheduledTest
-
-        for (int i = 0 ;i<scheduledTests.size()/3;i++){
-            scheduledTests.get(i).setExamForm(examForms.get(0));
-            scheduledTests.get(i).setTeacher(teachers.get(0));
-            examForms.get(0).addScheduledTest(scheduledTests.get(i));
-            teachers.get(0).addScheduledTest(scheduledTests.get(i));
-        }
-        for (int i = scheduledTests.size()/3 ;i<scheduledTests.size()*2/3;i++){
-            scheduledTests.get(i).setExamForm(examForms.get(1));
-            scheduledTests.get(i).setTeacher(teachers.get(1));
-            examForms.get(1).addScheduledTest(scheduledTests.get(i));
-            teachers.get(1).addScheduledTest(scheduledTests.get(i));
-        }
-        for (int i = scheduledTests.size()*2/3 ;i<scheduledTests.size();i++){
-            scheduledTests.get(i).setExamForm(examForms.get(2));
-            scheduledTests.get(i).setTeacher(teachers.get(2));
-            examForms.get(2).addScheduledTest(scheduledTests.get(i));
-            teachers.get(2).addScheduledTest(scheduledTests.get(i));
-        }
-
 //Update Teachers
 
         teachers.get(0).addCourses(courses.get(0));
@@ -223,17 +177,6 @@ public class App
         courses.get(4).addTeacher(teachers.get(2));
         subjects.get(2).addTeacher(teachers.get(2));
 
-//Update StudentTests
-
-        for(int k = 0 ; k<2 ; k++) {
-            for (int index = 0; index < 12; index++) {
-                StudentTest s = studentTests.get(index+(k*12));
-                s.setScheduledTest(scheduledTests.get(k*6));
-                s.setStudent(students.get(index));
-                scheduledTests.get(index).addStudentTest(s);
-                students.get(index).addStudentTests(s);
-            }
-        }
 
 // ------------ Add objects to DB --------//
 
@@ -243,32 +186,44 @@ public class App
             session.save(course);
         for (Question question: questions)
             session.save(question);
-//        for(QuestionScore questionScore:questionScores)
-//            session.save(questionScore);
-        for (ExamForm examForm:examForms)
-            session.save(examForm);
-        for (ScheduledTest scheduledTest:scheduledTests)
-            session.save(scheduledTest);
         for (Teacher teacher:teachers)
             session.save(teacher);
         for (Student student:students)
             session.save(student);
-        for (StudentTest studentTest:studentTests)
-            session.save(studentTest);
+
 
         session.flush();
     }
 
-    public static List<ScheduledTest> getScheduledTests() throws Exception{
+    public static List<ScheduledTest> getScheduledTests() throws Exception {
 
-        List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
+        List<ScheduledTest> scheduledTests;
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        //
-        String queryString = "SELECT s FROM ScheduledTest s";
-        Query query = session.createQuery(queryString,ScheduledTest.class);
+
+        String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et";
+        Query query = session.createQuery(hql, ScheduledTest.class);
         scheduledTests = query.getResultList();
-        //
+
+        for (ScheduledTest scheduledTest : scheduledTests) {
+            int timeLimit = scheduledTest.getExamForm().getTimeLimit();
+        }
+        session.close();
+            return scheduledTests;
+    }
+
+    static List<ScheduledTest> getScheduledTestsActive() throws Exception{
+        List<ScheduledTest> scheduledTests;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et WHERE st.status IN(1,0)";
+        Query query = session.createQuery(hql, ScheduledTest.class);
+        scheduledTests = query.getResultList();
+
+        for (ScheduledTest scheduledTest : scheduledTests) {
+            int timeLimit = scheduledTest.getExamForm().getTimeLimit();
+        }
         session.close();
         return scheduledTests;
     }
@@ -323,18 +278,25 @@ public class App
         session.close();
         return examForm;
     }
-    public static void addScheduleTest(ScheduledTest scheduledTest) throws Exception {
-            SessionFactory sessionFactory = getSessionFactory();
-            session=sessionFactory.openSession();
-            session.beginTransaction();
-            System.out.println(scheduledTest);
-////            Teacher teacher=getTeacherFromId();
-//            Teacher teacher=App.getTeacher();
-//            scheduledTest.setTeacher(teacher);
-            session.save(scheduledTest);
-            session.getTransaction().commit();
-            session.close();
-            System.out.println(scheduledTest);
+    public static void addScheduleTest(ScheduledTest scheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(scheduledTest);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+    public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        for(ScheduledTest scheduledTest:scheduledTests) {
+            System.out.println("update "+scheduledTest.getId() + " status "+ scheduledTest.getStatus());
+            session.saveOrUpdate(scheduledTest);
+        }
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
     }
     public static List<Subject> getSubjectsFromTeacherId(String id){
         List<Subject> subjects = new ArrayList<>();
@@ -521,7 +483,7 @@ public class App
 
         if (userType != null) {
             // User exists, userType contains the user type
-            System.out.format("%s %s connecting to system", userType, username);
+//            System.out.format("%s %s connecting to system", userType, username);
         }
         if(userType == null){userType = "wrong";}
         session.getTransaction().commit();
@@ -552,7 +514,6 @@ public class App
             session.update(scheduledTest);
             session.getTransaction().commit();
             session.close();
-            System.out.println(scheduledTest);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -615,8 +576,12 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         Student student = session.get(Student.class,id);
+        String queryString = "SELECT st from StudentTest st where st.student =:student";
+        Query query = session.createQuery(queryString, StudentTest.class);
+        query.setParameter("student",student);
+        List<StudentTest> studentTests = query.getResultList();
+        student.setStudentTests(studentTests);
         session.close();
-        System.out.println(student.getEmail());
         return student;
     }
     public static void saveQuestionAnswers(List<Object> items){
@@ -631,9 +596,6 @@ public class App
         session.flush();
         for(int i=2;i<items.size();i++){
             Question_Answer item = (Question_Answer) items.get(i);
-            System.out.println("saving question answer "+ item.getId());
-            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
-            System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
         session.flush();
@@ -646,7 +608,6 @@ public class App
         session = sessionFactory.openSession();
         session.beginTransaction();
         for(QuestionScore item:items){
-            System.out.println("saving Question score "+ item.getId());
             session.saveOrUpdate(item);
         }
         session.flush();
@@ -660,7 +621,6 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        System.out.println("saving student test "+ studentTest.getId());
         session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
         session.flush();

@@ -72,12 +72,10 @@ public class ShowExamFormsController {
 
         EventBus.getDefault().register(this);
         instances++;
-        System.out.println("in exam forms "+instances);
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
         instances--;
-        System.out.println("in exam forms "+instances);
     }
 
     public void setId(String id) {
@@ -92,7 +90,6 @@ public class ShowExamFormsController {
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
         Platform.runLater(()->{
             setId(event.getId());
-            System.out.println("Teacher id in show exam forms: "+id);
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
             } catch (IOException e) {
@@ -103,7 +100,6 @@ public class ShowExamFormsController {
 @Subscribe(threadMode = ThreadMode.MAIN)
 @FXML
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
-        System.out.println("on show subjects event in show examForms");
         List<Subject> subjects = event.getSubjects();
         ObservableList<String> items = FXCollections.observableArrayList();
         Platform.runLater(()->{
@@ -226,7 +222,6 @@ public class ShowExamFormsController {
     public void handleAddExamForm(ActionEvent event) {
         try {
             String teacherId = this.id;
-            System.out.println("btn to add exam form "+ teacherId);
             App.switchScreen("createExamForm");
             Platform.runLater(()->{
                 try {
@@ -245,7 +240,6 @@ public class ShowExamFormsController {
     public void handleGoHomeButtonClick(ActionEvent event) {
         try{
             String teacherId = this.id;
-            System.out.println("go home "+teacherId);
             App.switchScreen("teacherHome");
             Platform.runLater(()->{
                 try {

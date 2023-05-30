@@ -59,6 +59,7 @@ public class StudentHomeController {
 
     @FXML
     void handleEnterTestClick(ActionEvent event) throws IOException {
+        cleanup();
         App.switchScreen("examEntry");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));

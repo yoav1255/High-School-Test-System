@@ -3,10 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +17,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,6 +35,8 @@ public class StudentExecuteExamController {
     @FXML
     private Label text_Id;
     @FXML
+    private Label timeLeftText;
+    @FXML
     private Button submitButton;
     @FXML
     private List<ToggleGroup> toggleGroups = new ArrayList<>();
@@ -53,13 +51,13 @@ public class StudentExecuteExamController {
     private StudentTest studentTest;
     private List<QuestionScore> questionScoreList;
     private Student student;
-    List<Question_Answer> questionAnswers ;
+    private List<Question_Answer> questionAnswers ;
+    private long timeLeft;
 
 
 
     public StudentExecuteExamController() {
         EventBus.getDefault().register(this);
-        System.out.println("on constructor");
 
     }
 
@@ -71,11 +69,9 @@ public class StudentExecuteExamController {
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
         questionAnswers= new ArrayList<>();
-        System.out.println("on selected student event");
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
-        System.out.println("in event: "+student.getFirst_name());
         studentTest = new StudentTest();
         studentTest.setStudent(student);
         student.getStudentTests().add(studentTest);
@@ -89,7 +85,6 @@ public class StudentExecuteExamController {
         for (QuestionScore questionScore : questionScoreList) {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
-            System.out.println("check question score "+questionScore.getId());
             questionAnswer.setQuestionScore(questionScore);
             questionAnswer.setAnswer(-1); // Initialize with no answer selected
             questionScore.getQuestionAnswers().add(questionAnswer);
@@ -153,8 +148,6 @@ public class StudentExecuteExamController {
                         if (selectedRadioButton != null) {
                             int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
                             questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
-                            System.out.println("Question: " + questionAnswer.getQuestionScore().getQuestion().getText());
-                            System.out.println("Selected Answer: " + selectedRadioButton.getText());
                         } else {
                             System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
@@ -168,20 +161,56 @@ public class StudentExecuteExamController {
 
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
-        LocalTime timeStart = scheduledTest.getTime();
-        LocalTime currentTime = LocalTime.now();
-        Duration timeToComplete = Duration.between(timeStart,currentTime);
-        System.out.println("Hour "+ timeToComplete.toHours());
-        System.out.println("Minutes "+ timeToComplete.toMinutes());
-        System.out.println("Seconds "+ timeToComplete.toSeconds());
+        //TODO validation checks
+        endTest();
+    }
 
-        studentTest.setTimeToComplete(timeToComplete);
+@Subscribe
+    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
+        System.out.println("good");
+        cleanup();
+        App.switchScreen("studentHome");
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+        });
+
+    }
+
+
+
+@Subscribe
+    public void onTimerStartEvent(TimerStartEvent event){ // not necessary
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
+        {
+            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
+        }
+    }
+
+@Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event){
+        timeLeft = event.getTimeLeft();
+        Platform.runLater(()->{
+            timeLeftText.setText(Long.toString( timeLeft));
+        });
+}
+
+@Subscribe
+    public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
+        {
+            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+            endTest();
+        }
+    }
+
+    public void endTest() throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
+        studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
+
         // student test is ready
-        //TODO add timer and add timeToComplete field
-        //TODO add scroll bar/pane
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
@@ -201,17 +230,6 @@ public class StudentExecuteExamController {
 
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
-
-@Subscribe
-    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
-        System.out.println("good");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-        });
-
-    }
 }
+
 
