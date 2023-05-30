@@ -591,7 +591,7 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        session.saveOrUpdate(student);
+//        session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
         session.flush();
         for(int i=2;i<items.size();i++){

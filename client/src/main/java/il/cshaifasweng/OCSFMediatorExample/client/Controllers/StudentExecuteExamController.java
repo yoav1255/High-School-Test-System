@@ -209,6 +209,7 @@ public class StudentExecuteExamController {
         studentTest.setQuestionAnswers(questionAnswers);
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
+        //TODO update the student checked and schedule test
 
         // student test is ready
 

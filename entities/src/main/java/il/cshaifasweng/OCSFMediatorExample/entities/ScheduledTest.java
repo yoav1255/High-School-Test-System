@@ -28,7 +28,11 @@ public class ScheduledTest implements Serializable {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
     private int submissions;
+    private int checkedSubmissions;
+    private boolean isChecked;
     private int status; // 0 -> not started , 1 -> during test , 2 -> finished
+    private int timeLimit;
+
 
 
     public ScheduledTest(String id, LocalDate date, LocalTime time, int submissions) {
@@ -38,6 +42,8 @@ public class ScheduledTest implements Serializable {
         this.studentTests = new ArrayList<StudentTest>();
         this.submissions = submissions;
         status = 0;
+        checkedSubmissions = 0;
+        isChecked = false;
     }
     public ScheduledTest(){}
 
@@ -74,6 +80,7 @@ public class ScheduledTest implements Serializable {
 
     public void setExamForm(ExamForm examForm) {
         this.examForm = examForm;
+        this.timeLimit = examForm.getTimeLimit();
     }
 
     public List<StudentTest> getStudentTests() {
