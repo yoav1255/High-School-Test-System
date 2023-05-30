@@ -194,17 +194,20 @@ public class SimpleServer extends AbstractServer {
 				LocalDateTime currentDateTime = LocalDateTime.now();
 				assert scheduledTests != null;
 				for (ScheduledTest scheduledTest : scheduledTests) {
+					LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+					long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
+					LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 
-					if(scheduledTest.getStatus()==0) { // before test
-						LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+					if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
+					{
+						scheduledTest.setStatus(2);
+						App.addScheduleTest(scheduledTest);
+					}
+					else if(scheduledTest.getStatus()==0) { // before test
 
 						if (currentDateTime.isAfter(scheduledDateTime)) {
-							long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
 							scheduledTest.setStatus(1); // set as during test
 							App.addScheduleTest(scheduledTest);
-							LocalDateTime startTime = scheduledDateTime;
-							LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
-
 							Timer timer = new Timer();
 
 							try {

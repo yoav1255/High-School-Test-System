@@ -161,19 +161,56 @@ public class StudentExecuteExamController {
 
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
-        LocalTime timeStart = scheduledTest.getTime();
-        LocalTime currentTime = LocalTime.now();
-        Duration timeToComplete = Duration.between(timeStart,currentTime);
-        System.out.println("Hour "+ timeToComplete.toHours());
-        System.out.println("Minutes "+ timeToComplete.toMinutes());
-        System.out.println("Seconds "+ timeToComplete.toSeconds());
+        //TODO validation checks
+        endTest();
+    }
 
-        studentTest.setTimeToComplete(timeToComplete.toMillis());
+@Subscribe
+    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
+        System.out.println("good");
+        cleanup();
+        App.switchScreen("studentHome");
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+        });
+
+    }
+
+
+
+@Subscribe
+    public void onTimerStartEvent(TimerStartEvent event){ // not necessary
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
+        {
+            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
+        }
+    }
+
+@Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event){
+        timeLeft = event.getTimeLeft();
+        Platform.runLater(()->{
+            timeLeftText.setText(Long.toString( timeLeft));
+        });
+}
+
+@Subscribe
+    public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
+        {
+            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+            endTest();
+        }
+    }
+
+    public void endTest() throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
+        studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
+
         // student test is ready
-        //TODO add timer and add timeToComplete field
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
@@ -193,47 +230,6 @@ public class StudentExecuteExamController {
 
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
-
-@Subscribe
-    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
-        System.out.println("good");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
-        });
-
-    }
-
-
-
-@Subscribe
-    public void onTimerStartEvent(TimerStartEvent event){
-        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
-        {
-            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
-            long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
-            LocalDateTime startTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
-            LocalDateTime endTime = startTime.plusMinutes(timeLimitMinutes);
-
-        }
-    }
-
-@Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){
-        timeLeft = event.getTimeLeft();
-        Platform.runLater(()->{
-            timeLeftText.setText(Long.toString( timeLeft));
-        });
 }
 
-@Subscribe
-    public void onTimerFinishedEvent(TimerFinishedEvent event){
-        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
-        {
-            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
-        }
-    }
-}
 

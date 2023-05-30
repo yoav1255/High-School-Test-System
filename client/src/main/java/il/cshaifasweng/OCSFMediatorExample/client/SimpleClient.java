@@ -117,7 +117,7 @@ public class SimpleClient extends AbstractClient {
 				case ("timerFinished"):
 					System.out.println("in simple client!");
 					ScheduledTest scheduledTest2 = (ScheduledTest) message.getData();
-					System.out.println("in simple client! timer started for test "+scheduledTest2.getId());
+					System.out.println("in simple client! timer finished for test "+scheduledTest2.getId());
 					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
 					break;
 				case ("timeLeft"):
