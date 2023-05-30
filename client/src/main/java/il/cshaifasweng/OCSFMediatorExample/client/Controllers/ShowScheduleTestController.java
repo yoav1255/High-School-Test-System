@@ -211,7 +211,6 @@ public class ShowScheduleTestController {
 
                 } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true) {
                     App.switchScreen("testGrade");
-                    System.out.println("HOO");
                     Platform.runLater(() -> {
                         try {
                             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
