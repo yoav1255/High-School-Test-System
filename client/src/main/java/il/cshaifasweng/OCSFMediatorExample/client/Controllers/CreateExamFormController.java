@@ -56,19 +56,19 @@ public class CreateExamFormController {
     @FXML
     private TextField scoreUpdateTextField;
     @FXML
-    private TableView<QuestionScore> Table_Chosen;
+    private TableView<Question_Score> Table_Chosen;
     @FXML
-    private TableColumn<QuestionScore, String> qText;
+    private TableColumn<Question_Score, String> qText;
     @FXML
-    private TableColumn<QuestionScore, Integer> score;
+    private TableColumn<Question_Score, Integer> score;
     @FXML
-    private TableColumn<QuestionScore, Integer> qId;
+    private TableColumn<Question_Score, Integer> qId;
     @FXML
     private TextField scoreTextField;
     @FXML
     private TextField timeLimit;
 
-    private List<QuestionScore> questionScoreList;
+    private List<Question_Score> questionScoreList;
     private String ExamCode;
     private Subject sub;
     private Course cour;
@@ -109,10 +109,6 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
             Platform.runLater(()->{
                 ComboSubject.setValue(examForm.getSubjectName());
                 timeLimit.setText(Integer.toString( examForm.getTimeLimit()));
-                if(examForm.getTeacherNotes()!=null)
-                    notesTeacher.setText(examForm.getTeacherNotes());
-                if(examForm.getStudentNotes()!=null)
-                    notesStudents.setText(examForm.getStudentNotes());
             });
         }
     }
@@ -223,7 +219,7 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         qText.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getQuestion().getText()));
         score.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        ObservableList<QuestionScore> questionScores = FXCollections.observableArrayList(questionScoreList);
+        ObservableList<Question_Score> questionScores = FXCollections.observableArrayList(questionScoreList);
         Table_Chosen.setItems(questionScores);
         Table_Chosen.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         Table_Chosen.refresh();
@@ -252,7 +248,7 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
                             labelMsg.setText("Invalid Score!");
                         }
                         if(validScore) {
-                            QuestionScore qs = new QuestionScore(score);
+                            Question_Score qs = new Question_Score(score);
                             qs.setQuestion(selectedQuestion);
                             questionScoreList.add(qs);
                             scoreTextField.clear();
@@ -273,7 +269,7 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
             Platform.runLater(() -> {
                 boolean validScore=true;
                 int score = 0;
-                QuestionScore selectedQuestionScore = Table_Chosen.getSelectionModel().getSelectedItem();
+                Question_Score selectedQuestionScore = Table_Chosen.getSelectionModel().getSelectedItem();
                 if (selectedQuestionScore != null) {
                     if (!scoreText.isEmpty()) {
                         try {
@@ -319,11 +315,11 @@ public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
                 Random random = new Random();
                 int randomNumber = random.nextInt(999) + 1;//TODO change it
                 ExamCode = Integer.toString(cour.getCode()) + Integer.toString(sub.getCode()) + Integer.toString(randomNumber);//TODO handle code properly!
-                ExamForm examForm = new ExamForm(ExamCode, timeLim,notesTeacher.getText(),notesStudents.getText());
+                ExamForm examForm = new ExamForm(ExamCode, timeLim);
                 examForm.setQuestionScores(questionScoreList);
                 examForm.setSubject(sub);
                 examForm.setCourse(cour);
-                for(QuestionScore questionScore:questionScoreList){
+                for(Question_Score questionScore:questionScoreList){
                     questionScore.setExamForm(examForm);
                     sum+=questionScore.getScore();
                 }

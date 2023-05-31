@@ -1,22 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.TimerFinishedEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.TimerStartEvent;
-import org.greenrobot.eventbus.EventBus;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -81,7 +70,7 @@ public class App
         configuration.addAnnotatedClass(StudentTest.class);
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
-        configuration.addAnnotatedClass(QuestionScore.class);
+        configuration.addAnnotatedClass(Question_Score.class);
         configuration.addAnnotatedClass(Question_Answer.class);
 
 
@@ -370,11 +359,11 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
-    public static void addQuestionScores(List<QuestionScore> questionScores) {
+    public static void addQuestionScores(List<Question_Score> questionScores) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        for(QuestionScore questionScore:questionScores){
+        for(Question_Score questionScore:questionScores){
             session.save(questionScore);
         }
         session.flush();
@@ -536,13 +525,13 @@ public class App
         return examForms;
     }
 
-    public static List<QuestionScore> getQuestionScoresFromExamForm(ExamForm examForm) {
+    public static List<Question_Score> getQuestionScoresFromExamForm(ExamForm examForm) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        String queryString = "SELECT qs FROM QuestionScore qs WHERE qs.examForm =:examForm";
-        Query query = session.createQuery(queryString,QuestionScore.class);
+        String queryString = "SELECT qs FROM Question_Score qs WHERE qs.examForm =:examForm";
+        Query query = session.createQuery(queryString, Question_Score.class);
         query.setParameter("examForm",examForm);
-        List<QuestionScore> questionScores = query.getResultList();
+        List<Question_Score> questionScores = query.getResultList();
         session.close();
         return questionScores;
     }
@@ -558,11 +547,11 @@ public class App
         query.setParameter("scheduleTest",scheduledTest);
         ExamForm examForm = (ExamForm) query.getSingleResult();
 
-        String hql = "SELECT qs FROM QuestionScore qs " +
+        String hql = "SELECT qs FROM Question_Score qs " +
                 "JOIN FETCH qs.question " +
                 "WHERE qs.examForm = :examForm";
 
-        List<QuestionScore> questionScores = session.createQuery(hql)
+        List<Question_Score> questionScores = session.createQuery(hql)
                 .setParameter("examForm", examForm)
                 .getResultList();
 
@@ -603,11 +592,11 @@ public class App
         session.close();
     }
 
-    public static void saveQuestionScores(List<QuestionScore> items){
+    public static void saveQuestionScores(List<Question_Score> items){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        for(QuestionScore item:items){
+        for(Question_Score item:items){
             session.saveOrUpdate(item);
         }
         session.flush();
