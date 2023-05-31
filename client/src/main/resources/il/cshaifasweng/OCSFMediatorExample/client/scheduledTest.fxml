@@ -95,12 +95,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="311.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Submission">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="395.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Exam Form">
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="316.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Exam Form">
          <font>
             <Font size="20.0" />
          </font>
@@ -109,16 +104,10 @@
          <opaqueInsets>
             <Insets />
          </opaqueInsets></DatePicker>
-      <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="410.0" layoutY="397.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
+      <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="410.0" layoutY="318.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
       <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="421.0" layoutY="241.0" prefHeight="10.0" prefWidth="48.0" />
       <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="718.0" layoutY="505.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: #FFD700;" text="Schedule Test" textFill="#661515" />
-      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="482.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="teacher ID">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
       <Label id="labelTeacher" fx:id="labelTeacher" layoutX="419.0" layoutY="483.0" prefHeight="28.0" prefWidth="99.0" />
-      <TextField id="scheduleTime" fx:id="textFieldsubmission" layoutX="421.0" layoutY="313.0" prefHeight="10.0" prefWidth="48.0" />
       <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="84.0" prefHeight="19.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Code">
          <font>
             <Font size="20.0" />
