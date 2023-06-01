@@ -94,7 +94,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowExamFormsEvent(examForms));
 					break;
 				case ("returnQuestionScores"):
-					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
+					List<Question_Score> questionScores = (List<Question_Score>) message.getData();
 					EventBus.getDefault().post(new ShowExamFormQuestionScoresEvent(questionScores));
 					break;
 				case ("returnScheduleTestWithInfo"):

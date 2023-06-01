@@ -28,7 +28,7 @@ public class Question implements Serializable {
     @JoinColumn(name = "subject_id")
     private Subject subject;
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private List<QuestionScore> questionScores;
+    private List<Question_Score> questionScores;
 
 
     public Question(String text, String answer0, String answer1, String answer2, String answer3, int indexAnswer) {
@@ -118,14 +118,14 @@ public class Question implements Serializable {
         this.subject = subject;
     }
 
-    public List<QuestionScore> getQuestionScores() {
+    public List<Question_Score> getQuestionScores() {
         return questionScores;
     }
 
-    public void setQuestionScores(List<QuestionScore> questionScores) {
+    public void setQuestionScores(List<Question_Score> questionScores) {
         this.questionScores = questionScores;
     }
-    public void addQuestionScore(QuestionScore questionScore){
+    public void addQuestionScore(Question_Score questionScore){
         questionScores.add(questionScore);
     }
 

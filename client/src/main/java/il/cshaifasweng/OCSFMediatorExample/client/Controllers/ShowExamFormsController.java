@@ -222,11 +222,12 @@ public class ShowExamFormsController {
     public void handleAddExamForm(ActionEvent event) {
         try {
             String teacherId = this.id;
-            App.switchScreen("createExamForm");
+            App.switchScreen("createExamForm2");
             Platform.runLater(()->{
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
                     EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher",teacherId));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

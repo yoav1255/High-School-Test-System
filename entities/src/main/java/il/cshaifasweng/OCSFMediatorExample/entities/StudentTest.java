@@ -26,12 +26,14 @@ public class StudentTest implements Serializable {
 
     private int grade;
     private long timeToComplete; //TODO check how to use Duration properly
+    private boolean isChecked;
 
     public StudentTest(int id, int grade, long timeToComplete) {
         this.id = id;
         this.grade = grade;
         this.timeToComplete = timeToComplete;
         this.questionAnswers = new ArrayList<>();
+        isChecked = false;
     }
     public StudentTest(){}
 

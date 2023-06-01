@@ -1,19 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import com.mysql.cj.xdevapi.Client;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.hibernate.SessionFactory;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -116,7 +110,7 @@ public class SimpleServer extends AbstractServer {
 					App.addExamForm(examForm);
 					break;
 				case ("#addQuestionScores"):
-					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
+					List<Question_Score> questionScores = (List<Question_Score>) message.getData();
 					App.addQuestionScores(questionScores);
 					break;
 				case ("#getTeacher"):
@@ -151,7 +145,7 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#getQuestionScores"):
 					ExamForm examForm1 = (ExamForm) message.getData();
-					List<QuestionScore> questionScoreList = App.getQuestionScoresFromExamForm(examForm1);
+					List<Question_Score> questionScoreList = App.getQuestionScoresFromExamForm(examForm1);
 					client.sendToClient(new CustomMessage("returnQuestionScores",questionScoreList));
 					break;
 				case ("SendSelectedTest"):
@@ -171,7 +165,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
 					break;
 				case ("#saveQuestionScores"):
-					App.saveQuestionScores((List<QuestionScore>) message.getData());
+					App.saveQuestionScores((List<Question_Score>) message.getData());
 					//client.sendToClient(new CustomMessage("savedStudentTest_QuestionAnswers","Success"));
 					break;
 				case ("#saveStudentTest"):

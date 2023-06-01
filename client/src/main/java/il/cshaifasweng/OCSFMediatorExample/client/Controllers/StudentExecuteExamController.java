@@ -17,9 +17,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +46,7 @@ public class StudentExecuteExamController {
     private String id;
     private ScheduledTest scheduledTest;
     private StudentTest studentTest;
-    private List<QuestionScore> questionScoreList;
+    private List<Question_Score> questionScoreList;
     private Student student;
     private List<Question_Answer> questionAnswers ;
     private long timeLeft;
@@ -82,7 +79,7 @@ public class StudentExecuteExamController {
         scheduledTest = event.getSelectedTestEvent();
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
-        for (QuestionScore questionScore : questionScoreList) {
+        for (Question_Score questionScore : questionScoreList) {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
             questionAnswer.setQuestionScore(questionScore);
@@ -209,6 +206,7 @@ public class StudentExecuteExamController {
         studentTest.setQuestionAnswers(questionAnswers);
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
+        //TODO update the student checked and schedule test
 
         // student test is ready
 
