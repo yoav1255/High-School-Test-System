@@ -13,13 +13,13 @@ public class Question_Answer implements Serializable {
     private int id;
     @ManyToOne
     @JoinColumn(name = "questionScore_id")
-    private QuestionScore questionScore;
+    private Question_Score questionScore;
     @ManyToOne
     @JoinColumn(name = "studentTest_id")
     private StudentTest studentTest;
     private int answer;
 
-    public Question_Answer(QuestionScore questionScore, StudentTest studentTest, int answer) {
+    public Question_Answer(Question_Score questionScore, StudentTest studentTest, int answer) {
         this.questionScore = questionScore;
         this.studentTest = studentTest;
         this.answer = answer;
@@ -37,11 +37,11 @@ public class Question_Answer implements Serializable {
         this.id = id;
     }
 
-    public QuestionScore getQuestionScore() {
+    public Question_Score getQuestionScore() {
         return questionScore;
     }
 
-    public void setQuestionScore(QuestionScore questionScore) {
+    public void setQuestionScore(Question_Score questionScore) {
         this.questionScore = questionScore;
     }
 

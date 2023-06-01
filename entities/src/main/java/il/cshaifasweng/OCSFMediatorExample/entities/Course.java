@@ -26,15 +26,23 @@ public class Course implements Serializable {
             joinColumns = @JoinColumn(name="course_id"),
             inverseJoinColumns = @JoinColumn(name = "teacher_id"))
     private List<Teacher> teachers;
+    private int examInstances = 0;
 
-    public Course(int code, String name) {
-        this.code = code;
+    public Course( String name) {
         this.name = name;
         this.examForms = new ArrayList<ExamForm>();
         this.questions = new ArrayList<Question>();
         this.teachers = new ArrayList<Teacher>();
     }
     public Course(){}
+
+    public int getExamInstances() {
+        return examInstances;
+    }
+
+    public void setExamInstances(int examInstances) {
+        this.examInstances = examInstances;
+    }
 
     public int getCode() {
         return code;
@@ -86,17 +94,17 @@ public class Course implements Serializable {
     public void addTeacher(Teacher teacher){ this.teachers.add(teacher); }
     public static List<Course> GenerateCourses(){
         List<Course> courses= new ArrayList<Course>();
-        courses.add(new Course(1,"Hedva"));
-        courses.add(new Course(2,"Infi"));
-        courses.add(new Course(3,"Algebra A"));
-        courses.add(new Course(4,"Algebra B"));
-        courses.add(new Course(5,"Programing"));
-        courses.add(new Course(6,"DataBase"));
-        courses.add(new Course(7,"Algorithm"));
-        courses.add(new Course(8,"Business in Science"));
-        courses.add(new Course(9,"Complexity"));
-        courses.add(new Course(10,"Hardware"));
-        courses.add(new Course(11,"Develop C"));
+        courses.add(new Course("Hedva"));
+        courses.add(new Course("Infi"));
+        courses.add(new Course("Algebra A"));
+        courses.add(new Course("Algebra B"));
+        courses.add(new Course("Programing"));
+        courses.add(new Course("DataBase"));
+        courses.add(new Course("Algorithm"));
+        courses.add(new Course("Business in Science"));
+        courses.add(new Course("Complexity"));
+        courses.add(new Course("Hardware"));
+        courses.add(new Course("Develop C"));
 
         System.out.println(courses.lastIndexOf(courses));
 

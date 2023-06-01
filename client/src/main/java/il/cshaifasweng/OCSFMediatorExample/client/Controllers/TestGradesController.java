@@ -84,7 +84,6 @@ public class TestGradesController {
     @Subscribe
     public void onShowOneStudentEvent(ShowOneStudentEvent event)throws IOException{
         this.studentTests=event.getStudentTests();
-        System.out.println(studentTests);
         studentId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<StudentTest, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<StudentTest, String> param) {

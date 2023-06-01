@@ -114,7 +114,7 @@ public class ShowScheduleTestController {
                 formattedTime = formattedTime.substring(0, 5);
                 return new SimpleStringProperty(formattedTime);
             });
-            submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("submissions"));
+            submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("checkedSubmissions" + "/" +"submissions"));
             examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
                 @Override
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
@@ -211,7 +211,6 @@ public class ShowScheduleTestController {
 
                 } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true) {
                     App.switchScreen("testGrade");
-                    System.out.println("HOO");
                     Platform.runLater(() -> {
                         try {
                             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
