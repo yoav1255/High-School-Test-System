@@ -35,6 +35,7 @@ public class StudentTest implements Serializable {
         this.timeToComplete = timeToComplete;
         this.questionAnswers = new ArrayList<>();
         isChecked = false;
+        isOnTime = true;
     }
     public StudentTest(){}
 

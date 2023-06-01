@@ -214,6 +214,7 @@ public class StudentExecuteExamController {
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+            studentTest.setOnTime(false);
             endTest();
         }
     }
