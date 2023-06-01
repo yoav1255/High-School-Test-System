@@ -224,6 +224,7 @@ public class App
         session.close();
         return scheduledTests;
     }
+
     public static List<Student> getAllStudents() throws Exception{
 
         List<Student> students = new ArrayList<Student>();
@@ -237,7 +238,6 @@ public class App
         session.close();
         return students;
     }
-
 
    public static Teacher getTeacher(){
        // create a Criteria object for the Teacher class
@@ -264,6 +264,7 @@ public class App
         session.close();
         return codes;
     }
+
     public static ExamForm getExamForm(String examFormId) {
         SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
@@ -275,6 +276,7 @@ public class App
         session.close();
         return examForm;
     }
+
     public static void addScheduleTest(ScheduledTest scheduledTest) {
         SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
@@ -284,6 +286,7 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
+
     public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
         session=sessionFactory.openSession();
         session.beginTransaction();
@@ -295,6 +298,7 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
+
     public static List<Subject> getSubjectsFromTeacherId(String id){
         List<Subject> subjects = new ArrayList<>();
         SessionFactory sessionFactory = getSessionFactory();
@@ -307,6 +311,7 @@ public class App
         session.close();
         return subjects;
     }
+
     public static Teacher getTeacherFromId(String id){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -340,6 +345,7 @@ public class App
         session.close();
         return courses;
     }
+
     public static Course getCourseFromCourseName(String courseName){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -366,6 +372,7 @@ public class App
         session.close();
         return questions;
     }
+
     public static void addExamForm(ExamForm examForm){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -375,6 +382,7 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
+
     public static void addQuestionScores(List<Question_Score> questionScores) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -414,6 +422,7 @@ public class App
 
         return studentTests;
     }
+
     public static List<StudentTest> getStudentTestsFromScheduled(ScheduledTest scheduledTest){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -643,6 +652,7 @@ public class App
         session.close();
         return student;
     }
+
     public static void saveQuestionAnswers(List<Object> items){
         Student student = (Student) items.get(0);
         StudentTest studentTest = (StudentTest) items.get(1);
@@ -673,6 +683,7 @@ public class App
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
     }
+
     public static void saveStudentTest(List<Object> student_studentTest){
         Student student = (Student) student_studentTest.get(0);
         StudentTest studentTest = (StudentTest) student_studentTest.get(1);
@@ -685,6 +696,15 @@ public class App
         session.flush();
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
+    }
+
+    public static void getQuestionsFromExamCode(String id, String examCode){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
+
     }
 
 }
