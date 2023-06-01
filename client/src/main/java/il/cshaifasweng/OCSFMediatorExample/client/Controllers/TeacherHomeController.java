@@ -41,13 +41,11 @@ public class TeacherHomeController {
     void initialize(){
         EventBus.getDefault().register(this);
         instances++;
-        System.out.println("in teacher "+ instances);
     }
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
         instances--;
-        System.out.println("in teacher "+ instances);
     }
 
     public void setId(String id){this.id = id;}
@@ -57,20 +55,17 @@ public class TeacherHomeController {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserHomeEvent(UserHomeEvent event){
             setId(event.getUserID());
-            System.out.println("on show teacher event id "+ this.id );
             initializeIfIdNotNull();
     }
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         setId(event.getId());
-        System.out.println("on show teacher event id "+ this.id );
         initializeIfIdNotNull();
     }
     private void initializeIfIdNotNull() {
         Platform.runLater(()->{
             if (id != null) {
-                System.out.println("in intialize Function id "+this.id);
                 idLabel.setText("ID: " + this.id);
             }
         });

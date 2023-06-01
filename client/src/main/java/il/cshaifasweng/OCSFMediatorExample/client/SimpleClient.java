@@ -39,14 +39,12 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 					break;
 				case ("updateSuccess"):
-					System.out.println("updated successfully!");
 					break;
 				case ("returnLogin"):
 					String login_auth = (String) message.getData();
 					EventBus.getDefault().post(new loginEvent(login_auth));
 					break;
 				case ("studentHome"),("teacherHome"),("managerHome"):
-					System.out.println("in simple client "+ (String)message.getData());
 					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
 					break;
 				case ("returnSubjects"):
@@ -78,7 +76,6 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
 					break;
 				case("addScheduleTestSuccess"):
-					System.out.println("added new schedule test successfuly!");
 					break;
 				case ("returnExamForm"):
 					ExamForm examForm1=(ExamForm) message.getData();
@@ -97,7 +94,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowExamFormsEvent(examForms));
 					break;
 				case ("returnQuestionScores"):
-					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
+					List<Question_Score> questionScores = (List<Question_Score>) message.getData();
 					EventBus.getDefault().post(new ShowExamFormQuestionScoresEvent(questionScores));
 					break;
 				case ("returnScheduleTestWithInfo"):
@@ -106,12 +103,26 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("returnStudent"):
 					Student student = (Student) message.getData();
-					System.out.println("s.c " +student.getGender());
 					EventBus.getDefault().post(new SelectedStudentEvent(student));
 					break;
 				case ("savedQuestionAnswers"):
 					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
 					break;
+				case ("timerStarted"):
+					System.out.println("in simple client!");
+					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
+					System.out.println("in simple client! timer started for test "+scheduledTest1.getId());
+					EventBus.getDefault().postSticky(new TimerStartEvent(scheduledTest1));
+					break;
+				case ("timerFinished"):
+					System.out.println("in simple client!");
+					ScheduledTest scheduledTest2 = (ScheduledTest) message.getData();
+					System.out.println("in simple client! timer finished for test "+scheduledTest2.getId());
+					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
+					break;
+				case ("timeLeft"):
+					long timeLeft = (long)message.getData();
+					EventBus.getDefault().postSticky(new TimeLeftEvent(timeLeft));
 			}
 		}catch (Exception e){
 			e.printStackTrace();

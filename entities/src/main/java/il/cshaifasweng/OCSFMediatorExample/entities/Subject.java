@@ -26,8 +26,7 @@ public class Subject implements Serializable {
     @OneToMany(mappedBy = "subject")
     private List<ExamForm> examForms;
 
-    public Subject(int code, String name) {
-        this.code = code;
+    public Subject( String name) {
         this.name = name;
         this.courses = new ArrayList<Course>();
         this.teachers = new ArrayList<Teacher>();
@@ -90,13 +89,13 @@ public class Subject implements Serializable {
 
     public static List<Subject> GenerateSubjects(){
         List<Subject> subjects = new ArrayList<>();
-        subjects.add(new Subject(1,"Math"));
-        subjects.add(new Subject(2,"History"));
-        subjects.add(new Subject(3,"Lecture"));
-        subjects.add(new Subject(4,"Hebrew"));
-        subjects.add(new Subject(5,"English"));
-        subjects.add(new Subject(6,"Economic"));
-        subjects.add(new Subject(7,"Sport"));
+        subjects.add(new Subject("Math"));
+        subjects.add(new Subject("History"));
+        subjects.add(new Subject("Lecture"));
+        subjects.add(new Subject("Hebrew"));
+        subjects.add(new Subject("English"));
+        subjects.add(new Subject("Economic"));
+        subjects.add(new Subject("Sport"));
 
         return subjects;
     }

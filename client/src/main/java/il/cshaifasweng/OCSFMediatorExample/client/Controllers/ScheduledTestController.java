@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.regex.*;
 
 import java.io.IOException;
@@ -150,7 +151,7 @@ public class ScheduledTestController {
         if (dataTimescheduleDate.getValue() != null) {
             String currentDate = dataTimescheduleDate.getValue().toString().replace('-', '0');
             String today = dtf.format(now);
-            if (Integer.parseInt(currentDate) > Integer.parseInt(today))
+            if (Integer.parseInt(currentDate) >= Integer.parseInt(today)) //TODO change later to >
                 return true;
         }
         dataTimescheduleDate.setStyle("-fx-border-color: #cc0000;");
@@ -231,7 +232,7 @@ public class ScheduledTestController {
             time = scheduleTime.getText();
             if (selectedTest != null) {
                 selectedTest.setDate(LocalDate.of(year, month, day));
-                selectedTest.setTime(new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
+                selectedTest.setTime(LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
                 selectedTest.setSubmissions(Integer.parseInt(textFieldsubmission.getText()));
                 selectedTest.setExamForm(examForm);
                 selectedTest.setTeacher(teacher);
@@ -256,7 +257,7 @@ public class ScheduledTestController {
                     e.printStackTrace();
                 }
             } else {
-                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), new Time(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
+                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
                 scheduledTest.setExamForm(examForm);
                 scheduledTest.setTeacher(teacher);
 

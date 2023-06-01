@@ -46,14 +46,11 @@ public class App extends Application {
     public void cleanup() {
         EventBus.getDefault().unregister(this);
         instances--;
-        System.out.println("app instance: "+instances);
     }
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
         instances++;
-        System.out.println("in start " + instances);
-        System.out.println("app instance: "+instances);
         System.out.println("register successfully with client");
         client = SimpleClient.getClient();
         client.openConnection();
@@ -161,6 +158,16 @@ public class App extends Application {
                     setWindowTitle("Create Exam Form");
                     try {
                         setContent("createExamForm");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "createExamForm2":
+                Platform.runLater(()->{
+                    setWindowTitle("Create Exam Form");
+                    try {
+                        setContent("createExamForm2");
                     }catch (IOException e){
                         e.printStackTrace();
                     }
@@ -290,7 +297,6 @@ public class App extends Application {
 
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        System.out.println(" load fxml page: "+fxml);
         return fxmlLoader.load();
     }
     
