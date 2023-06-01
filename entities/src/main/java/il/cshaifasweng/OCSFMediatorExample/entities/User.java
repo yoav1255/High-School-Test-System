@@ -17,8 +17,10 @@ public class User implements Serializable {
     private String gender;
     private String email;
     private String password;
+    private boolean loggedIn;
 
     //TODO make User abstract class
+
 
     public User(String id, String first_name, String last_name, String gender, String email, String password) {
         this.id = id;
@@ -27,8 +29,17 @@ public class User implements Serializable {
         this.gender = gender;
         this.email = email;
         this.password = password;
+        loggedIn = false;
     }
     public User(){}
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 
     public String getId() {
         return id;

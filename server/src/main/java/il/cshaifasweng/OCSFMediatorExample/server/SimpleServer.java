@@ -77,6 +77,10 @@ public class SimpleServer extends AbstractServer {
 					String user_type = App.login_auth(auth.get(0), auth.get(1));
 					client.sendToClient(new CustomMessage("returnLogin", user_type));
 					break;
+				case ("#logout"):
+					ArrayList<String> info = (ArrayList<String>) message.getData();
+					App.logout(info.get(0), info.get(1));
+					break;
 				case ("#studentHome"):
 					client.sendToClient(new CustomMessage("studentHome", message.getData()));
 					break;

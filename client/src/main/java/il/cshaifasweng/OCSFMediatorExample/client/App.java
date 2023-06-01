@@ -295,6 +295,7 @@ public class App extends Application {
     @Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
+        System.out.println("CLIENT SHUT DOWN");
         cleanup();
 		super.stop();
 	}

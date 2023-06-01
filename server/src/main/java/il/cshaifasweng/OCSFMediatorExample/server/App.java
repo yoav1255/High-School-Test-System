@@ -47,7 +47,15 @@ public class App
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-            generateObjects();
+            //generateObjects();
+            String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
+            session.createNativeQuery(updateLoggedInQuery).executeUpdate();
+
+            updateLoggedInQuery = "UPDATE principal SET loggedIn = false";
+            session.createNativeQuery(updateLoggedInQuery).executeUpdate();
+
+            updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false";
+            session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -318,6 +326,14 @@ public class App
         return teacher;
     }
 
+    public static Principal getPrincipalFromId(String id){
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        Principal principal = session.get(Principal.class,id);
+        session.close();
+        return principal;
+    }
+
     public static List<Course> getCoursesFromSubjectName(String subjectName){
         List<Course> courses = new ArrayList<>();
         SessionFactory sessionFactory = getSessionFactory();
@@ -450,45 +466,99 @@ public class App
         session.beginTransaction();
 
 // Check in the student table
-        String studentQuery = "SELECT 'student' as type FROM Student WHERE id = :username AND password = :password";
-        List<String> studentResults = session.createNativeQuery(studentQuery)
+        String studentQuery = "SELECT 'student' as type, loggedIn FROM Student WHERE id = :username AND password = :password";
+        List<Object[]> studentResults = session.createNativeQuery(studentQuery)
                 .setParameter("username", username)
                 .setParameter("password", password)
                 .getResultList();
 
 // Check in the manager table
-        String managerQuery = "SELECT 'manager' as type FROM principal WHERE id = :username AND password = :password";
-        List<String> managerResults = session.createNativeQuery(managerQuery)
+        String managerQuery = "SELECT 'manager' as type, loggedIn FROM principal WHERE id = :username AND password = :password";
+        List<Object[]> managerResults = session.createNativeQuery(managerQuery)
                 .setParameter("username", username)
                 .setParameter("password", password)
                 .getResultList();
 
 // Check in the teacher table
-        String teacherQuery = "SELECT 'teacher' as type FROM Teacher WHERE id = :username AND password = :password";
-        List<String> teacherResults = session.createNativeQuery(teacherQuery)
+        String teacherQuery = "SELECT 'teacher' as type, loggedIn FROM Teacher WHERE id = :username AND password = :password";
+        List<Object[]> teacherResults = session.createNativeQuery(teacherQuery)
                 .setParameter("username", username)
                 .setParameter("password", password)
                 .getResultList();
 
+
 // Combine the results and determine the user type
         String userType = null;
+        Boolean loggedIn = null;
 
         if (!studentResults.isEmpty()) {
-            userType = studentResults.get(0);
+            Object[] studentResult = studentResults.get(0);
+            userType = (String) studentResult[0];
+            loggedIn = (boolean) studentResult[1];
+            if(loggedIn){userType = "logged_error";}
+            else{
+                String updateLoggedInQuery = "UPDATE student SET loggedIn = true WHERE id = :username";
+                session.createNativeQuery(updateLoggedInQuery)
+                        .setParameter("username", username)
+                        .executeUpdate();
+            }
         } else if (!managerResults.isEmpty()) {
-            userType = managerResults.get(0);
+            Object[] managerResult = managerResults.get(0);
+            userType = (String) managerResult[0];
+            loggedIn = (boolean) managerResult[1];
+            if(loggedIn){userType = "logged_error";}
+            else{
+                String updateLoggedInQuery = "UPDATE principal SET loggedIn = true WHERE id = :username";
+                session.createNativeQuery(updateLoggedInQuery)
+                        .setParameter("username", username)
+                        .executeUpdate();
+            }
         } else if (!teacherResults.isEmpty()) {
-            userType = teacherResults.get(0);
+            Object[] teacherResult = teacherResults.get(0);
+            userType = (String) teacherResult[0];
+            loggedIn = (boolean) teacherResult[1];
+            if(loggedIn){userType = "logged_error";}
+            else{
+                String updateLoggedInQuery = "UPDATE Teacher SET loggedIn = true WHERE id = :username";
+                session.createNativeQuery(updateLoggedInQuery)
+                        .setParameter("username", username)
+                        .executeUpdate();
+            }
         }
+
 
         if (userType != null) {
             // User exists, userType contains the user type
-//            System.out.format("%s %s connecting to system", userType, username);
+            System.out.format("%s %s connecting to system", userType, username);
         }
         if(userType == null){userType = "wrong";}
         session.getTransaction().commit();
         session.close();
         return userType;
+    }
+
+    public static void logout(String username, String type) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        String updateLoggedInQuery = null;
+        switch (type){
+            case ("student"):
+                updateLoggedInQuery = "UPDATE student SET loggedIn = false WHERE id = :username";
+                break;
+            case ("teacher"):
+                updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false WHERE id = :username";
+                break;
+            case ("manager"):
+                updateLoggedInQuery = "UPDATE principal SET loggedIn = false WHERE id = :username";
+                break;
+        }
+        session.createNativeQuery(updateLoggedInQuery)
+                .setParameter("username", username)
+                .executeUpdate();
+        session.getTransaction().commit();
+        session.close();
+        System.out.println(type + " " + username + " logged out successfully");
     }
 
     public static void addQuestion(Question question){
