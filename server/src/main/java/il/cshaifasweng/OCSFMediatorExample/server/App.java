@@ -3,13 +3,15 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import java.math.BigDecimal;
 import java.util.*;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
+import org.hibernate.annotations.Entity;
+import org.hibernate.annotations.Table;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -691,6 +693,7 @@ public class App {
         );
         query.setParameter("teacherId", teacherId);
 
+
         Double average = (Double) query.getSingleResult();
 
         query = session.createQuery(
@@ -832,10 +835,70 @@ public class App {
             System.out.println(i * 10 + " - " + ((i * 10) + 9) + ": " + distribution[i] + "%");
         }
 
-
         session.close();
         return grades;
     }
+
+
+
+
+    ///////////////////////////////////optional\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+    /*@Entity
+    @Table(name = "statistics")
+    public class Statistics {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        private Double average;
+        private Double median;
+        private Double[] decimalDistribution;
+
+        // Getters and setters
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public void setAverage(Double average) {
+            this.average = average;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public Double getAverage() {
+            return average;
+        }
+
+        public void setDecimalDistribution(Double decimalDistribution) {
+            this.decimalDistribution = decimalDistribution;
+        }
+
+        public Double getDecimalDistribution() {
+            return decimalDistribution;
+        }
+
+        public void setMedian(Double median) {
+            this.median = median;
+        }
+
+        public Double getMedian() {
+            return median;
+        }
+    }
+
+    Statistics statistics = new Statistics();
+    statistics.setAverage(average);
+    statistics.setMedian(median);
+    statistics.setDecimalDistribution(decimalDistribution);
+
+    // Save the statistics entity to the database
+    session.save(statistics);
+    session.getTransaction().commit();*/
+
 
 
 }
