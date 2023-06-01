@@ -36,7 +36,7 @@ public class App
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+            //generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -621,7 +621,7 @@ public class App
         session.close();
     }
 
-//    public static List<Integer> getTeacherExamStats(String teacherId) {
+///    public static List<Integer> getTeacherExamStats(String teacherId) {
 //        SessionFactory sessionFactory = getSessionFactory();
 //        session = sessionFactory.openSession();
 //
