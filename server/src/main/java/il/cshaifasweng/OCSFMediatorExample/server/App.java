@@ -57,7 +57,7 @@ public class App
         } finally {
             session.close();
         }
-
+        List<Integer> check = getTeacherExamStats("2");
     }
 
 
@@ -650,6 +650,7 @@ public class App
         List<StudentTest> studentTests = query.getResultList();
         student.setStudentTests(studentTests);
         session.close();
+        System.out.println(student.getEmail());
         return student;
     }
 
@@ -665,6 +666,9 @@ public class App
         session.flush();
         for(int i=2;i<items.size();i++){
             Question_Answer item = (Question_Answer) items.get(i);
+            System.out.println("saving question answer "+ item.getId());
+            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
+            System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
         session.flush();
@@ -697,6 +701,164 @@ public class App
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
     }
+
+    public static List<Integer> getTeacherExamStats(String teacherId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "SELECT AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.teacher.id = :teacherId"
+        );
+        query.setParameter("teacherId", teacherId);
+
+        Double average = (Double) query.getSingleResult();
+
+        query = session.createQuery(
+                "SELECT e.grade " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.teacher.id = :teacherId " +
+                        "ORDER BY e.grade"
+        );
+        query.setParameter("teacherId", teacherId);
+        List<Integer> grades = query.getResultList();
+
+        Double median;
+        int size = grades.size();
+        if (size % 2 == 0) {
+            median = (grades.get(size / 2 - 1) + grades.get(size / 2)) / 2.0;
+        } else {
+            median = Double.valueOf(grades.get(size / 2));
+        }
+
+        double[] distribution = new double[11];
+        int totalCount = grades.size();
+        for (int grade : grades) {
+            distribution[grade / 10]++;
+        }
+        for (int i = 0; i < 11; i++) {
+            distribution[i] = (distribution[i] / totalCount) * 100;
+        }
+
+
+        System.out.println("Average grade: " + average);
+        System.out.println("Median grade: " + median);
+        System.out.println("Grade distribution: ");
+        for (int i = 0; i < 10; i++) {
+            System.out.println(i * 10 + " - " + ((i * 10) + 9) + ": " + distribution[i] + "%");
+        }
+
+
+        session.close();
+        return grades;
+    }
+
+
+    public static List<Integer> getCourseExamStats(String courseId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "SELECT AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.examForm.course.id = :courseId"
+        );
+        query.setParameter("courseId", courseId);
+
+        Double average = (Double) query.getSingleResult();
+
+        query = session.createQuery(
+                "SELECT e.grade " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.examForm.course.id = :courseId " +
+                        "ORDER BY e.grade"
+        );
+        query.setParameter("courseId", courseId);
+        List<Integer> grades = query.getResultList();
+
+        Double median;
+        int size = grades.size();
+        if (size % 2 == 0) {
+            median = (grades.get(size / 2 - 1) + grades.get(size / 2)) / 2.0;
+        } else {
+            median = Double.valueOf(grades.get(size / 2));
+        }
+
+        double[] distribution = new double[11];
+        int totalCount = grades.size();
+        for (int grade : grades) {
+            distribution[grade / 10]++;
+        }
+        for (int i = 0; i < 11; i++) {
+            distribution[i] = (distribution[i] / totalCount) * 100;
+        }
+
+
+        System.out.println("Average grade: " + average);
+        System.out.println("Median grade: " + median);
+        System.out.println("Grade distribution: ");
+        for (int i = 0; i < 10; i++) {
+            System.out.println(i * 10 + " - " + ((i * 10) + 9) + ": " + distribution[i] + "%");
+        }
+
+
+        session.close();
+        return grades;
+    }
+
+    public static List<Integer> getStudentExamStats(String studentId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "SELECT AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.student.id = :studentId"
+        );
+        query.setParameter("studentId", studentId);
+
+        Double average = (Double) query.getSingleResult();
+
+        query = session.createQuery(
+                "SELECT e.grade " +
+                        "FROM StudentTest e " +
+                        "WHERE e.student.id = :studentId " +
+                        "ORDER BY e.grade"
+        );
+        query.setParameter("studentId", studentId);
+        List<Integer> grades = query.getResultList();
+
+        Double median;
+        int size = grades.size();
+        if (size % 2 == 0) {
+            median = (grades.get(size / 2 - 1) + grades.get(size / 2)) / 2.0;
+        } else {
+            median = Double.valueOf(grades.get(size / 2));
+        }
+
+        double[] distribution = new double[11];
+        int totalCount = grades.size();
+        for (int grade : grades) {
+            distribution[grade / 10]++;
+        }
+        for (int i = 0; i < 11; i++) {
+            distribution[i] = (distribution[i] / totalCount) * 100;
+        }
+
+
+        System.out.println("Average grade: " + average);
+        System.out.println("Median grade: " + median);
+        System.out.println("Grade distribution: ");
+        for (int i = 0; i < 10; i++) {
+            System.out.println(i * 10 + " - " + ((i * 10) + 9) + ": " + distribution[i] + "%");
+        }
+
+
+        session.close();
+        return grades;
+    }
+
 
     public static void getQuestionsFromExamCode(String id, String examCode){
         SessionFactory sessionFactory = getSessionFactory();
