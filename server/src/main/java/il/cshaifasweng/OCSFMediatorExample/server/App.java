@@ -38,7 +38,7 @@ public class App
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+            //generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -779,67 +779,4 @@ public class App
         session.close();
         return grades;
     }
-
-
-
-
-    ///////////////////////////////////optional\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-    /*@Entity
-    @Table(name = "statistics")
-    public class Statistics {
-
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
-
-        private Double average;
-        private Double median;
-        private Double[] decimalDistribution;
-
-        // Getters and setters
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public void setAverage(Double average) {
-            this.average = average;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public Double getAverage() {
-            return average;
-        }
-
-        public void setDecimalDistribution(Double decimalDistribution) {
-            this.decimalDistribution = decimalDistribution;
-        }
-
-        public Double getDecimalDistribution() {
-            return decimalDistribution;
-        }
-
-        public void setMedian(Double median) {
-            this.median = median;
-        }
-
-        public Double getMedian() {
-            return median;
-        }
-    }
-
-    Statistics statistics = new Statistics();
-    statistics.setAverage(average);
-    statistics.setMedian(median);
-    statistics.setDecimalDistribution(decimalDistribution);
-
-    // Save the statistics entity to the database
-    session.save(statistics);
-    session.getTransaction().commit();*/
-
-
-
 }
