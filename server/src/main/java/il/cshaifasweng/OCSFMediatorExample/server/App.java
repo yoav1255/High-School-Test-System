@@ -52,7 +52,7 @@ public class App
         }
 //        getTeacherExamStats("2");
 //        getCourseExamStats(4);
-            getStudentExamStats("1");
+//            getStudentExamStats("1");
     }
 
 
