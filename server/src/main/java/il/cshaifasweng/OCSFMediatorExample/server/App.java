@@ -3,15 +3,13 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import org.hibernate.*;
-import org.hibernate.annotations.Entity;
-import org.hibernate.annotations.Table;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -38,7 +36,7 @@ public class App
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -634,7 +632,6 @@ public class App
         );
         query.setParameter("teacherId", teacherId);
 
-
         Double average = (Double) query.getSingleResult();
 
         query = session.createQuery(
@@ -776,7 +773,10 @@ public class App
             System.out.println(i * 10 + " - " + ((i * 10) + 9) + ": " + distribution[i] + "%");
         }
 
+
         session.close();
         return grades;
     }
+
+
 }
