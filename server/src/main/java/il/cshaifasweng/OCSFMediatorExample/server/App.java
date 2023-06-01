@@ -57,7 +57,7 @@ public class App
         } finally {
             session.close();
         }
-        List<Integer> check = getTeacherExamStats("2");
+        //List<Integer> check = getTeacherExamStats("2");
     }
 
 

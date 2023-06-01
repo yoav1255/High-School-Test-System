@@ -284,7 +284,7 @@ public class CreateExamFormController2 {
                     cleanup();
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
 //                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-                    JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    //JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     App.switchScreen("showExamForms");
                     Platform.runLater(()->{
 
