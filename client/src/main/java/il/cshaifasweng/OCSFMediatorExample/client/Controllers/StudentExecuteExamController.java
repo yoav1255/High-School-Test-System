@@ -25,10 +25,8 @@ public class StudentExecuteExamController {
 
     @FXML
     private GridPane StudentsGR;
-
     @FXML
     private Button homeBN;
-
     @FXML
     private Label text_Id;
     @FXML
@@ -39,7 +37,6 @@ public class StudentExecuteExamController {
     private List<ToggleGroup> toggleGroups = new ArrayList<>();
     @FXML
     private ToggleGroup toggleGroup;
-
     @FXML
     private ListView<Question_Answer> questionsListView;
 
@@ -50,6 +47,7 @@ public class StudentExecuteExamController {
     private Student student;
     private List<Question_Answer> questionAnswers ;
     private long timeLeft;
+//    private List<TextField> q_notes;
 
 
 
@@ -101,11 +99,14 @@ public class StudentExecuteExamController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    String questionText = questionAnswer.getQuestionScore().getQuestion().getText();
-                    String answer0 = questionAnswer.getQuestionScore().getQuestion().getAnswer0();
-                    String answer1 = questionAnswer.getQuestionScore().getQuestion().getAnswer1();
-                    String answer2 = questionAnswer.getQuestionScore().getQuestion().getAnswer2();
-                    String answer3 = questionAnswer.getQuestionScore().getQuestion().getAnswer3();
+
+                    Question_Score qs = questionAnswer.getQuestionScore();
+                    Question q = qs.getQuestion();
+                    String questionText = q.getText();
+                    String answer0 = q.getAnswer0();
+                    String answer1 = q.getAnswer1();
+                    String answer2 = q.getAnswer2();
+                    String answer3 = q.getAnswer3();
 
                     VBox vbox = new VBox();
                     vbox.setSpacing(10);
@@ -131,11 +132,25 @@ public class StudentExecuteExamController {
                     answer4RadioButton.setToggleGroup(toggleGroup);
                     vbox.getChildren().add(answer4RadioButton);
 
+                    Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
+                    vbox.getChildren().add(noteStudentLabel);
+
                     Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
                     vbox.getChildren().add(scoreLabel);
 
+                    Label note = new Label("note: ");
+                    vbox.getChildren().add(note);
+                    TextField noteText = new TextField();
+                    vbox.getChildren().add(noteText);
+
+                    noteText.textProperty().addListener((observable, oldValue, newValue) -> {
+                        // Save the entered note to the Question_Answer object
+                        questionAnswer.setNote(newValue);
+                    });
+
                     setGraphic(vbox);
                     toggleGroups.add(toggleGroup);
+//                    q_notes.add(noteText);
 
                     //
 
@@ -149,6 +164,8 @@ public class StudentExecuteExamController {
                             System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
                     });
+
+
 
                     //
                 }
@@ -197,6 +214,7 @@ public class StudentExecuteExamController {
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+            studentTest.setOnTime(false);
             endTest();
         }
     }

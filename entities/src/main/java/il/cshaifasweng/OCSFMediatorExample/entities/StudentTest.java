@@ -25,7 +25,8 @@ public class StudentTest implements Serializable {
     private List<Question_Answer> questionAnswers;
 
     private int grade;
-    private long timeToComplete; //TODO check how to use Duration properly
+    private long timeToComplete;
+    private boolean isOnTime;
     private boolean isChecked;
 
     public StudentTest(int id, int grade, long timeToComplete) {
@@ -34,6 +35,7 @@ public class StudentTest implements Serializable {
         this.timeToComplete = timeToComplete;
         this.questionAnswers = new ArrayList<>();
         isChecked = false;
+        isOnTime = true;
     }
     public StudentTest(){}
 
@@ -121,6 +123,22 @@ public class StudentTest implements Serializable {
 
     public void setQuestionAnswers(List<Question_Answer> questionAnswers) {
         this.questionAnswers = questionAnswers;
+    }
+
+    public boolean isOnTime() {
+        return isOnTime;
+    }
+
+    public void setOnTime(boolean onTime) {
+        isOnTime = onTime;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public static List<StudentTest> GenerateStudentTests(){

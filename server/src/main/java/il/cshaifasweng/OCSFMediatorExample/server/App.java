@@ -37,7 +37,7 @@ public class App
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -50,9 +50,9 @@ public class App
         } finally {
             session.close();
         }
-        //getTeacherExamStats("2");
-        //getCourseExamStats(4);
-            //getStudentExamStats("1");
+//        getTeacherExamStats("2");
+//        getCourseExamStats(4);
+//            getStudentExamStats("1");
     }
 
 
@@ -664,6 +664,7 @@ public class App
         gradesPerScheduleTest.add(grades);
     }
 
+
         int median;
         for(List<Integer> gradeSheet:gradesPerScheduleTest) {
             int size = gradeSheet.size();
@@ -676,11 +677,13 @@ public class App
     }
 
         for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+
             List<Double> distribution = new ArrayList<>();
             for(int i =0 ; i<11;i++){
                 distribution.add(i,0.0);
                 System.out.println(distribution.get(i));
             }
+
             int totalCount = gradeSheet.size();
             for (int grade : gradeSheet) {
                 double s;
