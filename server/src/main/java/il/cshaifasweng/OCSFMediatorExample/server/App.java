@@ -37,7 +37,7 @@ public class App
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+            //generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -50,9 +50,9 @@ public class App
         } finally {
             session.close();
         }
-//        getTeacherExamStats("2");
-//        getCourseExamStats(4);
-//            getStudentExamStats("1");
+        //getTeacherExamStats("2");
+        //getCourseExamStats(3);
+        //getStudentExamStats("1");
     }
 
 
@@ -681,19 +681,15 @@ public class App
             List<Double> distribution = new ArrayList<>();
             for(int i =0 ; i<11;i++){
                 distribution.add(i,0.0);
-                System.out.println(distribution.get(i));
             }
 
             int totalCount = gradeSheet.size();
             for (int grade : gradeSheet) {
                 double s;
-                System.out.println(grade/10);
-                System.out.println(distribution.get(7));
                 if(grade==100)
                      s = distribution.get(9);
                 else
                      s = distribution.get(grade/10);
-                System.out.println(s);
                 if(grade==100)
                     distribution.set(9,s+1);
                 distribution.set(grade / 10 , s+1);
@@ -777,19 +773,15 @@ public class App
             List<Double> distribution = new ArrayList<>();
             for(int i =0 ; i<11;i++){
                 distribution.add(i,0.0);
-                System.out.println(distribution.get(i));
             }
 
             int totalCount = gradeSheet.size();
             for (int grade : gradeSheet) {
                 double s;
-                System.out.println(grade/10);
-                System.out.println(distribution.get(7));
                 if(grade==100)
                     s = distribution.get(9);
                 else
                     s = distribution.get(grade/10);
-                System.out.println(s);
                 if(grade==100)
                     distribution.set(9,s+1);
                 distribution.set(grade / 10 , s+1);
@@ -820,70 +812,41 @@ public class App
         session = sessionFactory.openSession();
 
         Query query = session.createQuery(
-                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                "SELECT e.grade " +
                         "FROM StudentTest e " +
                         "WHERE e.student.id = :studentId "+
-                        "GROUP BY st"
+                        " order by e.grade"
         );
         query.setParameter("studentId", studentId);
-        List<Object[]> results = query.getResultList();
 
-        List<Double> avgGrades = new ArrayList<>();
-        List<String> scheduleTestIds = new ArrayList<>();
-        List<Integer> medians = new ArrayList<>();
-        List<List<Integer>> gradesPerScheduleTest = new ArrayList<>();
-        List<List<Double>> distributions = new ArrayList<>();
+        List<Integer> grades = query.getResultList();
+        double sum = 0;
+        for (Integer grade : grades) {
+            sum += grade;
+        }
+        double average = sum / grades.size();
 
-
-        for (Object[] result : results) {
-            String scheduleTestId = (String) result[0];
-            Double averageGrade = (Double) result[1];
-            avgGrades.add(averageGrade);
-            scheduleTestIds.add(scheduleTestId);
+        int med = grades.size() / 2;
+        int median = 0;
+        if (grades.size() % 2 == 0) {
+             median = (grades.get(med - 1));
+        } else {
+             median = grades.get(med);
         }
 
-        for (String scheduleTestId:scheduleTestIds) {
-            query = session.createQuery(
-                    "SELECT e.grade " +
-                            "FROM StudentTest e " +
-                            "WHERE e.student.id = :studentId and e.scheduledTest.id =:scheduleTestId " +
-                            " order by e.grade"
-            );
-            query.setParameter("studentId", studentId);
-            query.setParameter("scheduleTestId",scheduleTestId);
-            List<Integer> grades = query.getResultList();
-            gradesPerScheduleTest.add(grades);
-        }
-
-        int median;
-        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
-            int size = gradeSheet.size();
-            if (size % 2 == 0) {
-                median = (gradeSheet.get(size / 2 - 1));
-            } else {
-                median = gradeSheet.get(size / 2);
-            }
-            medians.add(median);
-        }
-
-        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
 
             List<Double> distribution = new ArrayList<>();
             for(int i =0 ; i<11;i++){
                 distribution.add(i,0.0);
-                System.out.println(distribution.get(i));
             }
 
-            int totalCount = gradeSheet.size();
-            for (int grade : gradeSheet) {
+            int totalCount = grades.size();
+            for (Integer grade : grades) {
                 double s;
-                System.out.println(grade/10);
-                System.out.println(distribution.get(7));
                 if(grade==100)
                     s = distribution.get(9);
                 else
                     s = distribution.get(grade/10);
-                System.out.println(s);
                 if(grade==100)
                     distribution.set(9,s+1);
                 distribution.set(grade / 10 , s+1);
@@ -891,19 +854,15 @@ public class App
             for (int i = 0; i < 11; i++) {
                 distribution.set(i, (distribution.get(i) / totalCount) * 100);
             }
-            distributions.add(distribution);
-        }
 
-        for(int i = 0 ; i<scheduleTestIds.size();i++){
-            System.out.println("schedule id: "+ scheduleTestIds.get(i) + " Average grade: " + avgGrades.get(i));
-            System.out.println("Median grade: " + medians.get(i));
-            System.out.println("Grade distribution: ");
-            for (int j = 0; j < 10; j++) {
-                if(j==9){
-                    System.out.println(90 + " - " + 100 + ": " + distributions.get(i).get(j) + "%");
-                }else
-                    System.out.println(j * 10 + " - " + ((j * 10) + 9) + ": " + distributions.get(i).get(j) + "%");
-            }
+        System.out.println("Average grade: " + average);
+        System.out.println("Median grade: " + median);
+        System.out.println("Grade distribution: ");
+        for (int j = 0; j < 10; j++) {
+            if(j==9){
+                System.out.println(90 + " - " + 100 + ": " + distribution.get(j) + "%");
+            }else
+                System.out.println(j * 10 + " - " + ((j * 10) + 9) + ": " + distribution.get(j) + "%");
         }
 
         session.close();
