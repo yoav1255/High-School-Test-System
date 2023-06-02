@@ -74,7 +74,12 @@ public class ManagerHomeController {
         });
     }
 @FXML
-    public void goToExamForms(ActionEvent event) {
+    public void goToExamForms(ActionEvent event) throws IOException {
+    cleanup();
+    App.switchScreen("showExamForms");
+    Platform.runLater(()->{
+        EventBus.getDefault().post(new MoveManagerIdEvent(id));
+    });
     }
 @FXML
     public void goToScheduledTests(ActionEvent event) {
