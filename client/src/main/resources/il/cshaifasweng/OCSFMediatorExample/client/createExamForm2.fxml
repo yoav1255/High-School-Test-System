@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -106,21 +107,20 @@
                         <Label layoutX="432.0" layoutY="18.0" prefHeight="17.0" prefWidth="71.0" text="time limit" />
                         <TextField fx:id="timeLimit" layoutX="499.0" layoutY="10.0" />
                     </children></Pane>
-                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-               <children>
-                        <Button layoutX="662.0" layoutY="1.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
-                        <Label fx:id="labelMsg" layoutX="493.0" layoutY="5.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
-               </children></Pane>
-                <AnchorPane prefHeight="358.0" prefWidth="713.0" GridPane.rowIndex="2">
+                <AnchorPane prefHeight="439.0" prefWidth="726.0" GridPane.rowIndex="2">
                     <children>
-                  <ListView fx:id="questionsListView" prefHeight="173.0" prefWidth="714.0" />
-                  <ListView fx:id="selectedQuestionsListView" layoutY="215.0" prefHeight="156.0" prefWidth="714.0" />
-                  <Button fx:id="addButton" layoutX="616.0" layoutY="179.0" mnemonicParsing="false" onAction="#addSelectedQuestion" text="Add Question" />
-                  <Button fx:id="removeButton" layoutX="616.0" layoutY="376.0" mnemonicParsing="false" onAction="#removeSelectedQuestion" text="Remove Question" />
-                  <Button fx:id="updateButton" layoutY="376.0" mnemonicParsing="false" onAction="#updateSelectedQuestion" text="Update Question" />
+                  <ListView fx:id="questionsListView" layoutX="-1.0" prefHeight="158.0" prefWidth="714.0" />
+                  <ListView fx:id="selectedQuestionsListView" layoutX="-1.0" layoutY="192.0" prefHeight="133.0" prefWidth="714.0" />
+                  <Button fx:id="removeButton" layoutX="606.0" layoutY="300.0" mnemonicParsing="false" onAction="#removeSelectedQuestion" text="Remove Question" textFill="RED" />
+                  <Button fx:id="updateButton" layoutX="608.0" layoutY="274.0" mnemonicParsing="false" onAction="#updateSelectedQuestion" prefWidth="110.0" text="Update Question" textFill="#ff9000" />
+                        <Label fx:id="labelMsg" layoutX="287.0" layoutY="386.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+                  <Button fx:id="addButton" layoutX="618.0" layoutY="132.0" mnemonicParsing="false" onAction="#addSelectedQuestion" text="Add Question" />
+                  <TextArea fx:id="generalNotes" layoutX="-1.0" layoutY="353.0" prefHeight="50.0" prefWidth="714.0" />
+                  <Label layoutY="336.0" text="Notes for the test" />
                     </children>
                 </AnchorPane>
             </children>
         </GridPane>
+            <Button layoutX="560.0" layoutY="552.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
     </children>
 </AnchorPane>

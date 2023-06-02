@@ -18,6 +18,8 @@ public class Question_Answer implements Serializable {
     @JoinColumn(name = "studentTest_id")
     private StudentTest studentTest;
     private int answer;
+    @Column(name = "answer_note", columnDefinition = "TEXT")
+    private String note;
 
     public Question_Answer(Question_Score questionScore, StudentTest studentTest, int answer) {
         this.questionScore = questionScore;
@@ -59,5 +61,13 @@ public class Question_Answer implements Serializable {
 
     public void setAnswer(int answer) {
         this.answer = answer;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

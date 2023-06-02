@@ -13,6 +13,8 @@ public class ExamForm implements Serializable {
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code; //TODO handle code properly!!
     private int timeLimit;
+
+    @Column(name = "general_notes", columnDefinition = "TEXT")
     private String generalNotes;
     @ManyToOne
     @JoinColumn(name="course_id")

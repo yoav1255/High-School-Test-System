@@ -45,6 +45,8 @@ public class CreateExamFormController2 {
     private ListView<Question_Score> selectedQuestionsListView;
     @FXML
     private TextField timeLimit;
+    @FXML
+    private TextArea generalNotes;
 
     private List<Question> questionList;
     private List<Question_Score> questionScoreList;
@@ -265,6 +267,7 @@ public class CreateExamFormController2 {
                 examForm.setSubject(sub);
                 examForm.setCourse(cour);
                 examForm.setTeacher(teacher);
+                examForm.setGeneralNotes(generalNotes.getText());
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
                     Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
