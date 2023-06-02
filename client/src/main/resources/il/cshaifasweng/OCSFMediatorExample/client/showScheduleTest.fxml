@@ -65,7 +65,7 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-            <Button mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Schedule New Test" />
+            <Button fx:id="btnNewTest" mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Schedule New Test" />
             </children>
         </VBox>
         <GridPane fx:id="scheduleTestGP" layoutX="255.0" layoutY="47.0" prefHeight="517.0" prefWidth="679.0">

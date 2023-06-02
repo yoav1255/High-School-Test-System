@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
@@ -75,14 +77,24 @@ public class ManagerHomeController {
     }
 @FXML
     public void goToExamForms(ActionEvent event) throws IOException {
-    cleanup();
-    App.switchScreen("showExamForms");
-    Platform.runLater(()->{
-        EventBus.getDefault().post(new MoveManagerIdEvent(id));
-    });
+        cleanup();
+        App.switchScreen("showExamForms");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+        });
     }
 @FXML
-    public void goToScheduledTests(ActionEvent event) {
+    public void goToScheduledTests(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showScheduleTest");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 @FXML
     public void goToStatistics(ActionEvent event) {
