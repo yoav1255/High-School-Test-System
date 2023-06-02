@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="579.0" prefWidth="967.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowOneExamFormController">
+    <children>
+        <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
+            <children>
+                <Pane prefHeight="83.0" prefWidth="214.0">
+                    <children>
+                        <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="34.0" />
+                            </font>
+                        </Label>
+                        <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER">
+                            <font>
+                                <Font name="Oriya Sangam MN" size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </Pane>
+                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
+                    <graphic>
+                        <!--                        <FontAwesomeIconView glyphName="HOME" size="20" />-->
+                    </graphic>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                    <font>
+                        <Font name="Oriya Sangam MN" size="15.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="1.0" top="1.0" />
+                    </VBox.margin>
+                </Button>
+            </children>
+        </VBox>
+        <Pane layoutX="207.0" layoutY="-68.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
+            <children>
+                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/students_list/student">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="13.0" />
+                    </font>
+                </Label>
+                <Button fx:id="backBN" layoutX="698.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+                    <font>
+                        <Font name="Oriya Sangam MN" size="12.0" />
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Button>
+                <!--                <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
+            </children>
+        </Pane>
+        <GridPane fx:id="OneStudentGR" layoutX="231.0" layoutY="55.0" prefHeight="498.0" prefWidth="713.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="175.0" minHeight="10.0" prefHeight="53.20177459716797" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="40.79822540283203" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="408.647216796875" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0">
+                    <children>
+                        <Label fx:id="txtTimeLimit" layoutX="527.0" layoutY="18.0" prefHeight="17.0" prefWidth="161.0" text="time limit : " />
+                  <Label fx:id="txtSubject" layoutX="14.0" layoutY="18.0" prefHeight="17.0" prefWidth="176.0" text="Subject : " />
+                  <Label fx:id="txtCourse" layoutX="222.0" layoutY="18.0" prefHeight="17.0" prefWidth="187.0" text="Course : " />
+                    </children></Pane>
+                <AnchorPane prefHeight="439.0" prefWidth="726.0" GridPane.rowIndex="2">
+                    <children>
+                        <ListView fx:id="questionsListView" layoutX="-1.0" prefHeight="314.0" prefWidth="714.0" />
+                        <Label fx:id="labelMsg" layoutX="287.0" layoutY="386.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+                        <TextArea fx:id="generalNotes" layoutX="-1.0" layoutY="353.0" prefHeight="50.0" prefWidth="714.0" />
+                        <Label layoutY="336.0" text="Notes for the test" />
+                    </children>
+                </AnchorPane>
+            </children>
+        </GridPane>
+    </children>
+</AnchorPane>

@@ -11,7 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -216,19 +215,24 @@ public class ShowExamFormsController {
 
     @FXML
     void handleRowClick(MouseEvent event) {
-        if (!isManager) {
             try {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     ExamForm selectedExam = ExamForms_Table.getSelectionModel().getSelectedItem();
                     if (selectedExam != null) {
-                        List<Object> setTeacherAndExam = new ArrayList<>();
-                        setTeacherAndExam.add(id);
-                        setTeacherAndExam.add(selectedExam);
-                        App.switchScreen("createExamForm");
+                        List<Object> setObjectAndExam = new ArrayList<>();
+                        if(!isManager)
+                            setObjectAndExam.add(id);
+                        else
+                            setObjectAndExam.add(managerId);
+                        setObjectAndExam.add(selectedExam);
+
+                        App.switchScreen("showOneExamForm");
                         Platform.runLater(() -> {
                             try {
-                                EventBus.getDefault().post(new ShowUpdateExamFormEvent(setTeacherAndExam));
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+                                if(!isManager)
+                                    EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
+                                else
+                                    EventBus.getDefault().post(new ShowOneExamFormManagerEvent(setObjectAndExam));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -241,9 +245,6 @@ public class ShowExamFormsController {
                 e.printStackTrace();
             }
         }
-    }
-
-
 
 @FXML
     public void handleAddExamForm(ActionEvent event) {
@@ -268,7 +269,7 @@ public class ShowExamFormsController {
 }
 @FXML
     public void handleGoHomeButtonClick(ActionEvent event) {
-        if (!isManager) {
+    if (!isManager) {
             try {
                 String teacherId = this.id;
                 App.switchScreen("teacherHome");
@@ -289,7 +290,7 @@ public class ShowExamFormsController {
                 App.switchScreen("managerHome");
                 Platform.runLater(() -> {
                     try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", managerId));
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
