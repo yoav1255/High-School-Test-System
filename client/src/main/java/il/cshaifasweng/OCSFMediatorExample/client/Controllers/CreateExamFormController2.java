@@ -267,7 +267,7 @@ public class CreateExamFormController2 {
                 examForm.setSubject(sub);
                 examForm.setCourse(cour);
                 examForm.setTeacher(teacher);
-                examForm.setGeneralNotes(generalNotes.getText());
+                examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" "+generalNotes.getText());
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
                     Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());

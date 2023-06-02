@@ -302,6 +302,17 @@ public class App
         session.close();
         return subjects;
     }
+    public static List<Subject> getAllSubjects(){
+        List<Subject> subjects;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT s FROM Subject s";
+        Query query = session.createQuery(queryString, Subject.class);
+        subjects = query.getResultList();
+        session.close();
+        return subjects;
+
+    }
     public static Teacher getTeacherFromId(String id){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
