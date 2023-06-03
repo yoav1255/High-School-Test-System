@@ -188,7 +188,8 @@ public class StudentExecuteExamController {
     }
 
 @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){
+    public void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedulee test (1) time left in minutes
+        //todo check the schedule test
         timeLeft = event.getTimeLeft();
         Platform.runLater(()->{
             timeLeftText.setText(Long.toString( timeLeft));

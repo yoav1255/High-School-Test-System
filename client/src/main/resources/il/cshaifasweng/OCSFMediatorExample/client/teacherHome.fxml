@@ -51,6 +51,7 @@
             <Button fx:id="ShowExamsbtn" mnemonicParsing="false" onAction="#handleShowExamFormsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exam Forms" />
             <Button fx:id="showScheduledbtn" mnemonicParsing="false" onAction="#handleShowScheduledTestsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Scheduled Tests" />
             <Button fx:id="showStatsbtn" mnemonicParsing="false" onAction="#handleShowStatsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Statistics" />
+            <Button fx:id="ExecExam" layoutX="10.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleExecExamButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exec Exam" />
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">

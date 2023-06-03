@@ -136,4 +136,21 @@ public class TeacherHomeController {
     public void handleShowStatsButtonClick(ActionEvent event) {
     }
 
+    @FXML
+    public void handleExecExamButtonClick(ActionEvent event){
+        try {
+            cleanup();
+            App.switchScreen("showTeacherExecExam");
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

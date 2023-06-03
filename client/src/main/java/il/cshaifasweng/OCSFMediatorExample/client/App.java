@@ -273,6 +273,26 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showTeacherExecExam":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Exam");
+                    try {
+                        setContent("TeacherExecExam");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacherExecuteExam":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Exam");
+                    try {
+                        setContent("teacherExecuteExam");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
 //    return loadFXML(screenName);
     }
