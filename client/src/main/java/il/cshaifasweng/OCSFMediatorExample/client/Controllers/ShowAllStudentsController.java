@@ -9,10 +9,13 @@ import java.util.List;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 //import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStudentsEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,13 +47,31 @@ public class ShowAllStudentsController {
     private TableColumn<Student, String> last_name;
     @FXML
     private TableView<Student> students_table_view;
+
     private List<Student> studentList;
+    private String teacherId;
+    private String managerId;
+    private boolean isManager;
+
+
 
     public ShowAllStudentsController() {
         EventBus.getDefault().register(this);
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
+    }
+
+
+    @Subscribe
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+        teacherId = event.getId();
+        isManager = false;
+    }
+    @Subscribe
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event) {
+        isManager = true;
+        managerId = event.getId();
     }
 
     public void setStudentList(List<Student> studentList) {
@@ -75,33 +96,52 @@ public class ShowAllStudentsController {
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-        try {
-            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
-                Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
-                if (selectedStudent != null) {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests",selectedStudent));
-                    App.switchScreen("showOneStudent");
+        if (!isManager) {
+            try {
+                if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+                    Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
+                    if (selectedStudent != null) {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", selectedStudent));
+                        App.switchScreen("showOneStudent");
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }catch (IOException e){
-            e.printStackTrace();
         }
     }
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event){
-        try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
-            App.switchScreen("allStudents");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
-        try{
-            App.switchScreen("primary");
-        }catch (IOException e){
-            e.printStackTrace();
+        if (!isManager) {
+            try {
+                App.switchScreen("teacherHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                cleanup();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                App.switchScreen("managerHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                cleanup();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
