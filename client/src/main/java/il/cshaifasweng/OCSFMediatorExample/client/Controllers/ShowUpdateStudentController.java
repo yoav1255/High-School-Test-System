@@ -103,15 +103,7 @@ public class ShowUpdateStudentController {
             e.printStackTrace();
         }
     }
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event){
-        try{
-            SimpleClient.getClient().sendToServer("#showAllStudents");
-            App.switchScreen("allStudents");
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
         try{

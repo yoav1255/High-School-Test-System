@@ -95,7 +95,7 @@
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
                <children>
-                        <Button layoutX="22.0" layoutY="13.0" mnemonicParsing="false" onAction="#GoToAddQuestion" text="Create new question" />
+                        <Button fx:id="btnNew" layoutX="22.0" layoutY="13.0" mnemonicParsing="false" onAction="#GoToAddQuestion" text="Create new question" />
                         <Label layoutX="394.0" layoutY="16.0" prefHeight="17.0" prefWidth="321.0" text="if you wish to change a question- double click the it">
                             <font>
                                 <Font name="Oriya Sangam MN" size="12.0" />
