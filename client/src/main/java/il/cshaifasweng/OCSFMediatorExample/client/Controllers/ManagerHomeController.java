@@ -106,12 +106,9 @@ public class ManagerHomeController {
         });
     }
 @FXML
-    public void goToStatistics(ActionEvent event) {
-    }
-    @Subscribe
-    public void onMoveManagerIdEvent(MoveManagerIdEvent event){
-        id = event.getId();
-        initializeIfIdNotNull();
+    public void goToStatistics(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showStatistics");
     }
 }
 
