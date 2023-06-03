@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
 import javafx.application.Platform;
@@ -59,6 +60,8 @@ public class ShowScheduleTestController {
 
     @FXML // fx:id="statusLB1"
     private Label statusLB1; // Value injected by FXMLLoader
+    @FXML
+    private Button btnNewTest;
 
     @FXML // fx:id="students_table_view"
     private TableView<ScheduledTest> scheduleTest_table_view; // Value injected by FXMLLoader
@@ -75,6 +78,9 @@ public class ShowScheduleTestController {
     private List<ScheduledTest> scheduledTests;
     private boolean edit = false;
     private boolean showGrades = false;
+
+    private boolean isManager;
+    private String managerId;
 
 
     public String getId() {
@@ -97,6 +103,21 @@ public class ShowScheduleTestController {
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         this.idTeacher = event.getId();
+        Platform.runLater(()->{
+            btnNewTest.setDisable(false);
+            btnNewTest.setVisible(true);
+        });
+    }
+
+    @Subscribe
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event) {
+        isManager = true;
+        managerId = event.getId();
+        Platform.runLater(()->{
+            btnNewTest.setDisable(true);
+            btnNewTest.setVisible(false);
+        });
+
     }
 
     public void setScheduledTests(List<ScheduledTest> scheduledTests) {
@@ -114,7 +135,7 @@ public class ShowScheduleTestController {
                 formattedTime = formattedTime.substring(0, 5);
                 return new SimpleStringProperty(formattedTime);
             });
-            submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("submissions"));
+            submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("checkedSubmissions" + "/" +"submissions"));
             examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
                 @Override
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
@@ -193,37 +214,39 @@ public class ShowScheduleTestController {
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-        try {
-            if (event.getClickCount() == 2 && scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
-                ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
-                if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && edit == true) {
-                    App.switchScreen("scheduledTest");
-                    Platform.runLater(() -> {
-                        try {
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", idTeacher));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", idTeacher));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-                        EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
-                    });
+        if (!isManager) {
+            try {
+                if (event.getClickCount() == 2 && scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
+                    ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
+                    if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && edit == true) {
+                        App.switchScreen("scheduledTest");
+                        Platform.runLater(() -> {
+                            try {
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", idTeacher));
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", idTeacher));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                            EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+                        });
 
-                } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true) {
-                    App.switchScreen("testGrade");
-                    Platform.runLater(() -> {
-                        try {
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-                        EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
-                    });
+                    } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true) {
+                        App.switchScreen("testGrade");
+                        Platform.runLater(() -> {
+                            try {
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                            EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+                        });
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -242,14 +265,26 @@ public class ShowScheduleTestController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
-        App.switchScreen("teacherHome");
-        Platform.runLater(() -> {
-            try {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        if (!isManager) {
+            App.switchScreen("teacherHome");
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        else {
+            App.switchScreen("managerHome");
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     @FXML

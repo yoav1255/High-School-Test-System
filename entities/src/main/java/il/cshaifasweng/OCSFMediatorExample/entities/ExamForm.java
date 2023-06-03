@@ -13,8 +13,9 @@ public class ExamForm implements Serializable {
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code; //TODO handle code properly!!
     private int timeLimit;
-    private String teacherNotes;
-    private String studentNotes;
+
+    @Column(name = "general_notes", columnDefinition = "TEXT")
+    private String generalNotes;
     @ManyToOne
     @JoinColumn(name="course_id")
     private Course course;
@@ -23,20 +24,19 @@ public class ExamForm implements Serializable {
     private Subject subject;
     @OneToMany(mappedBy = "examForm")
     private List<ScheduledTest> scheduledTests;
-    @OneToMany(mappedBy = "examForm")
-    private List<QuestionScore> questionScores;
+    @OneToMany(mappedBy = "examForm", cascade = CascadeType.ALL)
+    private List<Question_Score> questionScores;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
 
-    public ExamForm(String code, int timeLimit,String teacherNotes,String studentNotes) {
+    public ExamForm(String code, int timeLimit) {
         this.code = code;
         this.timeLimit = timeLimit;
-        this.teacherNotes = teacherNotes;
-        this.studentNotes = studentNotes;
+
         this.scheduledTests = new ArrayList<ScheduledTest>();
-        this.questionScores = new ArrayList<QuestionScore>();
+        this.questionScores = new ArrayList<Question_Score>();
     }
     public ExamForm(){}
 
@@ -52,20 +52,12 @@ public class ExamForm implements Serializable {
         return timeLimit;
     }
 
-    public String getTeacherNotes() {
-        return teacherNotes;
+    public String getGeneralNotes() {
+        return generalNotes;
     }
 
-    public void setTeacherNotes(String teacherNotes) {
-        this.teacherNotes = teacherNotes;
-    }
-
-    public String getStudentNotes() {
-        return studentNotes;
-    }
-
-    public void setStudentNotes(String studentNotes) {
-        this.studentNotes = studentNotes;
+    public void setGeneralNotes(String generalNotes) {
+        this.generalNotes = generalNotes;
     }
 
     public void setTimeLimit(int timeLimit) {
@@ -77,6 +69,7 @@ public class ExamForm implements Serializable {
     }
 
     public void setCourse(Course course) {
+        course.setExamInstances(course.getExamInstances()+1);
         this.course = course;
     }
 
@@ -96,11 +89,11 @@ public class ExamForm implements Serializable {
     }
     public void addScheduledTest(ScheduledTest scheduledTest){ this.scheduledTests.add(scheduledTest); }
 
-    public List<QuestionScore> getQuestionScores() {
+    public List<Question_Score> getQuestionScores() {
         return questionScores;
     }
 
-    public void setQuestionScores(List<QuestionScore> questionScores) {
+    public void setQuestionScores(List<Question_Score> questionScores) {
         this.questionScores = questionScores;
     }
     public String getCourseName(){
@@ -128,19 +121,19 @@ public class ExamForm implements Serializable {
 
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();
-        examForms.add(new ExamForm("1",180,"",""));
-        examForms.add(new ExamForm("2",120,"",""));
-        examForms.add(new ExamForm("3",120,"",""));
-        examForms.add(new ExamForm("4",180,"",""));
-        examForms.add(new ExamForm("5",90,"",""));
-        examForms.add(new ExamForm("6",120,"",""));
-        examForms.add(new ExamForm("7",90,"",""));
-        examForms.add(new ExamForm("8",180,"",""));
-        examForms.add(new ExamForm("9",90,"",""));
-        examForms.add(new ExamForm("10",180,"",""));
-        examForms.add(new ExamForm("11",180,"",""));
-        examForms.add(new ExamForm("12",120,"",""));
-        examForms.add(new ExamForm("13",180,"",""));
+        examForms.add(new ExamForm("1",180));
+        examForms.add(new ExamForm("2",120));
+        examForms.add(new ExamForm("3",120));
+        examForms.add(new ExamForm("4",180));
+        examForms.add(new ExamForm("5",90));
+        examForms.add(new ExamForm("6",120));
+        examForms.add(new ExamForm("7",90));
+        examForms.add(new ExamForm("8",180));
+        examForms.add(new ExamForm("9",90));
+        examForms.add(new ExamForm("10",180));
+        examForms.add(new ExamForm("11",180));
+        examForms.add(new ExamForm("12",120));
+        examForms.add(new ExamForm("13",180));
 
         return examForms;
     }

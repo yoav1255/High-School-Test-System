@@ -2,10 +2,10 @@ package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
 import java.util.List;
 
-public class ShowUpdateExamFormEvent {
+public class ShowOneExamFormEvent {
     List<Object> setTeacherAndExam;
 
-    public ShowUpdateExamFormEvent(List<Object> setTeacherAndExam) {
+    public ShowOneExamFormEvent(List<Object> setTeacherAndExam) {
         this.setTeacherAndExam = setTeacherAndExam;
     }
 

@@ -3,10 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowQuestionsController">
+<AnchorPane prefHeight="579.0" prefWidth="967.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowOneExamFormController">
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
@@ -33,7 +32,7 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
+                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
                     <graphic>
                         <!--                        <FontAwesomeIconView glyphName="HOME" size="20" />-->
                     </graphic>
@@ -52,14 +51,14 @@
                 </Button>
             </children>
         </VBox>
-        <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
+        <Pane layoutX="207.0" layoutY="-68.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
             <children>
-                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/teacher/questions">
+                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/students_list/student">
                     <font>
                         <Font name="Oriya Sangam MN" size="13.0" />
                     </font>
                 </Label>
-                <Button fx:id="backBN" layoutX="698.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleHomeButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+                <Button fx:id="backBN" layoutX="698.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
                     <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
                     </font>
@@ -80,34 +79,20 @@
                 <RowConstraints maxHeight="413.62635803222656" minHeight="10.0" prefHeight="408.647216796875" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView id="GradesTable" fx:id="tableView" layoutX="28.0" layoutY="99.0" onMouseClicked="#handleRowClick" prefHeight="422.0" prefWidth="740.0" stylesheets="@css/table-style.css" GridPane.rowIndex="2">
-                    <columns>
-                        <TableColumn id="TableTestid" fx:id="tableQuestID" minWidth="5.0" prefWidth="25.599960327148438" text="ID" />
-                        <TableColumn id="TableTeacher" fx:id="tableText" prefWidth="177.60003662109375" text="Text" />
-                        <TableColumn id="TableSubject" fx:id="tableAns1" prefWidth="18.39996337890625" text="Answer 1" />
-                        <TableColumn id="TableCourse" fx:id="tableAns2" prefWidth="10.4000244140625" text="Answer 2" />
-                        <TableColumn id="TableGrade" fx:id="tableAns3" minWidth="0.0" prefWidth="8.800048828125" text="Answer 3" />
-                  <TableColumn id="TableTestid" fx:id="tableAns4" prefWidth="14.4000244140625" text="Answer 4" />
-                    </columns>
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                    </columnResizePolicy>
-                </TableView>
-                <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
-               <children>
-                        <Button fx:id="btnNew" layoutX="22.0" layoutY="13.0" mnemonicParsing="false" onAction="#GoToAddQuestion" text="Create new question" />
-                        <Label layoutX="394.0" layoutY="16.0" prefHeight="17.0" prefWidth="321.0" text="if you wish to change a question- double click the it">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="12.0" />
-                            </font>
-                        </Label>
-               </children>
-                </Pane>
-                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-               <children>
-                  <ComboBox fx:id="comboSubject" layoutX="14.0" layoutY="2.0" onAction="#onSelectSubject" prefWidth="150.0" promptText="Choose the Subject" />
-                  <ComboBox fx:id="comboCourse" layoutX="210.0" layoutY="2.0" onAction="#onSelectCourse" prefWidth="150.0" promptText="Choose the Course" />
-               </children></Pane>
+                <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0">
+                    <children>
+                        <Label fx:id="txtTimeLimit" layoutX="527.0" layoutY="18.0" prefHeight="17.0" prefWidth="161.0" text="time limit : " />
+                  <Label fx:id="txtSubject" layoutX="14.0" layoutY="18.0" prefHeight="17.0" prefWidth="176.0" text="Subject : " />
+                  <Label fx:id="txtCourse" layoutX="222.0" layoutY="18.0" prefHeight="17.0" prefWidth="187.0" text="Course : " />
+                    </children></Pane>
+                <AnchorPane prefHeight="439.0" prefWidth="726.0" GridPane.rowIndex="2">
+                    <children>
+                        <ListView fx:id="questionsListView" layoutX="-1.0" prefHeight="314.0" prefWidth="714.0" />
+                        <Label fx:id="labelMsg" layoutX="287.0" layoutY="386.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+                        <TextArea fx:id="generalNotes" layoutX="-1.0" layoutY="353.0" prefHeight="50.0" prefWidth="714.0" />
+                        <Label layoutY="336.0" text="Notes for the test" />
+                    </children>
+                </AnchorPane>
             </children>
         </GridPane>
     </children>

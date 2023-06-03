@@ -17,9 +17,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +25,8 @@ public class StudentExecuteExamController {
 
     @FXML
     private GridPane StudentsGR;
-
     @FXML
     private Button homeBN;
-
     @FXML
     private Label text_Id;
     @FXML
@@ -42,17 +37,17 @@ public class StudentExecuteExamController {
     private List<ToggleGroup> toggleGroups = new ArrayList<>();
     @FXML
     private ToggleGroup toggleGroup;
-
     @FXML
     private ListView<Question_Answer> questionsListView;
 
     private String id;
     private ScheduledTest scheduledTest;
     private StudentTest studentTest;
-    private List<QuestionScore> questionScoreList;
+    private List<Question_Score> questionScoreList;
     private Student student;
     private List<Question_Answer> questionAnswers ;
     private long timeLeft;
+//    private List<TextField> q_notes;
 
 
 
@@ -82,7 +77,7 @@ public class StudentExecuteExamController {
         scheduledTest = event.getSelectedTestEvent();
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
-        for (QuestionScore questionScore : questionScoreList) {
+        for (Question_Score questionScore : questionScoreList) {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
             questionAnswer.setQuestionScore(questionScore);
@@ -104,11 +99,14 @@ public class StudentExecuteExamController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    String questionText = questionAnswer.getQuestionScore().getQuestion().getText();
-                    String answer0 = questionAnswer.getQuestionScore().getQuestion().getAnswer0();
-                    String answer1 = questionAnswer.getQuestionScore().getQuestion().getAnswer1();
-                    String answer2 = questionAnswer.getQuestionScore().getQuestion().getAnswer2();
-                    String answer3 = questionAnswer.getQuestionScore().getQuestion().getAnswer3();
+
+                    Question_Score qs = questionAnswer.getQuestionScore();
+                    Question q = qs.getQuestion();
+                    String questionText = q.getText();
+                    String answer0 = q.getAnswer0();
+                    String answer1 = q.getAnswer1();
+                    String answer2 = q.getAnswer2();
+                    String answer3 = q.getAnswer3();
 
                     VBox vbox = new VBox();
                     vbox.setSpacing(10);
@@ -134,11 +132,25 @@ public class StudentExecuteExamController {
                     answer4RadioButton.setToggleGroup(toggleGroup);
                     vbox.getChildren().add(answer4RadioButton);
 
+                    Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
+                    vbox.getChildren().add(noteStudentLabel);
+
                     Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
                     vbox.getChildren().add(scoreLabel);
 
+                    Label note = new Label("note: ");
+                    vbox.getChildren().add(note);
+                    TextField noteText = new TextField();
+                    vbox.getChildren().add(noteText);
+
+                    noteText.textProperty().addListener((observable, oldValue, newValue) -> {
+                        // Save the entered note to the Question_Answer object
+                        questionAnswer.setNote(newValue);
+                    });
+
                     setGraphic(vbox);
                     toggleGroups.add(toggleGroup);
+//                    q_notes.add(noteText);
 
                     //
 
@@ -152,6 +164,8 @@ public class StudentExecuteExamController {
                             System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
                     });
+
+
 
                     //
                 }
@@ -201,6 +215,7 @@ public class StudentExecuteExamController {
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+            studentTest.setOnTime(false);
             endTest();
         }
     }
@@ -210,6 +225,7 @@ public class StudentExecuteExamController {
         studentTest.setQuestionAnswers(questionAnswers);
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
+        //TODO update the student checked and schedule test
 
         // student test is ready
 

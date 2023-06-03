@@ -1,22 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
 
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.TimerFinishedEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.TimerStartEvent;
-import org.greenrobot.eventbus.EventBus;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -38,7 +28,7 @@ public class App
     private static final SessionFactory sessionFactory = getSessionFactory();
     private static List<ScheduledTest> scheduledTests;
 
-    public static void main( String[] args ) throws Exception {
+    public static void main(String[] args) throws Exception {
         server = new SimpleServer(3028);
         System.out.println("server is listening");
         server.listen();
@@ -60,7 +50,9 @@ public class App
         } finally {
             session.close();
         }
-
+//        getTeacherExamStats("2");
+//        getCourseExamStats(4);
+//            getStudentExamStats("1");
     }
 
 
@@ -81,7 +73,7 @@ public class App
         configuration.addAnnotatedClass(StudentTest.class);
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
-        configuration.addAnnotatedClass(QuestionScore.class);
+        configuration.addAnnotatedClass(Question_Score.class);
         configuration.addAnnotatedClass(Question_Answer.class);
 
 
@@ -310,6 +302,17 @@ public class App
         session.close();
         return subjects;
     }
+    public static List<Subject> getAllSubjects(){
+        List<Subject> subjects;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT s FROM Subject s";
+        Query query = session.createQuery(queryString, Subject.class);
+        subjects = query.getResultList();
+        session.close();
+        return subjects;
+
+    }
     public static Teacher getTeacherFromId(String id){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
@@ -370,11 +373,11 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
-    public static void addQuestionScores(List<QuestionScore> questionScores) {
+    public static void addQuestionScores(List<Question_Score> questionScores) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        for(QuestionScore questionScore:questionScores){
+        for(Question_Score questionScore:questionScores){
             session.save(questionScore);
         }
         session.flush();
@@ -536,13 +539,13 @@ public class App
         return examForms;
     }
 
-    public static List<QuestionScore> getQuestionScoresFromExamForm(ExamForm examForm) {
+    public static List<Question_Score> getQuestionScoresFromExamForm(ExamForm examForm) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-        String queryString = "SELECT qs FROM QuestionScore qs WHERE qs.examForm =:examForm";
-        Query query = session.createQuery(queryString,QuestionScore.class);
+        String queryString = "SELECT qs FROM Question_Score qs WHERE qs.examForm =:examForm";
+        Query query = session.createQuery(queryString, Question_Score.class);
         query.setParameter("examForm",examForm);
-        List<QuestionScore> questionScores = query.getResultList();
+        List<Question_Score> questionScores = query.getResultList();
         session.close();
         return questionScores;
     }
@@ -558,11 +561,11 @@ public class App
         query.setParameter("scheduleTest",scheduledTest);
         ExamForm examForm = (ExamForm) query.getSingleResult();
 
-        String hql = "SELECT qs FROM QuestionScore qs " +
+        String hql = "SELECT qs FROM Question_Score qs " +
                 "JOIN FETCH qs.question " +
                 "WHERE qs.examForm = :examForm";
 
-        List<QuestionScore> questionScores = session.createQuery(hql)
+        List<Question_Score> questionScores = session.createQuery(hql)
                 .setParameter("examForm", examForm)
                 .getResultList();
 
@@ -582,6 +585,7 @@ public class App
         List<StudentTest> studentTests = query.getResultList();
         student.setStudentTests(studentTests);
         session.close();
+        System.out.println(student.getEmail());
         return student;
     }
     public static void saveQuestionAnswers(List<Object> items){
@@ -591,11 +595,14 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        session.saveOrUpdate(student);
+//        session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
         session.flush();
         for(int i=2;i<items.size();i++){
             Question_Answer item = (Question_Answer) items.get(i);
+            System.out.println("saving question answer "+ item.getId());
+            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
+            System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
         session.flush();
@@ -603,11 +610,11 @@ public class App
         session.close();
     }
 
-    public static void saveQuestionScores(List<QuestionScore> items){
+    public static void saveQuestionScores(List<Question_Score> items){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        for(QuestionScore item:items){
+        for(Question_Score item:items){
             session.saveOrUpdate(item);
         }
         session.flush();
@@ -627,5 +634,293 @@ public class App
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
     }
+
+    public static void getTeacherExamStats(String teacherId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.teacher.id = :teacherId "+
+                        "GROUP BY st"
+        );
+        query.setParameter("teacherId", teacherId);
+        List<Object[]> results = query.getResultList();
+
+        List<Double> avgGrades = new ArrayList<>();
+        List<String> scheduleTestIds = new ArrayList<>();
+        List<Integer> medians = new ArrayList<>();
+        List<List<Integer>> gradesPerScheduleTest = new ArrayList<>();
+        List<List<Double>> distributions = new ArrayList<>();
+
+
+        for (Object[] result : results) {
+            String scheduleTestId = (String) result[0];
+            Double averageGrade = (Double) result[1];
+            avgGrades.add(averageGrade);
+            scheduleTestIds.add(scheduleTestId);
+        }
+
+    for (String scheduleTestId:scheduleTestIds) {
+        query = session.createQuery(
+                "SELECT e.grade " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.teacher.id = :teacherId and e.scheduledTest.id =:scheduleTestId " +
+                        " order by e.grade"
+        );
+        query.setParameter("teacherId", teacherId);
+        query.setParameter("scheduleTestId",scheduleTestId);
+        List<Integer> grades = query.getResultList();
+        gradesPerScheduleTest.add(grades);
+    }
+
+
+        int median;
+        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+            int size = gradeSheet.size();
+            if (size % 2 == 0) {
+                median = (gradeSheet.get(size / 2 - 1));
+            } else {
+                median = gradeSheet.get(size / 2);
+            }
+            medians.add(median);
+    }
+
+        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+
+            List<Double> distribution = new ArrayList<>();
+            for(int i =0 ; i<11;i++){
+                distribution.add(i,0.0);
+                System.out.println(distribution.get(i));
+            }
+
+            int totalCount = gradeSheet.size();
+            for (int grade : gradeSheet) {
+                double s;
+                System.out.println(grade/10);
+                System.out.println(distribution.get(7));
+                if(grade==100)
+                     s = distribution.get(9);
+                else
+                     s = distribution.get(grade/10);
+                System.out.println(s);
+                if(grade==100)
+                    distribution.set(9,s+1);
+                distribution.set(grade / 10 , s+1);
+            }
+            for (int i = 0; i < 11; i++) {
+                distribution.set(i, (distribution.get(i) / totalCount) * 100);
+            }
+            distributions.add(distribution);
+        }
+
+        for(int i = 0 ; i<scheduleTestIds.size();i++){
+            System.out.println("schedule id: "+ scheduleTestIds.get(i) + " Average grade: " + avgGrades.get(i));
+            System.out.println("Median grade: " + medians.get(i));
+            System.out.println("Grade distribution: ");
+            for (int j = 0; j < 10; j++) {
+                if(j==9){
+                    System.out.println(90 + " - " + 100 + ": " + distributions.get(i).get(j) + "%");
+                }else
+                    System.out.println(j * 10 + " - " + ((j * 10) + 9) + ": " + distributions.get(i).get(j) + "%");
+            }
+        }
+
+        session.close();
+    }
+
+
+    public static void getCourseExamStats(int courseId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.examForm.course.id = :courseId "+
+                        "GROUP BY st"
+        );
+        query.setParameter("courseId", courseId);
+        List<Object[]> results = query.getResultList();
+
+        List<Double> avgGrades = new ArrayList<>();
+        List<String> scheduleTestIds = new ArrayList<>();
+        List<Integer> medians = new ArrayList<>();
+        List<List<Integer>> gradesPerScheduleTest = new ArrayList<>();
+        List<List<Double>> distributions = new ArrayList<>();
+
+
+        for (Object[] result : results) {
+            String scheduleTestId = (String) result[0];
+            Double averageGrade = (Double) result[1];
+            avgGrades.add(averageGrade);
+            scheduleTestIds.add(scheduleTestId);
+        }
+
+        for (String scheduleTestId:scheduleTestIds) {
+            query = session.createQuery(
+                    "SELECT e.grade " +
+                            "FROM StudentTest e " +
+                            "WHERE e.scheduledTest.examForm.course.id = :courseId and e.scheduledTest.id =:scheduleTestId " +
+                            " order by e.grade"
+            );
+            query.setParameter("courseId", courseId);
+            query.setParameter("scheduleTestId",scheduleTestId);
+            List<Integer> grades = query.getResultList();
+            gradesPerScheduleTest.add(grades);
+        }
+
+
+        int median;
+        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+            int size = gradeSheet.size();
+            if (size % 2 == 0) {
+                median = (gradeSheet.get(size / 2 - 1));
+            } else {
+                median = gradeSheet.get(size / 2);
+            }
+            medians.add(median);
+        }
+
+        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+
+            List<Double> distribution = new ArrayList<>();
+            for(int i =0 ; i<11;i++){
+                distribution.add(i,0.0);
+                System.out.println(distribution.get(i));
+            }
+
+            int totalCount = gradeSheet.size();
+            for (int grade : gradeSheet) {
+                double s;
+                System.out.println(grade/10);
+                System.out.println(distribution.get(7));
+                if(grade==100)
+                    s = distribution.get(9);
+                else
+                    s = distribution.get(grade/10);
+                System.out.println(s);
+                if(grade==100)
+                    distribution.set(9,s+1);
+                distribution.set(grade / 10 , s+1);
+            }
+            for (int i = 0; i < 11; i++) {
+                distribution.set(i, (distribution.get(i) / totalCount) * 100);
+            }
+            distributions.add(distribution);
+        }
+
+        for(int i = 0 ; i<scheduleTestIds.size();i++){
+            System.out.println("schedule id: "+ scheduleTestIds.get(i) + " Average grade: " + avgGrades.get(i));
+            System.out.println("Median grade: " + medians.get(i));
+            System.out.println("Grade distribution: ");
+            for (int j = 0; j < 10; j++) {
+                if(j==9){
+                    System.out.println(90 + " - " + 100 + ": " + distributions.get(i).get(j) + "%");
+                }else
+                    System.out.println(j * 10 + " - " + ((j * 10) + 9) + ": " + distributions.get(i).get(j) + "%");
+            }
+        }
+
+        session.close();
+    }
+
+    public static void getStudentExamStats(String studentId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+
+        Query query = session.createQuery(
+                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.student.id = :studentId "+
+                        "GROUP BY st"
+        );
+        query.setParameter("studentId", studentId);
+        List<Object[]> results = query.getResultList();
+
+        List<Double> avgGrades = new ArrayList<>();
+        List<String> scheduleTestIds = new ArrayList<>();
+        List<Integer> medians = new ArrayList<>();
+        List<List<Integer>> gradesPerScheduleTest = new ArrayList<>();
+        List<List<Double>> distributions = new ArrayList<>();
+
+
+        for (Object[] result : results) {
+            String scheduleTestId = (String) result[0];
+            Double averageGrade = (Double) result[1];
+            avgGrades.add(averageGrade);
+            scheduleTestIds.add(scheduleTestId);
+        }
+
+        for (String scheduleTestId:scheduleTestIds) {
+            query = session.createQuery(
+                    "SELECT e.grade " +
+                            "FROM StudentTest e " +
+                            "WHERE e.student.id = :studentId and e.scheduledTest.id =:scheduleTestId " +
+                            " order by e.grade"
+            );
+            query.setParameter("studentId", studentId);
+            query.setParameter("scheduleTestId",scheduleTestId);
+            List<Integer> grades = query.getResultList();
+            gradesPerScheduleTest.add(grades);
+        }
+
+        int median;
+        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+            int size = gradeSheet.size();
+            if (size % 2 == 0) {
+                median = (gradeSheet.get(size / 2 - 1));
+            } else {
+                median = gradeSheet.get(size / 2);
+            }
+            medians.add(median);
+        }
+
+        for(List<Integer> gradeSheet:gradesPerScheduleTest) {
+
+            List<Double> distribution = new ArrayList<>();
+            for(int i =0 ; i<11;i++){
+                distribution.add(i,0.0);
+                System.out.println(distribution.get(i));
+            }
+
+            int totalCount = gradeSheet.size();
+            for (int grade : gradeSheet) {
+                double s;
+                System.out.println(grade/10);
+                System.out.println(distribution.get(7));
+                if(grade==100)
+                    s = distribution.get(9);
+                else
+                    s = distribution.get(grade/10);
+                System.out.println(s);
+                if(grade==100)
+                    distribution.set(9,s+1);
+                distribution.set(grade / 10 , s+1);
+            }
+            for (int i = 0; i < 11; i++) {
+                distribution.set(i, (distribution.get(i) / totalCount) * 100);
+            }
+            distributions.add(distribution);
+        }
+
+        for(int i = 0 ; i<scheduleTestIds.size();i++){
+            System.out.println("schedule id: "+ scheduleTestIds.get(i) + " Average grade: " + avgGrades.get(i));
+            System.out.println("Median grade: " + medians.get(i));
+            System.out.println("Grade distribution: ");
+            for (int j = 0; j < 10; j++) {
+                if(j==9){
+                    System.out.println(90 + " - " + 100 + ": " + distributions.get(i).get(j) + "%");
+                }else
+                    System.out.println(j * 10 + " - " + ((j * 10) + 9) + ": " + distributions.get(i).get(j) + "%");
+            }
+        }
+
+        session.close();
+    }
+
+
+
 
 }

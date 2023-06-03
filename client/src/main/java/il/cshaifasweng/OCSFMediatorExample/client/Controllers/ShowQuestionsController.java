@@ -5,8 +5,6 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -47,6 +44,10 @@ public class ShowQuestionsController {
     private List<String> ans2;
     private List<String> ans3;
     private List<String> ans4;
+    private boolean isManager;
+    private String managerId;
+    @FXML
+    private Button btnNew;
     @FXML
     TableView<Question> tableView;
     @FXML
@@ -109,6 +110,31 @@ public class ShowQuestionsController {
 
     }
     @Subscribe
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event){
+        isManager = true;
+        managerId = event.getId();
+        btnNew.setDisable(true);
+        btnNew.setVisible(false);
+        Platform.runLater(()->{
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getAllSubjects",""));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+    @Subscribe
+    public void onShowAllSubjectsEvent(ShowAllSubjectsEvent event){
+        subjects.clear();
+        subjects.addAll(event.getSubjects());
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for (Subject subject : subjects) {
+            items.add(subject.getName());
+        }
+        comboSubject.setItems(items);
+    }
+
+    @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event) {
         subjects.clear();
         subjects.addAll(event.getSubjects());
@@ -136,7 +162,9 @@ public class ShowQuestionsController {
         for (Course course : courses) {
             items.add(course.getName());
         }
-        comboCourse.setItems(items);
+        Platform.runLater(()->{
+            comboCourse.setItems(items);
+        });
     }
     @FXML
     public void onSelectCourse(ActionEvent event){
@@ -148,21 +176,32 @@ public class ShowQuestionsController {
         }
 
     }
-    public void handleHomeButtonClick(ActionEvent event){
-        try {
-            String teacherId = this.id;
+    public void handleHomeButtonClick(ActionEvent event) throws IOException {
+        if(isManager){
             cleanup();
-            App.switchScreen("teacherHome");
+            App.switchScreen("managerHome");
             Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
             });
-        } catch (Exception e) {
-            e.printStackTrace();
+        }else {
+            try {
+                String teacherId = this.id;
+                cleanup();
+                App.switchScreen("teacherHome");
+                Platform.runLater(() -> {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN )
     @FXML
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+        isManager = false;
+        btnNew.setDisable(false);
+        btnNew.setVisible(true);
         Platform.runLater(()->{
             setId(event.getId());
             try {
@@ -191,32 +230,34 @@ public class ShowQuestionsController {
     }
     @FXML
     void handleRowClick(MouseEvent event) {
-        try {
-            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+        if (!isManager) {
+            try {
+                if (event.getClickCount() == 2) { // Check if the user double-clicked the row
 
-                Question selectedQuestion = tableView.getSelectionModel().getSelectedItem();
-                if (selectedQuestion != null) {
+                    Question selectedQuestion = tableView.getSelectionModel().getSelectedItem();
+                    if (selectedQuestion != null) {
 
-                    List<Object> setTeacherAndQuestion = new ArrayList<>();
-                    setTeacherAndQuestion.add(id);
-                    setTeacherAndQuestion.add(selectedQuestion);
-                    cleanup();
-                    App.switchScreen("createQuestion");
-                    Platform.runLater(()->{
-                        try {
-                            //SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
-                            Platform.runLater(()->{
-                                EventBus.getDefault().post(new ShowUpdateQuestFormEvent(setTeacherAndQuestion));
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                        List<Object> setTeacherAndQuestion = new ArrayList<>();
+                        setTeacherAndQuestion.add(id);
+                        setTeacherAndQuestion.add(selectedQuestion);
+                        cleanup();
+                        App.switchScreen("createQuestion");
+                        Platform.runLater(() -> {
+                            try {
+                                //SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+                                Platform.runLater(() -> {
+                                    EventBus.getDefault().post(new ShowUpdateQuestFormEvent(setTeacherAndQuestion));
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
 
+                    }
                 }
+            }catch(IOException e){
+                e.printStackTrace();
             }
-        }catch (IOException e){
-            e.printStackTrace();
         }
     }
 

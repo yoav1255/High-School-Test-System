@@ -94,7 +94,7 @@
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
                <children>
-                  <Button layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" text="create test" />
+                  <Button fx:id="btnNewExamForm" layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" text="create test" />
                </children>
                 </Pane>
                 <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">

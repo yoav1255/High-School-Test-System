@@ -1,10 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdQuestionAddedEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import javafx.application.Platform;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.extraTimeRequestEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,6 +20,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
+
+import java.io.IOException;
 
 public class ManagerHomeController {
 
@@ -52,7 +59,10 @@ public class ManagerHomeController {
 
     private void initializeIfIdNotNull() {
         if (id != null) {
-            idLabel.setText("ID: " + id);
+            Platform.runLater(()->{
+                idLabel.setText("ID: " + id);
+            });
+
         }
     }
 
@@ -61,10 +71,49 @@ public class ManagerHomeController {
 
     }
 
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) {
+@FXML
+    void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
 
     }
+@FXML
+    public void goToQuestions(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showAllQuestions");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+        });
+    }
+@FXML
+    public void goToExamForms(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showExamForms");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+        });
+    }
+@FXML
+    public void goToScheduledTests(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showScheduleTest");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+@FXML
+    public void goToStatistics(ActionEvent event) {
+    }
+    @Subscribe
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event){
+        id = event.getId();
+        initializeIfIdNotNull();
+    }
+
+
     @Subscribe
     public void onExtraTimeRequestEvent(extraTimeRequestEvent event){
         Platform.runLater(() -> {

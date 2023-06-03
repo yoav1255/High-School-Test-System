@@ -51,6 +51,10 @@ public class SimpleClient extends AbstractClient {
 					List<Subject> subjects = (List<Subject>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherSubjectsEvent(subjects));
 					break;
+				case ("returnAllSubjects"):
+					List<Subject> subjects1 = (List<Subject>) message.getData();
+					EventBus.getDefault().post(new ShowAllSubjectsEvent(subjects1));
+					break;
 				case ("returnCourses"):
 					List<Course> courses = (List<Course>) message.getData();
 					EventBus.getDefault().post(new ShowSubjectCoursesEvent(courses));
@@ -94,7 +98,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowExamFormsEvent(examForms));
 					break;
 				case ("returnQuestionScores"):
-					List<QuestionScore> questionScores = (List<QuestionScore>) message.getData();
+					List<Question_Score> questionScores = (List<Question_Score>) message.getData();
 					EventBus.getDefault().post(new ShowExamFormQuestionScoresEvent(questionScores));
 					break;
 				case ("returnScheduleTestWithInfo"):
