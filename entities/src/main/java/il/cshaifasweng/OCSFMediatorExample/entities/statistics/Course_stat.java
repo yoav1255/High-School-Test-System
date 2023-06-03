@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Course_stat {
     Course course;
-    String scheduleTestIds;
+    String scheduleTestId;
     List<Integer> gradesPerScheduleTest;
     Double avgGrade;
     int median;
