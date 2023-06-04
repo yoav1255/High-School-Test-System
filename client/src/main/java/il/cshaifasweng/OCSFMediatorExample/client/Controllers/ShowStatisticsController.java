@@ -139,6 +139,9 @@ public class ShowStatisticsController {
         }
     }
 
+    public void selected_stat(ActionEvent actionEvent) {
+
+    }
 }
 
 
