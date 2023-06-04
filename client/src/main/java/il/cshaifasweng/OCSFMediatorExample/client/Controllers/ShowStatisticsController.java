@@ -4,11 +4,9 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
-import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStatisticEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStudentsEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,15 +31,15 @@ public class ShowStatisticsController {
     private Button goBack;
 
     @FXML
-    private TableColumn<Student, String> median;
+    private TableColumn<Statistics, Integer> median;
 
     @FXML
-    private TableColumn<Student, String> scheduled_test;
+    private TableColumn<Statistics, String> scheduled_test;
     @FXML
-    private TableColumn<Student, String> id;
+    private TableColumn<Statistics, String> id;
 
     @FXML
-    private TableColumn<Student, String> average;
+    private TableColumn<Statistics, Double> average;
     @FXML
     private TableView<Statistics> statistics_table_view;
 
@@ -80,10 +78,10 @@ public class ShowStatisticsController {
     public void onShowAllStudentsEvent(ShowAllStatisticEvent event) {
         try {
             setStatisticList(event.getStatisticsList());
-            id.setCellValueFactory(new PropertyValueFactory<Student,String>("id"));
-            scheduled_test.setCellValueFactory(new PropertyValueFactory<Student,String>("scheduled_test"));
-            average.setCellValueFactory(new PropertyValueFactory<Student,String>("average"));
-            median.setCellValueFactory(new PropertyValueFactory<Student,String>("median"));
+            id.setCellValueFactory(new PropertyValueFactory<Statistics,String>("id"));
+            scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics,String>("scheduled_test"));
+            average.setCellValueFactory(new PropertyValueFactory<Statistics,Double>("average"));
+            median.setCellValueFactory(new PropertyValueFactory<Statistics,Integer>("median"));
             ObservableList<Statistics> stats = FXCollections.observableList(statisticList);
             statistics_table_view.setItems(stats);
         }catch (Exception e){
