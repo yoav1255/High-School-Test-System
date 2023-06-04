@@ -172,6 +172,10 @@ public class SimpleServer extends AbstractServer {
 					App.saveStudentTest((List<Object>) message.getData());
 					//client.sendToClient(new CustomMessage("savedStudentTest","Success"));
 					break;
+				case ("#getAllSubjects"):
+					List<Subject> subjects1 = App.getAllSubjects();
+					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
+					break;
 
 			}
 		} catch (Exception e) {

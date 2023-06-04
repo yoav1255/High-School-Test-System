@@ -47,7 +47,7 @@
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
-                <Button fx:id="StatsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToStatisticsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Statistics">
+                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
@@ -64,6 +64,10 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
+            <Button mnemonicParsing="false" onAction="#goToQuestions" prefHeight="45.0" prefWidth="218.0" text="Questions" />
+            <Button mnemonicParsing="false" onAction="#goToExamForms" prefHeight="45.0" prefWidth="218.0" text="Exam Forms" />
+            <Button mnemonicParsing="false" onAction="#goToScheduledTests" prefHeight="45.0" prefWidth="218.0" text="Scheduled Tests" />
+            <Button mnemonicParsing="false" onAction="#goToStatistics" prefHeight="45.0" prefWidth="218.0" text="Statistics" />
             <Button fx:id="ExtraTimeApproval" mnemonicParsing="false" onAction="#onExtraTimeHandle" prefHeight="53.0" prefWidth="226.0" text="Extra Time Approval" />
             </children>
         </VBox>

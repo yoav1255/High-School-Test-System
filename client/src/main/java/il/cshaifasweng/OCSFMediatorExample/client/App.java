@@ -153,6 +153,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showOneExamForm":
+                Platform.runLater(()->{
+                    setWindowTitle("Exam Form");
+                    try {
+                        setContent("showOneExamForm");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "createExamForm":
                 Platform.runLater(()->{
                     setWindowTitle("Create Exam Form");
@@ -278,6 +288,16 @@ public class App extends Application {
                     setWindowTitle("Test Grades");
                     try {
                         setContent("testGrade");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showStatistics":
+                Platform.runLater(()->{
+                    setWindowTitle("Statistics");
+                    try {
+                        setContent("showStatistics");
                     }catch (IOException e){
                         e.printStackTrace();
                     }
