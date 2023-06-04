@@ -234,6 +234,7 @@ public class App
     }
 
 
+
    public static Teacher getTeacher(){
        // create a Criteria object for the Teacher class
        Criteria criteria = session.createCriteria(Teacher.class);
@@ -919,8 +920,6 @@ public class App
 
         session.close();
     }
-
-
 
 
 }

@@ -313,6 +313,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showStatistics":
+                Platform.runLater(()->{
+                    setWindowTitle("Statistics");
+                    try {
+                        setContent("showStatistics");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
 //    return loadFXML(screenName);
     }

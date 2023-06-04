@@ -78,7 +78,19 @@ public class TeacherHomeController {
 
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event) {
-
+        try {
+            App.switchScreen("allStudents");
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
