@@ -131,6 +131,30 @@ public class ScheduledTest implements Serializable {
         this.status = status;
     }
 
+    public int getCheckedSubmissions() {
+        return checkedSubmissions;
+    }
+
+    public void setCheckedSubmissions(int checkedSubmissions) {
+        this.checkedSubmissions = checkedSubmissions;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
     public static List<ScheduledTest> GenerateScheduledTests(){
         List<ScheduledTest> scheduledTests = new ArrayList<ScheduledTest>();
         scheduledTests.add(new ScheduledTest("11PO",  LocalDate.of(2023,10,05), LocalTime.of(12,20,0),20));

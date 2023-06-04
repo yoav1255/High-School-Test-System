@@ -193,7 +193,9 @@ public class SimpleServer extends AbstractServer {
 				assert scheduledTests != null;
 				for (ScheduledTest scheduledTest : scheduledTests) {
 					LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
-					long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
+					long timeLimitMinutes = scheduledTest.getTimeLimit();
+					System.out.println("time scheduled "+timeLimitMinutes);
+
 					LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 
 					if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
@@ -220,13 +222,20 @@ public class SimpleServer extends AbstractServer {
 							TimerTask task = new TimerTask() {
 								@Override
 								public void run() {
-									LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+									ScheduledTest st = App.getScheduleTest(scheduledTest.getId());
+									System.out.println("st time limit : "+st.getTimeLimit());
+									long timeLimitMinutes = st.getTimeLimit();
+									LocalDateTime scheduledDateTime = LocalDateTime.of(st.getDate(), st.getTime());
 									LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 									LocalDateTime currentDateTime = LocalDateTime.now();
 									long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
 
 									try {
-										sendToAllClients(new CustomMessage("timeLeft",timeLeft));//TODO send also the schedule test for check
+										List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+										scheduleTestId_timeLeft.add(st.getId());
+										System.out.println("Time Left: " + timeLeft);
+										scheduleTestId_timeLeft.add(timeLeft);
+										sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));//TODO send also the schedule test for check
 									}catch (Exception e){
 										e.printStackTrace();
 									}
@@ -237,7 +246,7 @@ public class SimpleServer extends AbstractServer {
 
 										System.out.println("checking the time left " + timeLeft);
 										try {
-											sendToAllClients(new CustomMessage("timerFinished",scheduledTest));
+											sendToAllClients(new CustomMessage("timerFinished",st));
 										}catch (Exception e){
 											e.printStackTrace();
 										}
