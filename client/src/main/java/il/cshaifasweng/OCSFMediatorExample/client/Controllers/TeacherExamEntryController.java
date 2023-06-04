@@ -58,7 +58,7 @@ public class TeacherExamEntryController {
         setId(event.getId());
     }
     @Subscribe
-    public void onShowScheduleTestEvent(ShowScheduleTestEvent event){
+    public void onShowScheduleTestEvent(ShowScheduleTestEvent event){ // initialize scheduledTests and  scheduleTestIds Lists
         scheduledTests.clear();
         scheduleTestIds.clear();
         scheduledTests = event.getScheduledTestList();
@@ -72,7 +72,7 @@ public class TeacherExamEntryController {
         if((!scheduleTestIds.contains(codeInput))){
             // if the testId doesn't exist
             Platform.runLater(()->{
-                textDisplay.setText("Exam ID doesn't exist");
+                textDisplay.setText("Exam ID doesn't exist! Try again");
                 textDisplay.setVisible(true);
                 textEntered.clear();
             });
@@ -96,13 +96,13 @@ public class TeacherExamEntryController {
                 });
             } else if (myScheduledTest.getStatus() == 0) {
                 Platform.runLater(() -> {
+                    textDisplay.setText("the test will be available in: " + myScheduledTest.getDate() + " at " + myScheduledTest.getTime());
                     textDisplay.setVisible(true);
-                    textDisplay.setText("the test will be available at : " + myScheduledTest.getDate() + " in " + myScheduledTest.getTime());
                 });
             }
             else { //myScheduledTest.getStatus() == 2
-                textDisplay.setVisible(true);
                 textDisplay.setText("the test is not available anymore");
+                textDisplay.setVisible(true);
             }
         }
     }

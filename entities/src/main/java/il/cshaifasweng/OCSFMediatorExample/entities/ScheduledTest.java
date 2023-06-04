@@ -127,6 +127,14 @@ public class ScheduledTest implements Serializable {
         return status;
     }
 
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
     public void setStatus(int status) {
         this.status = status;
     }
