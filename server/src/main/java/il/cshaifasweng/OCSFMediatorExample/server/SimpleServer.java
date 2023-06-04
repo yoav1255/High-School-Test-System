@@ -220,11 +220,13 @@ public class SimpleServer extends AbstractServer {
 							TimerTask task = new TimerTask() {
 								@Override
 								public void run() {
+									LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+									LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 									LocalDateTime currentDateTime = LocalDateTime.now();
 									long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
 
 									try {
-										sendToAllClients(new CustomMessage("timeLeft",timeLeft));
+										sendToAllClients(new CustomMessage("timeLeft",timeLeft));//TODO send also the schedule test for check
 									}catch (Exception e){
 										e.printStackTrace();
 									}

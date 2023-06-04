@@ -77,6 +77,7 @@ public class StudentExecuteExamController {
         scheduledTest = event.getSelectedTestEvent();
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
+        //TODO add 1 to scheduled test active students executing test if needed
         for (Question_Score questionScore : questionScoreList) {
             Question_Answer questionAnswer = new Question_Answer();
             questionAnswer.setStudentTest(studentTest);
@@ -227,6 +228,8 @@ public class StudentExecuteExamController {
         //TODO update the student checked and schedule test
 
         // student test is ready
+        //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
+
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
