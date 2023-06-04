@@ -1,13 +1,18 @@
 package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
-public class TimeLeftEvent {
-    private long timeLeft;
+import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 
-    public TimeLeftEvent(long timeLeft) {
-        this.timeLeft = timeLeft;
+import java.util.List;
+
+public class TimeLeftEvent {
+
+    private List<Object> scheduleTestId_timeLeft;
+
+    public TimeLeftEvent(List<Object> scheduleTestId_timeLeft) {
+        this.scheduleTestId_timeLeft = scheduleTestId_timeLeft;
     }
 
-    public long getTimeLeft() {
-        return timeLeft;
+    public List<Object> getScheduleTestId_timeLeft() {
+        return scheduleTestId_timeLeft;
     }
 }

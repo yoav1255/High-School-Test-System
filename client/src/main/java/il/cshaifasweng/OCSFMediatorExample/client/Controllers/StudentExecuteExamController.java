@@ -204,10 +204,14 @@ public class StudentExecuteExamController {
 
 @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
-        timeLeft = event.getTimeLeft();
-        Platform.runLater(()->{
-            timeLeftText.setText(Long.toString( timeLeft));
-        });
+        List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
+        timeLeft = (long)scheduleTestId_timeLeft.get(1);
+        String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
+        if(scheduleTestId.equals(scheduledTest.getId())) {
+            Platform.runLater(() -> {
+                timeLeftText.setText(Long.toString(timeLeft));
+            });
+        }
 }
 
 @Subscribe
