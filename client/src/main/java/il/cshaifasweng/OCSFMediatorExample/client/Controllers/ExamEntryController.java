@@ -11,12 +11,23 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ExamEntryController {
     @FXML
@@ -105,5 +116,26 @@ public class ExamEntryController {
                 });
             }
         }
+    }
+
+    public void EnterWordTest_btn(ActionEvent actionEvent) throws IOException {
+        XWPFDocument document = new XWPFDocument();
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+
+        run.setBold(true);
+        run.setText("Test in Algebra");
+        run.addBreak();
+        run.setBold(false);
+        run.setText("question 1");
+        run.addBreak();
+        try {
+            FileOutputStream output = new FileOutputStream("test.docx");
+            document.write(output);
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Save the document to a file using native file dialog
     }
 }
