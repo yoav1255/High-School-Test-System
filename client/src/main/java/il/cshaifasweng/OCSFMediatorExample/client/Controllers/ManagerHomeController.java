@@ -16,6 +16,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManagerHomeController {
 
@@ -112,19 +114,31 @@ public class ManagerHomeController {
     @Subscribe
     public void onExtraTimeRequestEvent(extraTimeRequestEvent event){
         Platform.runLater(() -> {
-            int input = JOptionPane.showOptionDialog(null, "Extra time request: " + event.getMsg(), "Extra time request",
+            List<Object> data = new ArrayList<>();
+            data = (List<Object>) event.getData();
+            String explanation = (String) data.get(0);
+            int extraMinutes = (int) data.get(1);
+            String teacherName = (String) data.get(2);
+            String subCourse = (String) data.get(3);
+            ScheduledTest myScheduledTest = (ScheduledTest) data.get(4);
+
+            int input = JOptionPane.showOptionDialog(null, "The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
+                    + subCourse  + "from the reason: " + explanation + ". Select if you want to approve this request.", "Extra time request",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
             if (input == JOptionPane.YES_OPTION) {
                 try {
-                    ScheduledTest myScheduledTest = event.getScheduledTest();
                     int x = myScheduledTest.getTimeLimit();
-                    myScheduledTest.setTimeLimit(x+event.getExtraMinutes());
+                    myScheduledTest.setTimeLimit(x+extraMinutes);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 try {
                     Platform.runLater(() -> {
-                        EventBus.getDefault().post(new ManagerExtraTimeEvent(true));
+                        try{
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", true));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -133,7 +147,11 @@ public class ManagerHomeController {
             else {
                 try {
                     Platform.runLater(() -> {
-                        EventBus.getDefault().post(new ManagerExtraTimeEvent(false));
+                        try{
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", false));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();

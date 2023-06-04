@@ -127,6 +127,9 @@ public class SimpleClient extends AbstractClient {
 				case ("timeLeft"):
 					long timeLeft = (long)message.getData();
 					EventBus.getDefault().postSticky(new TimeLeftEvent(timeLeft));
+					break;
+
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();

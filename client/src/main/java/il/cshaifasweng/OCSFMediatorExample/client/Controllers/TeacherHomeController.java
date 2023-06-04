@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdTestOverEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
@@ -15,6 +16,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class TeacherHomeController {
@@ -152,7 +154,7 @@ public class TeacherHomeController {
     public void handleExecExamButtonClick(ActionEvent event){
         try {
             cleanup();
-            App.switchScreen("showTeacherExecExam");
+            App.switchScreen("teacherExamEntry");
             Platform.runLater(()->{
                 try {
                     EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
@@ -163,6 +165,15 @@ public class TeacherHomeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @Subscribe
+    public void onMoveIdTestOverEvent (MoveIdTestOverEvent event){
+        setId(event.getId());
+        initializeIfIdNotNull();
+        Platform.runLater(()->{
+            int input = JOptionPane.showOptionDialog(null, "Test is over!", "Information",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+        });
     }
 
 }

@@ -172,6 +172,12 @@ public class SimpleServer extends AbstractServer {
 					List<Subject> subjects1 = App.getAllSubjects();
 					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
 					break;
+				case ("#extraTimeRequest"):
+					EventBus.getDefault().post(new extraTimeRequestEvent(message.getData()));
+					break;
+				case ("#extraTimeResponse"):
+					EventBus.getDefault().post(new ManagerExtraTimeEvent((Boolean) message.getData()));
+					break;
 
 			}
 		} catch (Exception e) {

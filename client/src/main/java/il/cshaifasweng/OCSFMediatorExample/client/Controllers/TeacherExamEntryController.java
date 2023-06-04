@@ -101,7 +101,7 @@ public class TeacherExamEntryController {
                 });
             }
             else { //myScheduledTest.getStatus() == 2
-                textDisplay.setText("the test is not available anymore");
+                textDisplay.setText("the test is not available anymore. the test took place in: " + myScheduledTest.getDate() + " at " + myScheduledTest.getTime());
                 textDisplay.setVisible(true);
             }
         }

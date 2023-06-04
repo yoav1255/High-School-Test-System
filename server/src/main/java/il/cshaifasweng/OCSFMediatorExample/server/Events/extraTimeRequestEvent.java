@@ -2,37 +2,23 @@ package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class extraTimeRequestEvent {
-    private int extraMinutes;
-    private String msg;
-    private ScheduledTest scheduledTest;
-    public extraTimeRequestEvent(int extraMinutes, String msg, ScheduledTest scheduledTest) {
-        this.extraMinutes = extraMinutes;
-        this.msg = msg;
-        this.scheduledTest = scheduledTest;
+
+    private Object data = new ArrayList<>();
+
+    public extraTimeRequestEvent(Object data) {
+        this.data = data;
     }
 
-    public int getExtraMinutes() {
-        return extraMinutes;
+    public Object getData() {
+        return data;
     }
 
-    public String getMsg() {
-        return msg;
+    public void setData(Object data) {
+        this.data = data;
     }
 
-    public ScheduledTest getScheduledTest() {
-        return scheduledTest;
-    }
-
-    public void setExtraMinutes(int extraMinutes) {
-        this.extraMinutes = extraMinutes;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public void setScheduledTest(ScheduledTest scheduledTest) {
-        this.scheduledTest = scheduledTest;
-    }
 }

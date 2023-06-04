@@ -293,11 +293,11 @@ public class App extends Application {
                     }
                 });
                 break;
-            case "showTeacherExecExam":
+            case "teacherExamEntry":
                 Platform.runLater(()->{
-                    setWindowTitle("Execute Exam");
+                    setWindowTitle("exam entry");
                     try {
-                        setContent("TeacherExecExam");
+                        setContent("teacherExamEntry");
                     }catch (IOException e){
                         e.printStackTrace();
                     }
