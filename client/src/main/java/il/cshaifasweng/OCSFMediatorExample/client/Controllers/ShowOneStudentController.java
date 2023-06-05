@@ -50,10 +50,6 @@ public class ShowOneStudentController {
     private Label statusLB;
     private List<StudentTest> studentTests;
 
-    public List<StudentTest> getStudentTests() {
-        return studentTests;
-    }
-
     public void setStudentTests(List<StudentTest> studentTests) {
         this.studentTests = studentTests;
     }
@@ -110,25 +106,21 @@ public class ShowOneStudentController {
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-        try {
-            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
-                StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
-                if (selectedStudentTest != null) {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTest",selectedStudentTest));
-                    App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
-                    cleanup();
-                }
-            }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+
     }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
         try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
             App.switchScreen("allStudents");
+            Platform.runLater(()->{
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
             cleanup();
         }catch (IOException e){
             e.printStackTrace();

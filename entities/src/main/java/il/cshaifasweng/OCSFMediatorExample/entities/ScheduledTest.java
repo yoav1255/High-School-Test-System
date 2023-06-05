@@ -32,6 +32,7 @@ public class ScheduledTest implements Serializable {
     private boolean isChecked;
     private int status; // 0 -> not started , 1 -> during test , 2 -> finished
     private int timeLimit;
+    private int activeStudents;
 
 
 
@@ -44,8 +45,15 @@ public class ScheduledTest implements Serializable {
         status = 0;
         checkedSubmissions = 0;
         isChecked = false;
+        activeStudents = 0;
     }
-    public ScheduledTest(){}
+    public ScheduledTest(){
+        this.studentTests = new ArrayList<StudentTest>();
+        status = 0;
+        checkedSubmissions = 0;
+        isChecked = false;
+        activeStudents = 0;
+    }
 
     public String getId() {
         return id;
@@ -153,6 +161,14 @@ public class ScheduledTest implements Serializable {
 
     public void setTimeLimit(int timeLimit) {
         this.timeLimit = timeLimit;
+    }
+
+    public int getActiveStudents() {
+        return activeStudents;
+    }
+
+    public void setActiveStudents(int activeStudents) {
+        this.activeStudents = activeStudents;
     }
 
     public static List<ScheduledTest> GenerateScheduledTests(){

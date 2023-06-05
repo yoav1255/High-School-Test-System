@@ -37,7 +37,11 @@ public class StudentTest implements Serializable {
         isChecked = false;
         isOnTime = true;
     }
-    public StudentTest(){}
+    public StudentTest(){
+        this.questionAnswers = new ArrayList<>();
+        isChecked = false;
+        isOnTime = true;
+    }
 
     public int getId() {
         return id;
