@@ -7,9 +7,11 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowStudentFromScheduleEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -49,7 +51,7 @@ public class TestGradesController {
     private GridPane scheduleTestGP; // Value injected by FXMLLoader
 
     @FXML // fx:id="scheduleTest_table_view"
-    private TableView<StudentTest> scheduleTest_table_view; // Value injected by FXMLLoader
+    private TableView<StudentTest> studentTestTableView; // Value injected by FXMLLoader
 
     @FXML // fx:id="statusLB"
     private Label statusLB; // Value injected by FXMLLoader
@@ -82,30 +84,16 @@ public class TestGradesController {
         setId(event.getId());
     }
     @Subscribe
-    public void onShowOneStudentEvent(ShowOneStudentEvent event)throws IOException{
+    public void onShowStudentFromScheduleEvent(ShowStudentFromScheduleEvent event)throws IOException{
         this.studentTests=event.getStudentTests();
-        studentId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<StudentTest, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<StudentTest, String> param) {
-                return new SimpleStringProperty(param.getValue().getStudent().getId());
-            }
-        });        studentName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<StudentTest, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<StudentTest, String> param) {
-                    return new SimpleStringProperty(param.getValue().getStudent().getFirst_name()+param.getValue().getStudent().getLast_name());
-            }
-        });
-      timeTook.setCellValueFactory(new PropertyValueFactory<StudentTest, String>("timeToComplete"));
-        gender.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<StudentTest, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<StudentTest, String> param) {
-                    return new SimpleStringProperty(param.getValue().getStudent().getGender());
-            }
-        });
-        grade.setCellValueFactory(new PropertyValueFactory<StudentTest, String>("grade"));
+        System.out.println("student id: "+studentTests.get(0).getStudent().getId());
+        studentId.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getId()));
+        studentName.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getFirst_name() + param.getValue().getStudent().getLast_name()));
+        timeTook.setCellValueFactory(new PropertyValueFactory<>("timeToComplete"));
+        gender.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getGender()));
+        grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
         ObservableList<StudentTest> studentTestObservableList = FXCollections.observableList(studentTests);
-        scheduleTest_table_view.setItems(studentTestObservableList);
-
+        studentTestTableView.setItems(studentTestObservableList);
 
     }
     @FXML
@@ -156,7 +144,25 @@ public class TestGradesController {
 
     @FXML
     void handleRowClick(MouseEvent event) {
+        try {
+            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+                StudentTest selectedStudentTest = studentTestTableView.getSelectionModel().getSelectedItem();
 
+                if (selectedStudentTest != null) {
+                    App.switchScreen("showUpdateStudent");
+                    Platform.runLater(()->{
+                        try {
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

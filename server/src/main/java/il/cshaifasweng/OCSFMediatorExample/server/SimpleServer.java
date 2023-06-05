@@ -52,18 +52,23 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#getStudentTests"):
 					List<StudentTest> studentTests =  App.getStudentTests((Student) message.getData());
-					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
+					client.sendToClient(new CustomMessage("returnStudentTestsFromStudent" ,studentTests));
 					break;
 				case ("#getStudentTestsFromSchedule"):
 					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
-					client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests1));
+					System.out.println( "in s.s "+studentTests1.get(0).getId());
+					client.sendToClient(new CustomMessage("returnStudentTestsFromSchedule" ,studentTests1));
 					break;
-				case ("#getStudentTest"):
-					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
+//				case ("#getStudentTest"):
+//					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
+//					break;
+				case ("#getStudentTestWithInfo"):
+					StudentTest studentTest1 = App.getStudentTest((StudentTest) message.getData());
+					client.sendToClient(new CustomMessage("returnStudentTest",studentTest1));
 					break;
-				case("#updateGrade"):
+				case("#updateStudentTest"):
 					StudentTest studentTest = (StudentTest) message.getData();
-					App.updateStudentGrade(studentTest);
+					App.updateStudentTest(studentTest);
 					client.sendToClient(new CustomMessage("updateSuccess",""));
 					break;
 				case ("#login"):
@@ -132,7 +137,9 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnScheduledTestList", scheduledTests));
 					break;
 				case ("#updateScheduleTest"):
-					App.updateScheduleTest( (ScheduledTest) message.getData());
+					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
+					System.out.println("in s.s , active students: " + scheduledTest1.getActiveStudents());
+					App.updateScheduleTest( scheduledTest1);
 					client.sendToClient(new CustomMessage("updateSuccess", ""));
 					break;
 				case ("#getCourseExamForms"):
@@ -149,8 +156,8 @@ public class SimpleServer extends AbstractServer {
 					EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
 					break;
 				case("#getScheduleTestWithInfo"):
-					ScheduledTest scheduledTest1 = App.getScheduleTestWithInfo(message.getData().toString());
-					client.sendToClient(new CustomMessage("returnScheduleTestWithInfo",scheduledTest1));
+					ScheduledTest scheduledTest2 = App.getScheduleTestWithInfo(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnScheduleTestWithInfo",scheduledTest2));
 					break;
 				case ("#getStudent"):
 					Student student = App.getStudent(message.getData().toString());
@@ -193,7 +200,8 @@ public class SimpleServer extends AbstractServer {
 				assert scheduledTests != null;
 				for (ScheduledTest scheduledTest : scheduledTests) {
 					LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
-					long timeLimitMinutes = scheduledTest.getExamForm().getTimeLimit();
+					long timeLimitMinutes = scheduledTest.getTimeLimit();
+
 					LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 
 					if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
@@ -220,11 +228,19 @@ public class SimpleServer extends AbstractServer {
 							TimerTask task = new TimerTask() {
 								@Override
 								public void run() {
+									ScheduledTest st = App.getScheduleTest(scheduledTest.getId());
+									long timeLimitMinutes = st.getTimeLimit();
+									LocalDateTime scheduledDateTime = LocalDateTime.of(st.getDate(), st.getTime());
+									LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 									LocalDateTime currentDateTime = LocalDateTime.now();
 									long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
 
 									try {
-										sendToAllClients(new CustomMessage("timeLeft",timeLeft));
+										List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+										scheduleTestId_timeLeft.add(st.getId());
+										System.out.println("Time Left: " + timeLeft);
+										scheduleTestId_timeLeft.add(timeLeft);
+										sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));//TODO send also the schedule test for check
 									}catch (Exception e){
 										e.printStackTrace();
 									}
@@ -235,7 +251,7 @@ public class SimpleServer extends AbstractServer {
 
 										System.out.println("checking the time left " + timeLeft);
 										try {
-											sendToAllClients(new CustomMessage("timerFinished",scheduledTest));
+											sendToAllClients(new CustomMessage("timerFinished",st));
 										}catch (Exception e){
 											e.printStackTrace();
 										}

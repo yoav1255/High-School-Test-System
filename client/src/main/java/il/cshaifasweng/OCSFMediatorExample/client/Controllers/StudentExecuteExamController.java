@@ -73,8 +73,13 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public void onSelectedTestEvent(SelectedTestEvent event) {
+    public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
+        System.out.println("before adding , active students: " + scheduledTest.getActiveStudents());
+        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
+        System.out.println("after adding , active students: " + scheduledTest.getActiveStudents());
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
+
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -203,10 +208,15 @@ public class StudentExecuteExamController {
 
 @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
-        timeLeft = event.getTimeLeft();
-        Platform.runLater(()->{
-            timeLeftText.setText(Long.toString( timeLeft));
-        });
+        List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
+        timeLeft = (long)scheduleTestId_timeLeft.get(1);
+        String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
+
+    if(scheduleTestId.equals(scheduledTest.getId())) {
+            Platform.runLater(() -> {
+                timeLeftText.setText(Long.toString(timeLeft));
+            });
+        }
 }
 
 @Subscribe
@@ -224,9 +234,12 @@ public class StudentExecuteExamController {
         studentTest.setQuestionAnswers(questionAnswers);
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
-        //TODO update the student checked and schedule test
 
         // student test is ready
+        //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
+        scheduledTest.setSubmissions(scheduledTest.getSubmissions()+1);
+        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()-1);
+
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
@@ -243,7 +256,7 @@ public class StudentExecuteExamController {
         for(Question_Answer questionAnswer:questionAnswers){
             student_studentTest_questionAnswers.add(questionAnswer);
         }
-
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
 }
