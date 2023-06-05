@@ -142,14 +142,6 @@ public class ScheduledTest implements Serializable {
         this.status = status;
     }
 
-    public int getCheckedSubmissions() {
-        return checkedSubmissions;
-    }
-
-    public void setCheckedSubmissions(int checkedSubmissions) {
-        this.checkedSubmissions = checkedSubmissions;
-    }
-
     public boolean isChecked() {
         return isChecked;
     }
