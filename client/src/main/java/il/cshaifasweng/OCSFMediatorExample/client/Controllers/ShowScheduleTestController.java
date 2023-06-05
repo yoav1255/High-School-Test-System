@@ -60,6 +60,8 @@ public class ShowScheduleTestController {
     @FXML // fx:id="statusLB1"
     private Label statusLB1; // Value injected by FXMLLoader
     @FXML
+    private CheckBox onlyMyTestCheckBox;
+    @FXML
     private Button btnNewTest;
     @FXML
     private CheckBox onlyMyTestCheckBox;
