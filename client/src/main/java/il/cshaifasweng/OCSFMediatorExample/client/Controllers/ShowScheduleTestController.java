@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,9 +64,6 @@ public class ShowScheduleTestController {
     private CheckBox onlyMyTestCheckBox;
     @FXML
     private Button btnNewTest;
-    @FXML
-    private CheckBox onlyMyTestCheckBox;
-
     private boolean onlyMyTest=false;
     @FXML // fx:id="students_table_view"
     private TableView<ScheduledTest> scheduleTest_table_view; // Value injected by FXMLLoader
@@ -222,6 +220,19 @@ public class ShowScheduleTestController {
                     this.showGrades = true;
                     this.edit = false;
                 }
+                else if (show.equals("ShowCurrentTestselse")) {
+                    LocalTime finishTime= scheduledTest.getTime().plusMinutes(scheduledTest.getTimeLimit());
+                    if (Integer.parseInt(currentDate) == Integer.parseInt(today)&&LocalTime.now().isBefore(finishTime)&&LocalTime.now().isAfter(scheduledTest.getTime())) {
+                        if (!onlyMyTest)
+                            scheduledTestObservableList.add(scheduledTest);
+                        else {
+                            if (this.idTeacher.equals(scheduledTest.getTeacher().getId()))
+                                scheduledTestObservableList.add(scheduledTest);
+                        }
+                    }
+                    this.showGrades = true;
+                    this.edit = false;
+                }
                 scheduleTest_table_view.setItems(scheduledTestObservableList);
 
             }
@@ -287,7 +298,10 @@ public class ShowScheduleTestController {
         }
     }
 
-
+    @FXML
+    void showCurrentTest(ActionEvent event) {
+        ShowScheduleTest("ShowCurrentTests");
+    }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {

@@ -81,6 +81,7 @@
                   <Button fx:id="testPerformed" layoutX="150.0" layoutY="1.0" mnemonicParsing="false" onAction="#showTestPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test  performed" />
                   <Button fx:id="showAllTest" layoutX="260.0" layoutY="1.0" mnemonicParsing="false" onAction="#showAllTest" style="-fx-background-color: white; -fx-border-color: orange;" text="All Test" />
                   <CheckBox fx:id="onlyMyTestCheckBox" layoutX="340.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleOnlyMyTest" style="-fx-background-color: white;" text="show only my tests" />
+                  <Button fx:id="currentTestBtn" layoutX="490.0" layoutY="1.0" mnemonicParsing="false" onAction="#showCurrentTest" style="-fx-background-color: #E7AD75; -fx-border-color: orange;" text="current Test" />
                </children>
             </Pane>
             </children>
