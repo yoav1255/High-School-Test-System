@@ -50,7 +50,11 @@ public class ShowStatisticsController {
     private boolean isManager;
 
     @FXML
-    private ComboBox<String> statComboBox;
+    private ComboBox<String> combobox_id;
+
+    @FXML
+    private ComboBox<String> stat_combobox;
+
 
     @FXML
     private TableView<Statistics> tableView;
@@ -145,16 +149,20 @@ public class ShowStatisticsController {
         }
     }
 
-    public void selected_stat(ActionEvent actionEvent) {
-        String selectedParameter = statComboBox.getValue();
+    public void selected_stat(ActionEvent actionEvent) throws IOException {
+        String selectedParameter = stat_combobox.getValue();
         if(selectedParameter == "by teacher")
         {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
 
         } else if (selectedParameter == "by course") {
 
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
         }
         else if (selectedParameter == "by student")
         {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
+
 
         }
 

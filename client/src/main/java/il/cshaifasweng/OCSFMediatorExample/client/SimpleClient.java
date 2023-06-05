@@ -132,6 +132,18 @@ public class SimpleClient extends AbstractClient {
 					List<Object> scheduleTestId_timeLeft =(List<Object>) message.getData();
 					EventBus.getDefault().postSticky(new TimeLeftEvent(scheduleTestId_timeLeft));
 					break;
+				case ("returnAllTeachersNames"):
+					List<String> teacherName =(List<String>) message.getData();
+					EventBus.getDefault().post(new ShowAllTeachersNamesEvent(teacherName));
+					break;
+				case ("returnAllCoursesNames"):
+					List<String> courseName =(List<String>) message.getData();
+					EventBus.getDefault().post(new ShowAllCoursesNamesEvent(courseName));
+					break;
+				case ("returnAllStudentsNames"):
+					List<String> studentName =(List<String>) message.getData();
+					EventBus.getDefault().post(new ShowAllStudentsNamesEvent(studentName));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();

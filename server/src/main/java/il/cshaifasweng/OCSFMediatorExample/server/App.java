@@ -50,10 +50,15 @@ public class App
         } finally {
             session.close();
         }
-        getTeacherExamStats("2");
+        //getTeacherExamStats("2");
         //getCourseExamStats(3);
         //getStudentExamStats("1");
         //getTeacherWriterExamStats("2");
+        /*List<String> result = getAllStudentNames();
+        for(String name:result)
+        {
+            System.out.println(name);
+        }*/
     }
 
 
@@ -986,6 +991,51 @@ public class App
 
         session.close();
     }
+
+    public static List<String> getAllTeacherNames() throws Exception
+    {
+        List<String> teachers = new ArrayList<String>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT CONCAT(s.first_name, ' ', s.last_name) FROM Teacher s";
+        Query query = session.createQuery(queryString);
+        teachers = query.getResultList();
+        //
+        session.close();
+        return teachers;
+
+    }
+
+    public static List<String> getAllCourseNames() throws Exception
+    {
+        List<String> courses = new ArrayList<String>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT s.name FROM Course s";
+        Query query = session.createQuery(queryString);
+        courses = query.getResultList();
+        //
+        session.close();
+        return courses;
+
+    }
+
+    public static List<String> getAllStudentNames() throws Exception{
+
+        List<String> students = new ArrayList<String>();
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        //
+        String queryString = "SELECT CONCAT(s.first_name, ' ', s.last_name) FROM Student s";
+        Query query = session.createQuery(queryString);
+        students = query.getResultList();
+        //
+        session.close();
+        return students;
+    }
+
 
 
 

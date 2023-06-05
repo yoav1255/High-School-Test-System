@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -14,8 +16,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ShowStatisticsController">
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
@@ -75,12 +75,7 @@
                 </TableView>
                 <Pane prefHeight="200.0" prefWidth="200.0">
                     <children>
-                        <Label fx:id="statusLB1" layoutX="383.0" layoutY="9.0" text="to show student grades, double click his row">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="12.0" />
-                            </font>
-                        </Label>
-                        <ComboBox fx:id="stat_combobox" layoutY="6.0" onAction="#selected_stat" prefWidth="150.0" promptText="Choose object">
+                        <ComboBox fx:id="stat_combobox" layoutX="7.0" layoutY="6.0" onAction="#selected_stat" prefWidth="150.0" promptText="Choose object">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
                                     <String fx:value="by teacher" />
@@ -89,6 +84,7 @@
                                 </FXCollections>
                             </items>
                         </ComboBox>
+                  <ComboBox fx:id="combobox_id" layoutX="210.0" layoutY="6.0" prefWidth="150.0" />
                     </children>
                 </Pane>
             </children>

@@ -179,6 +179,19 @@ public class SimpleServer extends AbstractServer {
 					List<Subject> subjects1 = App.getAllSubjects();
 					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
 					break;
+				case ("#getTeacherName"):
+					List<String> teacherName = App.getAllTeacherNames();
+					client.sendToClient(new CustomMessage("returnAllTeachersNames",teacherName));
+					break;
+				case ("#getCourseName"):
+					List<String> courseName = App.getAllCourseNames();
+					client.sendToClient(new CustomMessage("returnAllCoursesNames",courseName));
+					break;
+				case ("#getStudentName"):
+					List<String> studentName = App.getAllStudentNames();
+					client.sendToClient(new CustomMessage("returnAllStudentsNames",studentName));
+					break;
+
 
 			}
 		} catch (Exception e) {
