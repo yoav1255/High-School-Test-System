@@ -10,10 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,43 +40,48 @@ public class ShowUpdateStudentController {
     private Label test_id;
 
     @FXML
+    private TextArea txtChange;
+    @FXML
     private Label update_status;
     @FXML
     private ListView<Question_Answer> questionsListView;
 
-    public ShowUpdateStudentController(){
+    public ShowUpdateStudentController() {
         EventBus.getDefault().register(this);
     }
+
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
 
     @Subscribe
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         teacherId = event.getId();
     }
+
     @Subscribe
-    public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event){
-        try{
+    public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event) {
+        try {
             studentTest = event.getStudentTest();
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 statusLB.setText(statusLB.getText() + studentTest.getExamFormCode());
                 test_id.setText(String.valueOf(studentTest.getExamFormCode()));
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
+                newGrade.setText(String.valueOf(studentTest.getGrade()));
             });
             questionAnswerList = studentTest.getQuestionAnswers();
             scheduledTest = studentTest.getScheduledTest();
-            System.out.println("ans q1 : "+questionAnswerList.get(0).getAnswer());
-            Platform.runLater(()->{
+            System.out.println("ans q1 : " + questionAnswerList.get(0).getAnswer());
+            Platform.runLater(() -> {
                 setTable();
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setTable(){
+    public void setTable() {
         try {
 
             ObservableList<Question_Answer> questions1 = FXCollections.observableArrayList(questionAnswerList);
@@ -136,58 +138,72 @@ public class ShowUpdateStudentController {
                         Label score = new Label("( " + questionScore.getScore() + " points )");
                         vbox.getChildren().add(score);
 
+                        if (questionAnswer.getNote() != "") {
+                            Label studentNotes = new Label("Student Note: " + questionAnswer.getNote());
+                            vbox.getChildren().add(studentNotes);
+                        }
                         setGraphic(vbox);
+
 
                     }
                 }
             });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void handleUpdateButton(ActionEvent event) {
         try {
             try {
                 int newG = Integer.parseInt(newGrade.getText());
                 if (newG >= 0 && newG <= 100) {
-                    studentTest.setChecked(true);
-                    scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions()+1);
-                    studentTest.setGrade(newG);
-                    cleanup();
-                    App.switchScreen("testGrade");
-                    Platform.runLater(() -> {
-                        try {
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", scheduledTest));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    if (!Integer.toString(newG).equals(oldGrade.getText()) && (txtChange.getText().equals(""))) {
+                    update_status.setText("Explanation must be provided!");
+                    } else {
+                        studentTest.setChecked(true);
+                        scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions() + 1);
+                        studentTest.setGrade(newG);
+                        studentTest.setChange_explanation(txtChange.getText());
+
+                        cleanup();
+                        App.switchScreen("testGrade");
+                        Platform.runLater(() -> {
+                            try {
+                                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest));
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", scheduledTest));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+
                 } else {
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         update_status.setText("Invalid input, please enter a grade between 0 to 100");
                         newGrade.clear();
                     });
 
                 }
-            }catch (NumberFormatException notNum){
-                Platform.runLater(()->{
-                    update_status.setText("Invalid input, please enter a valid number");
-                    newGrade.clear();
-                });
-
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-        }catch (Exception e){
-            e.printStackTrace();
+
+        } catch (NumberFormatException notNum) {
+            Platform.runLater(() -> {
+                update_status.setText("Invalid input, please enter a valid number");
+                newGrade.clear();
+            });
+
         }
     }
 
 
-
-    @FXML public void goBackButton() throws IOException {
+    @FXML
+    public void goBackButton() throws IOException {
         cleanup();
         App.switchScreen("testGrade");
         Platform.runLater(() -> {
