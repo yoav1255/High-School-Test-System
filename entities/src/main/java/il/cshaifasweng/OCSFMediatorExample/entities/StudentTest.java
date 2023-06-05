@@ -23,6 +23,8 @@ public class StudentTest implements Serializable {
     private ScheduledTest scheduledTest;
     @OneToMany(mappedBy = "studentTest" )
     private List<Question_Answer> questionAnswers;
+    @Column(name = "change_explanation", columnDefinition = "TEXT")
+    private String change_explanation;
 
     private int grade;
     private long timeToComplete;
@@ -36,8 +38,14 @@ public class StudentTest implements Serializable {
         this.questionAnswers = new ArrayList<>();
         isChecked = false;
         isOnTime = true;
+        change_explanation = "";
     }
-    public StudentTest(){}
+    public StudentTest(){
+        this.questionAnswers = new ArrayList<>();
+        isChecked = false;
+        isOnTime = true;
+        change_explanation = "";
+    }
 
     public int getId() {
         return id;
@@ -139,6 +147,14 @@ public class StudentTest implements Serializable {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    public String getChange_explanation() {
+        return change_explanation;
+    }
+
+    public void setChange_explanation(String change_explanation) {
+        this.change_explanation = change_explanation;
     }
 
     public static List<StudentTest> GenerateStudentTests(){

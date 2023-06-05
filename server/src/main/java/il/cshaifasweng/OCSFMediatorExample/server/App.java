@@ -221,9 +221,7 @@ public class App
         Query query = session.createQuery(hql, ScheduledTest.class);
         scheduledTests = query.getResultList();
 
-        for (ScheduledTest scheduledTest : scheduledTests) {
-            int timeLimit = scheduledTest.getExamForm().getTimeLimit();
-        }
+
         session.close();
         return scheduledTests;
     }
@@ -456,20 +454,25 @@ public class App
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        StudentTest studentTestToReturn = session.get(StudentTest.class,studentTest);
+        StudentTest studentTestToReturn = session.get(StudentTest.class,studentTest.getId());
+        Query query = session.createQuery("select qa from Question_Answer qa join fetch qa.questionScore qs " +
+                                          "join fetch qs.question " +
+                                          "where qa.studentTest =:studentTest");
+        query.setParameter("studentTest",studentTestToReturn);
+        List<Question_Answer> questionAnswers = query.getResultList();
+
+        studentTestToReturn.setQuestionAnswers(questionAnswers);
         session.getTransaction().commit();
         session.close();
         return studentTestToReturn;
     }
 
-    public static void updateStudentGrade(StudentTest stud){
+    public static void updateStudentTest(StudentTest stud){
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-        Query query = session.createQuery("UPDATE StudentTest SET grade = :newGrade WHERE id = :id");
-        query.setParameter("newGrade", stud.getGrade());
-        query.setParameter("id", stud.getId());
-        int updatedCount = query.executeUpdate();
+        session.update(stud);
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -592,10 +595,12 @@ public class App
 
     public static void updateScheduleTest(ScheduledTest scheduledTest) {
         try {
+            System.out.println("in app func , active students: " + scheduledTest.getActiveStudents());
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
-            session.update(scheduledTest);
+            session.saveOrUpdate(scheduledTest);
+            session.flush();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -631,11 +636,22 @@ public class App
         return questionScores;
     }
 
+    public static ScheduledTest getScheduleTest(String id){
+        ScheduledTest scheduledTest;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT st from ScheduledTest st where id =:id";
+        Query query = session.createQuery(queryString,ScheduledTest.class);
+        query.setParameter("id",id);
+        scheduledTest = (ScheduledTest) query.getSingleResult();
+        session.close();
+        return scheduledTest;
+    }
     public static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-
+        session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
         String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
         Query query = session.createQuery(qString, ExamForm.class);

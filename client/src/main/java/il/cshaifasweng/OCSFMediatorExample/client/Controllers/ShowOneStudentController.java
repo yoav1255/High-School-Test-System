@@ -134,8 +134,15 @@ public class ShowOneStudentController {
     /*@FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event){
         try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
             App.switchScreen("allStudents");
+            Platform.runLater(()->{
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
             cleanup();
         }catch (IOException e){
             e.printStackTrace();
