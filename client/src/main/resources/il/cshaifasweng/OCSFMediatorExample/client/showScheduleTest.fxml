@@ -49,23 +49,7 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
-                    <graphic>
-<!--                        <FontAwesomeIconView glyphName="USERS" size="20" />-->
-                    </graphic>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                    <padding>
-                        <Insets left="20.0" />
-                    </padding>
-                    <font>
-                        <Font name="Oriya Sangam MN" size="15.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets bottom="1.0" top="1.0" />
-                    </VBox.margin>
-                </Button>
+
             <Button fx:id="btnNewTest" mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Schedule New Test" />
             </children>
         </VBox>

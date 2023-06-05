@@ -47,6 +47,7 @@
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
+            <Button fx:id="showStudents" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Students List" />
             <Button fx:id="showQuestionsbtn" mnemonicParsing="false" onAction="#handleShowQuestionsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Questions" />
             <Button fx:id="ShowExamsbtn" mnemonicParsing="false" onAction="#handleShowExamFormsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exam Forms" />
             <Button fx:id="showScheduledbtn" mnemonicParsing="false" onAction="#handleShowScheduledTestsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Scheduled Tests" />

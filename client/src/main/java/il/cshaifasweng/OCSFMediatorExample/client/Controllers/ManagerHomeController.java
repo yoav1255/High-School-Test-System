@@ -65,7 +65,16 @@ public class ManagerHomeController {
 
 @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
-
+        cleanup();
+        App.switchScreen("allStudents");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 @FXML
     public void goToQuestions(ActionEvent event) throws IOException {
@@ -97,12 +106,9 @@ public class ManagerHomeController {
         });
     }
 @FXML
-    public void goToStatistics(ActionEvent event) {
-    }
-    @Subscribe
-    public void onMoveManagerIdEvent(MoveManagerIdEvent event){
-        id = event.getId();
-        initializeIfIdNotNull();
+    public void goToStatistics(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showStatistics");
     }
 }
 

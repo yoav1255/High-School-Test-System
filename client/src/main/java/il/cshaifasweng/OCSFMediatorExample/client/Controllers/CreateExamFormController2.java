@@ -5,23 +5,18 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.*;
 
 public class CreateExamFormController2 {
@@ -99,7 +94,7 @@ public class CreateExamFormController2 {
     }
     @FXML
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShowUpdateExamFormEvent(ShowUpdateExamFormEvent event){
+    public void onShowUpdateExamFormEvent(ShowOneExamFormEvent event){
         List<Object> teacherAndExam = event.getSetTeacherAndExam();
         teacherId = teacherAndExam.get(0).toString();
         examForm = (ExamForm) teacherAndExam.get(1);
@@ -142,10 +137,6 @@ public class CreateExamFormController2 {
     public void onSelectCourse(ActionEvent event) {
         try {
             String courseName = ComboCourse.getValue();
-//            selectedQuestionsListView.setItems(null);
-//            questionsListView.setItems(null);
-//            questionList.clear();
-//            questionScoreList.clear();
 
             Platform.runLater(()->{
                 try {
@@ -174,7 +165,6 @@ public class CreateExamFormController2 {
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questionList);
             questionsListView.setItems(questions1);
 
-//            Platform.runLater(()->{
 
                 questionsListView.setCellFactory(param -> new ListCell<Question>() {
                     @Override
@@ -219,23 +209,8 @@ public class CreateExamFormController2 {
                         }
                     }
                 });
-//            });
-
-
 
             courseChanged++;
-//            if(examForm!=null){ //We are in update mode
-//                //TODO: run later??
-//                if(courseChanged==1){ // course has not changed since initialization with values
-//                    Platform.runLater(()->{
-//                        try {
-//                            SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    });
-//                }
-//            }
         }catch (Exception e){
             e.printStackTrace();
         }

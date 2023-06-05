@@ -280,22 +280,6 @@ public class ScheduledTestController {
     }
 
     @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
-        App.switchScreen("allStudents");
-        Platform.runLater(() -> {
-            try {
-                SimpleClient.getClient().sendToServer("#showAllStudents");
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        });
-        cleanup();
-
-    }
-
-    @FXML
     void handleBackBtn(ActionEvent event) throws IOException {
         cleanup();
         App.switchScreen("showScheduleTest");

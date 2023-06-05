@@ -123,20 +123,12 @@ public class ShowOneStudentController {
             e.printStackTrace();
         }
     }
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event){
-        try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
-            App.switchScreen("allStudents");
-            cleanup();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
+
     @FXML
     void handleGoHomeButtonClick(ActionEvent event){
         try{
-            App.switchScreen("primary");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+            App.switchScreen("allStudents");
             cleanup();
         }catch (IOException e){
             e.printStackTrace();

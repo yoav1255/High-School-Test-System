@@ -285,18 +285,7 @@ public class ShowScheduleTestController {
         }
     }
 
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
-        App.switchScreen("allStudents");
-        Platform.runLater(() -> {
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents", ""));
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
+
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {

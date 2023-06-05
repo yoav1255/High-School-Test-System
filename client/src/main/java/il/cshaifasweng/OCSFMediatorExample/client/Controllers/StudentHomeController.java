@@ -65,9 +65,5 @@ public class StudentHomeController {
 
     }
 
-    @FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event) {
-
-    }
 
 }

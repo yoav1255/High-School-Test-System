@@ -125,8 +125,9 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
 					break;
 				case ("timeLeft"):
-					long timeLeft = (long)message.getData();
-					EventBus.getDefault().postSticky(new TimeLeftEvent(timeLeft));
+					List<Object> scheduleTestId_timeLeft =(List<Object>) message.getData();
+					EventBus.getDefault().postSticky(new TimeLeftEvent(scheduleTestId_timeLeft));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();

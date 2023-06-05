@@ -213,9 +213,7 @@ public class App
         Query query = session.createQuery(hql, ScheduledTest.class);
         scheduledTests = query.getResultList();
 
-        for (ScheduledTest scheduledTest : scheduledTests) {
-            int timeLimit = scheduledTest.getExamForm().getTimeLimit();
-        }
+
         session.close();
         return scheduledTests;
     }
@@ -232,6 +230,7 @@ public class App
         session.close();
         return students;
     }
+
 
 
    public static Teacher getTeacher(){
@@ -550,11 +549,22 @@ public class App
         return questionScores;
     }
 
+    public static ScheduledTest getScheduleTest(String id){
+        ScheduledTest scheduledTest;
+        SessionFactory sessionFactory = getSessionFactory();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT st from ScheduledTest st where id =:id";
+        Query query = session.createQuery(queryString,ScheduledTest.class);
+        query.setParameter("id",id);
+        scheduledTest = (ScheduledTest) query.getSingleResult();
+        session.close();
+        return scheduledTest;
+    }
     public static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
-
+        session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
         String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
         Query query = session.createQuery(qString, ExamForm.class);
@@ -919,8 +929,6 @@ public class App
 
         session.close();
     }
-
-
 
 
 }
