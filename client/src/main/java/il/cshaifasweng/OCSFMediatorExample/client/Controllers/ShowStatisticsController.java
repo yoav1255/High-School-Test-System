@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -48,6 +49,11 @@ public class ShowStatisticsController {
     private String managerId;
     private boolean isManager;
 
+    @FXML
+    private ComboBox<String> statComboBox;
+
+    @FXML
+    private TableView<Statistics> tableView;
 
 
     public ShowStatisticsController() {
@@ -140,6 +146,17 @@ public class ShowStatisticsController {
     }
 
     public void selected_stat(ActionEvent actionEvent) {
+        String selectedParameter = statComboBox.getValue();
+        if(selectedParameter == "by teacher")
+        {
+
+        } else if (selectedParameter == "by course") {
+
+        }
+        else if (selectedParameter == "by student")
+        {
+
+        }
 
     }
 }

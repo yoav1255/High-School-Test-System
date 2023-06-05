@@ -50,7 +50,7 @@ public class App
         } finally {
             session.close();
         }
-        //getTeacherExamStats("2");
+        getTeacherExamStats("2");
         //getCourseExamStats(3);
         //getStudentExamStats("1");
         //getTeacherWriterExamStats("2");
@@ -724,7 +724,6 @@ public class App
                     System.out.println(j * 10 + " - " + ((j * 10) + 9) + ": " + distributions.get(i).get(j) + "%");
             }
         }
-
         session.close();
     }
 
