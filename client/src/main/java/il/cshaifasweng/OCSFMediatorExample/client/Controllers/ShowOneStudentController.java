@@ -79,7 +79,7 @@ public class ShowOneStudentController {
             if(studentTests!=null){
                 for(StudentTest test : studentTests){
                     if(!test.isChecked()){
-                        test.setGrade(Integer.parseInt(" "));
+                        test.setGrade(-1);
                     }
                 }
                 Student student = studentTests.get(0).getStudent();
