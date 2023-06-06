@@ -219,7 +219,7 @@ public class ShowScheduleTestController {
                     this.showGrades = true;
                     this.edit = false;
                 }
-                else if (show.equals("ShowCurrentTestselse")) {
+                else if (show.equals("ShowCurrentTests")) {
                     if (scheduledTest.getStatus()==1) {
                         if (!onlyMyTest)
                             scheduledTestObservableList.add(scheduledTest);
@@ -231,10 +231,11 @@ public class ShowScheduleTestController {
                     this.showGrades = true;
                     this.edit = false;
                 }
-                scheduleTest_table_view.setItems(scheduledTestObservableList);
 
             }
         }
+        scheduleTest_table_view.setItems(scheduledTestObservableList);
+
     }
 
     @FXML
