@@ -128,35 +128,29 @@ public class ShowScheduleTestController {
     public void onShowScheduleTestEvent(ShowScheduleTestEvent event) {
         try {
             setScheduledTests(event.getScheduledTestList());
-            id.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("id"));
-            date.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("date"));
+            id.setCellValueFactory(new PropertyValueFactory<>("id"));
+            date.setCellValueFactory(new PropertyValueFactory<>("date"));
             time.setCellValueFactory(cellData -> {
                 String formattedTime = cellData.getValue().getTime().toString();
                 formattedTime = formattedTime.substring(0, 5);
                 return new SimpleStringProperty(formattedTime);
             });
-            submission.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("checkedSubmissions" + "/" +"submissions"));
-            examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    try {
+            submission.setCellValueFactory(new PropertyValueFactory<>("checkedSubmissions" + "/" + "submissions"));
+            examFormId.setCellValueFactory(param -> {
+                try {
 
-                        return new SimpleStringProperty(param.getValue().getExamForm().getCode());
-                    } catch (NullPointerException e) {
-                        // Handle the exception here (e.g., set a default value)
-                        return new SimpleStringProperty("N/A");
-                    }
+                    return new SimpleStringProperty(param.getValue().getExamForm().getCode());
+                } catch (NullPointerException e) {
+                    // Handle the exception here (e.g., set a default value)
+                    return new SimpleStringProperty("N/A");
                 }
             });
-            teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    try {
-                        return new SimpleStringProperty(param.getValue().getTeacher().getId());
-                    } catch (NullPointerException e) {
-                        // Handle the exception here (e.g., set a default value)
-                        return new SimpleStringProperty("N/A");
-                    }
+            teacherId.setCellValueFactory(param -> {
+                try {
+                    return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                } catch (NullPointerException e) {
+                    // Handle the exception here (e.g., set a default value)
+                    return new SimpleStringProperty("N/A");
                 }
             });
             ShowScheduleTest("ShowAllTests");
@@ -235,12 +229,11 @@ public class ShowScheduleTestController {
                         App.switchScreen("testGrade");
                         Platform.runLater(() -> {
                             try {
+                                EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-                            EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
                         });
                     }
                 }

@@ -30,9 +30,13 @@ public class SimpleClient extends AbstractClient {
 					List<Student> listStudent = (List<Student>) message.getData();
 					EventBus.getDefault().post(new ShowAllStudentsEvent(listStudent));
 					break;
-				case ("returnStudentTests"):
+				case ("returnStudentTestsFromStudent"):
 					List<StudentTest> studentTests = (List<StudentTest>) message.getData();
 					EventBus.getDefault().post(new ShowOneStudentEvent(studentTests));
+					break;
+				case ("returnStudentTestsFromSchedule"):
+					List<StudentTest> studentTests1 = (List<StudentTest>) message.getData();
+					EventBus.getDefault().post(new ShowStudentFromScheduleEvent(studentTests1));
 					break;
 				case ("returnStudentTest"):
 					StudentTest studentTest = (StudentTest) message.getData();
@@ -125,8 +129,8 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
 					break;
 				case ("timeLeft"):
-					long timeLeft = (long)message.getData();
-					EventBus.getDefault().postSticky(new TimeLeftEvent(timeLeft));
+					List<Object> scheduleTestId_timeLeft =(List<Object>) message.getData();
+					EventBus.getDefault().postSticky(new TimeLeftEvent(scheduleTestId_timeLeft));
 					break;
 				case ("extraTimeRequest"):
 					EventBus.getDefault().postSticky(new extraTimeRequestEvent((List<Object>) message.getData()));
@@ -134,8 +138,8 @@ public class SimpleClient extends AbstractClient {
 				case ("extraTimeResponse"):
 					EventBus.getDefault().post(new ManagerExtraTimeEvent((List<Object>) message.getData()));
 					break;
-
 			}
+
 		}catch (Exception e){
 			e.printStackTrace();
 		}

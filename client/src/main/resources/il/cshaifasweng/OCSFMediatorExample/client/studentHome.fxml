@@ -47,6 +47,7 @@
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
+            <Button fx:id="showTestsBtn" mnemonicParsing="false" onAction="#goToAllTests" prefHeight="54.0" prefWidth="218.0" text="Show Tests" />
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
