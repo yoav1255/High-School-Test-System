@@ -92,6 +92,7 @@ public class SimpleServer extends AbstractServer {
 				case ("#getCourses"):
 					List<Course> courses = App.getCoursesFromSubjectName(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnCourses",courses));
+					break;
 				case ("#getQuestions"):
 					List<Question> questions = App.getQuestionsFromCourseName(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnQuestions",questions));
