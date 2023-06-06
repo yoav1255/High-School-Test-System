@@ -21,13 +21,15 @@ public class TeacherExecuteExamController {
     private String id;
     private ScheduledTest scheduledTest;
     @FXML
+    private Label timeLeftText;
+    @FXML
+    private Label studentsActiveLabel;
+    @FXML
     private TextField comments;
     @FXML
     private TextField extraTime;
     @FXML
     private Label errorLabel;
-    @FXML
-    private TextField timeLeftText;
     private String courseName;
     private String subjectName;
     public String getCourseName() {
@@ -97,19 +99,22 @@ public class TeacherExecuteExamController {
         setSubjectName(scheduledTest.getSubjectName());
     }
     @Subscribe
-    public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event){
-        if (event.getDecision()){
-            Platform.runLater(() -> {
-                int input = JOptionPane.showOptionDialog(null, "Manager approved your request and the time will update shortly ", "Information",
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            });
+    public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
+        List<Object> eventObj = event.getData();
+        if (eventObj.get(0) == scheduledTest) {
+            if ((Boolean) eventObj.get(1)) {
+                Platform.runLater(() -> {
+                    int input = JOptionPane.showOptionDialog(null, "Manager approved your request and the time will update shortly ", "Information",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    int input = JOptionPane.showOptionDialog(null, "Manager did not approve your request", "Information",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                });
+            }
+            errorLabel.setVisible(false);
         }
-        else
-            Platform.runLater(() -> {
-                int input = JOptionPane.showOptionDialog(null, "Manager did not approve your request", "Information",
-                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            });
-        errorLabel.setVisible(false);
     }
     @FXML
     public void handleSendClick(ActionEvent event){
@@ -148,7 +153,6 @@ public class TeacherExecuteExamController {
     }
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
-        //todo check the schedule test
         timeLeft = event.getTimeLeft();
         Platform.runLater(()->{
             timeLeftText.setText(Long.toString( timeLeft));
@@ -163,6 +167,20 @@ public class TeacherExecuteExamController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+    //TODO add students status
+    @FXML
+    public void handleHomeButtonClick(){
+        try {
+            String teacherId = this.id;
+            cleanup();
+            App.switchScreen("teacherHome");
+            Platform.runLater(() -> {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

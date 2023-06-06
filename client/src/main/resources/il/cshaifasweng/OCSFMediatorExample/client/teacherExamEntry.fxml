@@ -68,7 +68,7 @@
       <Button layoutX="537.0" layoutY="164.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="26.0" prefWidth="53.0" text="Enter" />
       <Label layoutX="528.0" layoutY="78.0" text="Enter Exam ID:" />
       <TextField fx:id="textEntered" layoutX="490.0" layoutY="110.0" />
-      <Label fx:id="textDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="413.0" layoutY="233.0" prefHeight="18.0" prefWidth="301.0" text="lable" textAlignment="CENTER" textFill="#ea0b0b">
+      <Label fx:id="textDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="274.0" layoutY="229.0" prefHeight="74.0" prefWidth="579.0" text="lable" textAlignment="CENTER" textFill="#ea0b0b">
          <font>
             <Font size="16.0" />
          </font></Label>

@@ -128,7 +128,12 @@ public class SimpleClient extends AbstractClient {
 					long timeLeft = (long)message.getData();
 					EventBus.getDefault().postSticky(new TimeLeftEvent(timeLeft));
 					break;
-
+				case ("extraTimeRequest"):
+					EventBus.getDefault().postSticky(new extraTimeRequestEvent((List<Object>) message.getData()));
+					break;
+				case ("extraTimeResponse"):
+					EventBus.getDefault().post(new ManagerExtraTimeEvent((List<Object>) message.getData()));
+					break;
 
 			}
 		}catch (Exception e){

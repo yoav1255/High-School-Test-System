@@ -125,6 +125,8 @@ public class ManagerHomeController {
             int input = JOptionPane.showOptionDialog(null, "The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
                     + subCourse  + "from the reason: " + explanation + ". Select if you want to approve this request.", "Extra time request",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            List<Object> newData = new ArrayList<>();
+            newData.add(myScheduledTest);
             if (input == JOptionPane.YES_OPTION) {
                 try {
                     int x = myScheduledTest.getTimeLimit();
@@ -135,7 +137,8 @@ public class ManagerHomeController {
                 try {
                     Platform.runLater(() -> {
                         try{
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", true));
+                            newData.add(1, true);
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", newData));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -148,7 +151,8 @@ public class ManagerHomeController {
                 try {
                     Platform.runLater(() -> {
                         try{
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", false));
+                            newData.add(1, false);
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", newData));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

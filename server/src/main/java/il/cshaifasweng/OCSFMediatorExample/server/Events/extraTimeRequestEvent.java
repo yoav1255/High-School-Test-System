@@ -7,9 +7,9 @@ import java.util.List;
 
 public class extraTimeRequestEvent {
 
-    private Object data = new ArrayList<>();
+    private List<Object> data = new ArrayList<>();
 
-    public extraTimeRequestEvent(Object data) {
+    public extraTimeRequestEvent(List<Object> data) {
         this.data = data;
     }
 
@@ -17,7 +17,7 @@ public class extraTimeRequestEvent {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(List<Object> data) {
         this.data = data;
     }
 

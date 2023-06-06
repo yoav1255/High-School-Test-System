@@ -1,17 +1,20 @@
 package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ManagerExtraTimeEvent {
-    Boolean decision;
+    List<Object> obj = new ArrayList<>();
 
-    public ManagerExtraTimeEvent(Boolean decision) {
-        this.decision = decision;
+    public ManagerExtraTimeEvent(List<Object> obj) {
+        this.obj = obj;
     }
 
-    public Boolean getDecision() {
-        return decision;
+    public List<Object> getData() {
+        return obj;
     }
 
-    public void setDecision(Boolean decision) {
-        this.decision = decision;
+    public void setDecision(List<Object> obj) {
+        this.obj = obj;
     }
 }
