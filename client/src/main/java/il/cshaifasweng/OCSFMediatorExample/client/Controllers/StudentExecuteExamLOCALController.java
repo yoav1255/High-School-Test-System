@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apache.poi.hssf.record.HCenterRecord;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -19,6 +20,15 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Objects;
 
 public class StudentExecuteExamLOCALController {
 
@@ -176,7 +186,14 @@ public class StudentExecuteExamLOCALController {
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
-        endTest();
+        //endTest();
+        System.out.println("good");
+        cleanup();
+        App.switchScreen("studentHome");
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+        });
     }
 
     @Subscribe
@@ -203,12 +220,16 @@ public class StudentExecuteExamLOCALController {
 
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
-        timeLeft = event.getTimeLeft();
-        Platform.runLater(()->{
-            timeLeftText.setText(Long.toString( timeLeft));
-        });
-    }
+        List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
+        timeLeft = (long)scheduleTestId_timeLeft.get(1);
+        String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
+        if(scheduleTestId.equals(scheduledTest.getId())) {
+            Platform.runLater(() -> {
+                timeLeftText.setText(Long.toString(timeLeft));
+            });
+        }
+    }
     @Subscribe
     public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
@@ -248,6 +269,71 @@ public class StudentExecuteExamLOCALController {
     }
 
     public void handleDownloadButton(ActionEvent actionEvent) {
+        XWPFDocument document = new XWPFDocument();
+        XWPFParagraph titleParagraph = document.createParagraph();
+        titleParagraph.setAlignment(ParagraphAlignment.CENTER);
+        XWPFRun titleRun = titleParagraph.createRun();
+        titleRun.setFontFamily("Arial");
+        titleRun.setFontSize(15);
+        titleRun.setBold(true);
+        titleRun.setText(scheduledTest.getSubjectName() + ", " + scheduledTest.getCourseName());
+        titleRun.setText(", " + scheduledTest.getTeacherName());
+        //titleRun.setText("Local Test Format");
+        titleRun.addBreak();
+        titleRun.setText("Exam Form Code : " + scheduledTest.getExamFormCode());
+        titleRun.setText(", For student " + student.getFirst_name() + " " + student.getLast_name());
+        titleRun.addBreak();
+        int counter = 1;
+
+        for (Question_Score questionScore : questionScoreList) {
+            Question_Answer questionAnswer = new Question_Answer();
+            questionAnswer.setStudentTest(studentTest);
+            questionAnswer.setQuestionScore(questionScore);
+            questionAnswer.setAnswer(-1); // Initialize with no answer selected
+            questionScore.getQuestionAnswers().add(questionAnswer);
+            questionAnswers.add(questionAnswer);
+            Question_Score qs = questionAnswer.getQuestionScore();
+            Question q = qs.getQuestion();
+            String questionText = q.getText();
+            String answer0 = q.getAnswer0();
+            String answer1 = q.getAnswer1();
+            String answer2 = q.getAnswer2();
+            String answer3 = q.getAnswer3();
+
+            XWPFParagraph questionParagraph = document.createParagraph();
+            XWPFRun questionRun = questionParagraph.createRun();
+            questionRun.setFontFamily("Arial");
+            questionRun.setBold(true);
+            String score = String.valueOf(questionAnswer.getQuestionScore().getScore());
+            questionRun.setText(counter + ".  " + questionText + " (" + score + ").");
+            questionRun.addBreak();
+            XWPFRun questionRun2 = questionParagraph.createRun();
+            questionRun2.setFontFamily("Arial");
+            questionRun2.setBold(false);
+            questionRun2.setText("  1.  " + answer0);
+            questionRun2.addBreak();
+            questionRun2.setText("  2.  " + answer1);
+            questionRun2.addBreak();
+            questionRun2.setText("  3.  " + answer2);
+            questionRun2.addBreak();
+            questionRun2.setText("  4.  " + answer3);
+            if(!Objects.equals(qs.getStudent_note(), "")){
+                questionRun2.addBreak();
+                questionRun2.setText("Teacher note : " + qs.getStudent_note());
+            }
+            questionRun2.addBreak();
+            questionRun2.addBreak();
+            counter++;
+        }
+
+        try {
+            String filename = "test" + scheduledTest.getExamFormCode() + "for" + student.getId() + ".docx";
+            FileOutputStream output = new FileOutputStream(filename);
+            document.write(output);
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

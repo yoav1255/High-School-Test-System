@@ -273,6 +273,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "studentExecuteExamLOCAL":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Local Exam");
+                    try {
+                        setContent("studentExecuteExamLOCAL");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "examEntry":
                 Platform.runLater(()->{
                     setWindowTitle("Enter Exam");

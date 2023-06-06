@@ -21,14 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 public class ExamEntryController {
     @FXML
     private Label msg;
@@ -41,6 +33,7 @@ public class ExamEntryController {
     private String id;
     private List<String> scheduleTestIds;
     private List<ScheduledTest> scheduledTests;
+    private boolean localtest = false;
 
     public ExamEntryController() {
         EventBus.getDefault().register(this);
@@ -101,7 +94,8 @@ public class ExamEntryController {
             } else { // test is available
                 cleanup();
                 try {
-                    App.switchScreen("studentExecuteExam");
+                    if(!localtest){App.switchScreen("studentExecuteExam");}
+                    else{App.switchScreen("studentExecuteExamLOCAL");}
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -119,23 +113,8 @@ public class ExamEntryController {
     }
 
     public void EnterWordTest_btn(ActionEvent actionEvent) throws IOException {
-        XWPFDocument document = new XWPFDocument();
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-
-        run.setBold(true);
-        run.setText("Test in Algebra");
-        run.addBreak();
-        run.setBold(false);
-        run.setText("question 1");
-        run.addBreak();
-        try {
-            FileOutputStream output = new FileOutputStream("test.docx");
-            document.write(output);
-            output.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Save the document to a file using native file dialog
+        // Save the document to a file using native file dialog*/
+        localtest = true;
+        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 }

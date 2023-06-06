@@ -47,7 +47,7 @@
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
-                <Button fx:id="GradesButton" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToGradesButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Grades">
+                <Button fx:id="GradesButton" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#goToAllTests" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Grades">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
