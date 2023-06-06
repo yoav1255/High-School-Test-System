@@ -63,9 +63,6 @@ public class ScheduledTestController {
     private Label statusLB; // Value injected by FXMLLoader
 
     @FXML
-    private TextField textFieldsubmission;
-
-    @FXML
     private TextField scheduleCode;
 
     public String getId() {
@@ -115,7 +112,6 @@ public class ScheduledTestController {
         scheduleCode.setStyle("-fx-background-color: grey;");
         labelTeacher.setText(selectedTest.getTeacher().getId());
         scheduleTime.setText(selectedTest.getTime().toString().substring(0, 5));
-        textFieldsubmission.setText(String.valueOf(selectedTest.getSubmissions()));
         dataTimescheduleDate.setValue(selectedTest.getDate());
         try {
             comboBoxExamForm.setValue(selectedTest.getExamForm().getCode());
@@ -173,16 +169,6 @@ public class ScheduledTestController {
         return false;
     }
 
-    public boolean validatesubmission() {
-        String sumbissionPattern = "\\d+";
-        if (textFieldsubmission != null) {
-            if (Pattern.matches(sumbissionPattern, textFieldsubmission.getText())) {
-                return true;
-            }
-        }
-        textFieldsubmission.setStyle("-fx-border-color:#cc0000;");
-        return false;
-    }
 
     public boolean validateCode() {
         String patternCode = "[a-zA-Z0-9]{4}";
@@ -199,12 +185,11 @@ public class ScheduledTestController {
         boolean valid;
         dataTimescheduleDate.setStyle("-fx-border-color:default;");
         scheduleTime.setStyle("-fx-border-color:default;");
-        textFieldsubmission.setStyle("-fx-border-color:default;");
         comboBoxExamForm.setStyle("-fx-border-color:default;");
         scheduleCode.setStyle("-fx-border-color:default;");
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("ERROR");
-        valid = validateDate() & validateTime() & validatesubmission() & validateCode();
+        valid = validateDate() & validateTime() & validateCode();
         if (comboBoxExamForm.getValue() == null) {
             comboBoxExamForm.setStyle("-fx-border-color:#cc0000;");
             valid = false;
@@ -233,7 +218,6 @@ public class ScheduledTestController {
             if (selectedTest != null) {
                 selectedTest.setDate(LocalDate.of(year, month, day));
                 selectedTest.setTime(LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
-                selectedTest.setSubmissions(Integer.parseInt(textFieldsubmission.getText()));
                 selectedTest.setExamForm(examForm);
                 selectedTest.setTeacher(teacher);
                 ScheduledTest scheduledTest1 = selectedTest;
@@ -257,7 +241,7 @@ public class ScheduledTestController {
                     e.printStackTrace();
                 }
             } else {
-                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
+                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
                 scheduledTest.setExamForm(examForm);
                 scheduledTest.setTeacher(teacher);
 

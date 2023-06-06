@@ -33,11 +33,11 @@ public class App
         System.out.println("server is listening");
         server.listen();
         try {
-            //SessionFactory sessionFactory = getSessionFactory();
+           // SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+           // generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
