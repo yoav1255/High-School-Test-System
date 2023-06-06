@@ -36,10 +36,10 @@ public class ShowExamFormsController {
     private GridPane OneStudentGR;
 
     @FXML
-    private TableColumn<ExamForm, Course> TableCourse;
+    private TableColumn<ExamForm, String> TableCourse;
 
     @FXML
-    private TableColumn<ExamForm, String> TableQuestionsNum;
+    private TableColumn<ExamForm, String> TableTimeLimit;
 
     @FXML
     private TableColumn<ExamForm, String> TableTeacher;
@@ -49,36 +49,24 @@ public class ShowExamFormsController {
 
     @FXML
     private Button backBN;
-
-    @FXML
-    private Pane grade_upgrade_info;
-
     @FXML
     private Button homeBN;
     @FXML
     private Button btnNewExamForm;
 
-    @FXML
-    private Label statusLB;
-
-    @FXML
-    private Pane student_details_PN;
-
     private Subject sub;
     private String id ;
-    private static int instances = 0;
     private Course cour;
+    private String courseName;
     private boolean isManager;
     private String managerId;
 
     public ShowExamFormsController(){
 
         EventBus.getDefault().register(this);
-        instances++;
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
-        instances--;
     }
 
     public void setId(String id) {
@@ -103,6 +91,8 @@ public class ShowExamFormsController {
                 throw new RuntimeException(e);
             }
         });
+
+
     }
 
 @Subscribe
@@ -177,7 +167,7 @@ public class ShowExamFormsController {
 @FXML
     public void onSelectCourse(ActionEvent event) {
     try {
-        String courseName = ComboCourse.getValue();
+        courseName = ComboCourse.getValue();
         SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseFromName",courseName));
         SimpleClient.getClient().sendToServer(new CustomMessage("#getExamFormCode",courseName));
         SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseExamForms",courseName));
@@ -194,6 +184,7 @@ public class ShowExamFormsController {
 @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowExamFormsEvent(ShowExamFormsEvent event){
     try {
+        //TODO show more things
         List<ExamForm> examForms = event.getExamForms();
 
         TableTestID.setCellValueFactory(cellData -> {
@@ -201,7 +192,19 @@ public class ShowExamFormsController {
             String code = examForm.getExamFormCode();
             return new SimpleStringProperty(code);
         });
-
+        TableTimeLimit.setCellValueFactory(cellData->{
+            ExamForm examForm = cellData.getValue();
+            String timeLimit = Integer.toString(examForm.getTimeLimit());
+            return new SimpleStringProperty(timeLimit);
+        });
+        TableTeacher.setCellValueFactory(cellData->{
+            ExamForm examForm = cellData.getValue();
+            String teacherName = examForm.getTeacher().getFirst_name() + " " + examForm.getTeacher().getLast_name();
+            return new SimpleStringProperty(teacherName);
+        });
+        TableCourse.setCellValueFactory(cellData->{
+            return new SimpleStringProperty(courseName);
+        });
         ObservableList<ExamForm> examForms1 = FXCollections.observableArrayList(examForms);
         ExamForms_Table.setItems(examForms1);
         ExamForms_Table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -219,6 +222,7 @@ public class ShowExamFormsController {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     ExamForm selectedExam = ExamForms_Table.getSelectionModel().getSelectedItem();
                     if (selectedExam != null) {
+                        cleanup();
                         List<Object> setObjectAndExam = new ArrayList<>();
                         if(!isManager)
                             setObjectAndExam.add(id);
@@ -248,6 +252,7 @@ public class ShowExamFormsController {
 
 @FXML
     public void handleAddExamForm(ActionEvent event) {
+    cleanup();
     if (!isManager) {
         try {
             String teacherId = this.id;
@@ -261,7 +266,39 @@ public class ShowExamFormsController {
                     throw new RuntimeException(e);
                 }
             });
-            cleanup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public void goHome(){
+    cleanup();
+    if (!isManager) {
+        try {
+            String teacherId = this.id;
+            App.switchScreen("teacherHome");
+            Platform.runLater(() -> {
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    else {
+        try {
+            App.switchScreen("managerHome");
+            Platform.runLater(() -> {
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -269,36 +306,10 @@ public class ShowExamFormsController {
 }
 @FXML
     public void handleGoHomeButtonClick(ActionEvent event) {
-    if (!isManager) {
-            try {
-                String teacherId = this.id;
-                App.switchScreen("teacherHome");
-                Platform.runLater(() -> {
-                    try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                cleanup();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            try {
-                App.switchScreen("managerHome");
-                Platform.runLater(() -> {
-                    try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                cleanup();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        goHome();
+    }
+@FXML
+    public void goBackButtonClick(ActionEvent event) {
+        goHome();
     }
 }

@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
@@ -121,13 +122,20 @@ public class ShowOneStudentController {
         try {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                 StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
+
                 if (selectedStudentTest != null) {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTest",selectedStudentTest));
-                    App.switchScreen("showUpdateStudent"); //TODO create an fxml with the same name
-                    cleanup();
+                    App.switchScreen("showUpdateStudent");
+                    Platform.runLater(()->{
+                        try {
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(selectedStudentTest.getStudent().getId()));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

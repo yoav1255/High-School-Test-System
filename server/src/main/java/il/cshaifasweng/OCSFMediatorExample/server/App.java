@@ -609,7 +609,7 @@ public class App
     }
 
     public static List<ExamForm> getCourseExamForms(String courseName) {
-        List<ExamForm> examForms = new ArrayList<>();
+        List<ExamForm> examForms;
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
@@ -617,7 +617,7 @@ public class App
         q.setParameter("courseName",courseName);
         Course course = (Course) q.getSingleResult();
 
-        String queryString = "SELECT DISTINCT e FROM Course c JOIN c.examForms e WHERE c = :course";
+        String queryString = "SELECT DISTINCT e FROM Course c JOIN c.examForms e join fetch e.teacher WHERE c = :course";
         Query query = session.createQuery(queryString, ExamForm.class);
         query.setParameter("course",course);
         examForms = query.getResultList();

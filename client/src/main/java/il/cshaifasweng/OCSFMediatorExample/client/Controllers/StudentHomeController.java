@@ -3,7 +3,12 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Student;
+import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -44,6 +49,7 @@ public class StudentHomeController{
     }
 
     public void setId(String id){this.id = id;}
+    private Student student;
 
 
     @FXML
@@ -52,6 +58,11 @@ public class StudentHomeController{
         setId(event.getUserID());
         Platform.runLater(()->{
             initializeIfIdNotNull();
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
     }
 
@@ -59,6 +70,10 @@ public class StudentHomeController{
         if (id != null) {
             idLabel.setText("ID: " + id);
         }
+    }
+    @Subscribe
+    public void onSelectedStudentEvent(SelectedStudentEvent event) {
+        student = event.getStudent();
     }
 
 
@@ -72,17 +87,22 @@ public class StudentHomeController{
 
     }
 
-    @FXML
-    void handleGoToGradesButtonClick(ActionEvent event) throws IOException {
+@FXML
+    public void goToAllTests(ActionEvent event) {
+    try {
         App.switchScreen("showOneStudent");
+
         Platform.runLater(()->{
             try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests",id));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
+} catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
