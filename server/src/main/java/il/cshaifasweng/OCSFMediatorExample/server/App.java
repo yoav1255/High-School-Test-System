@@ -33,7 +33,6 @@ public class App
         System.out.println("server is listening");
         server.listen();
         try {
-           // SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
 
