@@ -221,8 +221,7 @@ public class ShowScheduleTestController {
                     this.edit = false;
                 }
                 else if (show.equals("ShowCurrentTestselse")) {
-                    LocalTime finishTime= scheduledTest.getTime().plusMinutes(scheduledTest.getTimeLimit());
-                    if (Integer.parseInt(currentDate) == Integer.parseInt(today)&&LocalTime.now().isBefore(finishTime)&&LocalTime.now().isAfter(scheduledTest.getTime())) {
+                    if (scheduledTest.getStatus()==1) {
                         if (!onlyMyTest)
                             scheduledTestObservableList.add(scheduledTest);
                         else {
