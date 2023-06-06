@@ -77,6 +77,11 @@ public class ShowOneStudentController {
         try{
             setStudentTests(event.getStudentTests());
             if(studentTests!=null){
+                for(StudentTest test : studentTests){
+                    if(!test.isChecked()){
+                        test.setGrade(Integer.parseInt(" "));
+                    }
+                }
                 Student student = studentTests.get(0).getStudent();
                 setStudentID(student.getId());
                 Platform.runLater(()->{
@@ -86,6 +91,7 @@ public class ShowOneStudentController {
                 });
 
             }
+
             TableGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
             TableCourse.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();

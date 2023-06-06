@@ -1020,15 +1020,4 @@ public class App
     }
 
 
-
-
-    public static void getQuestionsFromExamCode(String id, String examCode){
-        SessionFactory sessionFactory = getSessionFactory();
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
-
-    }
-
 }

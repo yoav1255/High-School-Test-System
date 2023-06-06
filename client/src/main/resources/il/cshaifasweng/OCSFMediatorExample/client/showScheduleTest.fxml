@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -76,14 +77,11 @@
                 </TableView>
             <Pane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="statusLB1" layoutX="383.0" layoutY="9.0" text="to show student grades, double click his row">
-                     <font>
-                        <Font name="Oriya Sangam MN" size="12.0" />
-                     </font>
-                  </Label>
                   <Button fx:id="testHasntPerformed" layoutX="1.0" layoutY="1.0" mnemonicParsing="false" onAction="#showTestHasntPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test not yet performed" />
                   <Button fx:id="testPerformed" layoutX="150.0" layoutY="1.0" mnemonicParsing="false" onAction="#showTestPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test  performed" />
                   <Button fx:id="showAllTest" layoutX="260.0" layoutY="1.0" mnemonicParsing="false" onAction="#showAllTest" style="-fx-background-color: white; -fx-border-color: orange;" text="All Test" />
+                  <CheckBox fx:id="onlyMyTestCheckBox" layoutX="340.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleOnlyMyTest" style="-fx-background-color: white;" text="show only my tests" />
+                  <Button fx:id="currentTestBtn" layoutX="490.0" layoutY="1.0" mnemonicParsing="false" onAction="#showCurrentTest" style="-fx-background-color: #E7AD75; -fx-border-color: orange;" text="current Test" />
                </children>
             </Pane>
             </children>
