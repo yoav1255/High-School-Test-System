@@ -192,7 +192,6 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnAllStudentsNames",studentName));
 					break;
 
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -64,7 +64,6 @@
             <children>
                 <TableView fx:id="students_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
-                        <TableColumn fx:id="id" prefWidth="75.0" text="Id" />
                         <TableColumn fx:id="scheduled_test" prefWidth="75.0" text="Scheduled Test" />
                         <TableColumn fx:id="average" prefWidth="75.0" text="Average" />
                         <TableColumn fx:id="median" prefWidth="75.0" text="Median" />
@@ -79,7 +78,7 @@
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
                                     <String fx:value="by teacher" />
-                                    <String fx:value="by code" />
+                                    <String fx:value="by course" />
                                     <String fx:value="by student" />
                                 </FXCollections>
                             </items>

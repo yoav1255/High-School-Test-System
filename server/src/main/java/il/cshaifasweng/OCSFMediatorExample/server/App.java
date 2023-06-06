@@ -54,7 +54,7 @@ public class App
         //getCourseExamStats(3);
         //getStudentExamStats("1");
         //getTeacherWriterExamStats("2");
-        /*List<String> result = getAllStudentNames();
+        /*List<String> result = getAllCourseNames();
         for(String name:result)
         {
             System.out.println(name);

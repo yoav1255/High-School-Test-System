@@ -4,9 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStatisticEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class ShowStatisticsController {
     @FXML
@@ -58,6 +57,10 @@ public class ShowStatisticsController {
 
     @FXML
     private TableView<Statistics> tableView;
+
+    private List<String> teacherNames;
+    private List<String> studentNames;
+    private List<String> courseNames;
 
 
     public ShowStatisticsController() {
@@ -151,22 +154,53 @@ public class ShowStatisticsController {
 
     public void selected_stat(ActionEvent actionEvent) throws IOException {
         String selectedParameter = stat_combobox.getValue();
-        if(selectedParameter == "by teacher")
+        if(Objects.equals(selectedParameter, "by teacher"))
         {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
 
-        } else if (selectedParameter == "by course") {
+        } else if (Objects.equals(selectedParameter, "by course")) {
 
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
         }
-        else if (selectedParameter == "by student")
+        else if (Objects.equals(selectedParameter, "by student"))
         {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
-
 
         }
 
     }
+
+    @Subscribe
+    public void onShowAllTeachersNamesEvent(ShowAllTeachersNamesEvent event)
+    {
+        combobox_id.getItems().clear();
+        teacherNames = event.getTeacherList();
+        for(String teacher:teacherNames)
+        combobox_id.getItems().add(teacher);
+    }
+
+    @Subscribe
+    public void onShowAllCoursesNamesEvent(ShowAllCoursesNamesEvent event)
+    {
+        combobox_id.getItems().clear();
+        courseNames = event.getCourseList();
+        for(String course:courseNames)
+            combobox_id.getItems().add(course);
+    }
+
+    @Subscribe
+    public void onShowAllStudentsNamesEvent(ShowAllStudentsNamesEvent event)
+    {
+        combobox_id.getItems().clear();
+        studentNames = event.getStudentList();
+        for(String student:studentNames)
+            combobox_id.getItems().add(student);
+    }
+
+
+
+
+
 }
 
 
