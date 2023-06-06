@@ -93,6 +93,7 @@
                         <Label layoutY="336.0" text="Notes for the test" />
                     </children>
                 </AnchorPane>
+            <Button fx:id="update" mnemonicParsing="false" onAction="#goToUpdateExamForm" text="Update Exam Form" GridPane.rowIndex="1" />
             </children>
         </GridPane>
     </children>

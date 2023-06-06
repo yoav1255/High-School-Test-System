@@ -59,7 +59,7 @@
                         <Font name="Oriya Sangam MN" size="13.0" />
                     </font>
                 </Label>
-                <Button fx:id="backBN" layoutX="698.0" layoutY="4.0" mnemonicParsing="false" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+                <Button fx:id="backBN" layoutX="698.0" layoutY="4.0" mnemonicParsing="false" onAction="#goBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
                     <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
                     </font>
@@ -84,9 +84,8 @@
                     <columns>
                         <TableColumn id="TableTestid" fx:id="TableTestID" prefWidth="93.35415649414062" text="Test ID" />
                         <TableColumn id="TableTeacher" fx:id="TableTeacher" prefWidth="189.64578247070312" text="Teacher created" />
-                        <TableColumn id="TableSubject" fx:id="TableSubject" prefWidth="164.0" text="Questions amount" />
+                        <TableColumn id="TableSubject" fx:id="TableTimeLimit" prefWidth="164.0" text="Time Limit" />
                         <TableColumn id="TableCourse" fx:id="TableCourse" prefWidth="193.20066833496094" text="Course" />
-                        <TableColumn id="TableGrade" fx:id="TableGrade" minWidth="0.0" prefWidth="100.395751953125" text="Grade" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -130,8 +130,8 @@ public class ShowScheduleTestController {
     public void onShowScheduleTestEvent(ShowScheduleTestEvent event) {
         try {
             setScheduledTests(event.getScheduledTestList());
-            id.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("id"));
-            date.setCellValueFactory(new PropertyValueFactory<ScheduledTest, String>("date"));
+            id.setCellValueFactory(new PropertyValueFactory<>("id"));
+            date.setCellValueFactory(new PropertyValueFactory<>("date"));
             time.setCellValueFactory(cellData -> {
                 String formattedTime = cellData.getValue().getTime().toString();
                 formattedTime = formattedTime.substring(0, 5);
@@ -188,9 +188,8 @@ public class ShowScheduleTestController {
             }
             this.edit = false;
             this.showGrades = false;
-            scheduleTest_table_view.setItems(scheduledTestObservableList);
         } else {
-            scheduledTestObservableList = FXCollections.observableArrayList();
+             scheduledTestObservableList = FXCollections.observableArrayList();
 
             for (ScheduledTest scheduledTest : scheduledTests) {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
@@ -282,9 +281,10 @@ public class ShowScheduleTestController {
                         App.switchScreen("testGrade");
                         Platform.runLater(() -> {
                             try {
+                                EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                             EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
                             EventBus.getDefault().post(new SelectedTestEvent(selectedTest));

@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.*;
 
 public class CreateExamFormController2 {
@@ -52,6 +53,8 @@ public class CreateExamFormController2 {
     private ExamForm examForm;
     private int courseChanged;
     private Teacher teacher;
+    private boolean isUpdate;
+    private boolean isUpdateScore;
 
 
     public CreateExamFormController2(){ EventBus.getDefault().register(this); }
@@ -71,11 +74,21 @@ public class CreateExamFormController2 {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         teacherId = event.getId();
+        isUpdate=false;
     }
+
+    @Subscribe
+    public void onShowOneExamFormEvent(ShowOneExamFormEvent event){
+        examForm = (ExamForm) event.getSetTeacherAndExam().get(1);
+        teacherId = (String) event.getSetTeacherAndExam().get(0);
+        isUpdate=true;
+    }
+
     @Subscribe
     public void onTeacherFromIdEvent(TeacherFromIdEvent event){
         teacher = event.getTeacherFromId();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event){
         List<Subject> subjects = event.getSubjects();
@@ -85,19 +98,13 @@ public class CreateExamFormController2 {
         }
         ComboSubject.setItems(items);
 
-        if(examForm!=null){ // We are in update mode
+        if(isUpdate){ // We are in update mode
             Platform.runLater(()->{
                 ComboSubject.setValue(examForm.getSubjectName());
                 timeLimit.setText(Integer.toString( examForm.getTimeLimit()));
+                generalNotes.setText(examForm.getGeneralNotes());
             });
         }
-    }
-    @FXML
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShowUpdateExamFormEvent(ShowOneExamFormEvent event){
-        List<Object> teacherAndExam = event.getSetTeacherAndExam();
-        teacherId = teacherAndExam.get(0).toString();
-        examForm = (ExamForm) teacherAndExam.get(1);
     }
 
     @FXML
@@ -108,6 +115,7 @@ public class CreateExamFormController2 {
             Platform.runLater(()->{
                 ComboCourse.setDisable(false);
                 ComboCourse.setValue("");
+                selectedQuestionsListView.getItems().clear(); // subject changed
             });
         }catch (Exception e){
             e.printStackTrace();
@@ -127,7 +135,7 @@ public class CreateExamFormController2 {
             ComboCourse.setItems(items);
         });
 
-        if(examForm!=null){ // We are in update mode
+        if(isUpdate){ // We are in update mode
             Platform.runLater(()->{
                 ComboCourse.setValue(examForm.getCourseName());
             });
@@ -137,6 +145,7 @@ public class CreateExamFormController2 {
     public void onSelectCourse(ActionEvent event) {
         try {
             String courseName = ComboCourse.getValue();
+            selectedQuestionsListView.getItems().clear(); // course changed
 
             Platform.runLater(()->{
                 try {
@@ -163,54 +172,20 @@ public class CreateExamFormController2 {
             questionList = event.getQuestions();
             System.out.println(questionList.get(0).getText());
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questionList);
-            questionsListView.setItems(questions1);
+            Platform.runLater(()->{
+                questionsListView.setItems(questions1);
+            });
+            updateQuestionListView();
 
+            if(isUpdate && courseChanged==0) {
+                for (Question_Score questionScore : examForm.getQuestionScores()) {
+                    selectedQuestionsListView.getItems().add(questionScore);
+                    updateSelectedListView();
+                }
+                updateQuestionListView();
+            }
+                courseChanged++;
 
-                questionsListView.setCellFactory(param -> new ListCell<Question>() {
-                    @Override
-                    protected void updateItem(Question question, boolean empty) {
-                        super.updateItem(question, empty);
-                        if (empty || question == null) {
-                            setText(null);
-                            setGraphic(null);
-                        } else {
-                            VBox vbox = new VBox();
-                            Label questionText = new Label(question.getText());
-                            vbox.getChildren().add(questionText);
-
-                            // Add the answers as separate labels in the VBox
-
-                            Label answerLabel0 = new Label("1.      "+question.getAnswer0());
-                            if (question.getIndexAnswer() == 0) {
-                                answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                            }
-                            vbox.getChildren().add(answerLabel0);
-
-                            Label answerLabel1 = new Label("2.      "+question.getAnswer1());
-                            if (question.getIndexAnswer() == 1) {
-                                answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                            }
-                            vbox.getChildren().add(answerLabel1);
-
-                            Label answerLabel2 = new Label("3.      "+question.getAnswer2());
-                            if (question.getIndexAnswer() == 2) {
-                                answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                            }
-                            vbox.getChildren().add(answerLabel2);
-
-                            Label answerLabel3 = new Label("4.      "+question.getAnswer3());
-                            if (question.getIndexAnswer() == 3) {
-                                answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                            }
-                            vbox.getChildren().add(answerLabel3);
-
-                            setGraphic(vbox);
-
-                        }
-                    }
-                });
-
-            courseChanged++;
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -226,12 +201,17 @@ public class CreateExamFormController2 {
         try {
             int timeLim = 0;
             int sum = 0;
-            labelMsg.setVisible(true);
             try {
                 timeLim = Integer.parseInt(timeLimit.getText());
             }catch (NumberFormatException notNum){
-                labelMsg.setText("Time limit invalid!");
+                Platform.runLater(()->{
+                    labelMsg.setText("Time limit invalid!");
+                });
             }
+            Platform.runLater(()->{
+                labelMsg.setVisible(true);
+            });
+
             if(timeLim<=0 || timeLim>1000)
                 labelMsg.setText("Time not allowed!");
             else { // Time is valid
@@ -260,11 +240,11 @@ public class CreateExamFormController2 {
                 }
                 else {
                     cleanup();
+                    System.out.println("teacher id before submit: "+teacherId);
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
                     JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     App.switchScreen("showExamForms");
                     Platform.runLater(()->{
-
                         EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                     });
                 }
@@ -294,6 +274,7 @@ public class CreateExamFormController2 {
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
         try{
+            cleanup();
             App.switchScreen("teacherHome");
             Platform.runLater(()->{
                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
@@ -309,6 +290,9 @@ public class CreateExamFormController2 {
     if (selectedQuestion != null) {
         openDialog(selectedQuestion,false,null);
         updateSelectedListView();
+        //TODO delete the question from the shown questions
+        questionsListView.getItems().remove(selectedQuestion);
+        updateQuestionListView();
     }
 }
 
@@ -331,7 +315,7 @@ public class CreateExamFormController2 {
     }
 
     public void updateSelectedListView(){
-        selectedQuestionsListView.setCellFactory(param -> new ListCell<Question_Score>() {
+        selectedQuestionsListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Question_Score question, boolean empty) {
                 super.updateItem(question, empty);
@@ -344,7 +328,7 @@ public class CreateExamFormController2 {
                     Label questionText = new Label(question.getQuestion().getText());
                     vbox.getChildren().add(questionText);
 
-                    Label score = new Label("( " + Integer.toString(question.getScore()) + " points )");
+                    Label score = new Label("( " + question.getScore() + " points )");
                     vbox.getChildren().add(score);
 
                     setGraphic(vbox);
@@ -352,8 +336,55 @@ public class CreateExamFormController2 {
             }
         });
     }
+    public void updateQuestionListView(){
+        questionsListView.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(Question question, boolean empty) {
+                super.updateItem(question, empty);
+                if (empty || question == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Platform.runLater(() -> {
+                        VBox vbox = new VBox();
+                        Label questionText = new Label(question.getText());
+                        vbox.getChildren().add(questionText);
 
-    public void openDialog(Question selectedQuestion , boolean isUpdate, Question_Score selectedQuestionScore){
+                        // Add the answers as separate labels in the VBox
+
+                        Label answerLabel0 = new Label("1.      " + question.getAnswer0());
+                        if (question.getIndexAnswer() == 0) {
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel0);
+
+                        Label answerLabel1 = new Label("2.      " + question.getAnswer1());
+                        if (question.getIndexAnswer() == 1) {
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel1);
+
+                        Label answerLabel2 = new Label("3.      " + question.getAnswer2());
+                        if (question.getIndexAnswer() == 2) {
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel2);
+
+                        Label answerLabel3 = new Label("4.      " + question.getAnswer3());
+                        if (question.getIndexAnswer() == 3) {
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel3);
+
+                        setGraphic(vbox);
+
+                    });
+                }
+            }
+        });
+    }
+
+    public void openDialog(Question selectedQuestion , boolean isUpdateScore, Question_Score selectedQuestionScore){
         try {
             Dialog<Question_Score> scoreDialog = new Dialog<>();
             scoreDialog.setTitle("Enter Score and Notes");
@@ -365,7 +396,7 @@ public class CreateExamFormController2 {
             TextField scoreField = new TextField();
             TextArea teacherNoteArea = new TextArea();
             TextArea studentNoteArea = new TextArea();
-            if(isUpdate){
+            if(isUpdateScore){
                 Platform.runLater(()->{
                     scoreField.setText(Integer.toString(selectedQuestionScore.getScore()));
                     teacherNoteArea.setText(selectedQuestionScore.getTeacher_note());
@@ -392,7 +423,7 @@ public class CreateExamFormController2 {
                         }
                         String teacherNote = teacherNoteArea.getText();
                         String studentNote = studentNoteArea.getText();
-                        if(isUpdate) {
+                        if(isUpdateScore) {
                             selectedQuestionScore.setScore(score);
                             selectedQuestionScore.setStudent_note(studentNote);
                             selectedQuestionScore.setTeacher_note(teacherNote);
@@ -409,13 +440,36 @@ public class CreateExamFormController2 {
             });
 
                 scoreDialog.showAndWait().ifPresent(questionScore -> {
-                    if(!isUpdate) {
+                    if(!isUpdateScore) {
                         selectedQuestionsListView.getItems().add(questionScore);
                         //questionScoreList.add(questionScore);
                     }
                 });
 
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+@FXML
+    public void goBackButtonClick(ActionEvent event) {
+        try {
+            if (examForm != null) {
+                cleanup();
+                List<Object> setObjectAndExam = new ArrayList<>();
+                setObjectAndExam.add(teacherId);
+                setObjectAndExam.add(examForm);
+
+                App.switchScreen("showOneExamForm");
+                Platform.runLater(() -> {
+                    try {
+                        EventBus.getDefault().post(new ShowOneExamFormManagerEvent(setObjectAndExam));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
