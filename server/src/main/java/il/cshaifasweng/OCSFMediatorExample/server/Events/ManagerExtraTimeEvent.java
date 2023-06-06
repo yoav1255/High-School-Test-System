@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ManagerExtraTimeEvent {
-    List<Object> obj = new ArrayList<>();
+    List<Object> obj = new ArrayList<>(); // ScheduleTest (0), bool (1)
 
     public ManagerExtraTimeEvent(List<Object> obj) {
         this.obj = obj;

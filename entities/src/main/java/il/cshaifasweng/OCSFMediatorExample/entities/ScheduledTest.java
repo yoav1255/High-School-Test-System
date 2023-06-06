@@ -163,14 +163,6 @@ public class ScheduledTest implements Serializable {
         isChecked = checked;
     }
 
-    public int getTimeLimit() {
-        return timeLimit;
-    }
-
-    public void setTimeLimit(int timeLimit) {
-        this.timeLimit = timeLimit;
-    }
-
     public int getActiveStudents() {
         return activeStudents;
     }

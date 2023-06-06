@@ -14,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class TeacherExecuteExamController {
     public void setTeacherFirstName(String teacherFirstName) {
         this.teacherFirstName = teacherFirstName;
     }
-    private Long timeLeft;
+    private Integer timeLeft;
     public ScheduledTest getScheduledTest() {return scheduledTest;}
     public void setScheduledTest(ScheduledTest scheduledTest) {this.scheduledTest = scheduledTest;}
     public String getId() {return id;}
@@ -101,7 +102,9 @@ public class TeacherExecuteExamController {
     @Subscribe
     public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
         List<Object> eventObj = event.getData();
-        if (eventObj.get(0) == scheduledTest) {
+        ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
+
+        if (eventTest.getId().equals(scheduledTest.getId())) {
             if ((Boolean) eventObj.get(1)) {
                 Platform.runLater(() -> {
                     int input = JOptionPane.showOptionDialog(null, "Manager approved your request and the time will update shortly ", "Information",
@@ -147,17 +150,24 @@ public class TeacherExecuteExamController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //EventBus.getDefault().post(new extraTimeRequestEvent(number, comments.getText(), scheduledTest));
             }
         }
     }
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
-        timeLeft = event.getTimeLeft();
-        Platform.runLater(()->{
-            timeLeftText.setText(Long.toString( timeLeft));
-        });
-        if (timeLeft <= 0){
+        List<Object> testIdTime = event.getScheduleTestId_timeLeft();
+        timeLeft = Integer.parseInt(testIdTime.get(1).toString()) ;
+        String eventId = (String) testIdTime.get(0);
+        if (eventId.equals(scheduledTest.getId())) {
+            Platform.runLater(() -> {
+                timeLeftText.setText(Integer.toString(timeLeft));
+            });
+            updateStudentsStatus(scheduledTest.getId());
+        }
+    }
+    @Subscribe
+    public void inTimeFinishedEvent(TimerFinishedEvent event) throws IOException {
+        if (scheduledTest.getId().equals(event.getScheduledTest().getId())) {
             try {
                 cleanup();
                 App.switchScreen("teacherHome");
@@ -169,7 +179,29 @@ public class TeacherExecuteExamController {
             }
         }
     }
-    //TODO add students status
+    public void updateStudentsStatus(String testId){
+        Platform.runLater(() -> {
+            try{
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo", "testId"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    @Subscribe
+    public void onSelectedTestEvent (SelectedTestEvent event){
+        setScheduledTest(event.getSelectedTestEvent());
+        Platform.runLater(() -> {
+            try{
+                int activeStudents = scheduledTest.getActiveStudents();
+                int sumSubmissions = scheduledTest.getSubmissions();
+                int sumStudents = activeStudents + sumSubmissions;
+                studentsActiveLabel.setText(String.valueOf(activeStudents) + "/" + sumStudents);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
     @FXML
     public void handleHomeButtonClick(){
         try {

@@ -129,6 +129,7 @@ public class ManagerHomeController {
             newData.add(myScheduledTest);
             if (input == JOptionPane.YES_OPTION) {
                 try {
+                    //TODO update the time limit with an SQL query
                     int x = myScheduledTest.getTimeLimit();
                     myScheduledTest.setTimeLimit(x+extraMinutes);
                 } catch (Exception e) {

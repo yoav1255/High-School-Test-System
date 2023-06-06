@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.TeacherExecuteExamEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.TimeLeftEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -119,5 +120,15 @@ public class TeacherExamEntryController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event){
+        Platform.runLater(() -> {
+            try{
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
