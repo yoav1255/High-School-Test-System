@@ -15,10 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -31,7 +28,10 @@ import java.io.IOException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ShowScheduleTestController {
@@ -61,8 +61,10 @@ public class ShowScheduleTestController {
     @FXML // fx:id="statusLB1"
     private Label statusLB1; // Value injected by FXMLLoader
     @FXML
+    private CheckBox onlyMyTestCheckBox;
+    @FXML
     private Button btnNewTest;
-
+    private boolean onlyMyTest=false;
     @FXML // fx:id="students_table_view"
     private TableView<ScheduledTest> scheduleTest_table_view; // Value injected by FXMLLoader
 
@@ -135,22 +137,34 @@ public class ShowScheduleTestController {
                 formattedTime = formattedTime.substring(0, 5);
                 return new SimpleStringProperty(formattedTime);
             });
-            submission.setCellValueFactory(new PropertyValueFactory<>("checkedSubmissions" + "/" + "submissions"));
-            examFormId.setCellValueFactory(param -> {
-                try {
+            submission.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
+                @Override
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
 
-                    return new SimpleStringProperty(param.getValue().getExamForm().getCode());
-                } catch (NullPointerException e) {
-                    // Handle the exception here (e.g., set a default value)
-                    return new SimpleStringProperty("N/A");
+                        return new SimpleStringProperty(String.valueOf(param.getValue().getCheckedSubmissions())+"/"+String.valueOf(param.getValue().getSubmissions()));
                 }
             });
-            teacherId.setCellValueFactory(param -> {
-                try {
-                    return new SimpleStringProperty(param.getValue().getTeacher().getId());
-                } catch (NullPointerException e) {
-                    // Handle the exception here (e.g., set a default value)
-                    return new SimpleStringProperty("N/A");
+            examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
+                @Override
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
+                    try {
+
+                        return new SimpleStringProperty(param.getValue().getExamForm().getCode());
+                    } catch (NullPointerException e) {
+                        // Handle the exception here (e.g., set a default value)
+                        return new SimpleStringProperty("N/A");
+                    }
+                }
+            });
+            teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
+                @Override
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
+                    try {
+                        return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                    } catch (NullPointerException e) {
+                        // Handle the exception here (e.g., set a default value)
+                        return new SimpleStringProperty("N/A");
+                    }
                 }
             });
             ShowScheduleTest("ShowAllTests");
@@ -161,13 +175,21 @@ public class ShowScheduleTestController {
     }
 
     public void ShowScheduleTest(String show) {
+        ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableArrayList();
+
         if (show.equals("ShowAllTests")) {
-            ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableList(scheduledTests);
-            scheduleTest_table_view.setItems(scheduledTestObservableList);
+            if (!onlyMyTest)
+                scheduledTestObservableList = FXCollections.observableList(scheduledTests);
+            else {
+                for (ScheduledTest scheduledTest : scheduledTests) {
+                    if (this.idTeacher.equals(scheduledTest.getTeacher().getId()))
+                        scheduledTestObservableList.add(scheduledTest);
+                }
+            }
             this.edit = false;
             this.showGrades = false;
         } else {
-            ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableArrayList();
+             scheduledTestObservableList = FXCollections.observableArrayList();
 
             for (ScheduledTest scheduledTest : scheduledTests) {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
@@ -175,20 +197,45 @@ public class ShowScheduleTestController {
                 String currentDate = scheduledTest.getDate().toString().replace('-', '0');
                 String today = dtf.format(now);
                 if (show.equals("ShowTestHasntPerformed")) {
-                    if (Integer.parseInt(currentDate) > Integer.parseInt(today))
-                        scheduledTestObservableList.add(scheduledTest);
+                    if (Integer.parseInt(currentDate) > Integer.parseInt(today)) {
+                        if (!onlyMyTest)
+                            scheduledTestObservableList.add(scheduledTest);
+                        else {
+                            if (this.idTeacher.equals(scheduledTest.getTeacher().getId()))
+                                scheduledTestObservableList.add(scheduledTest);
+                        }
+                    }
                     this.showGrades = false;
                     this.edit = true;
                 } else if (show.equals("ShowTestPerformed")) {
-                    if (Integer.parseInt(currentDate) <= Integer.parseInt(today))
-                        scheduledTestObservableList.add(scheduledTest);
+                    if (Integer.parseInt(currentDate) <= Integer.parseInt(today)) {
+                        if (!onlyMyTest)
+                            scheduledTestObservableList.add(scheduledTest);
+                        else {
+                            if (this.idTeacher.equals(scheduledTest.getTeacher().getId()))
+                                scheduledTestObservableList.add(scheduledTest);
+                        }
+                    }
                     this.showGrades = true;
                     this.edit = false;
                 }
-            }
-            scheduleTest_table_view.setItems(scheduledTestObservableList);
+                else if (show.equals("ShowCurrentTests")) {
+                    if (scheduledTest.getStatus()==1) {
+                        if (!onlyMyTest)
+                            scheduledTestObservableList.add(scheduledTest);
+                        else {
+                            if (this.idTeacher.equals(scheduledTest.getTeacher().getId()))
+                                scheduledTestObservableList.add(scheduledTest);
+                        }
+                    }
+                    this.showGrades = true;
+                    this.edit = false;
+                }
 
+            }
         }
+        scheduleTest_table_view.setItems(scheduledTestObservableList);
+
     }
 
     @FXML
@@ -205,7 +252,13 @@ public class ShowScheduleTestController {
     void showAllTest(ActionEvent event) {
         ShowScheduleTest("ShowAllTests");
     }
-
+    @FXML
+    void handleOnlyMyTest(ActionEvent event) {
+    if (onlyMyTestCheckBox.isSelected())
+        onlyMyTest=true;
+    else
+        onlyMyTest=false;
+    }
     @FXML
     public void handleRowClick(MouseEvent event) {
         if (!isManager) {
@@ -234,6 +287,8 @@ public class ShowScheduleTestController {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                            EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
                         });
                     }
                 }
@@ -243,7 +298,10 @@ public class ShowScheduleTestController {
         }
     }
 
-
+    @FXML
+    void showCurrentTest(ActionEvent event) {
+        ShowScheduleTest("ShowCurrentTests");
+    }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {

@@ -109,7 +109,7 @@ public class ShowQuestionsController {
         });
 
     }
-    @Subscribe
+    //@Subscribe
     public void onMoveManagerIdEvent(MoveManagerIdEvent event){
         isManager = true;
         managerId = event.getId();
@@ -276,8 +276,8 @@ public class ShowQuestionsController {
 
     public void displayMsg(String QuestId) {
         Platform.runLater(() -> {
-            int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            //int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
+                    //JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
         });
     }
 }
