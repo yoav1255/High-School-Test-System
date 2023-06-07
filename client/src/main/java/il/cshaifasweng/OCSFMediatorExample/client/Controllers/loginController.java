@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.loginEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -20,6 +21,9 @@ public class loginController {
 
     @FXML
     private Label error_msg;
+
+    @FXML
+    private Label loggedIn_msg;
 
     //@FXML
     //private TextArea error_msgg;
@@ -49,6 +53,7 @@ public class loginController {
 
     @FXML void initialize(){
         error_msg.setVisible(false);
+        loggedIn_msg.setVisible(false);
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
@@ -57,7 +62,11 @@ public class loginController {
 
         switch (user_type) {
             case ("wrong"):
+                loggedIn_msg.setVisible(false);
                 error_msg.setVisible(true);
+                break;
+            case ("logged_error"):
+                loggedIn_msg.setVisible(true);
                 break;
             case ("student"):
                 cleanup();

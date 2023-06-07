@@ -314,25 +314,34 @@ public class ShowScheduleTestController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
+        cleanup();
         if (!isManager) {
-            App.switchScreen("teacherHome");
-            Platform.runLater(() -> {
-                try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            try {
+                App.switchScreen("teacherHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else {
-            App.switchScreen("managerHome");
-            Platform.runLater(() -> {
-                try {
-                    EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            try {
+                App.switchScreen("managerHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

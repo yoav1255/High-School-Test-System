@@ -44,8 +44,10 @@ public class ShowQuestionsController {
     private List<String> ans2;
     private List<String> ans3;
     private List<String> ans4;
+
     private boolean isManager;
     private String managerId;
+
     @FXML
     private Button btnNew;
     @FXML
@@ -107,8 +109,24 @@ public class ShowQuestionsController {
             comboCourse.setDisable(true);
 
         });
-
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN )
+    @FXML
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+        isManager = false;
+        btnNew.setDisable(false);
+        btnNew.setVisible(true);
+        Platform.runLater(()->{
+            setId(event.getId());
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     @Subscribe
     public void onMoveManagerIdEvent(MoveManagerIdEvent event){
         isManager = true;
@@ -177,40 +195,37 @@ public class ShowQuestionsController {
 
     }
     public void handleHomeButtonClick(ActionEvent event) throws IOException {
-        if(isManager){
-            cleanup();
-            App.switchScreen("managerHome");
-            Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
-            });
-        }else {
+        cleanup();
+        if (!isManager) {
             try {
-                String teacherId = this.id;
-                cleanup();
                 App.switchScreen("teacherHome");
                 Platform.runLater(() -> {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                App.switchScreen("managerHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-    @Subscribe(threadMode = ThreadMode.MAIN )
-    @FXML
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
-        isManager = false;
-        btnNew.setDisable(false);
-        btnNew.setVisible(true);
-        Platform.runLater(()->{
-            setId(event.getId());
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+
     @FXML
     public void GoToAddQuestion(ActionEvent event) {
         try {
@@ -276,8 +291,8 @@ public class ShowQuestionsController {
 
     public void displayMsg(String QuestId) {
         Platform.runLater(() -> {
-            int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            //int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
+                    //JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
         });
     }
 }

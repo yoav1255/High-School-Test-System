@@ -47,7 +47,23 @@
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
-            <Button fx:id="showTestsBtn" mnemonicParsing="false" onAction="#goToAllTests" prefHeight="54.0" prefWidth="218.0" text="Show Tests" />
+                <Button fx:id="GradesButton" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#goToAllTests" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Grades">
+                    <graphic>
+                        <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
+                    </graphic>
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding>
+                    <font>
+                        <Font name="Oriya Sangam MN" size="15.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="1.0" top="1.0" />
+                    </VBox.margin>
+                </Button>
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
@@ -62,17 +78,33 @@
                         <Font name="FontAwesome" size="13.0" />
                     </font>
                 </Button>
+            <Button fx:id="backBN" layoutX="663.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="logoutButton" layoutX="728.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleLogoutButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="X">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
                 <!--            <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
-        <Pane layoutX="299.0" layoutY="110.0" prefHeight="385.0" prefWidth="512.0">
+        <Pane layoutX="331.0" layoutY="111.0" prefHeight="385.0" prefWidth="512.0">
             <children>
                 <Label layoutX="150.0" layoutY="110.0" text="Hello Student !">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="idLabel" layoutX="212.0" layoutY="135.0" text="ID : ">
+                <Label fx:id="idLabel" layoutX="298.0" layoutY="110.0" text="ID : ">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>

@@ -59,9 +59,6 @@ public class SimpleServer extends AbstractServer {
 					System.out.println( "in s.s "+studentTests1.get(0).getId());
 					client.sendToClient(new CustomMessage("returnStudentTestsFromSchedule" ,studentTests1));
 					break;
-//				case ("#getStudentTest"):
-//					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
-//					break;
 				case ("#getStudentTestWithInfo"):
 					StudentTest studentTest1 = App.getStudentTest((StudentTest) message.getData());
 					client.sendToClient(new CustomMessage("returnStudentTest",studentTest1));
@@ -75,6 +72,10 @@ public class SimpleServer extends AbstractServer {
 					ArrayList<String> auth = (ArrayList<String>) message.getData();
 					String user_type = App.login_auth(auth.get(0), auth.get(1));
 					client.sendToClient(new CustomMessage("returnLogin", user_type));
+					break;
+				case ("#logout"):
+					ArrayList<String> info = (ArrayList<String>) message.getData();
+					App.logout(info.get(0), info.get(1));
 					break;
 				case ("#studentHome"):
 					client.sendToClient(new CustomMessage("studentHome", message.getData()));

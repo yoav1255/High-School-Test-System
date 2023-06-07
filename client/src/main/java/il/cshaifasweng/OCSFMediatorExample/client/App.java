@@ -123,6 +123,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showStudentTest":
+                Platform.runLater(()->{
+                    setWindowTitle("show Student Test");
+                    try {
+                        setContent("showStudentTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "showUpdateStudent":
                 Platform.runLater(()->{
                     setWindowTitle("Update Grade");
@@ -273,6 +283,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "studentExecuteExamLOCAL":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Local Exam");
+                    try {
+                        setContent("studentExecuteExamLOCAL");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "examEntry":
                 Platform.runLater(()->{
                     setWindowTitle("Enter Exam");
@@ -325,6 +345,7 @@ public class App extends Application {
     @Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
+        System.out.println("CLIENT SHUT DOWN");
         cleanup();
 		super.stop();
 	}

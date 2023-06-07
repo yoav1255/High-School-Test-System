@@ -276,11 +276,10 @@ public void goHome(){
     cleanup();
     if (!isManager) {
         try {
-            String teacherId = this.id;
             App.switchScreen("teacherHome");
             Platform.runLater(() -> {
                 try {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
