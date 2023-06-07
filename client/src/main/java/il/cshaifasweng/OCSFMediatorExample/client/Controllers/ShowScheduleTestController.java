@@ -198,7 +198,7 @@ public class ShowScheduleTestController {
                 String currentDate = scheduledTest.getDate().toString().replace('-', '0');
                 String today = dtf.format(now);
                 if (show.equals("ShowTestHasntPerformed")) {
-                    if (Integer.parseInt(currentDate) > Integer.parseInt(today)) {
+                    if (scheduledTest.getStatus()==0) {
                         if (!onlyMyTest)
                             scheduledTestObservableList.add(scheduledTest);
                         else {
@@ -210,7 +210,7 @@ public class ShowScheduleTestController {
                     this.edit = true;
                     this.extraTime=false;
                 } else if (show.equals("ShowTestPerformed")) {
-                    if (Integer.parseInt(currentDate) <= Integer.parseInt(today)) {
+                    if (scheduledTest.getStatus()!=0) {
                         if (!onlyMyTest)
                             scheduledTestObservableList.add(scheduledTest);
                         else {
@@ -284,11 +284,12 @@ public class ShowScheduleTestController {
                                 EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#fillComboBox", idTeacher));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", idTeacher));
+                                EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
+                                EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-                            EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+
                         });
 
                     } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true&&scheduleTest_table_view.getSelectionModel().getSelectedItem().getIsComputerTest()) {
@@ -297,11 +298,11 @@ public class ShowScheduleTestController {
                             try {
                                 EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", selectedTest));
+                                EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(idTeacher));
-                            EventBus.getDefault().post(new SelectedTestEvent(selectedTest));
+
                         });
                     }
                 }
