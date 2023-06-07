@@ -31,6 +31,9 @@ public class ScheduledTest implements Serializable {
     private int timeLimit;
     private int activeStudents;
 
+    private boolean isLocal;
+
+
 
 
     public ScheduledTest(String id, LocalDate date, LocalTime time) {
@@ -42,6 +45,7 @@ public class ScheduledTest implements Serializable {
         status = 0;
         checkedSubmissions = 0;
         isChecked = false;
+        isLocal = false;
         activeStudents = 0;
     }
     public ScheduledTest(){
@@ -144,6 +148,14 @@ public class ScheduledTest implements Serializable {
             this.status =2;
         }
         return status;
+    }
+
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    public void setLocal(boolean local) {
+        isLocal = local;
     }
 
     public void setStatus(int status) {
