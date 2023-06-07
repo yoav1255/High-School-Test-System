@@ -43,6 +43,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 					break;
 				case ("updateSuccess"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Student updated successfully with the grade "+message.getData()));
 					break;
 				case ("returnLogin"):
 					String login_auth = (String) message.getData();

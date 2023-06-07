@@ -12,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowStudentFromScheduleEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -174,6 +175,11 @@ public class TestGradesController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Subscribe
+    public void onShowSuccessEvent(ShowSuccessEvent event){
+        //TODO create message for success
     }
 
 }

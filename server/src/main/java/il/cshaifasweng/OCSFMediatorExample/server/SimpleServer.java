@@ -66,7 +66,7 @@ public class SimpleServer extends AbstractServer {
 				case("#updateStudentTest"):
 					StudentTest studentTest = (StudentTest) message.getData();
 					App.updateStudentTest(studentTest);
-					client.sendToClient(new CustomMessage("updateSuccess",""));
+					client.sendToClient(new CustomMessage("updateSuccess",studentTest.getGrade()));
 					break;
 				case ("#login"):
 					ArrayList<String> auth = (ArrayList<String>) message.getData();
@@ -140,9 +140,8 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#updateScheduleTest"):
 					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
-					System.out.println("in s.s , active students: " + scheduledTest1.getActiveStudents());
 					App.updateScheduleTest( scheduledTest1);
-					client.sendToClient(new CustomMessage("updateSuccess", ""));
+//					client.sendToClient(new CustomMessage("updateSuccess", ""));
 					break;
 				case ("#getCourseExamForms"):
 					List<ExamForm> examForms = App.getCourseExamForms(message.getData().toString());
