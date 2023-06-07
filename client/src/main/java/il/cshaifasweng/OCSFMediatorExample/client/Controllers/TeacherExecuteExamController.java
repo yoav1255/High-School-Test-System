@@ -165,7 +165,6 @@ public class TeacherExecuteExamController {
         if (eventId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
                 timeLeftText.setText(Integer.toString(timeLeft));
-                System.out.println("before calling updateStudentsStatus");
                 updateStudentsStatus(scheduledTest.getId());
             });
         }
@@ -185,7 +184,6 @@ public class TeacherExecuteExamController {
         }
     }
     public void updateStudentsStatus(String testId){
-        System.out.println("start of updateStudentsStatus");
         Platform.runLater(() -> {
             try{
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo", testId));
@@ -193,11 +191,9 @@ public class TeacherExecuteExamController {
                 e.printStackTrace();
             }
         });
-        System.out.println("end of updateStudentsStatus");
     }
     @Subscribe
     public void onSelectedTestEvent (SelectedTestEvent event){
-        System.out.println("on selected time event");
         setScheduledTest(event.getSelectedTestEvent());
         Platform.runLater(() -> {
             try{
