@@ -7,15 +7,12 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowStudentFromScheduleEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,7 +21,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -108,24 +104,6 @@ public class TestGradesController {
 
         studentTestTableView.setItems(studentTestObservableList);
     }
-    @FXML
-    void goToScheduleNewTest(ActionEvent event) {
-        try {
-            App.switchScreen("showScheduleTest");
-
-            Platform.runLater(()->{
-                try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        cleanup();
-    }
 
     @FXML
     void handleBackBtn(ActionEvent event) throws IOException {
@@ -160,7 +138,7 @@ public class TestGradesController {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                 StudentTest selectedStudentTest = studentTestTableView.getSelectionModel().getSelectedItem();
 
-                if (selectedStudentTest != null&&!selectedStudentTest.isChecked()){
+                if (selectedStudentTest != null){
                     App.switchScreen("showUpdateStudent");
                     Platform.runLater(()->{
                         try {
