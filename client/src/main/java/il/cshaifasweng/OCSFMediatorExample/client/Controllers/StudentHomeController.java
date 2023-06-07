@@ -3,13 +3,11 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
-import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -90,10 +88,13 @@ public class StudentHomeController{
 @FXML
     public void goToAllTests(ActionEvent event) {
     try {
+        cleanup();
         App.switchScreen("showOneStudent");
 
         Platform.runLater(()->{
             try {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+                EventBus.getDefault().post(new MoveObjectToNextPageEvent(student));
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
             } catch (IOException e) {
                 throw new RuntimeException(e);

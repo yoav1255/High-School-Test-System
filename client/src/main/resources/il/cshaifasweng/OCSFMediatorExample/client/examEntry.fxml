@@ -14,5 +14,6 @@
       <Label fx:id="msg" layoutX="160.0" layoutY="302.0" text="Label" />
       <Button layoutX="346.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterTest_btn" text="Enter Online Test" />
       <Button layoutX="141.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterWordTest_btn" text="Enter WORD Test" />
+      <Button layoutX="534.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBackButton" text="go back" />
    </children>
 </AnchorPane>

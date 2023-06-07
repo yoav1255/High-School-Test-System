@@ -53,17 +53,12 @@ public class SimpleServer extends AbstractServer {
 				case ("#getStudentTests"):
 					List<StudentTest> studentTests =  App.getStudentTests((Student) message.getData());
 					client.sendToClient(new CustomMessage("returnStudentTestsFromStudent" ,studentTests));
-					//List<StudentTest> studentTests =  App.getStudentTests(App.getStudent((String) message.getData()));
-					//client.sendToClient(new CustomMessage("returnStudentTests" ,studentTests));
 					break;
 				case ("#getStudentTestsFromSchedule"):
 					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
 					System.out.println( "in s.s "+studentTests1.get(0).getId());
 					client.sendToClient(new CustomMessage("returnStudentTestsFromSchedule" ,studentTests1));
 					break;
-//				case ("#getStudentTest"):
-//					client.sendToClient(new CustomMessage("returnStudentTest",message.getData()));
-//					break;
 				case ("#getStudentTestWithInfo"):
 					StudentTest studentTest1 = App.getStudentTest((StudentTest) message.getData());
 					client.sendToClient(new CustomMessage("returnStudentTest",studentTest1));

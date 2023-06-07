@@ -2,11 +2,13 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -17,7 +19,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,7 +37,7 @@ public class ShowOneStudentController {
     private TableColumn<StudentTest, String> TableCourse;
 
     @FXML
-    private TableColumn<StudentTest, Integer> TableGrade;
+    private TableColumn<StudentTest, String > TableGrade;
 
     @FXML
     private TableColumn<StudentTest, String> TableSubject;
@@ -53,8 +54,14 @@ public class ShowOneStudentController {
     @FXML
     private Label statusLB;
     private List<StudentTest> studentTests;
+    private Student student;
+    private boolean isManager;
+    private String managerId;
+    private String studentId;
 
-    private String id;
+    //--------------------- manager is on this page(from all students) ------------------------//
+
+    //--------------------- student is on this page(from student home) ------------------------//
 
     public List<StudentTest> getStudentTests() {
         return studentTests;
@@ -64,13 +71,30 @@ public class ShowOneStudentController {
         this.studentTests = studentTests;
     }
 
-    public void setStudentID(String ids){id = ids;}
+    public void setStudentID(String ids){studentId = ids;}
     public ShowOneStudentController(){
         EventBus.getDefault().register(this);
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
+
+    @Subscribe
+    public void onMoveObjectToNextPageEvent(MoveObjectToNextPageEvent event){
+        student = (Student) event.getObject();
+    }
+
+    @Subscribe public void onMoveManagerIdEvent(MoveManagerIdEvent event){
+        isManager = true;
+        managerId = event.getId();
+    }
+
+    @Subscribe
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+        isManager = false;
+        studentId = event.getId();
+    }
+
     @Subscribe
     @FXML
     public void onShowOneStudentEvent(ShowOneStudentEvent event){
@@ -85,14 +109,20 @@ public class ShowOneStudentController {
                 Student student = studentTests.get(0).getStudent();
                 setStudentID(student.getId());
                 Platform.runLater(()->{
+                    setStudentID(student.getId());
                     statusLB.setText(statusLB.getText() + student.getId());
                     student_id.setText(student_id.getText() + student.getId());
                     student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
                 });
-
             }
 
-            TableGrade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+            TableGrade.setCellValueFactory(cellData -> {
+                StudentTest test = cellData.getValue();
+                String gradeToShow = "N/A";
+                if(test.isChecked())
+                    gradeToShow = Integer.toString( test.getGrade());
+                return new SimpleStringProperty(gradeToShow);
+            });
             TableCourse.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();
                 String courseName = test.getCourseName();
@@ -120,69 +150,87 @@ public class ShowOneStudentController {
         }
     }
 
-    @FXML void initialize(){
-    }
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-        try {
-            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
-                StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
-
-                if (selectedStudentTest != null) {
-                    App.switchScreen("showUpdateStudent");
-                    Platform.runLater(()->{
-                        try {
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(selectedStudentTest.getStudent().getId()));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
-                        } catch (Exception e) {
-                            e.printStackTrace();
+        if(!isManager) {
+            try {
+                if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+                    StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
+                    System.out.println(selectedStudentTest);
+                    if (selectedStudentTest != null) {
+                        if (selectedStudentTest.isChecked()) {
+                            cleanup();
+                            App.switchScreen("showStudentTest");
+                            Platform.runLater(() -> {
+                                try {
+                                    EventBus.getDefault().post(new MoveIdToNextPageEvent(studentId));
+                                    EventBus.getDefault().post(new MoveObjectToNextPageEvent(student));
+                                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
                         }
-                    });
+                        else{
+                            System.out.println("boo woo");
+                        }
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-    /*@FXML
-    void handleGoToAllStudentsButtonClick(ActionEvent event){
-        try{
-            App.switchScreen("allStudents");
-            Platform.runLater(()->{
-                try {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
 
-            });
-            cleanup();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }*/
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
         cleanup();
-        App.switchScreen("studentHome");
-        Platform.runLater(()->{
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", id));
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        });
+        if(isManager) {
+            App.switchScreen("managerHome");
+            Platform.runLater(() -> {
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        else {
+            App.switchScreen("studentHome");
+            Platform.runLater(() -> {
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", studentId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
     @FXML
     void handleBackButtonClick(ActionEvent event) throws IOException {
-        handleGoHomeButtonClick(event);
-        /*try{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents",""));
+        cleanup();
+        if(isManager) {
             App.switchScreen("allStudents");
-            cleanup();
-        }catch (IOException e){
-            e.printStackTrace();
-        }*/
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showAllStudents", ""));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        else {
+            App.switchScreen("studentHome");
+            Platform.runLater(() -> {
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", studentId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
     }
 }

@@ -123,6 +123,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showStudentTest":
+                Platform.runLater(()->{
+                    setWindowTitle("show Student Test");
+                    try {
+                        setContent("showStudentTest");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "showUpdateStudent":
                 Platform.runLater(()->{
                     setWindowTitle("Update Grade");
