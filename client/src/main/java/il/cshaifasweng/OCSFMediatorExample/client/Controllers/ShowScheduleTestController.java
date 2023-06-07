@@ -198,7 +198,7 @@ public class ShowScheduleTestController {
                 String currentDate = scheduledTest.getDate().toString().replace('-', '0');
                 String today = dtf.format(now);
                 if (show.equals("ShowTestHasntPerformed")) {
-                    if (Integer.parseInt(currentDate) > Integer.parseInt(today)) {
+                    if (scheduledTest.getStatus()==0) {
                         if (!onlyMyTest)
                             scheduledTestObservableList.add(scheduledTest);
                         else {
@@ -210,7 +210,7 @@ public class ShowScheduleTestController {
                     this.edit = true;
                     this.extraTime=false;
                 } else if (show.equals("ShowTestPerformed")) {
-                    if (Integer.parseInt(currentDate) <= Integer.parseInt(today)) {
+                    if (scheduledTest.getStatus()!=0) {
                         if (!onlyMyTest)
                             scheduledTestObservableList.add(scheduledTest);
                         else {
