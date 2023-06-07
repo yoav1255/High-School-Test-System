@@ -150,17 +150,24 @@ public class ShowOneStudentController {
             try {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
-
+                    System.out.println(selectedStudentTest);
                     if (selectedStudentTest != null) {
-                        App.switchScreen("ShowStudentTest"); // change to a new fxml
-                        Platform.runLater(() -> {
-                            try {
-                                EventBus.getDefault().post(new MoveIdToNextPageEvent(studentId));
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
+                        if (selectedStudentTest.isChecked()) {
+                            cleanup();
+                            App.switchScreen("showStudentTest");
+                            Platform.runLater(() -> {
+                                try {
+                                    EventBus.getDefault().post(new MoveIdToNextPageEvent(studentId));
+                                    EventBus.getDefault().post(new MoveObjectToNextPageEvent(student));
+                                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
+                        else{
+                            System.out.println("boo woo");
+                        }
                     }
                 }
             } catch (IOException e) {

@@ -88,6 +88,7 @@ public class StudentHomeController{
 @FXML
     public void goToAllTests(ActionEvent event) {
     try {
+        cleanup();
         App.switchScreen("showOneStudent");
 
         Platform.runLater(()->{

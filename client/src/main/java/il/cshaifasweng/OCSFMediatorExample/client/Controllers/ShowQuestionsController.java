@@ -177,19 +177,30 @@ public class ShowQuestionsController {
 
     }
     public void handleHomeButtonClick(ActionEvent event) throws IOException {
-        if(isManager){
-            cleanup();
-            App.switchScreen("managerHome");
-            Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
-            });
-        }else {
+        cleanup();
+        if (!isManager) {
             try {
-                String teacherId = this.id;
-                cleanup();
                 App.switchScreen("teacherHome");
                 Platform.runLater(() -> {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                App.switchScreen("managerHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();

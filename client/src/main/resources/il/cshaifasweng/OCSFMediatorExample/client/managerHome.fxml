@@ -68,7 +68,6 @@
             <Button mnemonicParsing="false" onAction="#goToExamForms" prefHeight="45.0" prefWidth="218.0" text="Exam Forms" />
             <Button mnemonicParsing="false" onAction="#goToScheduledTests" prefHeight="45.0" prefWidth="218.0" text="Scheduled Tests" />
             <Button mnemonicParsing="false" onAction="#goToStatistics" prefHeight="45.0" prefWidth="218.0" text="Statistics" />
-            <Button fx:id="ExtraTimeApproval" mnemonicParsing="false" onAction="#onExtraTimeHandle" prefHeight="53.0" prefWidth="226.0" text="Extra Time Approval" />
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">

@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -50,6 +51,8 @@ public class ExamEntryController {
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
         id = event.getId();
     }
+
+
 @Subscribe
     public void onShowScheduleTestEvent(ShowScheduleTestEvent event){
         scheduledTests = event.getScheduledTestList();
@@ -112,9 +115,27 @@ public class ExamEntryController {
         }
     }
 
+
     public void EnterWordTest_btn(ActionEvent actionEvent) throws IOException {
         // Save the document to a file using native file dialog*/
         localtest = true;
         SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
+
+
+    //TODO add buttons for home and back (matan)
+
+    @FXML
+    public void goBackButton() throws IOException {
+        cleanup();
+        App.switchScreen("studentHome");
+        Platform.runLater(() -> {
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", id));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
 }
