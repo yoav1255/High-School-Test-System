@@ -320,7 +320,7 @@ public class ShowScheduleTestController {
                 App.switchScreen("teacherHome");
                 Platform.runLater(() -> {
                     try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", idTeacher));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
