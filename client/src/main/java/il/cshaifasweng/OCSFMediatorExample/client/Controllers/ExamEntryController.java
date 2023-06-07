@@ -11,9 +11,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class ExamEntryController {
     private String id;
     private List<String> scheduleTestIds;
     private List<ScheduledTest> scheduledTests;
+    private boolean localtest = false;
 
     public ExamEntryController() {
         EventBus.getDefault().register(this);
@@ -90,7 +94,8 @@ public class ExamEntryController {
             } else { // test is available
                 cleanup();
                 try {
-                    App.switchScreen("studentExecuteExam");
+                    if(!localtest){App.switchScreen("studentExecuteExam");}
+                    else{App.switchScreen("studentExecuteExamLOCAL");}
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -105,5 +110,11 @@ public class ExamEntryController {
                 });
             }
         }
+    }
+
+    public void EnterWordTest_btn(ActionEvent actionEvent) throws IOException {
+        // Save the document to a file using native file dialog*/
+        localtest = true;
+        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 }

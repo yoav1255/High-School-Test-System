@@ -122,7 +122,7 @@ public class CreateQuestionController {
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
                 || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || courseNames.isEmpty()) {
 
-            JOptionPane.showMessageDialog(null, "Error! Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "Error! Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
         } else
             confirm();
         // TODO להוסיף בדיקה האם השאלה כבר קיימת במאגר, ואם קיימת להחזיר את המספר המזהה שלה

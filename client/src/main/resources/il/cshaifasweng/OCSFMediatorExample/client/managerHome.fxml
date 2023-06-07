@@ -68,6 +68,7 @@
             <Button mnemonicParsing="false" onAction="#goToExamForms" prefHeight="45.0" prefWidth="218.0" text="Exam Forms" />
             <Button mnemonicParsing="false" onAction="#goToScheduledTests" prefHeight="45.0" prefWidth="218.0" text="Scheduled Tests" />
             <Button mnemonicParsing="false" onAction="#goToStatistics" prefHeight="45.0" prefWidth="218.0" text="Statistics" />
+            <Button fx:id="ExtraTimeApproval" mnemonicParsing="false" onAction="#onExtraTimeHandle" prefHeight="53.0" prefWidth="226.0" text="Extra Time Approval" />
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
@@ -85,14 +86,14 @@
                 <!--            <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
-        <Pane layoutX="299.0" layoutY="110.0" prefHeight="385.0" prefWidth="512.0">
+        <Pane layoutX="331.0" layoutY="106.0" prefHeight="385.0" prefWidth="512.0">
             <children>
                 <Label layoutX="150.0" layoutY="110.0" text="Hello manager !">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="idLabel" layoutX="212.0" layoutY="135.0" text="ID : ">
+                <Label fx:id="idLabel" layoutX="310.0" layoutY="110.0" text="ID : ">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>

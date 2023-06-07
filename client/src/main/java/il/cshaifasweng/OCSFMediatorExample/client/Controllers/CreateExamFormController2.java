@@ -242,7 +242,8 @@ public class CreateExamFormController2 {
                     cleanup();
                     System.out.println("teacher id before submit: "+teacherId);
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
-                    JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+//                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
+                    //JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     App.switchScreen("showExamForms");
                     Platform.runLater(()->{
                         EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
