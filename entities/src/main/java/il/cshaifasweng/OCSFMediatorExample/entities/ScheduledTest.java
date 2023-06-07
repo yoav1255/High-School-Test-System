@@ -104,7 +104,6 @@ public class ScheduledTest implements Serializable {
 
     public void setExamForm(ExamForm examForm) {
         this.examForm = examForm;
-        this.timeLimit = examForm.getTimeLimit();
     }
 
     public List<StudentTest> getStudentTests() {

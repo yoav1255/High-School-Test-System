@@ -189,85 +189,83 @@ public class SimpleServer extends AbstractServer {
 	}
 	public void scheduleTestTimerHandler(){
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.scheduleAtFixedRate(new Runnable() { // do this code every 20 seconds
-			@Override
-			public void run() {
-				try {
-					scheduledTests = App.getScheduledTestsActive();
-				} catch (Exception e) {
-					e.printStackTrace();
+		// do this code every 20 seconds
+		executorService.scheduleAtFixedRate(() -> {
+			try {
+				scheduledTests = App.getScheduledTestsActive();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			LocalDateTime currentDateTime = LocalDateTime.now();
+			assert scheduledTests != null;
+			for (ScheduledTest scheduledTest : scheduledTests) {
+				LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
+				long timeLimitMinutes = scheduledTest.getTimeLimit();
+
+				LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
+
+				if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
+				{
+					scheduledTest.setStatus(2);
+					App.addScheduleTest(scheduledTest);
 				}
-				LocalDateTime currentDateTime = LocalDateTime.now();
-				assert scheduledTests != null;
-				for (ScheduledTest scheduledTest : scheduledTests) {
-					LocalDateTime scheduledDateTime = LocalDateTime.of(scheduledTest.getDate(), scheduledTest.getTime());
-					long timeLimitMinutes = scheduledTest.getTimeLimit();
+				else if(scheduledTest.getStatus()==0) { // before test
 
-					LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
-
-					if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
-					{
-						scheduledTest.setStatus(2);
+					if (currentDateTime.isAfter(scheduledDateTime)) {
+						scheduledTest.setStatus(1); // set as during test
 						App.addScheduleTest(scheduledTest);
-					}
-					else if(scheduledTest.getStatus()==0) { // before test
+						Timer timer = new Timer();
 
-						if (currentDateTime.isAfter(scheduledDateTime)) {
-							scheduledTest.setStatus(1); // set as during test
-							App.addScheduleTest(scheduledTest);
-							Timer timer = new Timer();
+						try {
+							sendToAllClients(new CustomMessage("timerStarted", scheduledTest));
+						}catch (Exception e){
+							e.printStackTrace();
+						}
 
-							try {
-								sendToAllClients(new CustomMessage("timerStarted", scheduledTest));
-							}catch (Exception e){
-								e.printStackTrace();
-							}
+						System.out.println("timer started for test : "+ scheduledTest.getId());
+						// timer started
+						// now we apply what the timer will do through its whole lifecycle
+						TimerTask task = new TimerTask() {
+							@Override
+							public void run() {
+								ScheduledTest st = App.getScheduleTest(scheduledTest.getId());
+								long timeLimitMinutes = st.getTimeLimit();
+								LocalDateTime scheduledDateTime = LocalDateTime.of(st.getDate(), st.getTime());
+								LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
+								LocalDateTime currentDateTime = LocalDateTime.now();
+								long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
 
-							System.out.println("timer started for test : "+ scheduledTest.getId());
-							// timer started
-							// now we apply what the timer will do through its whole lifecycle
-							TimerTask task = new TimerTask() {
-								@Override
-								public void run() {
-									ScheduledTest st = App.getScheduleTest(scheduledTest.getId());
-									long timeLimitMinutes = st.getTimeLimit();
-									LocalDateTime scheduledDateTime = LocalDateTime.of(st.getDate(), st.getTime());
-									LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
-									LocalDateTime currentDateTime = LocalDateTime.now();
-									long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
+								try {
+									List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+									scheduleTestId_timeLeft.add(st.getId());
+									System.out.println("Time Left: " + timeLeft);
+									scheduleTestId_timeLeft.add(timeLeft);
+									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));//TODO send also the schedule test for check
+								}catch (Exception e){
+									e.printStackTrace();
+								}
 
+								if (currentDateTime.isAfter(endTime)) {
+									System.out.println("current date time " + currentDateTime);
+									System.out.println("end time " + endTime);
+
+									System.out.println("checking the time left " + timeLeft);
 									try {
-										List<Object> scheduleTestId_timeLeft = new ArrayList<>();
-										scheduleTestId_timeLeft.add(st.getId());
-										System.out.println("Time Left: " + timeLeft);
-										scheduleTestId_timeLeft.add(timeLeft);
-										sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));//TODO send also the schedule test for check
+										sendToAllClients(new CustomMessage("timerFinished",st));
 									}catch (Exception e){
 										e.printStackTrace();
 									}
 
-									if (currentDateTime.isAfter(endTime)) {
-										System.out.println("current date time " + currentDateTime);
-										System.out.println("end time " + endTime);
-
-										System.out.println("checking the time left " + timeLeft);
-										try {
-											sendToAllClients(new CustomMessage("timerFinished",st));
-										}catch (Exception e){
-											e.printStackTrace();
-										}
-
-										timer.cancel(); // Stop the timer when the time limit is reached
-										scheduledTest.setStatus(2);
-										App.addScheduleTest(scheduledTest);
-										System.out.println("Status "+ scheduledTest.getStatus());
-									}
+									timer.cancel(); // Stop the timer when the time limit is reached
+									scheduledTest.setStatus(2);
+									App.addScheduleTest(scheduledTest);
+									System.out.println("Status "+ scheduledTest.getStatus());
 								}
-							};
+							}
+						};
 
 
-							timer.schedule(task, 0, 10000); // Check every 10 seconds (adjust the delay as needed)
-						}
+						timer.schedule(task, 0, 10000); // Check every 10 seconds (adjust the delay as needed)
 					}
 				}
 			}
