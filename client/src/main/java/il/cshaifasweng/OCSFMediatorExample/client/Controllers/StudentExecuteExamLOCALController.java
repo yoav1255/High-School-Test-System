@@ -10,14 +10,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.apache.poi.hssf.record.HCenterRecord;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +30,10 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-public class StudentExecuteExamLOCALController {
+public class StudentExecuteExamLOCALController implements Serializable {
 
 
     @FXML
@@ -49,6 +52,8 @@ public class StudentExecuteExamLOCALController {
     private ToggleGroup toggleGroup;
     @FXML
     private ListView<Question_Answer> questionsListView;
+    @FXML
+    private TextArea inputFileTextBox;
 
     private String id;
     private ScheduledTest scheduledTest;
@@ -58,6 +63,7 @@ public class StudentExecuteExamLOCALController {
     private List<Question_Answer> questionAnswers ;
     private long timeLeft;
 //    private List<TextField> q_notes;
+    private TestFile final_file;
 
 
 
@@ -187,10 +193,13 @@ public class StudentExecuteExamLOCALController {
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
         //endTest();
-        System.out.println("good");
+        if(final_file == null){return;}
+        System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
+        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
+        System.out.println("submit local test file to server");
         cleanup();
         App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        //JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
         });
@@ -335,6 +344,56 @@ public class StudentExecuteExamLOCALController {
             e.printStackTrace();
         }
     }
+
+    public void handleChooseFileButton(ActionEvent actionEvent) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(App.getStage());
+        inputFileTextBox.setText(selectedFile.getName());
+        TestFile test = new TestFile();
+        test.setStudentID(student.getId());
+        byte[] fileData = Files.readAllBytes(selectedFile.toPath());
+        test.setFileData(fileData);
+        test.setFileName("test" + scheduledTest.getExamFormCode() + "for" + student.getId() + ".docx");
+        test.setTestCode(scheduledTest.getId());
+        final_file = test;
+    }
+
+    public void onDragDropText(DragEvent dragEvent) {
+        /*Dragboard dragboard = dragEvent.getDragboard();
+        boolean success = false;
+
+        if (dragboard.hasFiles()) {
+            List<File> fileList = dragboard.getFiles();
+            // Handle the dropped files
+            handleDroppedFiles(fileList);
+            success = true;
+        }
+
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();*/
+    }
+
+    private void handleDroppedFiles(List<File> fileList) {
+        File file = fileList.get(0);
+            // Perform operations with the dropped file
+            // For example, read the file data, save to database, etc.
+            TestFile test = new TestFile();
+            //test.setStudentID(id);
+            try {
+                byte[] fileData = Files.readAllBytes(file.toPath());
+                test.setFileData(fileData);
+                test.setFileName(file.getName());
+                //test.setTestCode(scheduledTest.getId());
+                // Save the TestFile object to the database or send it to the server
+                //saveFileToDatabase(test);
+                final_file = test;
+                inputFileTextBox.setText(file.getName());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+
 }
 
 

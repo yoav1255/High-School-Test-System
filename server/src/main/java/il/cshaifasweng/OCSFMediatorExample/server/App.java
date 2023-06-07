@@ -1,5 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -83,7 +86,7 @@ public class App
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(Question_Score.class);
         configuration.addAnnotatedClass(Question_Answer.class);
-
+        configuration.addAnnotatedClass(TestFile.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -1016,6 +1019,16 @@ public class App
             }
         }
 
+        session.close();
+    }
+
+    public static void saveFileToDatabase(TestFile testFile) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("trying to save local test " + testFile.getFileName());
+        session.saveOrUpdate(testFile);
+        System.out.println("save local test " + testFile.getFileName());
+        session.getTransaction().commit();
         session.close();
     }
 
