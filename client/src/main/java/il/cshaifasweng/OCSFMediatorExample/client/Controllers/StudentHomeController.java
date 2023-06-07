@@ -49,18 +49,29 @@ public class StudentHomeController{
     public void setId(String id){this.id = id;}
     private Student student;
 
+    public void init_getStudent(){
+        initializeIfIdNotNull();
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     @FXML
     @Subscribe
     public void onUserHomeEvent(UserHomeEvent event){
-        setId(event.getUserID());
+        id = event.getUserID();
         Platform.runLater(()->{
-            initializeIfIdNotNull();
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            init_getStudent();
+        });
+    }
+
+    @Subscribe
+    public void onMoveIdToNextPage(MoveIdToNextPageEvent event){
+        id = event.getId();
+        Platform.runLater(()->{
+            init_getStudent();
         });
     }
 
