@@ -56,7 +56,7 @@ public class App
             if (session != null) {
                 session.getTransaction().rollback();
             }
-            System.err.println("An error occured, changes have been rolled back.");
+            System.err.println("An error occurred, changes have been rolled back.");
             exception.printStackTrace();
         } finally {
             session.close();
@@ -1031,6 +1031,5 @@ public class App
         session.getTransaction().commit();
         session.close();
     }
-
 
 }

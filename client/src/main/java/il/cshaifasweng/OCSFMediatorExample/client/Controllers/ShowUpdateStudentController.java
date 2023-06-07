@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowUpdateStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
@@ -163,20 +164,24 @@ public class ShowUpdateStudentController {
                     if (!Integer.toString(newG).equals(oldGrade.getText()) && (txtChange.getText().equals(""))) {
                     update_status.setText("Explanation must be provided!");
                     } else {
-                        studentTest.setChecked(true);
-                        scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions() + 1);
+                        if(studentTest.isChecked()==false) {
+                            studentTest.setChecked(true);
+                            scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions() + 1);
+                        }
                         studentTest.setGrade(newG);
                         studentTest.setChange_explanation(txtChange.getText());
 
                         cleanup();
-                        App.switchScreen("showOneStudent");
+                        App.switchScreen("testGrade");
                         Platform.runLater(() -> {
                             try {
                                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
-                                EventBus.getDefault().post(new MoveObjectToNextPageEvent(studentTest.getStudent()));
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", studentTest.getStudent()));                            } catch (Exception e) {
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", scheduledTest));
+                                EventBus.getDefault().post(new SelectedTestEvent(scheduledTest));
+
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         });

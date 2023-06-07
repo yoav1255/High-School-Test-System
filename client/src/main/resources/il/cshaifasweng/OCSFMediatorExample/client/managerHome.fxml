@@ -92,7 +92,7 @@
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="idLabel" layoutX="310.0" layoutY="110.0" text="ID : ">
+                <Label fx:id="idLabel" layoutX="302.0" layoutY="110.0" text="ID : ">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>

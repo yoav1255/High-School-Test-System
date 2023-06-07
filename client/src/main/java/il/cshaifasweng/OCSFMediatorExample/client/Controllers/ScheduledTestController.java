@@ -255,6 +255,7 @@ public class ScheduledTestController {
                 selectedTest.setTime(LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
                 selectedTest.setIsComputerTest(radioComputerTest.isSelected());
                 selectedTest.setExamForm(examForm);
+                selectedTest.setTimeLimit(examForm.getTimeLimit());
                 selectedTest.setTeacher(teacher);
                 ScheduledTest scheduledTest1 = selectedTest;
                 try {
@@ -279,6 +280,7 @@ public class ScheduledTestController {
             } else {
                 ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), radioComputerTest.isSelected());
                 scheduledTest.setExamForm(examForm);
+                scheduledTest.setTimeLimit(examForm.getTimeLimit());
                 scheduledTest.setTeacher(teacher);
 
                 try {

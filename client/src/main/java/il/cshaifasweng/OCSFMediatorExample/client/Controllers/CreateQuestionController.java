@@ -46,23 +46,20 @@ public class CreateQuestionController {
     private List<String> courseNames;
     private List<Course> courses;
     private List<Subject> subjects;
-    private String id = new String();
+    private String id;
     public String getId() {return id;}
     public void setId(String id) {
         this.id = id;
     }
-
     public CreateQuestionController() {
         EventBus.getDefault().register(this);
         courseNames = new ArrayList<>(); // The selected courses names.
         courses = new ArrayList<>(); // The courses that are in the selected subject.
         subjects = new ArrayList<>(); // The subjects the teacher teach.
     }
-
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
-
     @FXML
     void initialize() {
         Platform.runLater(() -> {
@@ -82,7 +79,6 @@ public class CreateQuestionController {
         });
 
     }
-
     @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event) {
         subjects.clear();
@@ -93,7 +89,6 @@ public class CreateQuestionController {
         }
         comboSubject.setItems(items);
     }
-
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
@@ -106,7 +101,6 @@ public class CreateQuestionController {
             e.printStackTrace();
         }
     }
-
     @Subscribe
     public void onShowSubjectCourses(ShowSubjectCoursesEvent event) {
         courses.clear();
@@ -117,14 +111,12 @@ public class CreateQuestionController {
         }
         courseOptions.setItems(items);
     }
-
     public void selectCourseListener(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         ObservableList<String> selectedItems = courseOptions.getSelectionModel().getSelectedItems();
         courseNames.clear();
         courseNames.addAll(selectedItems);
         //TODO לתקן את הבחירה המרובה של הקורסים
     }
-
     @FXML
     public void handleConfirmButtonClick(ActionEvent event) {
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
@@ -133,8 +125,8 @@ public class CreateQuestionController {
             //JOptionPane.showMessageDialog(null, "Error! Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
         } else
             confirm();
+        // TODO להוסיף בדיקה האם השאלה כבר קיימת במאגר, ואם קיימת להחזיר את המספר המזהה שלה
     }
-
     @FXML
     void handleCancelButtonClick(ActionEvent event) {
         if (theQuestion.getText().isEmpty() && ans1.getText().isEmpty() && ans2.getText().isEmpty()
@@ -166,7 +158,6 @@ public class CreateQuestionController {
             }
         }
     }
-
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
 
@@ -202,7 +193,6 @@ public class CreateQuestionController {
 
 
     }
-
     public void confirm() {
         String ans_str = comboAns.getValue();
         int ans_num = Integer.parseInt(ans_str);
@@ -246,8 +236,6 @@ public class CreateQuestionController {
         }
 
     }
-
-
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         setId(event.getId());
@@ -257,8 +245,6 @@ public class CreateQuestionController {
             e.printStackTrace();
         }
     }
-
-
     @Subscribe
     public void onShowUpdateQuestFormEvent(ShowUpdateQuestFormEvent event){
         List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
@@ -290,5 +276,4 @@ public class CreateQuestionController {
         //   comboAns.setItems(updateQuestion.getIndexAnswer());
 
     }
-
 }

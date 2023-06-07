@@ -313,6 +313,26 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "teacherExamEntry":
+                Platform.runLater(()->{
+                    setWindowTitle("exam entry");
+                    try {
+                        setContent("teacherExamEntry");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacherExecuteExam":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Exam");
+                    try {
+                        setContent("teacherExecuteExam");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "showStatistics":
                 Platform.runLater(()->{
                     setWindowTitle("Statistics");

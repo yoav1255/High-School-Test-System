@@ -32,9 +32,6 @@ public class ScheduledTest implements Serializable {
     private int activeStudents;
     private boolean isComputerTest;
 
-    private boolean isLocal;
-
-
 
     public ScheduledTest(String id, LocalDate date, LocalTime time,boolean isComputerTest) {
         this.id = id;
@@ -46,7 +43,6 @@ public class ScheduledTest implements Serializable {
         status = 0;
         checkedSubmissions = 0;
         isChecked = false;
-        isLocal = false;
         activeStudents = 0;
     }
     public ScheduledTest(){
@@ -108,7 +104,6 @@ public class ScheduledTest implements Serializable {
 
     public void setExamForm(ExamForm examForm) {
         this.examForm = examForm;
-        this.timeLimit = examForm.getTimeLimit();
     }
 
     public List<StudentTest> getStudentTests() {
@@ -155,12 +150,12 @@ public class ScheduledTest implements Serializable {
         return status;
     }
 
-    public boolean isLocal() {
-        return isLocal;
+    public int getTimeLimit() {
+        return timeLimit;
     }
 
-    public void setLocal(boolean local) {
-        isLocal = local;
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
     }
 
     public void setStatus(int status) {
@@ -173,14 +168,6 @@ public class ScheduledTest implements Serializable {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
-    }
-
-    public int getTimeLimit() {
-        return timeLimit;
-    }
-
-    public void setTimeLimit(int timeLimit) {
-        this.timeLimit = timeLimit;
     }
 
     public int getActiveStudents() {
