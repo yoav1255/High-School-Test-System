@@ -106,7 +106,7 @@ public class ManagerHomeController {
             }
         });
     }
-@FXML
+    @FXML
     public void goToStatistics(ActionEvent event) throws IOException {
         cleanup();
         App.switchScreen("showStatistics");
@@ -123,15 +123,21 @@ public class ManagerHomeController {
             ScheduledTest myScheduledTest = (ScheduledTest) data.get(4);
 
             int input = JOptionPane.showOptionDialog(null, "The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
-                    + subCourse  + "from the reason: " + explanation + ". Select if you want to approve this request.", "Extra time request",
+                    + subCourse  + " from the reason: " + explanation + ". Select if you want to approve this request.", "Extra time request",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
             List<Object> newData = new ArrayList<>();
             newData.add(myScheduledTest);
             if (input == JOptionPane.YES_OPTION) {
                 try {
-                    //TODO update the time limit with an SQL query
                     int x = myScheduledTest.getTimeLimit();
                     myScheduledTest.setTimeLimit(x+extraMinutes);
+                    Platform.runLater(()->{
+                        try {
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", myScheduledTest));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -76,6 +76,8 @@ public class TeacherExecuteExamController {
     void initialize() {
         Platform.runLater(() -> {
             errorLabel.setVisible(false);
+            studentsActiveLabel.setText("0/0");
+            timeLeftText.setText("time will update shortly");
         });
 
     }
@@ -117,6 +119,8 @@ public class TeacherExecuteExamController {
                 });
             }
             errorLabel.setVisible(false);
+            comments.clear();
+            extraTime.clear();
         }
     }
     @FXML
@@ -161,8 +165,9 @@ public class TeacherExecuteExamController {
         if (eventId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
                 timeLeftText.setText(Integer.toString(timeLeft));
+                System.out.println("before calling updateStudentsStatus");
+                updateStudentsStatus(scheduledTest.getId());
             });
-            updateStudentsStatus(scheduledTest.getId());
         }
     }
     @Subscribe
@@ -180,23 +185,26 @@ public class TeacherExecuteExamController {
         }
     }
     public void updateStudentsStatus(String testId){
+        System.out.println("start of updateStudentsStatus");
         Platform.runLater(() -> {
             try{
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo", "testId"));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo", testId));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+        System.out.println("end of updateStudentsStatus");
     }
     @Subscribe
     public void onSelectedTestEvent (SelectedTestEvent event){
+        System.out.println("on selected time event");
         setScheduledTest(event.getSelectedTestEvent());
         Platform.runLater(() -> {
             try{
                 int activeStudents = scheduledTest.getActiveStudents();
                 int sumSubmissions = scheduledTest.getSubmissions();
                 int sumStudents = activeStudents + sumSubmissions;
-                studentsActiveLabel.setText(String.valueOf(activeStudents) + "/" + sumStudents);
+                studentsActiveLabel.setText(activeStudents + "/" + sumStudents);
             } catch (Exception e) {
                 e.printStackTrace();
             }
