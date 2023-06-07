@@ -20,16 +20,17 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class ShowUpdateStudentController {
+public class ShowStudentTest {
     private StudentTest studentTest;
-    private String teacherId;
     private ScheduledTest scheduledTest;
     private List<Question_Answer> questionAnswerList;
+    private String studentId;
+
+    @FXML
+    private Button homeBN;
 
     @FXML
     private Label oldGrade;
-    @FXML
-    private TextField newGrade;
 
     @FXML
     private Label statusLB;
@@ -41,13 +42,15 @@ public class ShowUpdateStudentController {
     private Label test_id;
 
     @FXML
-    private TextArea txtChange;
+    private Label timeToComplete;
+
     @FXML
-    private Label update_status;
+    private TextArea txtChange;
+
     @FXML
     private ListView<Question_Answer> questionsListView;
 
-    public ShowUpdateStudentController() {
+    public ShowStudentTest() {
         EventBus.getDefault().register(this);
     }
 
@@ -57,7 +60,7 @@ public class ShowUpdateStudentController {
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
-        teacherId = event.getId();
+        studentId = event.getId();
     }
 
     @Subscribe
@@ -161,7 +164,7 @@ public class ShowUpdateStudentController {
                 int newG = Integer.parseInt(newGrade.getText());
                 if (newG >= 0 && newG <= 100) {
                     if (!Integer.toString(newG).equals(oldGrade.getText()) && (txtChange.getText().equals(""))) {
-                    update_status.setText("Explanation must be provided!");
+                        update_status.setText("Explanation must be provided!");
                     } else {
                         studentTest.setChecked(true);
                         scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions() + 1);
