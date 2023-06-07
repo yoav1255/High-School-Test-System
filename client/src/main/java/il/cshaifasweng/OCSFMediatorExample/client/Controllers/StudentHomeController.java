@@ -3,13 +3,11 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
-import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -51,18 +49,29 @@ public class StudentHomeController{
     public void setId(String id){this.id = id;}
     private Student student;
 
+    public void init_getStudent(){
+        initializeIfIdNotNull();
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     @FXML
     @Subscribe
     public void onUserHomeEvent(UserHomeEvent event){
-        setId(event.getUserID());
+        id = event.getUserID();
         Platform.runLater(()->{
-            initializeIfIdNotNull();
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            init_getStudent();
+        });
+    }
+
+    @Subscribe
+    public void onMoveIdToNextPage(MoveIdToNextPageEvent event){
+        id = event.getId();
+        Platform.runLater(()->{
+            init_getStudent();
         });
     }
 
@@ -90,10 +99,13 @@ public class StudentHomeController{
 @FXML
     public void goToAllTests(ActionEvent event) {
     try {
+        cleanup();
         App.switchScreen("showOneStudent");
 
         Platform.runLater(()->{
             try {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+                EventBus.getDefault().post(new MoveObjectToNextPageEvent(student));
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
             } catch (IOException e) {
                 throw new RuntimeException(e);

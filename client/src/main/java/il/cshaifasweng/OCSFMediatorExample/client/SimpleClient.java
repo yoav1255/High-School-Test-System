@@ -139,7 +139,6 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ManagerExtraTimeEvent((List<Object>) message.getData()));
 					break;
 			}
-
 		}catch (Exception e){
 			e.printStackTrace();
 		}

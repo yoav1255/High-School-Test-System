@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -47,9 +48,6 @@ public class ScheduledTestController {
     @FXML // fx:id="dataTimescheduleDate"
     private DatePicker dataTimescheduleDate; // Value injected by FXMLLoader
 
-    @FXML // fx:id="labelTeacher"
-    private Label labelTeacher; // Value injected by FXMLLoader
-
     @FXML // fx:id="scheduleTime"
     private TextField scheduleTime; // Value injected by FXMLLoader
 
@@ -64,6 +62,12 @@ public class ScheduledTestController {
 
     @FXML
     private TextField scheduleCode;
+    @FXML
+    private RadioButton radioComputerTest;
+
+    @FXML
+    private RadioButton radioManualTest;
+    private List<ScheduledTest> scheduledTests;
 
     public String getId() {
         return id;
@@ -104,15 +108,21 @@ public class ScheduledTestController {
         scheduleTime.setText("12:00");
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowScheduleTestEvent(ShowScheduleTestEvent event) {
+        scheduledTests = event.getScheduledTestList();
+    }
+
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         setSelectedTest(event.getSelectedTestEvent());
         scheduleCode.setText(selectedTest.getId());
         scheduleCode.setEditable(false);
         scheduleCode.setStyle("-fx-background-color: grey;");
-        labelTeacher.setText(selectedTest.getTeacher().getId());
         scheduleTime.setText(selectedTest.getTime().toString().substring(0, 5));
         dataTimescheduleDate.setValue(selectedTest.getDate());
+        radioComputerTest.setSelected(selectedTest.getIsComputerTest());
+        radioManualTest.setSelected(!selectedTest.getIsComputerTest());
         try {
             comboBoxExamForm.setValue(selectedTest.getExamForm().getCode());
         } catch (NullPointerException e) {
@@ -132,6 +142,20 @@ public class ScheduledTestController {
                     e.printStackTrace();
                 }
             });
+        }
+    }
+
+    @FXML
+    void handleRadioComputerTest(ActionEvent event) {
+        if (radioComputerTest.isSelected()) {
+            radioManualTest.setSelected(false);
+        }
+    }
+
+    @FXML
+    void handleRadioManualTest(ActionEvent event) {
+        if (radioManualTest.isSelected()) {
+            radioComputerTest.setSelected(false);
         }
     }
 
@@ -174,6 +198,12 @@ public class ScheduledTestController {
         String patternCode = "[a-zA-Z0-9]{4}";
         if (scheduleCode != null) {
             if (Pattern.matches(patternCode, scheduleCode.getText())) {
+                for (ScheduledTest scheduledTest : scheduledTests) {
+                    if (scheduledTest.getId().equals(scheduleCode.getText())&&selectedTest==null) {
+                        scheduleCode.setStyle("-fx-border-color: #cc0000;");
+                        return false;
+                    }
+                }
                 return true;
             }
         }
@@ -192,6 +222,11 @@ public class ScheduledTestController {
         valid = validateDate() & validateTime() & validateCode();
         if (comboBoxExamForm.getValue() == null) {
             comboBoxExamForm.setStyle("-fx-border-color:#cc0000;");
+            valid = false;
+        }
+        if (!(radioComputerTest.isSelected() || radioManualTest.isSelected())) {
+            radioManualTest.setStyle("-fx-border-color:#cc0000;");
+            radioComputerTest.setStyle("-fx-border-color:#cc0000;");
             valid = false;
         }
         if (!valid) {
@@ -218,6 +253,7 @@ public class ScheduledTestController {
             if (selectedTest != null) {
                 selectedTest.setDate(LocalDate.of(year, month, day));
                 selectedTest.setTime(LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
+                selectedTest.setIsComputerTest(radioComputerTest.isSelected());
                 selectedTest.setExamForm(examForm);
                 selectedTest.setTeacher(teacher);
                 ScheduledTest scheduledTest1 = selectedTest;
@@ -241,7 +277,7 @@ public class ScheduledTestController {
                     e.printStackTrace();
                 }
             } else {
-                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
+                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), radioComputerTest.isSelected());
                 scheduledTest.setExamForm(examForm);
                 scheduledTest.setTeacher(teacher);
 
@@ -294,6 +330,4 @@ public class ScheduledTestController {
             }
         });
     }
-
-
 }
