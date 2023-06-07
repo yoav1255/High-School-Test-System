@@ -44,8 +44,10 @@ public class ShowQuestionsController {
     private List<String> ans2;
     private List<String> ans3;
     private List<String> ans4;
+
     private boolean isManager;
     private String managerId;
+
     @FXML
     private Button btnNew;
     @FXML
@@ -107,9 +109,25 @@ public class ShowQuestionsController {
             comboCourse.setDisable(true);
 
         });
-
     }
-    //@Subscribe
+
+    @Subscribe(threadMode = ThreadMode.MAIN )
+    @FXML
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+        isManager = false;
+        btnNew.setDisable(false);
+        btnNew.setVisible(true);
+        Platform.runLater(()->{
+            setId(event.getId());
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Subscribe
     public void onMoveManagerIdEvent(MoveManagerIdEvent event){
         isManager = true;
         managerId = event.getId();
@@ -207,21 +225,7 @@ public class ShowQuestionsController {
             }
         }
     }
-    @Subscribe(threadMode = ThreadMode.MAIN )
-    @FXML
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
-        isManager = false;
-        btnNew.setDisable(false);
-        btnNew.setVisible(true);
-        Platform.runLater(()->{
-            setId(event.getId());
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+
     @FXML
     public void GoToAddQuestion(ActionEvent event) {
         try {
