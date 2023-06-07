@@ -19,10 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -93,8 +90,22 @@ public class TestGradesController {
         gender.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getGender()));
         grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
         ObservableList<StudentTest> studentTestObservableList = FXCollections.observableList(studentTests);
-        studentTestTableView.setItems(studentTestObservableList);
+        studentTestTableView.setRowFactory(tv -> {
+            TableRow<StudentTest> row = new TableRow<StudentTest>() {
+                @Override
+                protected void updateItem(StudentTest studentTest, boolean empty) {
+                    super.updateItem(studentTest, empty);
+                    if (studentTest != null && studentTest.isChecked()) {
+                        setStyle("-fx-background-color: #2ECC71 ;");
+                    } else if (studentTest != null && !studentTest.isChecked()){
+                        setStyle("-fx-background-color: #E74C3C ;");
+                    }
+                }
+            };
+            return row;
+        });
 
+        studentTestTableView.setItems(studentTestObservableList);
     }
     @FXML
     void goToScheduleNewTest(ActionEvent event) {
@@ -148,7 +159,7 @@ public class TestGradesController {
             if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                 StudentTest selectedStudentTest = studentTestTableView.getSelectionModel().getSelectedItem();
 
-                if (selectedStudentTest != null) {
+                if (selectedStudentTest != null&&!selectedStudentTest.isChecked()){
                     App.switchScreen("showUpdateStudent");
                     Platform.runLater(()->{
                         try {
