@@ -63,6 +63,7 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
+        id = student.getId();
         questionAnswers= new ArrayList<>();
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
@@ -189,10 +190,11 @@ public class StudentExecuteExamController {
         System.out.println("good");
         cleanup();
         App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
         });
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+
 
     }
 
