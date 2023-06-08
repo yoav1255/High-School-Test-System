@@ -286,13 +286,15 @@ public class ShowQuestionsController {
                 throw new RuntimeException(e);
             }
         });
-        displayMsg(String.valueOf(event.getQuestId()));
+        Platform.runLater(()->{
+            displayMsg(String.valueOf(event.getQuestId()));
+        });
     }
 
     public void displayMsg(String QuestId) {
         Platform.runLater(() -> {
-            //int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
-                    //JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
         });
     }
 }

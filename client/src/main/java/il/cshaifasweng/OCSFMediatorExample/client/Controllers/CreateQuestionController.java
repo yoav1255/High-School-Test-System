@@ -234,7 +234,6 @@ public class CreateQuestionController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
