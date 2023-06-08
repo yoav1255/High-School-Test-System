@@ -87,7 +87,6 @@ public class TeacherExamEntryController {
             if (myScheduledTest.getStatus() == 1){ // test is in progress
                 cleanup();
                 try {
-                    System.out.println("hiiiiiiiiiiiiiiiiiiiiiii");
                     App.switchScreen("teacherExecuteExam");
                 } catch (IOException e) {
                     throw new RuntimeException(e);

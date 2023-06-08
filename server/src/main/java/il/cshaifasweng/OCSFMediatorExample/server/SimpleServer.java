@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class SimpleServer extends AbstractServer {
 	private static List<ScheduledTest> scheduledTests;
 	private List<ConnectionToClient> clients;
+	private static int iterations = 0;
+	private Timer timer;
 
 
 	public SimpleServer(int port) {
@@ -203,6 +205,7 @@ public class SimpleServer extends AbstractServer {
 		// do this code every 20 seconds
 		executorService.scheduleAtFixedRate(() -> {
 			try {
+				iterations++;
 				scheduledTests = App.getScheduledTestsActive();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -220,12 +223,14 @@ public class SimpleServer extends AbstractServer {
 					scheduledTest.setStatus(2);
 					App.addScheduleTest(scheduledTest);
 				}
-				else if(scheduledTest.getStatus()==0) { // before test
+
+				else if((scheduledTest.getStatus()==0) || (iterations==1 && scheduledTest.getStatus()==1)) { // before test
+					// or if server is up now, we need to check if there is a test that should continue its task
 
 					if (currentDateTime.isAfter(scheduledDateTime)) {
 						scheduledTest.setStatus(1); // set as during test
 						App.addScheduleTest(scheduledTest);
-						Timer timer = new Timer();
+						timer = new Timer();
 
 						try {
 							sendToAllClients(new CustomMessage("timerStarted", scheduledTest));
@@ -245,13 +250,15 @@ public class SimpleServer extends AbstractServer {
 								LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 								LocalDateTime currentDateTime = LocalDateTime.now();
 								long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
+								System.out.println(timeLeft + " time left");
 
 								try {
 									List<Object> scheduleTestId_timeLeft = new ArrayList<>();
 									scheduleTestId_timeLeft.add(st.getId());
 									System.out.println("Time Left: " + timeLeft);
 									scheduleTestId_timeLeft.add(timeLeft);
-									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));//TODO send also the schedule test for check
+									System.out.println("st id : "+ st.getId());
+									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
 								}catch (Exception e){
 									e.printStackTrace();
 								}

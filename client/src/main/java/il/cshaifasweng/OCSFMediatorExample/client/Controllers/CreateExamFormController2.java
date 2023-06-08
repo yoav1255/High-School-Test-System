@@ -222,7 +222,7 @@ public class CreateExamFormController2 {
                 examForm.setSubject(sub);
                 examForm.setCourse(cour);
                 examForm.setTeacher(teacher);
-                examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" "+generalNotes.getText());
+                examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" :\n"+generalNotes.getText());
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
                     Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
@@ -272,18 +272,6 @@ public class CreateExamFormController2 {
         }
     }
 
-    @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
-        try{
-            cleanup();
-            App.switchScreen("teacherHome");
-            Platform.runLater(()->{
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
 @FXML
     public void addSelectedQuestion(ActionEvent event) {
@@ -451,26 +439,51 @@ public class CreateExamFormController2 {
             e.printStackTrace();
         }
     }
+
 @FXML
     public void goBackButtonClick(ActionEvent event) {
-        try {
-            if (examForm != null) {
-                cleanup();
-                List<Object> setObjectAndExam = new ArrayList<>();
-                setObjectAndExam.add(teacherId);
-                setObjectAndExam.add(examForm);
+    try {
+        cleanup();
+        if (isUpdate) { // return to the show test
+            List<Object> setObjectAndExam = new ArrayList<>();
+            setObjectAndExam.add(teacherId);
+            setObjectAndExam.add(examForm);
 
-                App.switchScreen("showOneExamForm");
-                Platform.runLater(() -> {
-                    try {
-                        EventBus.getDefault().post(new ShowOneExamFormManagerEvent(setObjectAndExam));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+            App.switchScreen("showOneExamForm");
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
-            }
-        } catch (IOException e) {
+        } else {  // return to all tests
+            App.switchScreen("showExamForms");
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+        }
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+}
+
+
+    @FXML
+    void handleGoHomeButtonClick(ActionEvent event) {
+        try{
+            cleanup();
+            App.switchScreen("teacherHome");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

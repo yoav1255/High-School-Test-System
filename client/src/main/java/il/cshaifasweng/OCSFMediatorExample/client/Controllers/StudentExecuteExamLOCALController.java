@@ -109,6 +109,9 @@ public class StudentExecuteExamLOCALController implements Serializable {
             questionAnswers.add(questionAnswer);
         }
 
+    }
+
+    public void setTable(){
         ObservableList<Question_Answer> questionAnswerObservableList = FXCollections.observableArrayList(questionAnswers);
         questionsListView.setItems(questionAnswerObservableList);
 
