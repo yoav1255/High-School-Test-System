@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ShowQuestionsController {
     private String id = new String();
@@ -194,7 +195,7 @@ public class ShowQuestionsController {
         }
 
     }
-    public void handleHomeButtonClick(ActionEvent event) throws IOException {
+    public void handleGoHomeButtonClick(ActionEvent event) throws IOException {
         cleanup();
         if (!isManager) {
             try {
@@ -294,5 +295,35 @@ public class ShowQuestionsController {
             //int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
                     //JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
         });
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+
+    public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
+        handleGoHomeButtonClick(null);
     }
 }
