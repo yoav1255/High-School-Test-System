@@ -81,8 +81,10 @@ public class StudentExecuteExamLOCALController {
     }
 
     @Subscribe
-    public void onSelectedTestEvent(SelectedTestEvent event) {
+    public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
+        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents() + 1);
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest));
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -94,10 +96,6 @@ public class StudentExecuteExamLOCALController {
 
             questionAnswers.add(questionAnswer);
         }
-    if(scheduledTest.getIsComputerTest()){
-        setTable();
-    }
-
     }
 
     @FXML

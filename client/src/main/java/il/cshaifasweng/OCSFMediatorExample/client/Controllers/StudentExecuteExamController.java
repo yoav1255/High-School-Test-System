@@ -76,11 +76,8 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        System.out.println("before adding , active students: " + scheduledTest.getActiveStudents());
         scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
-        System.out.println("after adding , active students: " + scheduledTest.getActiveStudents());
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
-
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
