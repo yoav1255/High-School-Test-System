@@ -94,7 +94,38 @@ public class StudentExecuteExamLOCALController {
 
             questionAnswers.add(questionAnswer);
         }
+    if(scheduledTest.getIsComputerTest()){
+        setTable();
+    }
 
+    }
+
+    @FXML
+    public void submitTestBtn(ActionEvent event) throws IOException {
+        //TODO validation checks
+        //endTest();
+        System.out.println("good");
+        cleanup();
+        App.switchScreen("studentHome");
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+        });
+    }
+
+    @Subscribe
+    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
+        System.out.println("good");
+        cleanup();
+        App.switchScreen("studentHome");
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+        });
+
+    }
+
+    public void setTable(){
         ObservableList<Question_Answer> questionAnswerObservableList = FXCollections.observableArrayList(questionAnswers);
         questionsListView.setItems(questionAnswerObservableList);
 
@@ -180,32 +211,6 @@ public class StudentExecuteExamLOCALController {
             }
         });
     }
-
-    @FXML
-    public void submitTestBtn(ActionEvent event) throws IOException {
-        //TODO validation checks
-        //endTest();
-        System.out.println("good");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
-        });
-    }
-
-    @Subscribe
-    public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
-        System.out.println("good");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
-        });
-
-    }
-
 
 
     @Subscribe

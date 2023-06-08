@@ -96,5 +96,6 @@
             <Button fx:id="update" mnemonicParsing="false" onAction="#goToUpdateExamForm" text="Update Exam Form" GridPane.rowIndex="1" />
             </children>
         </GridPane>
+      <Button layoutX="901.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleBackButtonClick" text="back" />
     </children>
 </AnchorPane>

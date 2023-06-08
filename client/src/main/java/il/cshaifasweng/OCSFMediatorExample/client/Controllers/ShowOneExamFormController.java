@@ -181,7 +181,19 @@ public class ShowOneExamFormController {
 
     @FXML
     void handleBackButtonClick(ActionEvent event) {
-
+        try {
+            cleanup();
+            App.switchScreen("showExamForms");
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
