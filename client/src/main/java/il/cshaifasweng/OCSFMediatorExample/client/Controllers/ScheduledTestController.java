@@ -169,35 +169,43 @@ public class ScheduledTestController {
         if (dataTimescheduleDate.getValue() != null) {
             String currentDate = dataTimescheduleDate.getValue().toString().replace('-', '0');
             String today = dtf.format(now);
-            if (Integer.parseInt(currentDate) >= Integer.parseInt(today)) //TODO change later to >
+            if (Integer.parseInt(currentDate) > Integer.parseInt(today)) //TODO change later to >
                 return true;
+            else if (Integer.parseInt(currentDate) == Integer.parseInt(today)) {
+                return validateTime(true);
+            }
         }
         dataTimescheduleDate.setStyle("-fx-border-color: #cc0000;");
         return false;
     }
 
-    public boolean validateTime() {
+    public boolean validateTime(boolean today) {
         String pattern = "^([01]\\d|2[0-3]):[0-5]\\d$";
         // Check if the time matches the pattern
-        if (scheduleTime != null) {
+        if (scheduleTime != null && scheduleTime.getText().length() == 5) {
             if (Pattern.matches(pattern, scheduleTime.getText())) {
                 if (Integer.parseInt(scheduleTime.getText().split(":")[0]) < 24 && Integer.parseInt(scheduleTime.getText().split(":")[1]) < 60) {
-                    return true;
+                    if (!today)
+                        return true;
+                    else {
+                        int timeNumberNow = Integer.parseInt(LocalTime.now().toString().substring(0, 5).replace(":", "0"));
+                        int timeSchedule = Integer.parseInt(scheduleTime.getText().substring(0, 5).replace(":", "0"));
+                        if (timeSchedule > timeNumberNow)
+                            return true;
+                    }
                 }
             }
-
         }
         scheduleTime.setStyle("-fx-border-color:#cc0000;");
         return false;
     }
-
 
     public boolean validateCode() {
         String patternCode = "[a-zA-Z0-9]{4}";
         if (scheduleCode != null) {
             if (Pattern.matches(patternCode, scheduleCode.getText())) {
                 for (ScheduledTest scheduledTest : scheduledTests) {
-                    if (scheduledTest.getId().equals(scheduleCode.getText())&&selectedTest==null) {
+                    if (scheduledTest.getId().equals(scheduleCode.getText()) && selectedTest == null) {
                         scheduleCode.setStyle("-fx-border-color: #cc0000;");
                         return false;
                     }
@@ -217,7 +225,7 @@ public class ScheduledTestController {
         scheduleCode.setStyle("-fx-border-color:default;");
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("ERROR");
-        valid = validateDate() & validateTime() & validateCode();
+        valid = validateDate() & validateTime(false) & validateCode();
         if (comboBoxExamForm.getValue() == null) {
             comboBoxExamForm.setStyle("-fx-border-color:#cc0000;");
             valid = false;
