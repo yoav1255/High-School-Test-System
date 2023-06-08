@@ -4,10 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -115,6 +112,8 @@ public class ShowScheduleTestController {
         Platform.runLater(()->{
             btnNewTest.setDisable(false);
             btnNewTest.setVisible(true);
+            onlyMyTestCheckBox.setVisible(true);
+
         });
     }
 
@@ -125,6 +124,7 @@ public class ShowScheduleTestController {
         Platform.runLater(()->{
             btnNewTest.setDisable(true);
             btnNewTest.setVisible(false);
+            onlyMyTestCheckBox.setVisible(false);
         });
 
     }
@@ -245,26 +245,42 @@ public class ShowScheduleTestController {
     @FXML
     void showTestHasntPerformed(ActionEvent event) {
         this.presentThis="ShowTestHasntPerformed";
+        testsPerformed = false;
+        testsNotYetPerformed = true;
+        allTests = false;
+        currentTests = false;
         PresentsTable();
     }
 
     @FXML
     void showTestPerformed(ActionEvent event) {
         this.presentThis="ShowTestPerformed";
+        testsPerformed = true;
+        testsNotYetPerformed = false;
+        allTests = false;
+        currentTests = false;
         PresentsTable();
     }
 
     @FXML
     void showAllTest(ActionEvent event) {
         this.presentThis="ShowAllTests";
+        testsPerformed = false;
+        testsNotYetPerformed = false;
+        allTests = true;
+        currentTests = false;
         PresentsTable();
     }
     @FXML
-    void handleOnlyMyTest(ActionEvent event) {
-    if (onlyMyTestCheckBox.isSelected())
-        onlyMyTest=true;
-    else
-        onlyMyTest=false;
+    void handleOnlyMyTest(ActionEvent event) throws IOException {
+        if (onlyMyTestCheckBox.isSelected()) {
+            onlyMyTest = true;
+        }
+        else {
+            onlyMyTest = false;
+        }
+        if(currentTests) SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+        else PresentsTable();
     }
 
     @FXML
@@ -356,6 +372,11 @@ public class ShowScheduleTestController {
 
             }
         });
+    }
+
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event) throws IOException {
+        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 }
 
