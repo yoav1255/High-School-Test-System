@@ -185,6 +185,7 @@ public class SimpleServer extends AbstractServer {
 				case ("#endLocalTest"):
 					TestFile file = (TestFile) message.getData();
 					App.saveFileToDatabase(file);
+					client.sendToClient(new CustomMessage("successEvent", ""));
 					break;
 				case ("#extraTimeRequest"):
 					sendToAllClients(new CustomMessage("extraTimeRequest", (List<Object>) message.getData()));

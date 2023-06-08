@@ -121,27 +121,29 @@ public class StudentExecuteExamLOCALController implements Serializable {
             return;
         }
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
         System.out.println("submit local test file to server");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
-        });
+        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
     }
 
 
     @Subscribe
     public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
-        System.out.println("good");
         cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Exam Submitted Successfully");
+            alert.showAndWait();
+            try {
+                App.switchScreen("studentHome");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            });
         });
-
     }
 
     @Subscribe
@@ -278,6 +280,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         FileChooser.ExtensionFilter docxFilter = new FileChooser.ExtensionFilter("DOCX Files (*.docx)", "*.docx");
         fileChooser.getExtensionFilters().add(docxFilter);
         File selectedFile = fileChooser.showOpenDialog(App.getStage());
+        if(selectedFile == null){return;}
         inputFileTextBox.setText(selectedFile.getName());
         TestFile test = new TestFile();
         test.setStudentID(student.getId());
@@ -287,43 +290,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
         test.setTestCode(scheduledTest.getId());
         final_file = test;
     }
-
-    public void onDragDropText(DragEvent dragEvent) {
-        /*Dragboard dragboard = dragEvent.getDragboard();
-        boolean success = false;
-
-        if (dragboard.hasFiles()) {
-            List<File> fileList = dragboard.getFiles();
-            // Handle the dropped files
-            handleDroppedFiles(fileList);
-            success = true;
-        }
-
-        dragEvent.setDropCompleted(success);
-        dragEvent.consume();*/
-    }
-
-    private void handleDroppedFiles(List<File> fileList) {
-        File file = fileList.get(0);
-            // Perform operations with the dropped file
-            // For example, read the file data, save to database, etc.
-            TestFile test = new TestFile();
-            //test.setStudentID(id);
-            try {
-                byte[] fileData = Files.readAllBytes(file.toPath());
-                test.setFileData(fileData);
-                test.setFileName(file.getName());
-                //test.setTestCode(scheduledTest.getId());
-                // Save the TestFile object to the database or send it to the server
-                //saveFileToDatabase(test);
-                final_file = test;
-                inputFileTextBox.setText(file.getName());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-    }
-
 }
 
 

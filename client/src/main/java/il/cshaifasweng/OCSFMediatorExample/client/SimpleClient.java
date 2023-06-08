@@ -139,6 +139,8 @@ public class SimpleClient extends AbstractClient {
 				case ("extraTimeResponse"):
 					EventBus.getDefault().post(new ManagerExtraTimeEvent((List<Object>) message.getData()));
 					break;
+				case ("successEvent"):
+					EventBus.getDefault().post(new ShowSuccessEvent("success"));
 			}
 		}catch (Exception e){
 			e.printStackTrace();
