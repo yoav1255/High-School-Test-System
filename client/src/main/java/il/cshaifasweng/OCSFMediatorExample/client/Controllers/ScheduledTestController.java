@@ -77,14 +77,12 @@ public class ScheduledTestController {
         this.id = id;
     }
 
-    //    public ScheduledTest getSelectedTest(){return selectedTest;}
     public void setSelectedTest(ScheduledTest selectedTest) {
         this.selectedTest = selectedTest;
     }
 
     public ScheduledTestController() {
         EventBus.getDefault().register(this);
-
     }
 
     public void cleanup() {

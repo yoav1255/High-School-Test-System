@@ -4,10 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -60,7 +57,6 @@ public class ShowScheduleTestController {
     private CheckBox onlyMyTestCheckBox;
     @FXML
     private Button btnNewTest;
-    private boolean onlyMyTest=false;
     @FXML // fx:id="students_table_view"
     private TableView<ScheduledTest> scheduleTest_table_view; // Value injected by FXMLLoader
 
@@ -74,14 +70,23 @@ public class ShowScheduleTestController {
     private TableColumn<ScheduledTest, String> time; // Value injected by FXMLLoader
     @FXML // fx:id="time"
     private TableColumn<ScheduledTest, String> InComputer; // Value injected by FXMLLoader
+
     private List<ScheduledTest> scheduledTests;
     private boolean edit = false;
     private boolean showGrades = false;
     private boolean extraTime=false;
+
+    private boolean onlyMyTest=false;
+    private boolean testsNotYetPerformed = false;
+    private boolean testsPerformed = false;
+    private boolean allTests = true;
+    private boolean currentTests = false;
+
     private boolean isManager;
     private String managerId;
 
     private String presentThis="ShowAllTests";
+
 
     public String getId() {
         return this.idTeacher;
@@ -103,9 +108,12 @@ public class ShowScheduleTestController {
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         this.idTeacher = event.getId();
+        isManager = false;
         Platform.runLater(()->{
             btnNewTest.setDisable(false);
             btnNewTest.setVisible(true);
+            onlyMyTestCheckBox.setVisible(true);
+
         });
     }
 
@@ -116,6 +124,7 @@ public class ShowScheduleTestController {
         Platform.runLater(()->{
             btnNewTest.setDisable(true);
             btnNewTest.setVisible(false);
+            onlyMyTestCheckBox.setVisible(false);
         });
 
     }
@@ -138,34 +147,21 @@ public class ShowScheduleTestController {
                 formattedTime = formattedTime.substring(0, 5);
                 return new SimpleStringProperty(formattedTime);
             });
-            checked.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-
-                    return new SimpleStringProperty(String.valueOf(param.getValue().getCheckedSubmissions())+"/"+String.valueOf(param.getValue().getSubmissions()));
+            checked.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getCheckedSubmissions() + "/" + param.getValue().getSubmissions()));
+            examFormId.setCellValueFactory(param -> {
+                try {
+                    return new SimpleStringProperty(param.getValue().getExamForm().getCode());
+                } catch (NullPointerException e) {
+                    // Handle the exception here (e.g., set a default value)
+                    return new SimpleStringProperty("N/A");
                 }
             });
-            examFormId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    try {
-
-                        return new SimpleStringProperty(param.getValue().getExamForm().getCode());
-                    } catch (NullPointerException e) {
-                        // Handle the exception here (e.g., set a default value)
-                        return new SimpleStringProperty("N/A");
-                    }
-                }
-            });
-            teacherId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ScheduledTest, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ScheduledTest, String> param) {
-                    try {
-                        return new SimpleStringProperty(param.getValue().getTeacher().getId());
-                    } catch (NullPointerException e) {
-                        // Handle the exception here (e.g., set a default value)
-                        return new SimpleStringProperty("N/A");
-                    }
+            teacherId.setCellValueFactory(param -> {
+                try {
+                    return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                } catch (NullPointerException e) {
+                    // Handle the exception here (e.g., set a default value)
+                    return new SimpleStringProperty("N/A");
                 }
             });
             InComputer.setCellValueFactory(new PropertyValueFactory<>("isComputerTest"));
@@ -193,10 +189,6 @@ public class ShowScheduleTestController {
              scheduledTestObservableList = FXCollections.observableArrayList();
 
             for (ScheduledTest scheduledTest : scheduledTests) {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
-                LocalDateTime now = LocalDateTime.now();
-                String currentDate = scheduledTest.getDate().toString().replace('-', '0');
-                String today = dtf.format(now);
                 if (show.equals("ShowTestHasntPerformed")) {
                     if (scheduledTest.getStatus()==0) {
                         if (!onlyMyTest)
@@ -244,31 +236,51 @@ public class ShowScheduleTestController {
     @FXML
     void showCurrentTest(ActionEvent event) throws IOException {
         this.presentThis="ShowCurrentTests";
+        testsPerformed = false;
+        testsNotYetPerformed = false;
+        allTests = false;
+        currentTests = true;
         SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
     @FXML
     void showTestHasntPerformed(ActionEvent event) {
         this.presentThis="ShowTestHasntPerformed";
+        testsPerformed = false;
+        testsNotYetPerformed = true;
+        allTests = false;
+        currentTests = false;
         PresentsTable();
     }
 
     @FXML
     void showTestPerformed(ActionEvent event) {
         this.presentThis="ShowTestPerformed";
+        testsPerformed = true;
+        testsNotYetPerformed = false;
+        allTests = false;
+        currentTests = false;
         PresentsTable();
     }
 
     @FXML
     void showAllTest(ActionEvent event) {
         this.presentThis="ShowAllTests";
+        testsPerformed = false;
+        testsNotYetPerformed = false;
+        allTests = true;
+        currentTests = false;
         PresentsTable();
     }
     @FXML
-    void handleOnlyMyTest(ActionEvent event) {
-    if (onlyMyTestCheckBox.isSelected())
-        onlyMyTest=true;
-    else
-        onlyMyTest=false;
+    void handleOnlyMyTest(ActionEvent event) throws IOException {
+        if (onlyMyTestCheckBox.isSelected()) {
+            onlyMyTest = true;
+        }
+        else {
+            onlyMyTest = false;
+        }
+        if(currentTests) SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+        else PresentsTable();
     }
 
     @FXML
@@ -360,6 +372,11 @@ public class ShowScheduleTestController {
 
             }
         });
+    }
+
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event) throws IOException {
+        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 }
 
