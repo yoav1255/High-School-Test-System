@@ -4,10 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -375,6 +372,11 @@ public class ShowScheduleTestController {
 
             }
         });
+    }
+
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event) throws IOException {
+        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 }
 
