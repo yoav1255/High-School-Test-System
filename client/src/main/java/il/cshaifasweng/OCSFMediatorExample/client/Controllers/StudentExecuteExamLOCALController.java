@@ -54,6 +54,8 @@ public class StudentExecuteExamLOCALController implements Serializable {
     private ListView<Question_Answer> questionsListView;
     @FXML
     private TextArea inputFileTextBox;
+    @FXML
+    private Label errorLabel;
 
     private String id;
     private ScheduledTest scheduledTest;
@@ -74,6 +76,10 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
+    }
+
+    @FXML void initialize(){
+        errorLabel.setVisible(false);
     }
 
     @Subscribe
@@ -193,7 +199,10 @@ public class StudentExecuteExamLOCALController implements Serializable {
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
         //endTest();
-        if(final_file == null){return;}
+        if(final_file == null){
+            errorLabel.setVisible(true);
+            return;
+        }
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
         SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
         System.out.println("submit local test file to server");
@@ -347,6 +356,8 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
     public void handleChooseFileButton(ActionEvent actionEvent) throws IOException {
         FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter docxFilter = new FileChooser.ExtensionFilter("DOCX Files (*.docx)", "*.docx");
+        fileChooser.getExtensionFilters().add(docxFilter);
         File selectedFile = fileChooser.showOpenDialog(App.getStage());
         inputFileTextBox.setText(selectedFile.getName());
         TestFile test = new TestFile();

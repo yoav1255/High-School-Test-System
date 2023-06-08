@@ -9,11 +9,10 @@
    <children>
       <TextField fx:id="text_id" layoutX="248.0" layoutY="132.0" />
       <TextField fx:id="text_testCode" layoutX="248.0" layoutY="199.0" />
-      <Label layoutX="160.0" layoutY="136.0" prefHeight="18.0" prefWidth="74.0" text="ID" />
-      <Label layoutX="160.0" layoutY="203.0" prefHeight="18.0" prefWidth="74.0" text="Test Code" />
+      <Label layoutX="196.0" layoutY="136.0" prefHeight="18.0" prefWidth="30.0" text="ID:" />
+      <Label layoutX="160.0" layoutY="203.0" prefHeight="18.0" prefWidth="74.0" text="Test Code:" />
       <Label fx:id="msg" layoutX="160.0" layoutY="302.0" text="Label" />
-      <Button layoutX="346.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterTest_btn" text="Enter Online Test" />
-      <Button layoutX="141.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterWordTest_btn" text="Enter WORD Test" />
+      <Button layoutX="251.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterTest_btn" text="Enter Test" />
       <Button layoutX="534.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBackButton" text="go back" />
    </children>
 </AnchorPane>

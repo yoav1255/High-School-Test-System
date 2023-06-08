@@ -84,6 +84,11 @@
                </font>
             </Label>
             <TextArea fx:id="inputFileTextBox" editable="false" layoutX="243.0" layoutY="293.0" onDragOver="#onDragDropText" prefHeight="104.0" prefWidth="270.0" />
+            <Label fx:id="errorLabel" layoutX="267.0" layoutY="448.0" text="error, please choose file !" textFill="RED">
+               <font>
+                  <Font name="Oriya Sangam MN" size="16.0" />
+               </font>
+            </Label>
             </children>
         </AnchorPane>
     </children>
