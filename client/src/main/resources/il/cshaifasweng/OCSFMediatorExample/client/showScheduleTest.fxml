@@ -49,8 +49,6 @@
                         <Insets bottom="1.0" top="1.0" />
                     </VBox.margin>
                 </Button>
-
-            <Button fx:id="btnNewTest" mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="52.0" prefWidth="214.0" text="Schedule New Test" />
             </children>
         </VBox>
         <GridPane fx:id="scheduleTestGP" layoutX="255.0" layoutY="47.0" prefHeight="517.0" prefWidth="679.0">
@@ -82,7 +80,13 @@
                   <Button fx:id="testPerformed" layoutX="150.0" layoutY="1.0" mnemonicParsing="false" onAction="#showTestPerformed" style="-fx-background-color: white; -fx-border-color: orange;" text="Test  performed" />
                   <Button fx:id="showAllTest" layoutX="260.0" layoutY="1.0" mnemonicParsing="false" onAction="#showAllTest" style="-fx-background-color: white; -fx-border-color: orange;" text="All Test" />
                   <CheckBox fx:id="onlyMyTestCheckBox" layoutX="340.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleOnlyMyTest" style="-fx-background-color: white;" text="show only my tests" />
-                  <Button fx:id="currentTestBtn" layoutX="490.0" layoutY="1.0" mnemonicParsing="false" onAction="#showCurrentTest" style="-fx-background-color: #E7AD75; -fx-border-color: orange;" text="current Test" />
+                  <Button fx:id="currentTestBtn" layoutX="472.0" layoutY="1.0" mnemonicParsing="false" onAction="#showCurrentTest" style="-fx-background-color: #E7AD75; -fx-border-color: orange;" text="current Test" />
+      
+                  <Button fx:id="btnNewTest" layoutX="557.0" layoutY="2.0" mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="27.0" prefWidth="123.0" style="-fx-background-color: orange;" text="Schedule New Test">
+                     <font>
+                        <Font name="System Bold Italic" size="12.0" />
+                     </font>
+                  </Button>
                </children>
             </Pane>
             </children>
