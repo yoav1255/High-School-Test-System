@@ -123,94 +123,6 @@ public class StudentExecuteExamLOCALController {
 
     }
 
-    public void setTable(){
-        ObservableList<Question_Answer> questionAnswerObservableList = FXCollections.observableArrayList(questionAnswers);
-        questionsListView.setItems(questionAnswerObservableList);
-
-        questionsListView.setCellFactory(param -> new ListCell<Question_Answer>() {
-            @Override
-            protected void updateItem(Question_Answer questionAnswer, boolean empty) {
-                super.updateItem(questionAnswer, empty);
-
-                if (empty || questionAnswer == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-
-                    Question_Score qs = questionAnswer.getQuestionScore();
-                    Question q = qs.getQuestion();
-                    String questionText = q.getText();
-                    String answer0 = q.getAnswer0();
-                    String answer1 = q.getAnswer1();
-                    String answer2 = q.getAnswer2();
-                    String answer3 = q.getAnswer3();
-
-                    VBox vbox = new VBox();
-                    vbox.setSpacing(10);
-
-                    Label questionLabel = new Label("Question:      " + questionText);
-                    vbox.getChildren().add(questionLabel);
-
-                    toggleGroup = new ToggleGroup();
-
-                    RadioButton answer1RadioButton = new RadioButton("1.    " + answer0);
-                    answer1RadioButton.setToggleGroup(toggleGroup);
-                    vbox.getChildren().add(answer1RadioButton);
-
-                    RadioButton answer2RadioButton = new RadioButton("2.     " + answer1);
-                    answer2RadioButton.setToggleGroup(toggleGroup);
-                    vbox.getChildren().add(answer2RadioButton);
-
-                    RadioButton answer3RadioButton = new RadioButton("3.     " + answer2);
-                    answer3RadioButton.setToggleGroup(toggleGroup);
-                    vbox.getChildren().add(answer3RadioButton);
-
-                    RadioButton answer4RadioButton = new RadioButton("4.     " + answer3);
-                    answer4RadioButton.setToggleGroup(toggleGroup);
-                    vbox.getChildren().add(answer4RadioButton);
-
-                    Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
-                    vbox.getChildren().add(noteStudentLabel);
-
-                    Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
-                    vbox.getChildren().add(scoreLabel);
-
-                    Label note = new Label("note: ");
-                    vbox.getChildren().add(note);
-                    TextField noteText = new TextField();
-                    vbox.getChildren().add(noteText);
-
-                    noteText.textProperty().addListener((observable, oldValue, newValue) -> {
-                        // Save the entered note to the Question_Answer object
-                        questionAnswer.setNote(newValue);
-                    });
-
-                    setGraphic(vbox);
-                    toggleGroups.add(toggleGroup);
-//                    q_notes.add(noteText);
-
-                    //
-
-                    // Listen for changes in the selected toggle
-                    toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
-                        RadioButton selectedRadioButton = (RadioButton) newValue;
-                        if (selectedRadioButton != null) {
-                            int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
-                            questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
-                        } else {
-                            System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
-                        }
-                    });
-
-
-
-                    //
-                }
-            }
-        });
-    }
-
-
     @Subscribe
     public void onTimerStartEvent(TimerStartEvent event){ // not necessary
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
@@ -246,9 +158,12 @@ public class StudentExecuteExamLOCALController {
         studentTest.setQuestionAnswers(questionAnswers);
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         int sum =0;
-        //TODO update the student checked and schedule test
 
         // student test is ready
+        //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
+        scheduledTest.setSubmissions(scheduledTest.getSubmissions()+1);
+        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()-1);
+
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
@@ -265,7 +180,7 @@ public class StudentExecuteExamLOCALController {
         for(Question_Answer questionAnswer:questionAnswers){
             student_studentTest_questionAnswers.add(questionAnswer);
         }
-
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
 
