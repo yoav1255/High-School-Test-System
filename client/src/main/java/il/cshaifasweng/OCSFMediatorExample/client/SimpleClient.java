@@ -133,8 +133,8 @@ public class SimpleClient extends AbstractClient {
 					List<Object> scheduleTestId_timeLeft =(List<Object>) message.getData();
 					EventBus.getDefault().postSticky(new TimeLeftEvent(scheduleTestId_timeLeft));
 					break;
-				case ("extraTimeRequest"):
-					EventBus.getDefault().postSticky(new extraTimeRequestEvent((List<Object>) message.getData()));
+				case ("extraTimeRequests"):
+					EventBus.getDefault().post(new extraTimeRequestEvent((List<ExtraTime>) message.getData()));
 					break;
 				case ("extraTimeResponse"):
 					EventBus.getDefault().post(new ManagerExtraTimeEvent((List<Object>) message.getData()));

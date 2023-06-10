@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.ExtraTime;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
@@ -140,17 +141,19 @@ public class TeacherExecuteExamController {
                 errorLabel.setVisible(true);
 
                 int number = Integer.parseInt(extraTime.getText());
-                List<Object> data = new ArrayList<>();
-                data.add(comments.getText());
-                data.add(number);
+                //List<Object> data = new ArrayList<>();
+                //data.add(comments.getText());
+                //data.add(number);
                 String fullName = teacherFirstName.concat(" ").concat(teacherLastName);
-                data.add(fullName);
+                //data.add(fullName);
                 String subCourse = subjectName.concat(" ").concat(courseName);
-                data.add(subCourse);
-                data.add(scheduledTest);
+                //data.add(subCourse);
+                //data.add(scheduledTest);
+                ExtraTime extraTimeRequest = new ExtraTime(fullName, number, subCourse, (comments.getText()), scheduledTest);
                 // data = 0. comments, 1. extraTime, 2. teacher full name, 3. sub + course 4. schedule test.
                 try{
-                SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeRequest", data));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#addExtraTimeRequest", extraTimeRequest));
+                    //SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeRequest", data));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

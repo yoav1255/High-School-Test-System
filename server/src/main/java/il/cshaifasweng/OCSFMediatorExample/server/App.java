@@ -83,6 +83,7 @@ public class App
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(Question_Score.class);
         configuration.addAnnotatedClass(Question_Answer.class);
+        configuration.addAnnotatedClass(ExtraTime.class);
 
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
@@ -281,11 +282,41 @@ public class App
     }
 
     public static void addScheduleTest(ScheduledTest scheduledTest) {
-        SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(scheduledTest);
         session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static void saveExtraTimeRequest(ExtraTime extraTime){
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(extraTime);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static List<ExtraTime> getAllExtraTimes() {
+        System.out.println("in app in app in app in app in app");
+        List<ExtraTime> extraTimes = new ArrayList<>();
+        session = sessionFactory.openSession();
+        String queryString = "SELECT e FROM ExtraTime e";
+        extraTimes = session.createQuery(queryString, ExtraTime.class).getResultList();
+        session.close();
+        return extraTimes;
+    }
+
+    public static void clearExtraTimeTable() {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String queryString = "DELETE FROM ExtraTime";
+        Query query = session.createQuery(queryString);
+        query.executeUpdate();
+
         session.getTransaction().commit();
         session.close();
     }

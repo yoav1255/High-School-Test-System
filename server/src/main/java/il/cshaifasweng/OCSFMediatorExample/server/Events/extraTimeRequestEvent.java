@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.ExtraTime;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 
 import java.util.ArrayList;
@@ -7,17 +8,17 @@ import java.util.List;
 
 public class extraTimeRequestEvent {
 
-    private List<Object> data = new ArrayList<>();
+    private List<ExtraTime> data = new ArrayList<>();
 
-    public extraTimeRequestEvent(List<Object> data) {
+    public extraTimeRequestEvent(List<ExtraTime> data) {
         this.data = data;
     }
 
-    public Object getData() {
+    public List<ExtraTime> getData() {
         return data;
     }
 
-    public void setData(List<Object> data) {
+    public void setData(List<ExtraTime> data) {
         this.data = data;
     }
 

@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.ExtraTime;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
@@ -16,6 +17,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javax.swing.*;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,21 +116,67 @@ public class ManagerHomeController {
         App.switchScreen("showStatistics");
     }
     @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event){
+        System.out.println("onTimeLeftEvent");
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getExtraTimeRequests",""));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subscribe
     public void onExtraTimeRequestEvent(extraTimeRequestEvent event){
+        System.out.println("onExtraTimeRequestEvent");
+        List<ExtraTime> extraTimeRequestEventList = event.getData();
         Platform.runLater(() -> {
-            List<Object> data = new ArrayList<>();
-            data = (List<Object>) event.getData();
-            String explanation = (String) data.get(0);
-            int extraMinutes = (int) data.get(1);
-            String teacherName = (String) data.get(2);
-            String subCourse = (String) data.get(3);
-            ScheduledTest myScheduledTest = (ScheduledTest) data.get(4);
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#clearExtraTimeRequests",""));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        if (!extraTimeRequestEventList.isEmpty()){
+            for (ExtraTime extraTime : extraTimeRequestEventList) {
+                //if (isScheduledTestActive(extraTime.getScheduledTest())) {
+                    handleExtraTimeRequest(extraTime);
+              //  }
+            }
+        }
+    }
+
+    public boolean isScheduledTestActive(ScheduledTest scheduledTest) {
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        // Get the start date and time of the scheduled test
+        LocalDate testStartDate = scheduledTest.getDate();
+        LocalTime testStartTime = scheduledTest.getTime();
+
+        // Calculate the end date and time of the scheduled test
+        LocalDateTime testStartDateTime = LocalDateTime.of(testStartDate, testStartTime);
+        LocalDateTime testEndDateTime = testStartDateTime.plusMinutes(scheduledTest.getTimeLimit());
+
+        // Check if the current date and time is within the scheduled test's time range
+        return (currentDate.isEqual(testStartDate) && currentTime.isAfter(testStartTime)) ||
+                (currentDate.isAfter(testStartDate) && currentDate.isBefore(testEndDateTime.toLocalDate())) ||
+                (currentDate.isEqual(testEndDateTime.toLocalDate()) && currentTime.isBefore(testEndDateTime.toLocalTime()));
+    }
+
+
+    public void handleExtraTimeRequest(ExtraTime extraTime){
+        Platform.runLater(() -> {
+            String explanation = extraTime.getExplanation();
+            int extraMinutes = extraTime.getExtraTime();
+            String teacherName = extraTime.getTeacherName();
+            String subCourse = extraTime.getSubCourse();
+            ScheduledTest myScheduledTest = extraTime.getScheduledTest();
 
             int input = JOptionPane.showOptionDialog(null, "The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
-                    + subCourse  + " from the reason: " + explanation + ". Select if you want to approve this request.", "Extra time request",
+                    + subCourse  + " from the reason: " + '"'+ explanation + '"' + ". Select if you want to approve this request.", "Extra time request",
                     JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-            List<Object> newData = new ArrayList<>();
-            newData.add(myScheduledTest);
+            List<Object> data = new ArrayList<>();
+            data.add(myScheduledTest);
             if (input == JOptionPane.YES_OPTION) {
                 try {
                     int x = myScheduledTest.getTimeLimit();
@@ -144,8 +194,8 @@ public class ManagerHomeController {
                 try {
                     Platform.runLater(() -> {
                         try{
-                            newData.add(1, true);
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", newData));
+                            data.add(1, true);
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -158,8 +208,8 @@ public class ManagerHomeController {
                 try {
                     Platform.runLater(() -> {
                         try{
-                            newData.add(1, false);
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", newData));
+                            data.add(1, false);
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

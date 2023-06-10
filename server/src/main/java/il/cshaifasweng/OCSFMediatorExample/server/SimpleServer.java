@@ -182,13 +182,20 @@ public class SimpleServer extends AbstractServer {
 					List<Subject> subjects1 = App.getAllSubjects();
 					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
 					break;
-				case ("#extraTimeRequest"):
-					sendToAllClients(new CustomMessage("extraTimeRequest", (List<Object>) message.getData()));
-					break;
 				case ("#extraTimeResponse"):
 					sendToAllClients(new CustomMessage("extraTimeResponse", (List<Object>) message.getData()));
 					break;
-
+				case ("#getExtraTimeRequests"):
+					System.out.println("in simple server getExtraTimeRequestsgetExtraTimeRequestsgetExtraTimeRequests");
+					List<ExtraTime> extraTimeList = App.getAllExtraTimes();
+					client.sendToClient(new CustomMessage("extraTimeRequests", extraTimeList));
+					break;
+				case ("#addExtraTimeRequest"):
+					App.saveExtraTimeRequest((ExtraTime) message.getData());
+					break;
+				case ("#clearExtraTimeRequests"):
+					App.clearExtraTimeTable();
+					break;
 
 			}
 		} catch (Exception e) {
