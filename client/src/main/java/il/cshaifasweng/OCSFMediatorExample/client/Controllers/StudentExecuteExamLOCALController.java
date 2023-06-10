@@ -10,13 +10,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import org.apache.poi.hssf.record.HCenterRecord;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import javax.swing.*;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +30,11 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 
-public class StudentExecuteExamLOCALController {
+public class StudentExecuteExamLOCALController implements Serializable {
 
 
     @FXML
@@ -47,6 +53,10 @@ public class StudentExecuteExamLOCALController {
     private ToggleGroup toggleGroup;
     @FXML
     private ListView<Question_Answer> questionsListView;
+    @FXML
+    private TextArea inputFileTextBox;
+    @FXML
+    private Label errorLabel;
 
     private String id;
     private ScheduledTest scheduledTest;
@@ -56,6 +66,7 @@ public class StudentExecuteExamLOCALController {
     private List<Question_Answer> questionAnswers ;
     private long timeLeft;
 //    private List<TextField> q_notes;
+    private TestFile final_file;
 
 
 
@@ -66,6 +77,10 @@ public class StudentExecuteExamLOCALController {
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
+    }
+
+    @FXML void initialize(){
+        errorLabel.setVisible(false);
     }
 
     @Subscribe
@@ -102,25 +117,34 @@ public class StudentExecuteExamLOCALController {
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
         //endTest();
-        System.out.println("good");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
-        });
+        if(final_file == null){
+            errorLabel.setVisible(true);
+            return;
+        }
+        System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
+        System.out.println("submit local test file to server");
+        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
     }
+
 
     @Subscribe
     public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
-        System.out.println("good");
         cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Exam Submitted Successfully");
+            alert.showAndWait();
+            try {
+                App.switchScreen("studentHome");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            });
         });
-
     }
 
     @Subscribe
@@ -250,6 +274,63 @@ public class StudentExecuteExamLOCALController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleChooseFileButton(ActionEvent actionEvent) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter docxFilter = new FileChooser.ExtensionFilter("DOCX Files (*.docx)", "*.docx");
+        fileChooser.getExtensionFilters().add(docxFilter);
+        File selectedFile = fileChooser.showOpenDialog(App.getStage());
+        if(selectedFile == null){return;}
+        inputFileTextBox.setText(selectedFile.getName());
+        TestFile test = new TestFile();
+        test.setStudentID(student.getId());
+        byte[] fileData = Files.readAllBytes(selectedFile.toPath());
+        test.setFileData(fileData);
+        test.setFileName("test" + scheduledTest.getExamFormCode() + "for" + student.getId() + ".docx");
+        test.setTestCode(scheduledTest.getId());
+        final_file = test;
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to exit test and logout ?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+    public void handleBackButtonClick(ActionEvent actionEvent) { Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("EXIT");
+        alert.setHeaderText(null);
+        alert.setContentText("Cant go back, please submit test");
+        ButtonType yesButton = new ButtonType("return");
+        alert.getButtonTypes().setAll(yesButton);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton){
+            alert.close();
+        }
+    }
+
+    public void handleGoHomeButtonClick(ActionEvent actionEvent) {
+        handleBackButtonClick(null);
     }
 }
 

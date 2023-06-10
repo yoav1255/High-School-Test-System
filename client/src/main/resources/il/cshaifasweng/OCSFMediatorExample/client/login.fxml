@@ -74,7 +74,7 @@
                   </DropShadow>
                </effect>
                 </Button>
-            <Label fx:id="loggedIn_msg" alignment="CENTER" layoutX="73.0" layoutY="255.0" prefHeight="17.0" prefWidth="264.0" text="user already logged in !" textFill="#e11111">
+            <Label fx:id="loggedIn_msg" alignment="CENTER" layoutX="73.0" layoutY="273.0" prefHeight="17.0" prefWidth="264.0" text="user already logged in !" textFill="#e11111">
                <font>
                   <Font name="Oriya Sangam MN" size="13.0" />
                </font>

@@ -34,8 +34,6 @@ public class ExamEntryController {
     private String id;
     private List<String> scheduleTestIds;
     private List<ScheduledTest> scheduledTests;
-    private boolean localtest = false;
-
     public ExamEntryController() {
         EventBus.getDefault().register(this);
         scheduleTestIds = new ArrayList<>();
@@ -97,7 +95,7 @@ public class ExamEntryController {
             } else { // test is available
                 cleanup();
                 try {
-                    if(!localtest){App.switchScreen("studentExecuteExam");}
+                    if(scheduledTest.getIsComputerTest()){App.switchScreen("studentExecuteExam");}
                     else{App.switchScreen("studentExecuteExamLOCAL");}
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -113,13 +111,6 @@ public class ExamEntryController {
                 });
             }
         }
-    }
-
-
-    public void EnterWordTest_btn(ActionEvent actionEvent) throws IOException {
-        // Save the document to a file using native file dialog*/
-        localtest = true;
-        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 
 

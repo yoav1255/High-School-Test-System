@@ -9,6 +9,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -41,6 +43,7 @@ public class loginController {
     public loginController(){
         EventBus.getDefault().register(this);
         instances++;
+        System.out.println("in login");
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -54,6 +57,8 @@ public class loginController {
     @FXML void initialize(){
         error_msg.setVisible(false);
         loggedIn_msg.setVisible(false);
+
+        user_password.setOnKeyPressed(this::handleKeyPressed);
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
@@ -66,6 +71,7 @@ public class loginController {
                 error_msg.setVisible(true);
                 break;
             case ("logged_error"):
+                error_msg.setVisible(false);
                 loggedIn_msg.setVisible(true);
                 break;
             case ("student"):
@@ -107,14 +113,30 @@ public class loginController {
     @FXML
     void loginButton(ActionEvent event) {
         try{
+            System.out.println("in login button");
+
             String id = user_id.getText();
             String pass = user_password.getText();
+            if(pass == null || id == null){
+                loggedIn_msg.setVisible(false);
+                error_msg.setVisible(true);
+                return;
+            }
             ArrayList<String> loginData = new ArrayList<>();
             loginData.add(0,id);
             loginData.add(1,pass);
+            System.out.println("before send to server");
+
             SimpleClient.getClient().sendToServer(new CustomMessage("#login", loginData));
+            System.out.println("after send to server");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            loginButton(null);
         }
     }
 

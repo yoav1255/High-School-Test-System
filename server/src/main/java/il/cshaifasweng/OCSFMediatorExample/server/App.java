@@ -1,12 +1,21 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
 
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -20,7 +29,7 @@ import org.hibernate.service.ServiceRegistry;
  * Hello world!
  *
  */
-public class App
+public class App extends Application
 {
 	
 	private static SimpleServer server;
@@ -28,12 +37,60 @@ public class App
     private static final SessionFactory sessionFactory = getSessionFactory();
     private static List<ScheduledTest> scheduledTests;
 
-    public static void main( String[] args ) throws Exception {
-        server = new SimpleServer(3028);
-        System.out.println("server is listening");
-        server.listen();
+    private static Scene scene;
+    private static Stage stage;
+
+    public static Scene getScene() {
+        return scene;
+    }
+
+    public static void setScene(Scene scene) {
+        App.scene = scene;
+    }
+
+    public static Stage getStage() {
+        return stage;
+    }
+
+    public static void setStage(Stage stage) {
+        App.stage = stage;
+    }
+
+    private static Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = null;
         try {
-            //SessionFactory sessionFactory = getSessionFactory();
+             fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return fxmlLoader.load();
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        try {
+
+            System.out.println("in start server");
+            scene = new Scene(loadFXML("serverControl"), 1200, 600);
+            stage.setScene(scene);
+            stage.setTitle("Server Control");
+            stage.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        new Thread(() -> {
+            try {
+                server = new SimpleServer(3028);
+                System.out.println("Server is listening to port " + server.getPort());
+                server.listen();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+
+        try {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
@@ -58,11 +115,18 @@ public class App
         } finally {
             session.close();
         }
-//        getTeacherExamStats("2");
-//        getCourseExamStats(4);
-//            getStudentExamStats("1");
     }
 
+    @Override
+    public void stop() throws Exception {
+        // TODO Auto-generated method stub
+        System.out.println("SERVER SHUT DOWN");
+        super.stop();
+    }
+
+    public static void main( String[] args ) throws Exception {
+        launch();
+    }
 
 
     public static Session getSession() {
@@ -85,6 +149,7 @@ public class App
         configuration.addAnnotatedClass(Question_Answer.class);
         configuration.addAnnotatedClass(ExtraTime.class);
 
+        configuration.addAnnotatedClass(TestFile.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -282,6 +347,7 @@ public class App
     }
 
     public static void addScheduleTest(ScheduledTest scheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(scheduledTest);
@@ -300,7 +366,6 @@ public class App
     }
 
     public static List<ExtraTime> getAllExtraTimes() {
-        System.out.println("in app in app in app in app in app");
         List<ExtraTime> extraTimes = new ArrayList<>();
         session = sessionFactory.openSession();
         String queryString = "SELECT e FROM ExtraTime e";
@@ -1049,5 +1114,16 @@ public class App
 
         session.close();
     }
+
+    public static void saveFileToDatabase(TestFile testFile) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        System.out.println("trying to save local test " + testFile.getFileName());
+        session.saveOrUpdate(testFile);
+        System.out.println("save local test " + testFile.getFileName());
+        session.getTransaction().commit();
+        session.close();
+    }
+
 
 }

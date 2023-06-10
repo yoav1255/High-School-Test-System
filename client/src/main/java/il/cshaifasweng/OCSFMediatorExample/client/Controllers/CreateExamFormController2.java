@@ -256,7 +256,7 @@ public class CreateExamFormController2 {
     }
 
     @FXML
-    void handleBackButtonClick(ActionEvent event) {
+    void handleGoBackButtonClick(ActionEvent event) {
         int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
                 JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
         if (input == JOptionPane.YES_OPTION){
@@ -441,7 +441,7 @@ public class CreateExamFormController2 {
     }
 
 @FXML
-    public void goBackButtonClick(ActionEvent event) {
+    public void handleBackButtonClick(ActionEvent event) {
     try {
         cleanup();
         if (isUpdate) { // return to the show test
@@ -485,6 +485,31 @@ public class CreateExamFormController2 {
             });
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(teacherId);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
         }
     }
 }

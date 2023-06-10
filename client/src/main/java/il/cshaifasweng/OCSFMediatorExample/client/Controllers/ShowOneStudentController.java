@@ -101,6 +101,13 @@ public class ShowOneStudentController {
         try{
             setStudentTests(event.getStudentTests());
             if(studentTests!=null){
+                for(StudentTest test : studentTests){
+                    if(!test.isChecked()){
+                        test.setGrade(-1);
+                    }
+                }
+                Student student = studentTests.get(0).getStudent();
+                setStudentID(student.getId());
                 Platform.runLater(()->{
                     setStudentID(student.getId());
                     statusLB.setText(statusLB.getText() + student.getId());

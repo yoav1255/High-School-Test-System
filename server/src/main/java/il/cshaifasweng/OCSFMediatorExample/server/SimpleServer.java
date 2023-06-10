@@ -4,8 +4,22 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SimpleServer extends AbstractServer {
 	private static List<ScheduledTest> scheduledTests;
-	private List<ConnectionToClient> clients;
+	private static List<ConnectionToClient> clients;
 	private static int iterations = 0;
 	private Timer timer;
 
@@ -27,20 +41,51 @@ public class SimpleServer extends AbstractServer {
 		super(port);
 		clients = new ArrayList<>();
 		scheduleTestTimerHandler();
-
 	}
+
+	public static List<ScheduledTest> getScheduledTests() {
+		return scheduledTests;
+	}
+
+	public static void setScheduledTests(List<ScheduledTest> scheduledTests) {
+		SimpleServer.scheduledTests = scheduledTests;
+	}
+
+	public List<ConnectionToClient> getClients() {
+		return clients;
+	}
+
+	public void setClients(List<ConnectionToClient> clients) {
+		this.clients = clients;
+	}
+
 	@Override
 	protected void clientConnected(ConnectionToClient client) {
-		clients.add(client);
-	}
+		try {
+			clients.add(client);
+			EventBus.getDefault().post(new NewClientEvent(client));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
+	}
 	@Override
 	protected synchronized void clientDisconnected(ConnectionToClient client) {
-		clients.remove(client);
+		try {
+			clients.remove(client);
+			EventBus.getDefault().post(new DeleteClientEvent(client));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
+
+
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
+			System.out.println("in s.s message from client");
+
 			CustomMessage message = (CustomMessage) msg;
 			String msgString = message.getMessage();
 			switch (msgString){
@@ -182,11 +227,15 @@ public class SimpleServer extends AbstractServer {
 					List<Subject> subjects1 = App.getAllSubjects();
 					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
 					break;
+				case ("#endLocalTest"):
+					TestFile file = (TestFile) message.getData();
+					App.saveFileToDatabase(file);
+					client.sendToClient(new CustomMessage("successEvent", ""));
+					break;
 				case ("#extraTimeResponse"):
 					sendToAllClients(new CustomMessage("extraTimeResponse", (List<Object>) message.getData()));
 					break;
 				case ("#getExtraTimeRequests"):
-					System.out.println("in simple server getExtraTimeRequestsgetExtraTimeRequestsgetExtraTimeRequests");
 					List<ExtraTime> extraTimeList = App.getAllExtraTimes();
 					client.sendToClient(new CustomMessage("extraTimeRequests", extraTimeList));
 					break;
@@ -292,5 +341,4 @@ public class SimpleServer extends AbstractServer {
 			}
 		}, 0, 20, TimeUnit.SECONDS);
 	}
-
 }
