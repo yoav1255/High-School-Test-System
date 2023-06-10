@@ -58,7 +58,7 @@
       </GridPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
+            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/teacher">
                <font>
                   <Font name="Oriya Sangam MN" size="13.0" />
                </font>
