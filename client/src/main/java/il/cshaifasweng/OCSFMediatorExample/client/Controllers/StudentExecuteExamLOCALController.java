@@ -32,6 +32,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 
 public class StudentExecuteExamLOCALController implements Serializable {
 
@@ -121,27 +122,29 @@ public class StudentExecuteExamLOCALController implements Serializable {
             return;
         }
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
         System.out.println("submit local test file to server");
-        cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
-        });
+        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
     }
 
 
     @Subscribe
     public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
-        System.out.println("good");
         cleanup();
-        App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Exam Submitted Successfully");
+            alert.showAndWait();
+            try {
+                App.switchScreen("studentHome");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            });
         });
-
     }
 
     @Subscribe
@@ -278,6 +281,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         FileChooser.ExtensionFilter docxFilter = new FileChooser.ExtensionFilter("DOCX Files (*.docx)", "*.docx");
         fileChooser.getExtensionFilters().add(docxFilter);
         File selectedFile = fileChooser.showOpenDialog(App.getStage());
+        if(selectedFile == null){return;}
         inputFileTextBox.setText(selectedFile.getName());
         TestFile test = new TestFile();
         test.setStudentID(student.getId());
@@ -288,42 +292,46 @@ public class StudentExecuteExamLOCALController implements Serializable {
         final_file = test;
     }
 
-    public void onDragDropText(DragEvent dragEvent) {
-        /*Dragboard dragboard = dragEvent.getDragboard();
-        boolean success = false;
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to exit test and logout ?");
 
-        if (dragboard.hasFiles()) {
-            List<File> fileList = dragboard.getFiles();
-            // Handle the dropped files
-            handleDroppedFiles(fileList);
-            success = true;
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
         }
-
-        dragEvent.setDropCompleted(success);
-        dragEvent.consume();*/
     }
 
-    private void handleDroppedFiles(List<File> fileList) {
-        File file = fileList.get(0);
-            // Perform operations with the dropped file
-            // For example, read the file data, save to database, etc.
-            TestFile test = new TestFile();
-            //test.setStudentID(id);
-            try {
-                byte[] fileData = Files.readAllBytes(file.toPath());
-                test.setFileData(fileData);
-                test.setFileName(file.getName());
-                //test.setTestCode(scheduledTest.getId());
-                // Save the TestFile object to the database or send it to the server
-                //saveFileToDatabase(test);
-                final_file = test;
-                inputFileTextBox.setText(file.getName());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void handleBackButtonClick(ActionEvent actionEvent) { Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("EXIT");
+        alert.setHeaderText(null);
+        alert.setContentText("Cant go back, please submit test");
+        ButtonType yesButton = new ButtonType("return");
+        alert.getButtonTypes().setAll(yesButton);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton){
+            alert.close();
+        }
     }
 
+    public void handleGoHomeButtonClick(ActionEvent actionEvent) {
+        handleBackButtonClick(null);
+    }
 }
 
 
