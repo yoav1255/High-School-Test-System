@@ -1,25 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import com.mysql.cj.xdevapi.Client;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
-import org.greenrobot.eventbus.EventBus;
 
-import java.net.InetAddress;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +31,7 @@ public class SimpleServer extends AbstractServer {
 		super(port);
 		clients = new ArrayList<>();
 		scheduleTestTimerHandler();
+		EventBus.getDefault().register(this);
 	}
 
 	public static List<ScheduledTest> getScheduledTests() {
@@ -340,5 +331,10 @@ public class SimpleServer extends AbstractServer {
 				}
 			}
 		}, 0, 20, TimeUnit.SECONDS);
+	}
+
+	@Subscribe
+	public void onTerminateAllClientsEvent(TerminateAllClientsEvent event){
+		sendToAllClients(new CustomMessage("Terminate",""));
 	}
 }

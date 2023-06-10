@@ -149,6 +149,10 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("successEvent"):
 					EventBus.getDefault().post(new ShowSuccessEvent("success"));
+					break;
+				case ("Terminate"):
+					System.exit(0);
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();

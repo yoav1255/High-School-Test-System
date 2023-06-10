@@ -63,6 +63,7 @@
                         <Font name="Bell MT Bold" size="23.0" />
                      </font>
                   </Label>
+                  <Button layoutX="275.0" layoutY="2.0" mnemonicParsing="false" onAction="#disconnectClients" text="Disconnect Clients" />
                </children></Pane>
             </children>
         </GridPane>

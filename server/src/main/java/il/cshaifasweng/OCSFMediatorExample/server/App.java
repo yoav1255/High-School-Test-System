@@ -69,8 +69,6 @@ public class App extends Application
     @Override
     public void start(Stage stage) throws IOException {
         try {
-
-            System.out.println("in start server");
             scene = new Scene(loadFXML("serverControl"), 1200, 600);
             stage.setScene(scene);
             stage.setTitle("Server Control");
@@ -82,8 +80,8 @@ public class App extends Application
         new Thread(() -> {
             try {
                 server = new SimpleServer(3028);
-                System.out.println("Server is listening to port " + server.getPort());
                 server.listen();
+                System.out.println("Server is listening to port " + server.getPort());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -94,7 +92,7 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
             String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
             session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
