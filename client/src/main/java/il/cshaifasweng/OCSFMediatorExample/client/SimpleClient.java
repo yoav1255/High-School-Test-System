@@ -15,11 +15,19 @@ public class SimpleClient extends AbstractClient {
 
 	private SimpleClient(String host, int port) {
 		super(host, port);
+		System.out.println("host: "+host + " port: "+ port);
+	}
+
+	@Override
+	protected void connectionEstablished(){
+		System.out.println("connection established");
 	}
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		try {
+			System.out.println("in handle from server");
+
 			CustomMessage message = (CustomMessage) msg;
 			String msgString = message.getMessage();
 			switch (msgString) {
@@ -147,7 +155,6 @@ public class SimpleClient extends AbstractClient {
 	
 	public static SimpleClient getClient() {
 		if (client == null) {
-			//client = new SimpleClient("localhost", 3028);
 			client = new SimpleClient("localhost", 3028);
 		}
 		return client;

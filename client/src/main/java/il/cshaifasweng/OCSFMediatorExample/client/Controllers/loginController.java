@@ -43,6 +43,7 @@ public class loginController {
     public loginController(){
         EventBus.getDefault().register(this);
         instances++;
+        System.out.println("in login");
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -112,6 +113,8 @@ public class loginController {
     @FXML
     void loginButton(ActionEvent event) {
         try{
+            System.out.println("in login button");
+
             String id = user_id.getText();
             String pass = user_password.getText();
             if(pass == null || id == null){
@@ -122,7 +125,10 @@ public class loginController {
             ArrayList<String> loginData = new ArrayList<>();
             loginData.add(0,id);
             loginData.add(1,pass);
+            System.out.println("before send to server");
+
             SimpleClient.getClient().sendToServer(new CustomMessage("#login", loginData));
+            System.out.println("after send to server");
         } catch (Exception e) {
             e.printStackTrace();
         }
