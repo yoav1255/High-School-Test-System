@@ -35,7 +35,7 @@
          </opaqueInsets></DatePicker>
       <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="410.0" layoutY="318.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
       <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="421.0" layoutY="241.0" prefHeight="10.0" prefWidth="48.0" />
-      <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="270.0" layoutY="456.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="228.0" style="-fx-background-color: #FFD700;" text="Schedule Test" textFill="#661515" />
+      <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="270.0" layoutY="456.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="228.0" style="-fx-background-color: #FFD700;" text="Add Schedule Test" textFill="#661515" />
       <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="84.0" prefHeight="19.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Code">
          <font>
             <Font size="20.0" />
@@ -90,5 +90,15 @@
             </Button>
          </children>
       </Pane>
+      <Label fx:id="codeError" layoutX="623.0" layoutY="90.0" prefHeight="18.0" prefWidth="294.0" />
+      <Label fx:id="radioBtnError" layoutX="623.0" layoutY="405.0" prefHeight="18.0" prefWidth="204.0" />
+      <Label fx:id="examFormError" layoutX="623.0" layoutY="324.0" prefHeight="18.0" prefWidth="204.0" />
+      <Label fx:id="timeError" layoutX="625.0" layoutY="245.0" prefHeight="18.0" prefWidth="204.0" />
+      <Label fx:id="dateError" layoutX="623.0" layoutY="170.0" prefHeight="18.0" prefWidth="215.0" />
+      <Button id="buttonScheduleTest" fx:id="deleteScheduleTest" layoutX="665.0" layoutY="456.0" mnemonicParsing="false" onAction="#deleteScheduleTest" prefHeight="30.0" prefWidth="132.0" style="-fx-background-color: black;" text="Delete Schedule Test" textFill="#fffffa" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

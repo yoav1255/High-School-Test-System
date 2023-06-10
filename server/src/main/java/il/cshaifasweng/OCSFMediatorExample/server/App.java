@@ -66,6 +66,16 @@ public class App extends Application
         return fxmlLoader.load();
     }
 
+    public static void deleteScheduleTest(ScheduledTest deleteScheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(deleteScheduledTest);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         try {
