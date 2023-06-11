@@ -165,6 +165,11 @@ public class SimpleServer extends AbstractServer {
 					App.addScheduleTest(scheduledTest);
 					client.sendToClient(new CustomMessage("addScheduleTestSuccess", ""));
 					break;
+				case ("#deleteRow"):
+					ScheduledTest deleteScheduledTest = (ScheduledTest) message.getData();
+					App.deleteScheduleTest(deleteScheduledTest);
+					client.sendToClient(new CustomMessage("deleteScheduleTestSuccess", ""));
+					break;
 				case ("#sendExamFormId"):
 					ExamForm examForm2 = App.getExamForm((message.getData().toString()));
 					client.sendToClient(new CustomMessage("returnExamForm", examForm2));

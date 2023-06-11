@@ -66,11 +66,21 @@ public class App extends Application
         return fxmlLoader.load();
     }
 
-
+    public static void deleteScheduleTest(ScheduledTest deleteScheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(deleteScheduledTest);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
         try {
+
+            System.out.println("in start server");
             scene = new Scene(loadFXML("serverControl"), 1200, 600);
             stage.setScene(scene);
             stage.setTitle("Server Control");
@@ -691,6 +701,7 @@ public class App extends Application
 
     public static void updateScheduleTest(ScheduledTest scheduledTest) {
         try {
+            System.out.println("in app func , active students: " + scheduledTest.getActiveStudents());
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
@@ -777,6 +788,7 @@ public class App extends Application
         List<StudentTest> studentTests = query.getResultList();
         student.setStudentTests(studentTests);
         session.close();
+        System.out.println(student.getEmail());
         return student;
     }
 
@@ -792,6 +804,9 @@ public class App extends Application
         session.flush();
         for(int i=2;i<items.size();i++){
             Question_Answer item = (Question_Answer) items.get(i);
+            System.out.println("saving question answer "+ item.getId());
+            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
+            System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
         session.flush();

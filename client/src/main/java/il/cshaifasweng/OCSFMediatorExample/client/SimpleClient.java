@@ -90,7 +90,10 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
 					break;
 				case("addScheduleTestSuccess"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Successfully added"));
 					break;
+				case ("deleteScheduleTestSuccess"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Successfully deleted"));
 				case ("returnExamForm"):
 					ExamForm examForm1=(ExamForm) message.getData();
 					EventBus.getDefault().post(new ScheduledTestEvent(examForm1));
