@@ -66,6 +66,16 @@ public class App extends Application
         return fxmlLoader.load();
     }
 
+    public static void deleteScheduleTest(ScheduledTest deleteScheduledTest) {
+        SessionFactory sessionFactory = getSessionFactory();
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(deleteScheduledTest);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         try {
@@ -82,8 +92,8 @@ public class App extends Application
         new Thread(() -> {
             try {
                 server = new SimpleServer(3028);
-                System.out.println("Server is listening to port " + server.getPort());
                 server.listen();
+                System.out.println("Server is listening to port " + server.getPort());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -94,7 +104,7 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-            //generateObjects();
+//            generateObjects();
             String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
             session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
@@ -1123,6 +1133,27 @@ public class App extends Application
         System.out.println("save local test " + testFile.getFileName());
         session.getTransaction().commit();
         session.close();
+    }
+
+    public static boolean getFirstTestEntryCheck(String studentId, String scheduleTestId) {
+        boolean isFirstTime=true;
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String queryString ="SELECT st from StudentTest st " +
+                "WHERE st.student.id=:studentId and st.scheduledTest.id =:scheduleTestId";
+
+        Query query = session.createQuery(queryString,StudentTest.class);
+        query.setParameter("scheduleTestId",scheduleTestId);
+        query.setParameter("studentId",studentId);
+        List<StudentTest> resultList = query.getResultList();
+        if (!resultList.isEmpty()){
+            System.out.println("not empty result");
+            isFirstTime = false;
+        }
+        session.getTransaction().commit();
+        session.close();
+        return isFirstTime;
     }
 
 

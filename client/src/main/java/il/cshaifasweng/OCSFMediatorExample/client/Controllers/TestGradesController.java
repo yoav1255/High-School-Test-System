@@ -80,7 +80,6 @@ public class TestGradesController {
     @Subscribe
     public void onShowStudentFromScheduleEvent(ShowStudentFromScheduleEvent event)throws IOException{
         this.studentTests=event.getStudentTests();
-        System.out.println("student id: "+studentTests.get(0).getStudent().getId());
         studentId.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getId()));
         studentName.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getFirst_name() + param.getValue().getStudent().getLast_name()));
         timeTook.setCellValueFactory(new PropertyValueFactory<>("timeToComplete"));

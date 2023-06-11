@@ -170,7 +170,6 @@ public class CreateExamFormController2 {
     public void onShowCourseQuestions(ShowCourseQuestionsEvent event){
         try {
             questionList = event.getQuestions();
-            System.out.println(questionList.get(0).getText());
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questionList);
             Platform.runLater(()->{
                 questionsListView.setItems(questions1);
@@ -240,7 +239,6 @@ public class CreateExamFormController2 {
                 }
                 else {
                     cleanup();
-                    System.out.println("teacher id before submit: "+teacherId);
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
 //                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
 //                    JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -390,7 +388,6 @@ public class CreateExamFormController2 {
                     scoreField.setText(Integer.toString(selectedQuestionScore.getScore()));
                     teacherNoteArea.setText(selectedQuestionScore.getTeacher_note());
                     studentNoteArea.setText(selectedQuestionScore.getStudent_note());
-                    System.out.println(teacherNoteArea.getText());
                 });
             }
             GridPane gridPane = new GridPane();

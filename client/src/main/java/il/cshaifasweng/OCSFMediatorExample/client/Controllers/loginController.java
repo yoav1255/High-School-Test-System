@@ -125,10 +125,7 @@ public class loginController {
             ArrayList<String> loginData = new ArrayList<>();
             loginData.add(0,id);
             loginData.add(1,pass);
-            System.out.println("before send to server");
-
             SimpleClient.getClient().sendToServer(new CustomMessage("#login", loginData));
-            System.out.println("after send to server");
         } catch (Exception e) {
             e.printStackTrace();
         }
