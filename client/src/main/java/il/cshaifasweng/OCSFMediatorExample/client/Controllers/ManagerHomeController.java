@@ -120,6 +120,7 @@ public class ManagerHomeController {
     }
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
+        System.out.println("onTimeLeftEvent onTimeLeftEvent onTimeLeftEvent onTimeLeftEvent");
         try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExtraTimeRequests",""));
         } catch (Exception e) {
@@ -173,12 +174,16 @@ public class ManagerHomeController {
             String subCourse = extraTime.getSubCourse();
             ScheduledTest myScheduledTest = extraTime.getScheduledTest();
 
-            int input = JOptionPane.showOptionDialog(null, "The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
-                    + subCourse  + " from the reason: " + '"'+ explanation + '"' + ". Select if you want to approve this request.", "Extra time request",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Extra time request");
+            alert.setContentText("The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
+                    + subCourse  + " from the reason: " + '"'+ explanation + '"' + ". Select if you want to approve this request.");
+
+            Optional<ButtonType> result = alert.showAndWait();
+
             List<Object> data = new ArrayList<>();
             data.add(myScheduledTest);
-            if (input == JOptionPane.YES_OPTION) {
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     int x = myScheduledTest.getTimeLimit();
                     myScheduledTest.setTimeLimit(x+extraMinutes);

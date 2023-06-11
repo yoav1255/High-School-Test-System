@@ -9,6 +9,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;
@@ -107,16 +108,19 @@ public class TeacherExecuteExamController {
         List<Object> eventObj = event.getData();
         ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
 
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Manager response");
+
         if (eventTest.getId().equals(scheduledTest.getId())) {
             if ((Boolean) eventObj.get(1)) {
                 Platform.runLater(() -> {
-                    int input = JOptionPane.showOptionDialog(null, "Manager approved your request and the time will update shortly ", "Information",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                   alert.setContentText("Manager approved your request and the time will update shortly");
+                   alert.show();
                 });
             } else {
                 Platform.runLater(() -> {
-                    int input = JOptionPane.showOptionDialog(null, "Manager did not approve your request", "Information",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+                    alert.setContentText("Manager did not approve your request");
+                    alert.show();
                 });
             }
             errorLabel.setVisible(false);

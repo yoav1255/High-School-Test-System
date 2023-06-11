@@ -294,8 +294,10 @@ public class ShowQuestionsController {
 
     public void displayMsg(String QuestId) {
         Platform.runLater(() -> {
-            int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setContentText("Question added. Question ID: " + QuestId);
+            alert.show();
         });
     }
 

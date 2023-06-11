@@ -88,7 +88,10 @@ public class CreateQuestionController {
         for (Subject subject : subjects) {
             items.add(subject.getName());
         }
-        comboSubject.setItems(items);
+        Platform.runLater(() -> {
+            comboSubject.setItems(items);
+        });
+
     }
     @FXML
     public void onSelectSubject(ActionEvent event) {
@@ -123,7 +126,10 @@ public class CreateQuestionController {
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
                 || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || courseNames.isEmpty()) {
 
-            //JOptionPane.showMessageDialog(null, "Error! Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Error! Fill all the fields");
+            alert.show();
         } else
             confirm();
         // TODO להוסיף בדיקה האם השאלה כבר קיימת במאגר, ואם קיימת להחזיר את המספר המזהה שלה
