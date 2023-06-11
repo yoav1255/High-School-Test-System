@@ -192,12 +192,15 @@ public class SimpleServer extends AbstractServer {
 					List<Statistics> teacherStat = App.getTeacherExamStats(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnTeacherStat",teacherStat));
 					break;
-				/*case ("#getCourseStat"):
-					Object messageData = message.getData();
-					int messageDataAsInt = Integer.parseInt((String) messageData);
-					List<Map<String, Object>> courseStat = App.getCourseExamStats(messageDataAsInt);
+				case ("#getCourseStat"):
+					List<Statistics> courseStat = App.getCourseExamStats(Integer.parseInt(message.getData().toString()));
 					client.sendToClient(new CustomMessage("returnCourseStat",courseStat));
-					break;*/
+					break;
+				case ("#getStudentStat"):
+					Statistics studentStat = App.getStudentExamStats(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnStudentStat",studentStat));
+					break;
+
 
 
 			}

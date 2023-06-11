@@ -10,10 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import org.greenrobot.eventbus.EventBus;
@@ -21,6 +18,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +39,8 @@ public class ShowStatisticsController {
     @FXML
     private TableView<Statistics> statistics_table_view;
 
-    private List<Statistics> statisticList;
+    private List<Statistics> statisticList = new ArrayList<>();
+
     private String teacherId;
     private String managerId;
     private boolean isManager;
@@ -86,15 +85,17 @@ public class ShowStatisticsController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
-    public void onShowAllStudentsEvent(ShowAllStatisticEvent event) {
+    public void onShowAllStatisticEvent(ShowAllStatisticEvent event) {
         try {
-            setStatisticList(event.getStatisticsList());
-            scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics,String>("scheduled_test"));
-            average.setCellValueFactory(new PropertyValueFactory<Statistics,Double>("average"));
-            median.setCellValueFactory(new PropertyValueFactory<Statistics,Integer>("median"));
-            ObservableList<Statistics> stats = FXCollections.observableList(statisticList);
-            statistics_table_view.setItems(stats);
-        }catch (Exception e){
+            List<Statistics> statisticsList = event.getStatisticsList();
+            ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticsList);
+
+            scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics, String>("scheduled_test"));
+            average.setCellValueFactory(new PropertyValueFactory<Statistics, Double>("average"));
+            median.setCellValueFactory(new PropertyValueFactory<Statistics, Integer>("median"));
+
+            statistics_table_view.setItems(observableStatisticsList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -151,34 +152,21 @@ public class ShowStatisticsController {
 
     public void selected_stat(ActionEvent actionEvent) throws IOException {
         String selectedParameter = stat_combobox.getValue();
-        String selectedName = combobox_id.getValue();
         if(Objects.equals(selectedParameter, "by teacher"))
         {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
-            if(selectedName != null)
-            {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat",selectedName));
-            }
 
         } else if (Objects.equals(selectedParameter, "by course")) {
 
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
-            if(selectedName != null)
-            {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat",selectedName));
-            }
         }
         else if (Objects.equals(selectedParameter, "by student"))
         {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
-            if(selectedName != null)
-            {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat",selectedName));
-            }
-
         }
-
     }
+
+
 
     @Subscribe
     public void onShowAllTeachersNamesEvent(ShowAllTeachersNamesEvent event)
@@ -208,15 +196,41 @@ public class ShowStatisticsController {
     }
 
     @Subscribe
-    public void onShowTeacherStatEvent(showTeacherStatEvent event)
-    {
-        setStatisticList(event.getTeacherStat());
-        scheduled_test.setCellValueFactory(new PropertyValueFactory<>("scheduled_test"));
-        average.setCellValueFactory(new PropertyValueFactory<Statistics,Double>("average"));
-        median.setCellValueFactory(new PropertyValueFactory<Statistics,Integer>("median"));
-        ObservableList<Statistics> statistics = FXCollections.observableList(statisticList);
-        statistics_table_view.setItems(statistics);
+    (threadMode = ThreadMode.MAIN)
+    public void onShowTeacherStatEvent(ShowTeacherStatEvent event) {
+        List<Statistics> teacherStat = event.getTeacherStat();
+        statisticList.clear();
+        statisticList.addAll(teacherStat);
+        statistics_table_view.setItems((ObservableList<Statistics>) statisticList);
     }
+
+
+    public void handleShowStat(ActionEvent actionEvent) throws IOException {
+        String selectedParameter = stat_combobox.getValue();
+        String selectedName = combobox_id.getValue();
+
+        if (selectedName != null && selectedParameter != null) {
+            switch (selectedParameter) {
+                case "by teacher" ->
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", selectedName));
+                case "by course" ->
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", selectedName));
+                case "by student" ->
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", selectedName));
+            }
+        } else {
+            // Display an error message or show an alert to prompt the user to select values for both comboboxes
+            // For example:
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Missing Selection");
+            alert.setContentText("Please select values for both comboboxes.");
+            alert.showAndWait();
+        }
+    }
+
+
+
 
 
 

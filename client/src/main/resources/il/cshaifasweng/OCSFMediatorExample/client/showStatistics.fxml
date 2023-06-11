@@ -62,7 +62,7 @@
                 <RowConstraints maxHeight="487.7233467102051" minHeight="10.0" prefHeight="480.58882904052734" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView fx:id="students_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
+                <TableView fx:id="statistics_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn fx:id="scheduled_test" prefWidth="75.0" text="Scheduled Test" />
                         <TableColumn fx:id="average" prefWidth="75.0" text="Average" />
@@ -84,13 +84,14 @@
                             </items>
                         </ComboBox>
                   <ComboBox fx:id="combobox_id" layoutX="210.0" layoutY="6.0" prefWidth="150.0" />
+                  <Button fx:id="show_buuton" layoutX="413.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleShowStat" text="Show" />
                     </children>
                 </Pane>
             </children>
         </GridPane>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
             <children>
-                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/students_list">
+                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/statistics">
                     <font>
                         <Font name="Oriya Sangam MN" size="13.0" />
                     </font>

@@ -147,8 +147,17 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("returnTeacherStat"):
 					List<Statistics> teacherStat = (List<Statistics>) message.getData();
-					EventBus.getDefault().post(new showTeacherStatEvent(teacherStat));
+					EventBus.getDefault().post(new ShowTeacherStatEvent(teacherStat));
 					break;
+				case ("returnCourseStat"):
+					List<Statistics> courseStat = (List<Statistics>) message.getData();
+					EventBus.getDefault().post(new showCourseStatEvent(courseStat));
+					break;
+				case ("returnStudentStat"):
+					Statistics studentStat = (Statistics) message.getData();
+					EventBus.getDefault().post(new showStudentStatEvent(studentStat));
+					break;
+
 
 			}
 		}catch (Exception e){

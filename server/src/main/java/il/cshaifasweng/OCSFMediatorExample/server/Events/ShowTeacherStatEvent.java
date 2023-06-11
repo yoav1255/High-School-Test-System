@@ -2,11 +2,11 @@ package il.cshaifasweng.OCSFMediatorExample.server.Events;
 import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
 
 import java.util.List;
-import java.util.Map;
 
-public class showTeacherStatEvent {
+
+public class ShowTeacherStatEvent {
     private List<Statistics> teacherStat;
-    public showTeacherStatEvent(List<Statistics> teacherStat)
+    public ShowTeacherStatEvent(List<Statistics> teacherStat)
     {
         this.teacherStat = teacherStat;
     }
