@@ -4,17 +4,21 @@ import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.DeleteClientEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.NewClientEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.TerminateAllClientsEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.io.IOException;
 
 public class ServerController {
 
@@ -56,17 +60,20 @@ public class ServerController {
     public void onDeleteClientEvent(DeleteClientEvent event){
         try {
             ConnectionToClient client = event.getClient();
-            clientObservableList.remove(client);
-            Platform.runLater(()->{
-                connected.setText((Integer.toString(clientObservableList.size())));
-                System.out.println(connected.getText());
-                clients_table_view.refresh();
-            });
-            setTable();
+            removeClient(client);
         }catch (Exception e){
             e.printStackTrace();
         }
 
+    }
+
+    public void removeClient(ConnectionToClient client){
+        clientObservableList.remove(client);
+        Platform.runLater(()->{
+            connected.setText((Integer.toString(clientObservableList.size())));
+            clients_table_view.refresh();
+        });
+        setTable();
     }
 
 
@@ -78,5 +85,15 @@ public class ServerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+@FXML
+    public void disconnectClients(ActionEvent event) throws IOException {
+        EventBus.getDefault().post(new TerminateAllClientsEvent());
+        clientObservableList.clear();
+
+        Platform.runLater(()->{
+            connected.setText((Integer.toString(clientObservableList.size())));
+            clients_table_view.refresh();
+        });
     }
 }

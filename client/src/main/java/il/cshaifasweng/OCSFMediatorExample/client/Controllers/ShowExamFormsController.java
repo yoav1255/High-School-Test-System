@@ -324,8 +324,14 @@ public void goHome(){
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yesButton) {
             ArrayList<String> info = new ArrayList<>();
-            info.add(id);
-            info.add("teacher");
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(id);
+                info.add("teacher");
+            }
             SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
             System.out.println("Perform logout");
             cleanup();

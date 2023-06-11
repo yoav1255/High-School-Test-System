@@ -74,7 +74,6 @@ public class ShowUpdateStudentController {
             });
             questionAnswerList = studentTest.getQuestionAnswers();
             scheduledTest = studentTest.getScheduledTest();
-            System.out.println("ans q1 : " + questionAnswerList.get(0).getAnswer());
             Platform.runLater(() -> {
                 setTable();
             });
@@ -105,7 +104,6 @@ public class ShowUpdateStudentController {
                         // Add the answers as separate labels in the VBox
 
                         Label answerLabel0 = new Label("1.      " + question.getAnswer0());
-                        System.out.println("qa is : " + questionAnswer.getAnswer());
                         if (questionAnswer.getAnswer() == 0)
                             answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
                         if (question.getIndexAnswer() == 0) {

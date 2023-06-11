@@ -106,7 +106,6 @@ public class Course implements Serializable {
         courses.add(new Course("Hardware"));
         courses.add(new Course("Develop C"));
 
-        System.out.println(courses.lastIndexOf(courses));
 
         return courses;
     }

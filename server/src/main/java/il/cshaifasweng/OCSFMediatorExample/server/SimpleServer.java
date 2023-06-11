@@ -1,25 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import com.mysql.cj.xdevapi.Client;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
-import org.greenrobot.eventbus.EventBus;
 
-import java.net.InetAddress;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +31,7 @@ public class SimpleServer extends AbstractServer {
 		super(port);
 		clients = new ArrayList<>();
 		scheduleTestTimerHandler();
+		EventBus.getDefault().register(this);
 	}
 
 	public static List<ScheduledTest> getScheduledTests() {
@@ -84,7 +75,6 @@ public class SimpleServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
-			System.out.println("in s.s message from client");
 
 			CustomMessage message = (CustomMessage) msg;
 			String msgString = message.getMessage();
@@ -103,7 +93,6 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#getStudentTestsFromSchedule"):
 					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
-					System.out.println( "in s.s "+studentTests1.get(0).getId());
 					client.sendToClient(new CustomMessage("returnStudentTestsFromSchedule" ,studentTests1));
 					break;
 				case ("#getStudentTestWithInfo"):
@@ -176,6 +165,11 @@ public class SimpleServer extends AbstractServer {
 					App.addScheduleTest(scheduledTest);
 					client.sendToClient(new CustomMessage("addScheduleTestSuccess", ""));
 					break;
+				case ("#deleteRow"):
+					ScheduledTest deleteScheduledTest = (ScheduledTest) message.getData();
+					App.deleteScheduleTest(deleteScheduledTest);
+					client.sendToClient(new CustomMessage("deleteScheduleTestSuccess", ""));
+					break;
 				case ("#sendExamFormId"):
 					ExamForm examForm2 = App.getExamForm((message.getData().toString()));
 					client.sendToClient(new CustomMessage("returnExamForm", examForm2));
@@ -245,6 +239,14 @@ public class SimpleServer extends AbstractServer {
 				case ("#clearExtraTimeRequests"):
 					App.clearExtraTimeTable();
 					break;
+				case ("#checkStudentTest"):
+					List<Object> studentId_scheduleTestId = (List<Object>) message.getData();
+					String studentId = (String) studentId_scheduleTestId.get(0);
+					String scheduleTestId = (String) studentId_scheduleTestId.get(1);
+					boolean firstTime = App.getFirstTestEntryCheck(studentId,scheduleTestId);
+					System.out.println("sending from s.s to client");
+					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
+					break;
 
 			}
 		} catch (Exception e) {
@@ -309,17 +311,13 @@ public class SimpleServer extends AbstractServer {
 									scheduleTestId_timeLeft.add(st.getId());
 									System.out.println("Time Left: " + timeLeft);
 									scheduleTestId_timeLeft.add(timeLeft);
-									System.out.println("st id : "+ st.getId());
 									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
 								}catch (Exception e){
 									e.printStackTrace();
 								}
 
 								if (currentDateTime.isAfter(endTime)) {
-									System.out.println("current date time " + currentDateTime);
-									System.out.println("end time " + endTime);
 
-									System.out.println("checking the time left " + timeLeft);
 									try {
 										sendToAllClients(new CustomMessage("timerFinished",st));
 									}catch (Exception e){
@@ -329,7 +327,6 @@ public class SimpleServer extends AbstractServer {
 									timer.cancel(); // Stop the timer when the time limit is reached
 									scheduledTest.setStatus(2);
 									App.addScheduleTest(scheduledTest);
-									System.out.println("Status "+ scheduledTest.getStatus());
 								}
 							}
 						};
@@ -340,5 +337,10 @@ public class SimpleServer extends AbstractServer {
 				}
 			}
 		}, 0, 20, TimeUnit.SECONDS);
+	}
+
+	@Subscribe
+	public void onTerminateAllClientsEvent(TerminateAllClientsEvent event){
+		sendToAllClients(new CustomMessage("Terminate",""));
 	}
 }
