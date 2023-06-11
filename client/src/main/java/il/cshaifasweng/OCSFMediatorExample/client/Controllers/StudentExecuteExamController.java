@@ -165,7 +165,6 @@ public class StudentExecuteExamController {
                             int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
                             questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
                         } else {
-                            System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
                     });
 
@@ -212,11 +211,11 @@ public class StudentExecuteExamController {
         timeLeft = (long)scheduleTestId_timeLeft.get(1);
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
-    if(scheduleTestId.equals(scheduledTest.getId())) {
-            Platform.runLater(() -> {
+        Platform.runLater(() -> {
+            if(scheduleTestId.equals(scheduledTest.getId())) {
                 timeLeftText.setText(Long.toString(timeLeft));
-            });
-        }
+            }
+        });
 }
 
 @Subscribe

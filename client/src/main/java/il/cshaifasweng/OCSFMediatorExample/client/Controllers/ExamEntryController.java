@@ -59,25 +59,29 @@ public class ExamEntryController {
         List<Object> studentId_scheduleTestId = new ArrayList<>();
         studentId_scheduleTestId.add(id);
         studentId_scheduleTestId.add(text_testCode.getText());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#checkStudentTest",studentId_scheduleTestId));
         scheduledTests = event.getScheduledTestList();
         for(ScheduledTest scheduledTest:scheduledTests){
             scheduleTestIds.add(scheduledTest.getId());
         }
-        Platform.runLater(()->{
-           if(isFirstEntry) enterTest();
-           else{
-               msg.setVisible(true);
-               msg.setText("Already submitted this test!");
-           }
-        });
+        SimpleClient.getClient().sendToServer(new CustomMessage("#checkStudentTest",studentId_scheduleTestId));
+
 }
 
 @Subscribe
     public void onCheckFirstEntryEvent(CheckFirstEntryEvent event){
-        if(event.isFirst()==false)
-            isFirstEntry = false;
-}
+        System.out.println("is first changed to : " + event.isFirst());
+        isFirstEntry = event.isFirst();
+        Platform.runLater(()->{
+            if(isFirstEntry) {
+                System.out.println("accessing entry with " + isFirstEntry);
+                enterTest();
+            }
+            else{
+                msg.setVisible(true);
+                msg.setText("Already submitted this test!");
+            }
+        });
+    }
 
 @FXML
     public void EnterTest_btn(ActionEvent event) throws IOException {
@@ -100,7 +104,6 @@ public class ExamEntryController {
             //if status is 0 write the time and date that test starts
             //if status is 2 write that the test isnt available anymore
             int index = scheduleTestIds.indexOf(codeInput);
-            System.out.println(codeInput);
             ScheduledTest scheduledTest = scheduledTests.get(index);
             int status = scheduledTest.getStatus();
             if (status == 0) { // test is yet to start

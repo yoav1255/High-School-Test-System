@@ -157,7 +157,6 @@ public class ShowOneStudentController {
             try {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     StudentTest selectedStudentTest = GradesTable.getSelectionModel().getSelectedItem();
-                    System.out.println(selectedStudentTest);
                     if (selectedStudentTest != null) {
                         if (selectedStudentTest.isChecked()) {
                             cleanup();

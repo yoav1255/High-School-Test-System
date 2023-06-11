@@ -75,7 +75,6 @@ public class SimpleServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
-			System.out.println("in s.s message from client");
 
 			CustomMessage message = (CustomMessage) msg;
 			String msgString = message.getMessage();
@@ -94,7 +93,6 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#getStudentTestsFromSchedule"):
 					List<StudentTest> studentTests1 =  App.getStudentTestsFromScheduled((ScheduledTest) message.getData());
-					System.out.println( "in s.s "+studentTests1.get(0).getId());
 					client.sendToClient(new CustomMessage("returnStudentTestsFromSchedule" ,studentTests1));
 					break;
 				case ("#getStudentTestWithInfo"):
@@ -241,6 +239,7 @@ public class SimpleServer extends AbstractServer {
 					String studentId = (String) studentId_scheduleTestId.get(0);
 					String scheduleTestId = (String) studentId_scheduleTestId.get(1);
 					boolean firstTime = App.getFirstTestEntryCheck(studentId,scheduleTestId);
+					System.out.println("sending from s.s to client");
 					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
 					break;
 
@@ -307,17 +306,13 @@ public class SimpleServer extends AbstractServer {
 									scheduleTestId_timeLeft.add(st.getId());
 									System.out.println("Time Left: " + timeLeft);
 									scheduleTestId_timeLeft.add(timeLeft);
-									System.out.println("st id : "+ st.getId());
 									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
 								}catch (Exception e){
 									e.printStackTrace();
 								}
 
 								if (currentDateTime.isAfter(endTime)) {
-									System.out.println("current date time " + currentDateTime);
-									System.out.println("end time " + endTime);
 
-									System.out.println("checking the time left " + timeLeft);
 									try {
 										sendToAllClients(new CustomMessage("timerFinished",st));
 									}catch (Exception e){
@@ -327,7 +322,6 @@ public class SimpleServer extends AbstractServer {
 									timer.cancel(); // Stop the timer when the time limit is reached
 									scheduledTest.setStatus(2);
 									App.addScheduleTest(scheduledTest);
-									System.out.println("Status "+ scheduledTest.getStatus());
 								}
 							}
 						};

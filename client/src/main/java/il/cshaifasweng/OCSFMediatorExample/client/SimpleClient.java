@@ -20,14 +20,11 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	protected void connectionEstablished(){
-		System.out.println("connection established");
 	}
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		try {
-			System.out.println("in handle from server");
-
 			CustomMessage message = (CustomMessage) msg;
 			String msgString = message.getMessage();
 			switch (msgString) {
@@ -126,15 +123,11 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
 					break;
 				case ("timerStarted"):
-					System.out.println("in simple client!");
 					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
-					System.out.println("in simple client! timer started for test "+scheduledTest1.getId());
 					EventBus.getDefault().postSticky(new TimerStartEvent(scheduledTest1));
 					break;
 				case ("timerFinished"):
-					System.out.println("in simple client!");
 					ScheduledTest scheduledTest2 = (ScheduledTest) message.getData();
-					System.out.println("in simple client! timer finished for test "+scheduledTest2.getId());
 					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
 					break;
 				case ("timeLeft"):
@@ -151,6 +144,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowSuccessEvent("success"));
 					break;
 				case ("getIsFirstEntry"):
+					System.out.println("int s.c posting event");
 					EventBus.getDefault().post(new CheckFirstEntryEvent((Boolean)message.getData()));
 					break;
 				case ("Terminate"):
