@@ -236,6 +236,13 @@ public class SimpleServer extends AbstractServer {
 				case ("#clearExtraTimeRequests"):
 					App.clearExtraTimeTable();
 					break;
+				case ("#checkStudentTest"):
+					List<Object> studentId_scheduleTestId = (List<Object>) message.getData();
+					String studentId = (String) studentId_scheduleTestId.get(0);
+					String scheduleTestId = (String) studentId_scheduleTestId.get(1);
+					boolean firstTime = App.getFirstTestEntryCheck(studentId,scheduleTestId);
+					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
+					break;
 
 			}
 		} catch (Exception e) {

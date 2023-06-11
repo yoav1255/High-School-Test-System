@@ -150,6 +150,9 @@ public class SimpleClient extends AbstractClient {
 				case ("successEvent"):
 					EventBus.getDefault().post(new ShowSuccessEvent("success"));
 					break;
+				case ("getIsFirstEntry"):
+					EventBus.getDefault().post(new CheckFirstEntryEvent((Boolean)message.getData()));
+					break;
 				case ("Terminate"):
 					System.exit(0);
 					break;

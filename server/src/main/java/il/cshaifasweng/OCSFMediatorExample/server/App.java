@@ -66,6 +66,8 @@ public class App extends Application
         return fxmlLoader.load();
     }
 
+
+
     @Override
     public void start(Stage stage) throws IOException {
         try {
@@ -1121,6 +1123,26 @@ public class App extends Application
         System.out.println("save local test " + testFile.getFileName());
         session.getTransaction().commit();
         session.close();
+    }
+
+    public static boolean getFirstTestEntryCheck(String studentId, String scheduleTestId) {
+        boolean isFirstTime=true;
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String queryString ="SELECT st from StudentTest st " +
+                "WHERE st.student.id=:studentId and st.scheduledTest.id =:scheduleTestId";
+
+        Query query = session.createQuery(queryString,StudentTest.class);
+        query.setParameter("scheduleTestId",scheduleTestId);
+        query.setParameter("studentId",studentId);
+        List<StudentTest> resultList = query.getResultList();
+        if (!resultList.isEmpty()){
+            isFirstTime = false;
+        }
+        session.getTransaction().commit();
+        session.close();
+        return isFirstTime;
     }
 
 

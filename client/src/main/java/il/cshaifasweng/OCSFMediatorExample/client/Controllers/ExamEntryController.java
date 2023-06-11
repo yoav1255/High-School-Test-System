@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.CheckFirstEntryEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
@@ -34,6 +35,8 @@ public class ExamEntryController {
     private String id;
     private List<String> scheduleTestIds;
     private List<ScheduledTest> scheduledTests;
+    boolean isFirstEntry = true;
+
     public ExamEntryController() {
         EventBus.getDefault().register(this);
         scheduleTestIds = new ArrayList<>();
@@ -52,12 +55,28 @@ public class ExamEntryController {
 
 
 @Subscribe
-    public void onShowScheduleTestEvent(ShowScheduleTestEvent event){
+    public void onShowScheduleTestEvent(ShowScheduleTestEvent event) throws IOException {
+        List<Object> studentId_scheduleTestId = new ArrayList<>();
+        studentId_scheduleTestId.add(id);
+        studentId_scheduleTestId.add(text_testCode.getText());
+        SimpleClient.getClient().sendToServer(new CustomMessage("#checkStudentTest",studentId_scheduleTestId));
         scheduledTests = event.getScheduledTestList();
         for(ScheduledTest scheduledTest:scheduledTests){
             scheduleTestIds.add(scheduledTest.getId());
         }
-        Platform.runLater(this::enterTest);
+        Platform.runLater(()->{
+           if(isFirstEntry) enterTest();
+           else{
+               msg.setVisible(true);
+               msg.setText("Already submitted this test!");
+           }
+        });
+}
+
+@Subscribe
+    public void onCheckFirstEntryEvent(CheckFirstEntryEvent event){
+        if(event.isFirst()==false)
+            isFirstEntry = false;
 }
 
 @FXML
@@ -93,8 +112,8 @@ public class ExamEntryController {
                 msg.setVisible(true);
                 msg.setText("the test is not available anymore");
             } else { // test is available
-                cleanup();
                 try {
+                    cleanup();
                     if(scheduledTest.getIsComputerTest()){App.switchScreen("studentExecuteExam");}
                     else{App.switchScreen("studentExecuteExamLOCAL");}
                 } catch (IOException e) {
