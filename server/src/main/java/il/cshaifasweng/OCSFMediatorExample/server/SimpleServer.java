@@ -25,6 +25,7 @@ public class SimpleServer extends AbstractServer {
 	private static List<ConnectionToClient> clients;
 	private static int iterations = 0;
 	private Timer timer;
+	private static List<CustomMessage> allMessages;
 
 
 	public SimpleServer(int port) {
@@ -32,6 +33,14 @@ public class SimpleServer extends AbstractServer {
 		clients = new ArrayList<>();
 		scheduleTestTimerHandler();
 		EventBus.getDefault().register(this);
+		allMessages = new ArrayList<>();
+	}
+
+	public static List<CustomMessage> getAllMessages() {
+		return allMessages;
+	}
+	public static void setAllMessages(List<CustomMessage> allMessages) {
+		SimpleServer.allMessages = allMessages;
 	}
 
 	public static List<ScheduledTest> getScheduledTests() {
@@ -77,6 +86,7 @@ public class SimpleServer extends AbstractServer {
 		try {
 
 			CustomMessage message = (CustomMessage) msg;
+			allMessages.add(message);
 			String msgString = message.getMessage();
 			switch (msgString){
 				case ("#warning"):
