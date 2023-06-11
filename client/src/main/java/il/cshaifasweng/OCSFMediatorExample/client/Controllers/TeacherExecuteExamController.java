@@ -105,28 +105,32 @@ public class TeacherExecuteExamController {
     }
     @Subscribe
     public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
-        List<Object> eventObj = event.getData();
-        ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
+        Platform.runLater(() -> {
+            List<Object> eventObj = event.getData();
+            ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Manager response");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Manager response");
+            alert.setHeaderText(null);
 
-        if (eventTest.getId().equals(scheduledTest.getId())) {
-            if ((Boolean) eventObj.get(1)) {
-                Platform.runLater(() -> {
-                   alert.setContentText("Manager approved your request and the time will update shortly");
-                   alert.show();
-                });
-            } else {
-                Platform.runLater(() -> {
-                    alert.setContentText("Manager did not approve your request");
-                    alert.show();
-                });
+            if (eventTest.getId().equals(scheduledTest.getId())) {
+                if ((Boolean) eventObj.get(1)) {
+                    Platform.runLater(() -> {
+                       alert.setContentText("Manager approved your request and the time will update shortly");
+                       alert.show();
+                    });
+                } else {
+                    Platform.runLater(() -> {
+                        alert.setContentText("Manager did not approve your request");
+                        alert.show();
+                    });
+                }
+                errorLabel.setVisible(false);
+                comments.clear();
+                extraTime.clear();
             }
-            errorLabel.setVisible(false);
-            comments.clear();
-            extraTime.clear();
-        }
+        });
+
     }
     @FXML
     public void handleSendClick(ActionEvent event){
@@ -141,8 +145,9 @@ public class TeacherExecuteExamController {
                 errorLabel.setVisible(true);
             } else {
                 // The input is a valid integer
-                errorLabel.setText("The request was sent to the manager. you will receive a pop-up message when he will respond.");
+                errorLabel.setText("The request was sent to the manager and will soon respond.");
                 errorLabel.setVisible(true);
+
 
                 int number = Integer.parseInt(extraTime.getText());
                 //List<Object> data = new ArrayList<>();
@@ -161,6 +166,8 @@ public class TeacherExecuteExamController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                comments.clear();
+                extraTime.clear();
             }
         }
     }

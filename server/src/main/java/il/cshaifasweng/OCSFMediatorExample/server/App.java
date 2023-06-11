@@ -356,14 +356,20 @@ public class App extends Application
         return examForm;
     }
 
-    public static void addScheduleTest(ScheduledTest scheduledTest) {
-        SessionFactory sessionFactory = getSessionFactory();
-        session=sessionFactory.openSession();
-        session.beginTransaction();
-        session.saveOrUpdate(scheduledTest);
-        session.flush();
-        session.getTransaction().commit();
-        session.close();
+    public static boolean addScheduleTest(ScheduledTest scheduledTest) {
+        try {
+            SessionFactory sessionFactory = getSessionFactory();
+            session=sessionFactory.openSession();
+            session.beginTransaction();
+            session.saveOrUpdate(scheduledTest);
+            session.flush();
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public static void saveExtraTimeRequest(ExtraTime extraTime){
@@ -493,14 +499,20 @@ public class App extends Application
         return questions;
     }
 
-    public static void addExamForm(ExamForm examForm){
-        SessionFactory sessionFactory = getSessionFactory();
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(examForm);
-        session.flush();
-        session.getTransaction().commit();
-        session.close();
+    public static boolean addExamForm(ExamForm examForm) {
+        try {
+            SessionFactory sessionFactory = getSessionFactory();
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.save(examForm);
+            session.flush();
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public static void addQuestionScores(List<Question_Score> questionScores) {
@@ -684,24 +696,24 @@ public class App extends Application
         System.out.println(type + " " + username + " logged out successfully");
     }
 
-    public static void addQuestion(Question question){
-
+    public static boolean addQuestion(Question question){
+        try {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
-
         session.save(question);
-
-
         session.flush();
         session.getTransaction().commit();
         session.close();
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
-    public static void updateScheduleTest(ScheduledTest scheduledTest) {
+    public static boolean updateScheduleTest(ScheduledTest scheduledTest) {
         try {
-            System.out.println("in app func , active students: " + scheduledTest.getActiveStudents());
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
@@ -711,7 +723,9 @@ public class App extends Application
             session.close();
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public static List<ExamForm> getCourseExamForms(String courseName) {

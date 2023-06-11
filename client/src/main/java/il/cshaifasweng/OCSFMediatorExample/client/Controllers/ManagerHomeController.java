@@ -201,6 +201,8 @@ public class ManagerHomeController {
                     Platform.runLater(() -> {
                         try{
                             data.add(1, true);
+                            data.add(2, extraMinutes);
+                            data.add(3, myScheduledTest.getId());
                         SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -215,7 +217,9 @@ public class ManagerHomeController {
                     Platform.runLater(() -> {
                         try{
                             data.add(1, false);
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
+                            data.add(2,  0);
+                            data.add(3, myScheduledTest.getId());
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

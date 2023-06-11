@@ -128,11 +128,11 @@ public class CreateQuestionController {
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
+            alert.setHeaderText(null);
             alert.setContentText("Error! Fill all the fields");
             alert.show();
         } else
             confirm();
-        // TODO להוסיף בדיקה האם השאלה כבר קיימת במאגר, ואם קיימת להחזיר את המספר המזהה שלה
     }
     @FXML
     void handleCancelButtonClick(ActionEvent event) {
@@ -149,9 +149,12 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-            if (input == JOptionPane.YES_OPTION) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+            alert.setHeaderText(null);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     String teacherId = this.id;
                     cleanup();
@@ -181,13 +184,16 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-            if (input == JOptionPane.YES_OPTION) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+            alert.setHeaderText(null);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     String teacherId = this.id;
                     cleanup();
-                    App.switchScreen("teacherHome");
+                    App.switchScreen("showAllQuestions");
                     Platform.runLater(() -> {
                         EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                     });
@@ -196,9 +202,6 @@ public class CreateQuestionController {
                 }
             }
         }
-
-
-
     }
     public void confirm() {
         String ans_str = comboAns.getValue();
@@ -229,14 +232,18 @@ public class CreateQuestionController {
     }
     @Subscribe
     public void onQuestionAddedEvent(QuestionAddedEvent event) {
-
+        List<Object> objectList = event.getObjectList();
         try {
             String teacherId = this.id;
-            String QuestId = String.valueOf(event.getStr());
+            String questId = String.valueOf(objectList.get(1));
+            if (!(boolean)objectList.get(0)) {
+                questId = "0";
+            }
             cleanup();
             App.switchScreen("showAllQuestions");
+            final String finalQuestId = questId;
             Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveIdQuestionAddedEvent(teacherId, QuestId));
+                EventBus.getDefault().post(new MoveIdQuestionAddedEvent(teacherId, finalQuestId));
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,7 +289,6 @@ public class CreateQuestionController {
         //   comboAns.setItems(updateQuestion.getIndexAnswer());
 
     }
-
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("LOGOUT");
@@ -308,19 +314,4 @@ public class CreateQuestionController {
         }
     }
 
-
-    public void handleBackButtonClick(ActionEvent actionEvent) {
-        try {
-            App.switchScreen("showAllQuestions");
-            Platform.runLater(()->{
-                try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

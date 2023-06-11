@@ -241,7 +241,6 @@ public class CreateExamFormController2 {
                     cleanup();
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
 //                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-//                    JOptionPane.showMessageDialog(null, "Exam Added Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     App.switchScreen("showExamForms");
                     Platform.runLater(()->{
                         EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
@@ -253,11 +252,32 @@ public class CreateExamFormController2 {
         }
     }
 
+    @Subscribe
+    public void onAddExamFormResponseEvent(AddExamFormResponseEvent event){
+        Platform.runLater(()->{
+            if (event.isCheck()){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("Exam Added Successfully");
+                alert.show();
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("There was a problem and the Exam did not save. please enter it again");
+            }
+        });
+    }
     @FXML
     void handleGoBackButtonClick(ActionEvent event) {
-        int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-        if (input == JOptionPane.YES_OPTION){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             cleanup();
             try {
                 App.switchScreen("showExamForms");
@@ -439,49 +459,64 @@ public class CreateExamFormController2 {
 
 @FXML
     public void handleBackButtonClick(ActionEvent event) {
-    try {
-        cleanup();
-        if (isUpdate) { // return to the show test
-            List<Object> setObjectAndExam = new ArrayList<>();
-            setObjectAndExam.add(teacherId);
-            setObjectAndExam.add(examForm);
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Confirmation");
+    alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+    alert.setHeaderText(null);
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+        try {
+            cleanup();
+            if (isUpdate) { // return to the show test
+                List<Object> setObjectAndExam = new ArrayList<>();
+                setObjectAndExam.add(teacherId);
+                setObjectAndExam.add(examForm);
 
-            App.switchScreen("showOneExamForm");
-            Platform.runLater(() -> {
-                try {
-                    EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+                App.switchScreen("showOneExamForm");
+                Platform.runLater(() -> {
+                    try {
+                        EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
-        } else {  // return to all tests
-            App.switchScreen("showExamForms");
-            Platform.runLater(()->{
-                try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            } else {  // return to all tests
+                App.switchScreen("showExamForms");
+                Platform.runLater(()->{
+                    try {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-    }catch (Exception e){
-        e.printStackTrace();
     }
+
 }
 
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
-        try{
-            cleanup();
-            App.switchScreen("teacherHome");
-            Platform.runLater(()->{
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-            });
-        }catch (Exception e){
-            e.printStackTrace();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try{
+                cleanup();
+                App.switchScreen("teacherHome");
+                Platform.runLater(()->{
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                });
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ShowQuestionsController {
@@ -292,12 +293,22 @@ public class ShowQuestionsController {
         });
     }
 
-    public void displayMsg(String QuestId) {
+    public void displayMsg(String questId) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Information");
-            alert.setContentText("Question added. Question ID: " + QuestId);
-            alert.show();
+            if (!Objects.equals(questId, "0")){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("Question added. Question ID: " + questId);
+                alert.show();
+          }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("There was a problem and the question did not save. please enter it again");
+                alert.setHeaderText(null);
+                alert.show();
+            }
         });
     }
 
