@@ -1,8 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.Query;
 
@@ -50,14 +48,18 @@ public class App
         } finally {
             session.close();
         }
-        //getTeacherExamStats("2");
-        //getCourseExamStats(3);
-        //getStudentExamStats("1");
-        //getTeacherWriterExamStats("2");
-        /*List<String> result = getAllCourseNames();
-        for(String name:result)
-        {
-            System.out.println(name);
+
+        /*List<Statistics> examStatsList = getTeacherExamStats("2");
+
+        for (Statistics statistics : examStatsList) {
+            String scheduledTestId = statistics.getScheduleTestId();
+            Double averageGrade = statistics.getAvgGrade();
+            int median = statistics.getMedian();
+            List<Double> distribution = statistics.getDistribution();
+
+            System.out.println("Scheduled Test ID: " + scheduledTestId);
+            System.out.println("Average Grade: " + averageGrade);
+            System.out.println("Median Grade: " + median);
         }*/
     }
 
@@ -658,7 +660,82 @@ public class App
         session.close();
     }
 
-    public static void getTeacherExamStats(String teacherId) {
+    public static List<Statistics> getTeacherExamStats(String teacherId) {
+        SessionFactory sessionFactory = getSessionFactory();
+        Session session = sessionFactory.openSession(); // Open a new session
+
+        Query query = session.createQuery(
+                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                        "FROM StudentTest e " +
+                        "WHERE e.scheduledTest.teacher.id = :teacherId " +
+                        "GROUP BY st"
+        );
+        query.setParameter("teacherId", teacherId);
+        List<Object[]> results = query.getResultList();
+
+        List<Statistics> examStatsList = new ArrayList<>();
+
+        for (Object[] result : results) {
+            String scheduleTestId = (String) result[0];
+            Double averageGrade = (Double) result[1];
+
+            Query gradeQuery = session.createQuery(
+                    "SELECT e.grade " +
+                            "FROM StudentTest e " +
+                            "WHERE e.scheduledTest.teacher.id = :teacherId and e.scheduledTest.id = :scheduleTestId " +
+                            "order by e.grade"
+            );
+            gradeQuery.setParameter("teacherId", teacherId);
+            gradeQuery.setParameter("scheduleTestId", scheduleTestId);
+            List<Integer> grades = gradeQuery.getResultList();
+
+            int median;
+            int size = grades.size();
+            if (size % 2 == 0) {
+                median = grades.get(size / 2 - 1);
+            } else {
+                median = grades.get(size / 2);
+            }
+
+            List<Double> distribution = new ArrayList<>();
+            for (int i = 0; i < 11; i++) {
+                distribution.add(0.0);
+            }
+
+            int totalCount = grades.size();
+            for (int grade : grades) {
+                double s;
+                if (grade == 100)
+                    s = distribution.get(9);
+                else
+                    s = distribution.get(grade / 10);
+                if (grade == 100)
+                    distribution.set(9, s + 1);
+                distribution.set(grade / 10, s + 1);
+            }
+            for (int i = 0; i < 11; i++) {
+                distribution.set(i, (distribution.get(i) / totalCount) * 100);
+            }
+
+            Statistics statistics = new Statistics();
+            statistics.setId(teacherId);
+            statistics.setScheduleTestId(scheduleTestId);
+            statistics.setGradesPerScheduleTest(grades);
+            statistics.setAvgGrade(averageGrade);
+            statistics.setMedian(median);
+            statistics.setDistribution(distribution);
+
+            examStatsList.add(statistics);
+        }
+
+        session.close();
+        return examStatsList;
+    }
+
+
+
+
+    /*public static void getTeacherExamStats(String teacherId) {
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
 
@@ -746,7 +823,7 @@ public class App
             }
         }
         session.close();
-    }
+    }*/
 
 
     public static void getCourseExamStats(int courseId) {

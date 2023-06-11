@@ -8,10 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -191,6 +188,17 @@ public class SimpleServer extends AbstractServer {
 					List<String> studentName = App.getAllStudentNames();
 					client.sendToClient(new CustomMessage("returnAllStudentsNames",studentName));
 					break;
+				case ("#getTeacherStat"):
+					List<Statistics> teacherStat = App.getTeacherExamStats(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnTeacherStat",teacherStat));
+					break;
+				/*case ("#getCourseStat"):
+					Object messageData = message.getData();
+					int messageDataAsInt = Integer.parseInt((String) messageData);
+					List<Map<String, Object>> courseStat = App.getCourseExamStats(messageDataAsInt);
+					client.sendToClient(new CustomMessage("returnCourseStat",courseStat));
+					break;*/
+
 
 			}
 		} catch (Exception e) {

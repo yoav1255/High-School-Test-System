@@ -8,6 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class SimpleClient extends AbstractClient {
 	
@@ -144,15 +145,19 @@ public class SimpleClient extends AbstractClient {
 					List<String> studentName =(List<String>) message.getData();
 					EventBus.getDefault().post(new ShowAllStudentsNamesEvent(studentName));
 					break;
+				case ("returnTeacherStat"):
+					List<Statistics> teacherStat = (List<Statistics>) message.getData();
+					EventBus.getDefault().post(new showTeacherStatEvent(teacherStat));
+					break;
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
-	
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("00.tcp.eu.ngrok.io", 11287);
+			client = new SimpleClient("localhost", 3028);
 		}
 		return client;
 	}

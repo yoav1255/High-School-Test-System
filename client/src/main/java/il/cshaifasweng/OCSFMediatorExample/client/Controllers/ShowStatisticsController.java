@@ -35,8 +35,6 @@ public class ShowStatisticsController {
 
     @FXML
     private TableColumn<Statistics, String> scheduled_test;
-    @FXML
-    private TableColumn<Statistics, String> id;
 
     @FXML
     private TableColumn<Statistics, Double> average;
@@ -91,7 +89,6 @@ public class ShowStatisticsController {
     public void onShowAllStudentsEvent(ShowAllStatisticEvent event) {
         try {
             setStatisticList(event.getStatisticsList());
-            id.setCellValueFactory(new PropertyValueFactory<Statistics,String>("id"));
             scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics,String>("scheduled_test"));
             average.setCellValueFactory(new PropertyValueFactory<Statistics,Double>("average"));
             median.setCellValueFactory(new PropertyValueFactory<Statistics,Integer>("median"));
@@ -154,17 +151,30 @@ public class ShowStatisticsController {
 
     public void selected_stat(ActionEvent actionEvent) throws IOException {
         String selectedParameter = stat_combobox.getValue();
+        String selectedName = combobox_id.getValue();
         if(Objects.equals(selectedParameter, "by teacher"))
         {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
+            if(selectedName != null)
+            {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat",selectedName));
+            }
 
         } else if (Objects.equals(selectedParameter, "by course")) {
 
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
+            if(selectedName != null)
+            {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat",selectedName));
+            }
         }
         else if (Objects.equals(selectedParameter, "by student"))
         {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
+            if(selectedName != null)
+            {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat",selectedName));
+            }
 
         }
 
@@ -195,6 +205,17 @@ public class ShowStatisticsController {
         studentNames = event.getStudentList();
         for(String student:studentNames)
             combobox_id.getItems().add(student);
+    }
+
+    @Subscribe
+    public void onShowTeacherStatEvent(showTeacherStatEvent event)
+    {
+        setStatisticList(event.getTeacherStat());
+        scheduled_test.setCellValueFactory(new PropertyValueFactory<>("scheduled_test"));
+        average.setCellValueFactory(new PropertyValueFactory<Statistics,Double>("average"));
+        median.setCellValueFactory(new PropertyValueFactory<Statistics,Integer>("median"));
+        ObservableList<Statistics> statistics = FXCollections.observableList(statisticList);
+        statistics_table_view.setItems(statistics);
     }
 
 
