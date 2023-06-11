@@ -60,6 +60,9 @@ public class App extends Application {
             setWindowTitle("Login");
             stage.setScene(scene);
             stage.show();
+
+            //stage.setOnCloseRequest(event -> logout(stage));
+
         }catch (Exception e){
             e.printStackTrace();
         }
