@@ -18,10 +18,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ShowStatisticsController {
     @FXML
@@ -57,7 +54,7 @@ public class ShowStatisticsController {
     private TableView<Statistics> tableView;
 
     private List<Teacher> teacherNames;
-    private List<String> studentNames;
+    private List<Student> studentNames;
     private List<Course> courseNames;
 
 
@@ -130,27 +127,34 @@ public class ShowStatisticsController {
     {
         combobox_id.getItems().clear();
         studentNames = event.getStudentList();
-        for(String student:studentNames)
-            combobox_id.getItems().add(student);
+        for(Student student:studentNames)
+            combobox_id.getItems().add(student.getFirst_name() + " " + student.getLast_name());
     }
 
     public void handleShowStat(ActionEvent actionEvent) throws IOException {
         String selectedParameter = stat_combobox.getValue();
         String selectedName = combobox_id.getValue();
         int index = combobox_id.getSelectionModel().getSelectedIndex();
-        String TeacherId = teacherNames.get(index).getId();
-        String CourseId = courseNames.get(index).getName();
+        String TeacherId;
+        int CourseId;
+        String StudentId;
         //String StudentId = studentNames.get(index);
         statistics_table_view.refresh();
 
         if (selectedName != null && selectedParameter != null) {
             switch (selectedParameter) {
-                case "by teacher" ->
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", TeacherId));
-                case "by course" ->
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", CourseId));
-                case "by student" ->
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", selectedName));
+                case "by teacher" -> {
+                    TeacherId = teacherNames.get(index).getId();
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", TeacherId));
+                }
+                case "by course" -> {
+                    CourseId = courseNames.get(index).getCode();
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", CourseId));
+                }
+                case "by student" -> {
+                    StudentId = studentNames.get(index).getId();
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", StudentId));
+                }
             }
         } else {
             // Display an error message or show an alert to prompt the user to select values for both comboboxes
@@ -230,7 +234,8 @@ public class ShowStatisticsController {
         try {
             Statistics studentStat = event.getStudentStat();
             statisticList.clear();
-            statisticList.addAll((Collection<? extends Statistics>) studentStat);
+            statisticList.add(studentStat);
+            scheduled_test.textProperty().setValue("Student ID");
 
             scheduled_test.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();

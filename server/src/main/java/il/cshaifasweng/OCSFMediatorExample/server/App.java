@@ -1195,7 +1195,7 @@ public class App extends Application
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         //
-        String queryString = "SELECT CONCAT(s.first_name, ' ', s.last_name) FROM Student s";
+        String queryString = "FROM Student s";
         Query query = session.createQuery(queryString);
         students = query.getResultList();
         //
