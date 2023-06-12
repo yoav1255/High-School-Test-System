@@ -12,7 +12,7 @@ public class Statistics implements Serializable {
     Double avgGrade;
     int median;
     String id;
-    //List<Double> distribution;
+    List<Double> distribution;
 
 
 
@@ -33,13 +33,13 @@ public class Statistics implements Serializable {
         return avgGrade;
     }
 
-   /* public void setDistribution(List<Double> distribution) {
+   public void setDistribution(List<Double> distribution) {
         this.distribution = distribution;
-    }*/
+    }
 
-    /*public List<Double> getDistribution() {
+    public List<Double> getDistribution() {
         return distribution;
-    }*/
+    }
 
 
     public void setScheduleTestId(String scheduleTestId) {
@@ -52,4 +52,5 @@ public class Statistics implements Serializable {
 
     public String getStudentId() { return id;}
     public void setId(String id){this.id = id;}
+
 }

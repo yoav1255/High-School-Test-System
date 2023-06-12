@@ -270,7 +270,7 @@ public class ShowStatisticsController {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     Statistics selectedStat = statistics_table_view.getSelectionModel().getSelectedItem();
                     if (selectedStat != null) {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStatisticsDistribute", selectedStat));
+                        //SimpleClient.getClient().sendToServer(new CustomMessage("#getStatisticsDistribute", selectedStat));
                         App.switchScreen("showStatisticsDistribute");
                     }
                 }

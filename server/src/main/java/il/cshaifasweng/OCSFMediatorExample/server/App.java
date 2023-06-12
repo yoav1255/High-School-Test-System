@@ -104,8 +104,8 @@ public class App extends Application
         } finally {
             session.close();
         }
-        List<Statistics> examStatsList = getTeacherExamStats("2");
 
+        /*List<Statistics> examStatsList = getTeacherExamStats("2");
         for (Statistics statistics : examStatsList) {
             String scheduledTestId = statistics.getScheduleTestId();
             Double averageGrade = statistics.getAvgGrade();
@@ -115,7 +115,7 @@ public class App extends Application
             System.out.println("Scheduled Test ID: " + scheduledTestId);
             System.out.println("Average Grade: " + averageGrade);
             System.out.println("Median Grade: " + median);
-        }
+        }*/
     }
 
     @Override
@@ -878,7 +878,7 @@ public class App extends Application
             statistics.setScheduleTestId(scheduleTestId);
             statistics.setAvgGrade(averageGrade);
             statistics.setMedian(median);
-            //statistics.setDistribution(distribution);
+            statistics.setDistribution(distribution);
 
             examStatsList.add(statistics);
         }
@@ -950,7 +950,7 @@ public class App extends Application
             statistics.setScheduleTestId(scheduleTestId);
             statistics.setAvgGrade(averageGrade);
             statistics.setMedian(median);
-            //statistics.setDistribution(distribution);
+            statistics.setDistribution(distribution);
 
             examStatsList.add(statistics);
         }
