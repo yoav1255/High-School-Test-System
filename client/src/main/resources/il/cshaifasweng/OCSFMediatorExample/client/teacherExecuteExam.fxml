@@ -4,6 +4,8 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -65,12 +67,12 @@
                 <!--                <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
-      <Label layoutX="238.0" layoutY="129.0" prefHeight="20.0" prefWidth="140.0" text="Time Left in minutes: ">
+      <Label layoutX="235.0" layoutY="102.0" prefHeight="20.0" prefWidth="140.0" text="Time Left in minutes: ">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="timeLeftText" layoutX="394.0" layoutY="124.0" prefHeight="30.0" prefWidth="269.0" text="timer">
+      <Label fx:id="timeLeftText" layoutX="391.0" layoutY="97.0" prefHeight="30.0" prefWidth="55.0" text="timer">
          <font>
             <Font size="20.0" />
          </font>
@@ -85,18 +87,21 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="387.0" layoutY="251.0" prefHeight="20.0" prefWidth="400.0" text="if you wish to give extra time, fill both the fields and click Send:">
+      <Label layoutX="509.0" layoutY="57.0" prefHeight="20.0" prefWidth="400.0" text="if you wish to give extra time, fill both the fields and click Send:">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="comments" layoutX="294.0" layoutY="291.0" prefHeight="135.0" prefWidth="250.0" promptText="Write here the explanation for the request" />
-      <TextField fx:id="extraTime" layoutX="649.0" layoutY="345.0" prefHeight="26.0" prefWidth="204.0" promptText="Write here the extra time in minutes" />
-      <Button layoutX="566.0" layoutY="449.0" mnemonicParsing="false" onAction="#handleSendClick" text="Send" />
-      <Label fx:id="errorLabel" alignment="CENTER" layoutX="219.0" layoutY="492.0" prefHeight="30.0" prefWidth="737.0" text="Label" textFill="#f41515">
+      <TextField fx:id="comments" layoutX="466.0" layoutY="97.0" prefHeight="58.0" prefWidth="244.0" promptText="Write here the explanation for the request" />
+      <TextField fx:id="extraTime" layoutX="732.0" layoutY="94.0" prefHeight="26.0" prefWidth="204.0" promptText="Write here the extra time in minutes" />
+      <Button layoutX="812.0" layoutY="132.0" mnemonicParsing="false" onAction="#handleSendClick" text="Send" />
+      <Label fx:id="errorLabel" alignment="CENTER" layoutX="219.0" layoutY="172.0" prefHeight="30.0" prefWidth="737.0" text="Label" textFill="#f41515">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
+      <ListView fx:id="Questions_List_View" layoutX="239.0" layoutY="209.0" prefHeight="270.0" prefWidth="696.0" />
+      <TextArea fx:id="teacher_notes" layoutX="239.0" layoutY="513.0" prefHeight="50.0" prefWidth="696.0" />
+      <Label layoutX="239.0" layoutY="486.0" prefHeight="18.0" prefWidth="113.0" text="Notes: " />
     </children>
 </AnchorPane>
