@@ -79,8 +79,23 @@ public class StudentExecuteExamLOCALController implements Serializable {
         EventBus.getDefault().unregister(this);
     }
 
-    @FXML void initialize(){
+    @FXML
+    void initialize(){
         errorLabel.setVisible(false);
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
     }
 
     @Subscribe

@@ -56,7 +56,9 @@ public class TeacherHomeController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            System.out.println("Perform logout");
             cleanup();
+            javafx.application.Platform.exit();
         });
         instances++;
     }
@@ -91,10 +93,6 @@ public class TeacherHomeController {
 
     }
 
-    @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
-
-    }
 
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event) {

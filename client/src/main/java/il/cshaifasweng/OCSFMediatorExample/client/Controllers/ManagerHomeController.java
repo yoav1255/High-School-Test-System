@@ -59,6 +59,24 @@ public class ManagerHomeController {
         initializeIfIdNotNull();
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("manager");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
+    }
+
     private void initializeIfIdNotNull() {
         if (id != null) {
             Platform.runLater(()->{

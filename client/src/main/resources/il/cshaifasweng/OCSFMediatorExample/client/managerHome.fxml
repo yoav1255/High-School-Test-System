@@ -27,26 +27,6 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
-                    <graphic>
-                        <!--                  <FontAwesomeIconView glyphName="HOME" size="20" />-->
-                    </graphic>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                    <padding>
-                        <Insets left="20.0" />
-                    </padding>
-                    <font>
-                        <Font name="Oriya Sangam MN" size="15.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets bottom="1.0" top="1.0" />
-                    </VBox.margin>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </Button>
                 <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
@@ -61,13 +41,37 @@
                         <Font name="Oriya Sangam MN" size="15.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="1.0" top="1.0" />
+                        <Insets top="2.0" />
                     </VBox.margin>
                 </Button>
-            <Button mnemonicParsing="false" onAction="#goToQuestions" prefHeight="45.0" prefWidth="218.0" text="Questions" />
-            <Button mnemonicParsing="false" onAction="#goToExamForms" prefHeight="45.0" prefWidth="218.0" text="Exam Forms" />
-            <Button mnemonicParsing="false" onAction="#goToScheduledTests" prefHeight="45.0" prefWidth="218.0" text="Scheduled Tests" />
-            <Button mnemonicParsing="false" onAction="#goToStatistics" prefHeight="45.0" prefWidth="218.0" text="Statistics" />
+            <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToQuestions" prefHeight="45.0" prefWidth="218.0" text="Questions">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToExamForms" prefHeight="45.0" prefWidth="218.0" text="Exam Forms">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToScheduledTests" prefHeight="45.0" prefWidth="218.0" text="Scheduled Tests">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStatistics" prefHeight="45.0" prefWidth="218.0" text="Statistics">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">

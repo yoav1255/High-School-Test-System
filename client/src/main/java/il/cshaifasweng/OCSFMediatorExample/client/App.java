@@ -55,8 +55,9 @@ public class App extends Application {
             System.out.println(client.getHost()+ " is the host " + client.getPort() + " is the port ");
 
 //        cleanup();
-            scene = new Scene(loadFXML("login"), 574, 423);
             App.stage = stage;
+            scene = new Scene(loadFXML("login"), 574, 423);
+            //App.stage = stage;
             setWindowTitle("Login");
             stage.setScene(scene);
             stage.show();

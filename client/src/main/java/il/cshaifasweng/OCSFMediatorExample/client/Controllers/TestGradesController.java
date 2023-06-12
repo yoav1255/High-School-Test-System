@@ -25,7 +25,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TestGradesController {
 
@@ -71,6 +73,23 @@ public class TestGradesController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+    }
+
     public void setId(String id){this.id = id;}
 
     @Subscribe
@@ -105,7 +124,7 @@ public class TestGradesController {
     }
 
     @FXML
-    void handleBackBtn(ActionEvent event) throws IOException {
+    void handleBackButtonClick(ActionEvent event) throws IOException {
             cleanup();
             App.switchScreen("showScheduleTest");
 
@@ -157,6 +176,31 @@ public class TestGradesController {
     @Subscribe
     public void onShowSuccessEvent(ShowSuccessEvent event){
         //TODO create message for success
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
     }
 
 }

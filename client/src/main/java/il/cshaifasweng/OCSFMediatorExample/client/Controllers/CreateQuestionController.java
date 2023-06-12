@@ -78,6 +78,19 @@ public class CreateQuestionController {
             courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
 
         });
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
 
     }
     @Subscribe

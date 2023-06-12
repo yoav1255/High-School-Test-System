@@ -53,6 +53,24 @@ public class ExamEntryController {
         id = event.getId();
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
+    }
+
 
 @Subscribe
     public void onShowScheduleTestEvent(ShowScheduleTestEvent event) throws IOException {

@@ -59,6 +59,12 @@ public class loginController {
         loggedIn_msg.setVisible(false);
 
         user_password.setOnKeyPressed(this::handleKeyPressed);
+
+        App.getStage().setOnCloseRequest(event -> {
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML

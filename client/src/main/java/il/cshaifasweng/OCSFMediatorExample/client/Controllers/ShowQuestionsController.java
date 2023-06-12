@@ -109,9 +109,29 @@ public class ShowQuestionsController {
     void initialize() {
         Platform.runLater(() -> {
             comboCourse.setDisable(true);
-
         });
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(id);
+                info.add("teacher");
+            }
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN )
     @FXML
