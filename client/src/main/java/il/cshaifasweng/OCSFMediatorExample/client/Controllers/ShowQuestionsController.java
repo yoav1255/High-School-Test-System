@@ -66,6 +66,8 @@ public class ShowQuestionsController {
     private TableColumn<Question, String> tableAns3;
     @FXML
     private TableColumn<Question, String> tableAns4;
+    @FXML
+    private Label labelX;
 
     @Subscribe
     public void onShowCourseQuestions(ShowCourseQuestionsEvent event){
@@ -109,6 +111,7 @@ public class ShowQuestionsController {
     void initialize() {
         Platform.runLater(() -> {
             comboCourse.setDisable(true);
+            labelX.setVisible(false);
         });
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
@@ -209,6 +212,7 @@ public class ShowQuestionsController {
     @FXML
     public void onSelectCourse(ActionEvent event){
         try {
+            labelX.setVisible(true);
             String courseName = comboCourse.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestions", courseName));
         }catch (Exception e){
