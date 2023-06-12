@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleClient extends AbstractClient {
@@ -90,7 +91,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
 					break;
 				case("addScheduleTestSuccess"):
-					EventBus.getDefault().post(new ShowSuccessEvent("Successfully added"));
+					EventBus.getDefault().post(new UpdateScheduleTestEvent((boolean) message.getData()));
 					break;
 				case ("deleteScheduleTestSuccess"):
 					EventBus.getDefault().post(new ShowSuccessEvent("Successfully deleted"));
@@ -103,8 +104,9 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
 					break;
 				case ("addQuestionSuccess"):
-					String questId = (String) message.getData();
-					EventBus.getDefault().post(new QuestionAddedEvent(questId));
+					List<Object> objectList = new ArrayList<>();
+					objectList = (List<Object>) message.getData();
+					EventBus.getDefault().post(new QuestionAddedEvent(objectList));
 					break;
 				case("returnExamForms"):
 					List<ExamForm> examForms = (List<ExamForm>) message.getData();
@@ -153,6 +155,13 @@ public class SimpleClient extends AbstractClient {
 				case ("Terminate"):
 					System.exit(0);
 					break;
+				case ("addExamForm"):
+					EventBus.getDefault().post(new AddExamFormResponseEvent((Boolean)message.getData()));
+					break;
+				case ("updateScheduleTest"):
+					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));
+					break;
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();

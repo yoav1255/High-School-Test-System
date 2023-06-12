@@ -175,8 +175,11 @@ public class TeacherHomeController {
         setId(event.getId());
         initializeIfIdNotNull();
         Platform.runLater(()->{
-            int input = JOptionPane.showOptionDialog(null, "Test is over!", "Information",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Test is over!");
+            alert.show();
         });
     }
 

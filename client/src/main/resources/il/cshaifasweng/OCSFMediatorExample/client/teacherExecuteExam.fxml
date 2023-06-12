@@ -85,17 +85,17 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="242.0" layoutY="222.0" prefHeight="20.0" prefWidth="400.0" text="if you wish to give extra time, fill both the fields and click Send:">
+      <Label layoutX="387.0" layoutY="251.0" prefHeight="20.0" prefWidth="400.0" text="if you wish to give extra time, fill both the fields and click Send:">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="comments" layoutX="238.0" layoutY="276.0" prefHeight="135.0" prefWidth="244.0" promptText="Write here the explanation for the request" />
-      <TextField fx:id="extraTime" layoutX="527.0" layoutY="330.0" prefHeight="26.0" prefWidth="204.0" promptText="Write here the extra time in minutes" />
-      <Button layoutX="484.0" layoutY="448.0" mnemonicParsing="false" onAction="#handleSendClick" text="Send" />
-      <Label fx:id="errorLabel" alignment="CENTER" layoutX="310.0" layoutY="492.0" prefHeight="30.0" prefWidth="390.0" text="Label" textFill="#f41515">
+      <TextField fx:id="comments" layoutX="294.0" layoutY="291.0" prefHeight="135.0" prefWidth="250.0" promptText="Write here the explanation for the request" />
+      <TextField fx:id="extraTime" layoutX="649.0" layoutY="345.0" prefHeight="26.0" prefWidth="204.0" promptText="Write here the extra time in minutes" />
+      <Button layoutX="566.0" layoutY="449.0" mnemonicParsing="false" onAction="#handleSendClick" text="Send" />
+      <Label fx:id="errorLabel" alignment="CENTER" layoutX="219.0" layoutY="492.0" prefHeight="30.0" prefWidth="737.0" text="Label" textFill="#f41515">
          <font>
-            <Font size="20.0" />
+            <Font size="18.0" />
          </font>
       </Label>
     </children>

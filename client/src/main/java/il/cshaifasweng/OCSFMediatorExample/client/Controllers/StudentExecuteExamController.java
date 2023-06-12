@@ -190,12 +190,24 @@ public class StudentExecuteExamController {
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
         });
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE); //TODO
     }
 
-
+    @Subscribe
+    public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
+        Platform.runLater(() -> {
+            List<Object> objectList = event.getData();
+            if (objectList.get(3).equals(scheduledTest.getId())){
+                if ((int)objectList.get(2) != 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The teacher added " + objectList.get(2) + " minutes to the test!");
+                    alert.show();
+                }
+            }
+        });
+    }
 
 @Subscribe
     public void onTimerStartEvent(TimerStartEvent event){ // not necessary

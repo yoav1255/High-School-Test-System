@@ -233,7 +233,7 @@ public class ScheduledTestController {
                 for (ScheduledTest scheduledTest : scheduledTests) {
                     if (scheduledTest.getId().equals(scheduleCode.getText()) && selectedTest == null) {
                         scheduleCode.setStyle("-fx-border-color: #cc0000;");
-                        setErrorLabel(codeError,"code is alredy exist");
+                        setErrorLabel(codeError,"code is already exist");
                         return false;
                     }
                 }
@@ -284,6 +284,38 @@ public class ScheduledTestController {
         radioBtnError.setVisible(false);
     }
 
+    @Subscribe
+    public void onUpdateScheduleTestEvent(UpdateScheduleTestEvent event){
+        Platform.runLater(() -> {
+            if (event.isCheck()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Success");
+                alert.setContentText("update schedule test Succeed");
+                alert.show();
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("There was a problem and the test did not save. please enter it again");
+                alert.show();
+            }
+            try {
+                App.switchScreen("showScheduleTest");
+                Platform.runLater(() -> {
+                    try {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                cleanup();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
     @FXML
     void sendSchedule(ActionEvent event) {
         resetVisibleLabel();
@@ -307,20 +339,6 @@ public class ScheduledTestController {
                 ScheduledTest scheduledTest1 = selectedTest;
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest1));
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
-                    success.setHeaderText("Success");
-                    success.setContentText("update schedule test Succeed");
-                    success.show();
-                    App.switchScreen("showScheduleTest");
-                    Platform.runLater(() -> {
-                        try {
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    cleanup();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -331,20 +349,6 @@ public class ScheduledTestController {
                 scheduledTest.setTeacher(teacher);
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest", scheduledTest));
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
-                    success.setHeaderText("Success");
-                    success.setContentText("added new schedule test Succeed");
-                    success.show();
-                    App.switchScreen("showScheduleTest");
-                    Platform.runLater(() -> {
-                        try {
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    cleanup();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -384,28 +388,43 @@ public class ScheduledTestController {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
-        il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
-        Platform.runLater(() -> {
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
+            Platform.runLater(() -> {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 
-        });
-        cleanup();
+            });
+            cleanup();
+        }
     }
 
     @FXML
     void handleBackButtonClick(ActionEvent event) throws IOException {
-        cleanup();
-        App.switchScreen("showScheduleTest");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            cleanup();
+            App.switchScreen("showScheduleTest");
 
-        Platform.runLater(() -> {
-            try {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
