@@ -693,6 +693,30 @@ public class App extends Application
         return true;
     }
 
+    public static boolean updateSubmissions_Active(ScheduledTest scheduledTest, int submissions, int active){
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.submissions=:submissions , st.activeStudents=:active " +
+                    "where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",scheduledTest.getId());
+            query.setParameter("submissions",submissions);
+            query.setParameter("active",active);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public static List<ExamForm> getCourseExamForms(String courseName) {
         List<ExamForm> examForms;
         session = sessionFactory.openSession();
@@ -772,14 +796,10 @@ public class App extends Application
 
         session = sessionFactory.openSession();
         session.beginTransaction();
-//        session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
         session.flush();
         for(int i=2;i<items.size();i++){
             Question_Answer item = (Question_Answer) items.get(i);
-            System.out.println("saving question answer "+ item.getId());
-            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
-            System.out.println("in question answer st id "+ item.getStudentTest().getId());
             session.save(item);
         }
         session.flush();
@@ -1136,15 +1156,6 @@ public class App extends Application
     public static void logOffAllUsers(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-
-//        String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-//
-//        updateLoggedInQuery = "UPDATE principal SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-//
-//        updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
         String hqlQuery = "UPDATE Student SET loggedIn = false WHERE loggedIn = true ";
         Query query = session.createQuery(hqlQuery);

@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
+import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -77,10 +78,13 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
         //TODO handle active students to be 0 after schedule test ends
         //TODO handle if student gets out and comes back again
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
+        List<Object> sub_active = new ArrayList<>();
+        sub_active.add(scheduledTest);
+        sub_active.add(scheduledTest.getSubmissions());
+        sub_active.add(scheduledTest.getActiveStudents()+1);
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -250,9 +254,6 @@ public class StudentExecuteExamController {
 
         // student test is ready
         //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
-        scheduledTest.setSubmissions(scheduledTest.getSubmissions()+1);
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()-1);
-
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
@@ -269,7 +270,12 @@ public class StudentExecuteExamController {
         for(Question_Answer questionAnswer:questionAnswers){
             student_studentTest_questionAnswers.add(questionAnswer);
         }
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
+        List<Object> sub_active = new ArrayList<>();
+        sub_active.add(scheduledTest);
+        sub_active.add(scheduledTest.getSubmissions()+1);
+        sub_active.add(scheduledTest.getActiveStudents());
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
 

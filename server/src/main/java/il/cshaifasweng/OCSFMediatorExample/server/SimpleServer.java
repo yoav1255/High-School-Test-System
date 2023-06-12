@@ -261,7 +261,17 @@ public class SimpleServer extends AbstractServer {
 					System.out.println("sending from s.s to client");
 					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
 					break;
-
+				case ("#updateSubmissions_Active"):
+					List<Object> sub_active = (List<Object>) message.getData();
+					ScheduledTest st = (ScheduledTest) sub_active.get(0);
+					int submissions = (Integer) sub_active.get(1);
+					int active = (Integer) sub_active.get(2);
+					System.out.println("submissions new : "+submissions);
+					System.out.println("active new : "+ active);
+					System.out.println("Schedule test id : "+ st.getId());
+					App.updateSubmissions_Active(st,submissions,active);
+					//TODO return confirmation to client?
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
