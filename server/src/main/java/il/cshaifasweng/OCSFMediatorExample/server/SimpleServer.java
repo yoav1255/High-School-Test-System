@@ -25,6 +25,7 @@ public class SimpleServer extends AbstractServer {
 	private static List<ConnectionToClient> clients;
 	private static int iterations = 0;
 	private Timer timer;
+	private static List<CustomMessage> allMessages;
 
 
 	public SimpleServer(int port) {
@@ -32,6 +33,14 @@ public class SimpleServer extends AbstractServer {
 		clients = new ArrayList<>();
 		scheduleTestTimerHandler();
 		EventBus.getDefault().register(this);
+		allMessages = new ArrayList<>();
+	}
+
+	public static List<CustomMessage> getAllMessages() {
+		return allMessages;
+	}
+	public static void setAllMessages(List<CustomMessage> allMessages) {
+		SimpleServer.allMessages = allMessages;
 	}
 
 	public static List<ScheduledTest> getScheduledTests() {
@@ -77,6 +86,7 @@ public class SimpleServer extends AbstractServer {
 		try {
 
 			CustomMessage message = (CustomMessage) msg;
+			allMessages.add(message);
 			String msgString = message.getMessage();
 			switch (msgString){
 				case ("#warning"):
@@ -136,9 +146,12 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#addQuestion"):
 					Question question = (Question)message.getData();
-					App.addQuestion(question);
+					boolean check = App.addQuestion(question);
 					String questId = String.valueOf(question.getId());
-					client.sendToClient(new CustomMessage("addQuestionSuccess",questId));
+					List<Object> objectList = new ArrayList<>();
+					objectList.add(check);
+					objectList.add(questId);
+					client.sendToClient(new CustomMessage("addQuestionSuccess",objectList));
 					break;
 				case ("#getCourseFromName"):
 					Course course =App.getCourseFromCourseName(message.getData().toString());
@@ -146,7 +159,8 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#addExamForm"):
 					ExamForm examForm = (ExamForm) message.getData();
-					App.addExamForm(examForm);
+					boolean check1 = App.addExamForm(examForm);
+					client.sendToClient(new CustomMessage("addExamForm",check1));
 					break;
 				case ("#addQuestionScores"):
 					List<Question_Score> questionScores = (List<Question_Score>) message.getData();
@@ -162,8 +176,8 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#addScheduleTest"):
 					ScheduledTest scheduledTest = (ScheduledTest) message.getData();
-					App.addScheduleTest(scheduledTest);
-					client.sendToClient(new CustomMessage("addScheduleTestSuccess", ""));
+					boolean check3 = App.addScheduleTest(scheduledTest);
+					client.sendToClient(new CustomMessage("addScheduleTestSuccess", check3));
 					break;
 				case ("#deleteRow"):
 					ScheduledTest deleteScheduledTest = (ScheduledTest) message.getData();
@@ -181,8 +195,8 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#updateScheduleTest"):
 					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
-					App.updateScheduleTest( scheduledTest1);
-//					client.sendToClient(new CustomMessage("updateSuccess", ""));
+					boolean check2 = App.updateScheduleTest( scheduledTest1);
+					client.sendToClient(new CustomMessage("updateScheduleTest", check2));
 					break;
 				case ("#getCourseExamForms"):
 					List<ExamForm> examForms = App.getCourseExamForms(message.getData().toString());
@@ -206,8 +220,8 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnStudent",student));
 					break;
 				case ("#saveQuestionAnswers"):
-					App.saveQuestionAnswers((List<Object>) message.getData());
-					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
+					boolean check4 = App.saveQuestionAnswers((List<Object>) message.getData());
+					client.sendToClient(new CustomMessage("savedQuestionAnswers",check4));
 					break;
 				case ("#saveQuestionScores"):
 					App.saveQuestionScores((List<Question_Score>) message.getData());
@@ -260,6 +274,9 @@ public class SimpleServer extends AbstractServer {
 		executorService.scheduleAtFixedRate(() -> {
 			try {
 				iterations++;
+				if(iterations==1){
+					App.logOffAllUsers();
+				}
 				scheduledTests = App.getScheduledTestsActive();
 			} catch (Exception e) {
 				e.printStackTrace();

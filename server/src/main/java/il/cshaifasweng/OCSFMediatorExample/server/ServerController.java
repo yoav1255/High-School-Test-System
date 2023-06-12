@@ -25,20 +25,23 @@ public class ServerController {
     @FXML
     private TableView<CustomMessage> clients_table_view;
     @FXML
-    private TableColumn<CustomMessage, String> address;
+    private TableColumn<CustomMessage, String> To_From_Server;
     @FXML
-    private TableColumn<CustomMessage, String> host;
+    private TableColumn<CustomMessage , String > clientInfo;
     @FXML
-    private TableColumn<CustomMessage, String> port;
+    private TableColumn<CustomMessage, String> message;
+    @FXML
+    private TableColumn<CustomMessage, String> data_transfered;
     @FXML
     private Label connected;
 
     private ObservableList<ConnectionToClient> clientObservableList;
-
+    private ObservableList<CustomMessage> messageObservableList;
 
     public ServerController() {
         EventBus.getDefault().register(this);
         clientObservableList = FXCollections.observableArrayList();
+        messageObservableList = FXCollections.observableArrayList();
     }
 
     @Subscribe
@@ -50,7 +53,7 @@ public class ServerController {
                 connected.setText((Integer.toString(clientObservableList.size())));
                 clients_table_view.refresh();
             });
-            setTable();
+//            setTable();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -73,15 +76,24 @@ public class ServerController {
             connected.setText((Integer.toString(clientObservableList.size())));
             clients_table_view.refresh();
         });
-        setTable();
+//        setTable();
     }
 
 
     public void setTable() {
         try {
 
-//			clientObservableList = FXCollections.observableList(clients);
-//			clients_table_view.setItems(clientObservableList);
+            To_From_Server.setCellValueFactory(cellData->{
+                return new SimpleStringProperty("To");
+            });
+            message.setCellValueFactory(cellData->{
+                String msgString = cellData.getValue().getMessage();
+                return new SimpleStringProperty(msgString);
+            });
+            data_transfered.setCellValueFactory(cellData->{
+                String objectTransferred = cellData.getValue().getData().getClass().getSimpleName();
+                return new SimpleStringProperty(objectTransferred);
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,5 +107,11 @@ public class ServerController {
             connected.setText((Integer.toString(clientObservableList.size())));
             clients_table_view.refresh();
         });
+    }
+
+    public void refreshMessagesButton(ActionEvent event) {
+        setTable();
+        messageObservableList = FXCollections.observableList(SimpleServer.getAllMessages());
+        clients_table_view.setItems(messageObservableList);
     }
 }

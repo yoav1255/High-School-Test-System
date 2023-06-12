@@ -2,15 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.ExtraTime;
-import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -32,6 +32,15 @@ public class TeacherExecuteExamController {
     private TextField extraTime;
     @FXML
     private Label errorLabel;
+    @FXML
+    private ListView<Question_Score> Questions_List_View;
+    @FXML
+    private TextArea teacher_notes;
+
+    private List<Question_Score> questionScoreList;
+    private List<Question> questionList;
+    private ExamForm examForm;
+
     private String courseName;
     private String subjectName;
     public String getCourseName() {
@@ -97,32 +106,41 @@ public class TeacherExecuteExamController {
         setTeacherLastName(event.getTeacherFromId().getLast_name());
     }
     @Subscribe
-    public void onTeacherExecuteExamEvent(TeacherExecuteExamEvent event){
+    public void onTeacherExecuteExamEvent(TeacherExecuteExamEvent event) throws IOException {
         setScheduledTest(event.getScheduledTest());
         setCourseName(scheduledTest.getCourseName());
         setSubjectName(scheduledTest.getSubjectName());
+        examForm = scheduledTest.getExamForm();
+        SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
     }
     @Subscribe
     public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
-        List<Object> eventObj = event.getData();
-        ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
+        Platform.runLater(() -> {
+            List<Object> eventObj = event.getData();
+            ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
 
-        if (eventTest.getId().equals(scheduledTest.getId())) {
-            if ((Boolean) eventObj.get(1)) {
-                Platform.runLater(() -> {
-                    int input = JOptionPane.showOptionDialog(null, "Manager approved your request and the time will update shortly ", "Information",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-                });
-            } else {
-                Platform.runLater(() -> {
-                    int input = JOptionPane.showOptionDialog(null, "Manager did not approve your request", "Information",
-                            JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-                });
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Manager response");
+            alert.setHeaderText(null);
+
+            if (eventTest.getId().equals(scheduledTest.getId())) {
+                if ((Boolean) eventObj.get(1)) {
+                    Platform.runLater(() -> {
+                       alert.setContentText("Manager approved your request and the time will update shortly");
+                       alert.show();
+                    });
+                } else {
+                    Platform.runLater(() -> {
+                        alert.setContentText("Manager did not approve your request");
+                        alert.show();
+                    });
+                }
+                errorLabel.setVisible(false);
+                comments.clear();
+                extraTime.clear();
             }
-            errorLabel.setVisible(false);
-            comments.clear();
-            extraTime.clear();
-        }
+        });
+
     }
     @FXML
     public void handleSendClick(ActionEvent event){
@@ -137,7 +155,7 @@ public class TeacherExecuteExamController {
                 errorLabel.setVisible(true);
             } else {
                 // The input is a valid integer
-                errorLabel.setText("The request was sent to the manager. you will receive a pop-up message when he will respond.");
+                errorLabel.setText("The request was sent to the manager and will soon respond.");
                 errorLabel.setVisible(true);
 
                 int number = Integer.parseInt(extraTime.getText());
@@ -157,6 +175,8 @@ public class TeacherExecuteExamController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                comments.clear();
+                extraTime.clear();
             }
         }
     }
@@ -196,7 +216,7 @@ public class TeacherExecuteExamController {
         });
     }
     @Subscribe
-    public void onSelectedTestEvent (SelectedTestEvent event){
+    public void onSelectedTestEvent (SelectedTestEvent event) throws IOException {
         setScheduledTest(event.getSelectedTestEvent());
         Platform.runLater(() -> {
             try{
@@ -209,6 +229,73 @@ public class TeacherExecuteExamController {
             }
         });
     }
+
+    @Subscribe
+    public void onShowExamFormQuestionScoresEvent(ShowExamFormQuestionScoresEvent event){
+        try {
+
+            questionScoreList = event.getQuestionScores();
+            examForm.setQuestionScores(questionScoreList);
+            ObservableList<Question_Score> questions1 = FXCollections.observableArrayList(questionScoreList);
+            Questions_List_View.setItems(questions1);
+
+            Questions_List_View.setCellFactory(param -> new ListCell<Question_Score>() {
+                @Override
+                protected void updateItem(Question_Score questionScore, boolean empty) {
+                    super.updateItem(questionScore, empty);
+                    if (empty || questionScore == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        Question question = questionScore.getQuestion();
+                        VBox vbox = new VBox();
+                        Label questionText = new Label(question.getText());
+                        vbox.getChildren().add(questionText);
+
+                        // Add the answers as separate labels in the VBox
+
+                        Label answerLabel0 = new Label("1.      "+question.getAnswer0());
+                        if (question.getIndexAnswer() == 0) {
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel0);
+
+                        Label answerLabel1 = new Label("2.      "+question.getAnswer1());
+                        if (question.getIndexAnswer() == 1) {
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel1);
+
+                        Label answerLabel2 = new Label("3.      "+question.getAnswer2());
+                        if (question.getIndexAnswer() == 2) {
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel2);
+
+                        Label answerLabel3 = new Label("4.      "+question.getAnswer3());
+                        if (question.getIndexAnswer() == 3) {
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                        }
+                        vbox.getChildren().add(answerLabel3);
+
+                        Label score = new Label("( " + Integer.toString(questionScore.getScore()) + " points )");
+                        vbox.getChildren().add(score);
+
+                        setGraphic(vbox);
+
+                    }
+                }
+            });
+            Platform.runLater(()->{
+                teacher_notes.setText(examForm.getGeneralNotes());
+                teacher_notes.setDisable(true);
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     public void handleHomeButtonClick(){
         try {

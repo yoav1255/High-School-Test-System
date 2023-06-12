@@ -1,14 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QuestionAddedEvent {
-    private String str;
+    private List<Object> objectList = new ArrayList<>(); // 0. bool, 1 quest Id
 
-    public String getStr() {
-        return str;
+    public QuestionAddedEvent(List<Object> objectList) {
+        this.objectList = objectList;
     }
-
-    public QuestionAddedEvent(String str) {
-        this.str = str;
+    public List<Object> getObjectList() {
+        return objectList;
     }
-
 }

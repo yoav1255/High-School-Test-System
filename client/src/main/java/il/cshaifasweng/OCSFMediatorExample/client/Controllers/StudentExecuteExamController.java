@@ -78,6 +78,8 @@ public class StudentExecuteExamController {
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
         scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
+        //TODO handle active students to be 0 after schedule test ends
+        //TODO handle if student gets out and comes back again
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
@@ -189,13 +191,29 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setContentText("Exam Submitted Successfully");
+            alert.setHeaderText(null);
+            alert.show();
         });
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-
     }
 
-
+    @Subscribe
+    public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
+        Platform.runLater(() -> {
+            List<Object> objectList = event.getData();
+            if (objectList.get(3).equals(scheduledTest.getId())){
+                if ((int)objectList.get(2) != 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The teacher added " + objectList.get(2) + " minutes to the test!");
+                    alert.show();
+                }
+            }
+        });
+    }
 
 @Subscribe
     public void onTimerStartEvent(TimerStartEvent event){ // not necessary
