@@ -11,6 +11,7 @@ public class Statistics implements Serializable {
     String scheduleTestId;
     Double avgGrade;
     int median;
+    String id;
     //List<Double> distribution;
 
 
@@ -48,4 +49,7 @@ public class Statistics implements Serializable {
     public String getScheduleTestId() {
         return scheduleTestId;
     }
+
+    public String getStudentId() { return id;}
+    public void setId(String id){this.id = id;}
 }

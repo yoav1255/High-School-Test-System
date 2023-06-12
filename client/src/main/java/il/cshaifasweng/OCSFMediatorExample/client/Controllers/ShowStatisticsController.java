@@ -235,12 +235,15 @@ public class ShowStatisticsController {
             Statistics studentStat = event.getStudentStat();
             statisticList.clear();
             statisticList.add(studentStat);
-            scheduled_test.textProperty().setValue("Student ID");
+            int index = combobox_id.getSelectionModel().getSelectedIndex();
+            String StudentId = studentNames.get(index).getId();
+
+            Platform.runLater(()-> {
+                        scheduled_test.textProperty().setValue("Student ID");
+                    });
 
             scheduled_test.setCellValueFactory(cellData->{
-                Statistics stat = cellData.getValue();
-                String id = stat.getScheduleTestId();
-                return new SimpleStringProperty(id);
+                return new SimpleStringProperty(StudentId);
             });
             average.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
