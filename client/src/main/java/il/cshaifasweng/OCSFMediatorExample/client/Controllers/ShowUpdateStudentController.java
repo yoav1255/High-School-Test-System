@@ -3,8 +3,10 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.SelectedTestEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowUpdateStudentEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -72,7 +74,6 @@ public class ShowUpdateStudentController {
             });
             questionAnswerList = studentTest.getQuestionAnswers();
             scheduledTest = studentTest.getScheduledTest();
-            System.out.println("ans q1 : " + questionAnswerList.get(0).getAnswer());
             Platform.runLater(() -> {
                 setTable();
             });
@@ -103,7 +104,6 @@ public class ShowUpdateStudentController {
                         // Add the answers as separate labels in the VBox
 
                         Label answerLabel0 = new Label("1.      " + question.getAnswer0());
-                        System.out.println("qa is : " + questionAnswer.getAnswer());
                         if (questionAnswer.getAnswer() == 0)
                             answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
                         if (question.getIndexAnswer() == 0) {
@@ -162,8 +162,10 @@ public class ShowUpdateStudentController {
                     if (!Integer.toString(newG).equals(oldGrade.getText()) && (txtChange.getText().equals(""))) {
                     update_status.setText("Explanation must be provided!");
                     } else {
-                        studentTest.setChecked(true);
-                        scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions() + 1);
+                        if(studentTest.isChecked()==false) {
+                            studentTest.setChecked(true);
+                            scheduledTest.setCheckedSubmissions(scheduledTest.getCheckedSubmissions() + 1);
+                        }
                         studentTest.setGrade(newG);
                         studentTest.setChange_explanation(txtChange.getText());
 
@@ -175,6 +177,8 @@ public class ShowUpdateStudentController {
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", scheduledTest));
+                                EventBus.getDefault().post(new SelectedTestEvent(scheduledTest));
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

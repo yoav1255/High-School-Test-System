@@ -3,11 +3,14 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.loginEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -20,6 +23,9 @@ public class loginController {
 
     @FXML
     private Label error_msg;
+
+    @FXML
+    private Label loggedIn_msg;
 
     //@FXML
     //private TextArea error_msgg;
@@ -37,6 +43,7 @@ public class loginController {
     public loginController(){
         EventBus.getDefault().register(this);
         instances++;
+        System.out.println("in login");
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -49,6 +56,9 @@ public class loginController {
 
     @FXML void initialize(){
         error_msg.setVisible(false);
+        loggedIn_msg.setVisible(false);
+
+        user_password.setOnKeyPressed(this::handleKeyPressed);
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     @FXML
@@ -57,7 +67,12 @@ public class loginController {
 
         switch (user_type) {
             case ("wrong"):
+                loggedIn_msg.setVisible(false);
                 error_msg.setVisible(true);
+                break;
+            case ("logged_error"):
+                error_msg.setVisible(false);
+                loggedIn_msg.setVisible(true);
                 break;
             case ("student"):
                 cleanup();
@@ -98,14 +113,27 @@ public class loginController {
     @FXML
     void loginButton(ActionEvent event) {
         try{
+            System.out.println("in login button");
+
             String id = user_id.getText();
             String pass = user_password.getText();
+            if(pass == null || id == null){
+                loggedIn_msg.setVisible(false);
+                error_msg.setVisible(true);
+                return;
+            }
             ArrayList<String> loginData = new ArrayList<>();
             loginData.add(0,id);
             loginData.add(1,pass);
             SimpleClient.getClient().sendToServer(new CustomMessage("#login", loginData));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            loginButton(null);
         }
     }
 

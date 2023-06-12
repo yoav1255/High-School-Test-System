@@ -20,6 +20,8 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class ShowQuestionsController {
     private String id = new String();
@@ -44,8 +46,10 @@ public class ShowQuestionsController {
     private List<String> ans2;
     private List<String> ans3;
     private List<String> ans4;
+
     private boolean isManager;
     private String managerId;
+
     @FXML
     private Button btnNew;
     @FXML
@@ -107,8 +111,24 @@ public class ShowQuestionsController {
             comboCourse.setDisable(true);
 
         });
-
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN )
+    @FXML
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
+        isManager = false;
+        btnNew.setDisable(false);
+        btnNew.setVisible(true);
+        Platform.runLater(()->{
+            setId(event.getId());
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     @Subscribe
     public void onMoveManagerIdEvent(MoveManagerIdEvent event){
         isManager = true;
@@ -176,41 +196,38 @@ public class ShowQuestionsController {
         }
 
     }
-    public void handleHomeButtonClick(ActionEvent event) throws IOException {
-        if(isManager){
-            cleanup();
-            App.switchScreen("managerHome");
-            Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
-            });
-        }else {
+    public void handleGoHomeButtonClick(ActionEvent event) throws IOException {
+        cleanup();
+        if (!isManager) {
             try {
-                String teacherId = this.id;
-                cleanup();
                 App.switchScreen("teacherHome");
                 Platform.runLater(() -> {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                App.switchScreen("managerHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-    @Subscribe(threadMode = ThreadMode.MAIN )
-    @FXML
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
-        isManager = false;
-        btnNew.setDisable(false);
-        btnNew.setVisible(true);
-        Platform.runLater(()->{
-            setId(event.getId());
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects",id));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+
     @FXML
     public void GoToAddQuestion(ActionEvent event) {
         try {
@@ -271,13 +288,63 @@ public class ShowQuestionsController {
                 throw new RuntimeException(e);
             }
         });
-        displayMsg(String.valueOf(event.getQuestId()));
+        Platform.runLater(()->{
+            displayMsg(String.valueOf(event.getQuestId()));
+        });
     }
 
-    public void displayMsg(String QuestId) {
+    public void displayMsg(String questId) {
         Platform.runLater(() -> {
-            int input = JOptionPane.showOptionDialog(null, "Question added. Question ID: " + QuestId, "Information",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+            if (!Objects.equals(questId, "0")){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Information");
+                alert.setHeaderText(null);
+                alert.setContentText("Question added. Question ID: " + questId);
+                alert.show();
+          }
+            else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText("There was a problem and the question did not save. please enter it again");
+                alert.setHeaderText(null);
+                alert.show();
+            }
         });
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(id);
+                info.add("teacher");
+            }
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+
+    public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
+        handleGoHomeButtonClick(null);
     }
 }

@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class StudentExecuteExamController {
 
@@ -63,6 +64,7 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
+        id = student.getId();
         questionAnswers= new ArrayList<>();
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
@@ -75,11 +77,10 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        System.out.println("before adding , active students: " + scheduledTest.getActiveStudents());
         scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
-        System.out.println("after adding , active students: " + scheduledTest.getActiveStudents());
+        //TODO handle active students to be 0 after schedule test ends
+        //TODO handle if student gets out and comes back again
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
-
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -166,7 +167,6 @@ public class StudentExecuteExamController {
                             int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
                             questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
                         } else {
-                            System.out.println("No answer selected for question: " + questionAnswer.getQuestionScore().getQuestion().getText());
                         }
                     });
 
@@ -189,14 +189,27 @@ public class StudentExecuteExamController {
         System.out.println("good");
         cleanup();
         App.switchScreen("studentHome");
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
         });
-
+        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE); //TODO
     }
 
-
+    @Subscribe
+    public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
+        Platform.runLater(() -> {
+            List<Object> objectList = event.getData();
+            if (objectList.get(3).equals(scheduledTest.getId())){
+                if ((int)objectList.get(2) != 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The teacher added " + objectList.get(2) + " minutes to the test!");
+                    alert.show();
+                }
+            }
+        });
+    }
 
 @Subscribe
     public void onTimerStartEvent(TimerStartEvent event){ // not necessary
@@ -212,11 +225,11 @@ public class StudentExecuteExamController {
         timeLeft = (long)scheduleTestId_timeLeft.get(1);
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
-    if(scheduleTestId.equals(scheduledTest.getId())) {
-            Platform.runLater(() -> {
+        Platform.runLater(() -> {
+            if(scheduleTestId.equals(scheduledTest.getId())) {
                 timeLeftText.setText(Long.toString(timeLeft));
-            });
-        }
+            }
+        });
 }
 
 @Subscribe
@@ -258,6 +271,47 @@ public class StudentExecuteExamController {
         }
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to exit test and logout ?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+    public void handleBackButtonClick(ActionEvent actionEvent) { Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("EXIT");
+        alert.setHeaderText(null);
+        alert.setContentText("Cant go back, please submit test");
+        ButtonType yesButton = new ButtonType("return");
+        alert.getButtonTypes().setAll(yesButton);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton){
+            alert.close();
+        }
+    }
+
+    public void handleGoHomeButtonClick(ActionEvent actionEvent) {
+        handleBackButtonClick(null);
     }
 }
 

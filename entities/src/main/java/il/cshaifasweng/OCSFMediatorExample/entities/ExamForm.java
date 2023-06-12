@@ -38,6 +38,18 @@ public class ExamForm implements Serializable {
         this.scheduledTests = new ArrayList<ScheduledTest>();
         this.questionScores = new ArrayList<Question_Score>();
     }
+
+    public ExamForm(String code, int timeLimit, String generalNotes, Course course, Subject subject, Teacher teacher) {
+        this.code = code;
+        this.timeLimit = timeLimit;
+        this.generalNotes = generalNotes;
+        this.course = course;
+        this.subject = subject;
+        this.scheduledTests = new ArrayList<>();
+        this.questionScores = new ArrayList<>();
+        this.teacher = teacher;
+    }
+
     public ExamForm(){}
 
     public String getCode() {

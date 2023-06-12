@@ -41,58 +41,39 @@ public class App extends Application {
     public static void setStage(Stage stage) {
         App.stage = stage;
     }
-    private static int instances = 0;
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
-        instances--;
     }
     @Override
     public void start(Stage stage) throws IOException {
-        EventBus.getDefault().register(this);
-        instances++;
-        System.out.println("register successfully with client");
-        client = SimpleClient.getClient();
-        client.openConnection();
-//        cleanup();
-        scene = new Scene(loadFXML("login"), 574, 423);
-        App.stage = stage;
-        stage.setScene(scene);
-        stage.show();
-
-
-        // -------------- //
-
-    }
-
-    public static void openPopup(String screenName) throws IOException{
-
-        switch (screenName){
-            case ("examEntry"):
-                Platform.runLater(()->{
-                    try {
-                        setPopUpContent("examEntry");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-        }
-    }
-    public static void setPopUpContent(String pageName) throws IOException{
         try {
-            Parent popupRoot = loadFXML(pageName);
-            Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initStyle(StageStyle.UTILITY);
+            //EventBus.getDefault().register(this);
+            System.out.println("register successfully with client");
+            client = SimpleClient.getClient();
+            client.openConnection();
+            System.out.println(client.getHost()+ " is the host " + client.getPort() + " is the port ");
 
-            Scene popupScene = new Scene(popupRoot);
-            popupStage.setTitle(pageName);
-            popupStage.setScene(popupScene);
-            popupStage.showAndWait();
-        } catch (Exception e) {
+//        cleanup();
+            scene = new Scene(loadFXML("login"), 574, 423);
+            App.stage = stage;
+            setWindowTitle("Login");
+            stage.setScene(scene);
+            stage.show();
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void stop() throws Exception {
+        // TODO Auto-generated method stub
+        client.closeConnection();
+        System.out.println("CLIENT SHUT DOWN");
+        //cleanup();
+        super.stop();
+    }
+
     public static void setWindowTitle(String title){stage.setTitle(title);}
     public static void setContent(String pageName) throws IOException{
         Parent root = loadFXML(pageName);
@@ -118,6 +99,16 @@ public class App extends Application {
                     setWindowTitle("Student");
                     try {
                         setContent("showOneStudent");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "showStudentTest":
+                Platform.runLater(()->{
+                    setWindowTitle("show Student Test");
+                    try {
+                        setContent("showStudentTest");
                     }catch (IOException e){
                         e.printStackTrace();
                     }
@@ -273,6 +264,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "studentExecuteExamLOCAL":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Local Exam");
+                    try {
+                        setContent("studentExecuteExamLOCAL");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "examEntry":
                 Platform.runLater(()->{
                     setWindowTitle("Enter Exam");
@@ -293,6 +294,26 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "teacherExamEntry":
+                Platform.runLater(()->{
+                    setWindowTitle("exam entry");
+                    try {
+                        setContent("teacherExamEntry");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacherExecuteExam":
+                Platform.runLater(()->{
+                    setWindowTitle("Execute Exam");
+                    try {
+                        setContent("teacherExecuteExam");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
             case "showStatistics":
                 Platform.runLater(()->{
                     setWindowTitle("Statistics");
@@ -304,7 +325,6 @@ public class App extends Application {
                 });
                 break;
         }
-//    return loadFXML(screenName);
     }
     //-------------Menu Functions----------//
 
@@ -322,24 +342,19 @@ public class App extends Application {
     
     
 
-    @Override
-	public void stop() throws Exception {
-		// TODO Auto-generated method stub
-        cleanup();
-		super.stop();
-	}
+
     
-    @Subscribe
-    public void onWarningEvent(WarningEvent event) {
-    	Platform.runLater(() -> {
-    		Alert alert = new Alert(AlertType.WARNING,
-        			String.format("Message: %s\nTimestamp: %s\n",
-        					event.getWarning().getMessage(),
-        					event.getWarning().getTime().toString())
-        	);
-        	alert.show();
-    	});
-    }
+//    @Subscribe
+//    public void onWarningEvent(WarningEvent event) {
+//    	Platform.runLater(() -> {
+//    		Alert alert = new Alert(AlertType.WARNING,
+//        			String.format("Message: %s\nTimestamp: %s\n",
+//        					event.getWarning().getMessage(),
+//        					event.getWarning().getTime().toString())
+//        	);
+//        	alert.show();
+//    	});
+//    }
 
 	public static void main(String[] args) {
         launch();

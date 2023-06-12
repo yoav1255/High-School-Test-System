@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CreateQuestionController {
@@ -46,23 +47,20 @@ public class CreateQuestionController {
     private List<String> courseNames;
     private List<Course> courses;
     private List<Subject> subjects;
-    private String id = new String();
+    private String id;
     public String getId() {return id;}
     public void setId(String id) {
         this.id = id;
     }
-
     public CreateQuestionController() {
         EventBus.getDefault().register(this);
         courseNames = new ArrayList<>(); // The selected courses names.
         courses = new ArrayList<>(); // The courses that are in the selected subject.
         subjects = new ArrayList<>(); // The subjects the teacher teach.
     }
-
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
-
     @FXML
     void initialize() {
         Platform.runLater(() -> {
@@ -82,7 +80,6 @@ public class CreateQuestionController {
         });
 
     }
-
     @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event) {
         subjects.clear();
@@ -91,9 +88,11 @@ public class CreateQuestionController {
         for (Subject subject : subjects) {
             items.add(subject.getName());
         }
-        comboSubject.setItems(items);
-    }
+        Platform.runLater(() -> {
+            comboSubject.setItems(items);
+        });
 
+    }
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
@@ -106,7 +105,6 @@ public class CreateQuestionController {
             e.printStackTrace();
         }
     }
-
     @Subscribe
     public void onShowSubjectCourses(ShowSubjectCoursesEvent event) {
         courses.clear();
@@ -117,24 +115,25 @@ public class CreateQuestionController {
         }
         courseOptions.setItems(items);
     }
-
     public void selectCourseListener(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         ObservableList<String> selectedItems = courseOptions.getSelectionModel().getSelectedItems();
         courseNames.clear();
         courseNames.addAll(selectedItems);
         //TODO לתקן את הבחירה המרובה של הקורסים
     }
-
     @FXML
     public void handleConfirmButtonClick(ActionEvent event) {
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
                 || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || courseNames.isEmpty()) {
 
-            JOptionPane.showMessageDialog(null, "Error! Fill all the fields", "Error", JOptionPane.ERROR_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error! Fill all the fields");
+            alert.show();
         } else
             confirm();
     }
-
     @FXML
     void handleCancelButtonClick(ActionEvent event) {
         if (theQuestion.getText().isEmpty() && ans1.getText().isEmpty() && ans2.getText().isEmpty()
@@ -150,9 +149,12 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-            if (input == JOptionPane.YES_OPTION) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+            alert.setHeaderText(null);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     String teacherId = this.id;
                     cleanup();
@@ -166,7 +168,6 @@ public class CreateQuestionController {
             }
         }
     }
-
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
 
@@ -183,13 +184,16 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            int input = JOptionPane.showConfirmDialog(null, "Your changes will be lost. Do you wand to proceed?", "Select an Option...",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
-            if (input == JOptionPane.YES_OPTION) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+            alert.setHeaderText(null);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
                     String teacherId = this.id;
                     cleanup();
-                    App.switchScreen("teacherHome");
+                    App.switchScreen("showAllQuestions");
                     Platform.runLater(() -> {
                         EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                     });
@@ -198,11 +202,7 @@ public class CreateQuestionController {
                 }
             }
         }
-
-
-
     }
-
     public void confirm() {
         String ans_str = comboAns.getValue();
         int ans_num = Integer.parseInt(ans_str);
@@ -232,22 +232,23 @@ public class CreateQuestionController {
     }
     @Subscribe
     public void onQuestionAddedEvent(QuestionAddedEvent event) {
-
+        List<Object> objectList = event.getObjectList();
         try {
             String teacherId = this.id;
-            String QuestId = String.valueOf(event.getStr());
+            String questId = String.valueOf(objectList.get(1));
+            if (!(boolean)objectList.get(0)) {
+                questId = "0";
+            }
             cleanup();
             App.switchScreen("showAllQuestions");
+            final String finalQuestId = questId;
             Platform.runLater(() -> {
-                EventBus.getDefault().post(new MoveIdQuestionAddedEvent(teacherId, QuestId));
+                EventBus.getDefault().post(new MoveIdQuestionAddedEvent(teacherId, finalQuestId));
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
-
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         setId(event.getId());
@@ -257,8 +258,6 @@ public class CreateQuestionController {
             e.printStackTrace();
         }
     }
-
-
     @Subscribe
     public void onShowUpdateQuestFormEvent(ShowUpdateQuestFormEvent event){
         List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
@@ -289,6 +288,30 @@ public class CreateQuestionController {
 
         //   comboAns.setItems(updateQuestion.getIndexAnswer());
 
+    }
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
     }
 
 }

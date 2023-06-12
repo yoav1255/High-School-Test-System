@@ -9,7 +9,6 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SimpleClient extends AbstractClient {
 	
@@ -17,6 +16,11 @@ public class SimpleClient extends AbstractClient {
 
 	private SimpleClient(String host, int port) {
 		super(host, port);
+		System.out.println("host: "+host + " port: "+ port);
+	}
+
+	@Override
+	protected void connectionEstablished(){
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowUpdateStudentEvent(studentTest));
 					break;
 				case ("updateSuccess"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Student updated successfully with the grade "+message.getData()));
 					break;
 				case ("returnLogin"):
 					String login_auth = (String) message.getData();
@@ -86,7 +91,10 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new TeacherFromIdEvent(teacher));
 					break;
 				case("addScheduleTestSuccess"):
+					EventBus.getDefault().post(new UpdateScheduleTestEvent((boolean) message.getData()));
 					break;
+				case ("deleteScheduleTestSuccess"):
+					EventBus.getDefault().post(new ShowSuccessEvent("Successfully deleted"));
 				case ("returnExamForm"):
 					ExamForm examForm1=(ExamForm) message.getData();
 					EventBus.getDefault().post(new ScheduledTestEvent(examForm1));
@@ -96,8 +104,9 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowScheduleTestEvent(scheduledTests));
 					break;
 				case ("addQuestionSuccess"):
-					String questId = (String) message.getData();
-					EventBus.getDefault().post(new QuestionAddedEvent(questId));
+					List<Object> objectList = new ArrayList<>();
+					objectList = (List<Object>) message.getData();
+					EventBus.getDefault().post(new QuestionAddedEvent(objectList));
 					break;
 				case("returnExamForms"):
 					List<ExamForm> examForms = (List<ExamForm>) message.getData();
@@ -119,53 +128,46 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowSuccessEvent("Congratulations!"));
 					break;
 				case ("timerStarted"):
-					System.out.println("in simple client!");
 					ScheduledTest scheduledTest1 = (ScheduledTest) message.getData();
-					System.out.println("in simple client! timer started for test "+scheduledTest1.getId());
 					EventBus.getDefault().postSticky(new TimerStartEvent(scheduledTest1));
 					break;
 				case ("timerFinished"):
-					System.out.println("in simple client!");
 					ScheduledTest scheduledTest2 = (ScheduledTest) message.getData();
-					System.out.println("in simple client! timer finished for test "+scheduledTest2.getId());
 					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
 					break;
 				case ("timeLeft"):
 					List<Object> scheduleTestId_timeLeft =(List<Object>) message.getData();
 					EventBus.getDefault().postSticky(new TimeLeftEvent(scheduleTestId_timeLeft));
 					break;
-				case ("returnAllTeachersNames"):
-					List<String> teacherName =(List<String>) message.getData();
-					EventBus.getDefault().post(new ShowAllTeachersNamesEvent(teacherName));
+				case ("extraTimeRequests"):
+					EventBus.getDefault().post(new extraTimeRequestEvent((List<ExtraTime>) message.getData()));
 					break;
-				case ("returnAllCoursesNames"):
-					List<String> courseName =(List<String>) message.getData();
-					EventBus.getDefault().post(new ShowAllCoursesNamesEvent(courseName));
+				case ("extraTimeResponse"):
+					EventBus.getDefault().post(new ManagerExtraTimeEvent((List<Object>) message.getData()));
 					break;
-				case ("returnAllStudentsNames"):
-					List<String> studentName =(List<String>) message.getData();
-					EventBus.getDefault().post(new ShowAllStudentsNamesEvent(studentName));
+				case ("successEvent"):
+					EventBus.getDefault().post(new ShowSuccessEvent("success"));
 					break;
-				case ("returnTeacherStat"):
-					ArrayList<Statistics> teacherStat = (ArrayList<Statistics>) message.getData();
-					EventBus.getDefault().post(new ShowTeacherStatEvent(teacherStat));
-					System.out.println("orennnnnnnnnnnnnnn22222222222222222222");
+				case ("getIsFirstEntry"):
+					System.out.println("int s.c posting event");
+					EventBus.getDefault().post(new CheckFirstEntryEvent((Boolean)message.getData()));
 					break;
-				case ("returnCourseStat"):
-					List<Statistics> courseStat = (List<Statistics>) message.getData();
-					EventBus.getDefault().post(new showCourseStatEvent(courseStat));
+				case ("Terminate"):
+					System.exit(0);
 					break;
-				case ("returnStudentStat"):
-					Statistics studentStat = (Statistics) message.getData();
-					EventBus.getDefault().post(new showStudentStatEvent(studentStat));
+				case ("addExamForm"):
+					EventBus.getDefault().post(new AddExamFormResponseEvent((Boolean)message.getData()));
 					break;
-
+				case ("updateScheduleTest"):
+					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));
+					break;
 
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
+	
 	public static SimpleClient getClient() {
 		if (client == null) {
 			client = new SimpleClient("localhost", 3028);

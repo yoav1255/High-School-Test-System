@@ -6,6 +6,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.entities.Question;
 import il.cshaifasweng.OCSFMediatorExample.entities.Question_Score;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowExamFormQuestionScoresEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneExamFormEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneExamFormManagerEvent;
@@ -22,7 +23,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ShowOneExamFormController {
 
@@ -34,6 +37,8 @@ public class ShowOneExamFormController {
 
     @FXML
     private TextArea generalNotes;
+    @FXML
+    private Button update;
 
     @FXML
     private Button homeBN;
@@ -74,21 +79,30 @@ public class ShowOneExamFormController {
     }
 
     public void setFields(){
-        txtCourse.setText(txtCourse.getText() + examForm.getCourseName());
-        txtSubject.setText(txtSubject.getText()+examForm.getSubjectName());
-        txtTimeLimit.setText(txtTimeLimit.getText() + Integer.toString(examForm.getTimeLimit()));
-        try {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Platform.runLater(()->{
+            try {
+                txtCourse.setText(txtCourse.getText() + examForm.getCourseName());
+            txtSubject.setText(txtSubject.getText()+examForm.getSubjectName());
+            if(isManager){
+                update.setVisible(false);
+            }
+            else {
+                update.setVisible(true);
+            }
+            txtTimeLimit.setText(txtTimeLimit.getText() + Integer.toString(examForm.getTimeLimit()));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 @Subscribe
     public void onShowOneExamFormEvent(ShowOneExamFormEvent event) throws IOException {
         examForm = (ExamForm) event.getSetTeacherAndExam().get(1);
         teacherId = (String) event.getSetTeacherAndExam().get(0);
         isManager = false;
-        Platform.runLater(()-> setFields());
+        setFields();
     }
 
     @Subscribe
@@ -97,7 +111,7 @@ public class ShowOneExamFormController {
         managerId = (String) event.getSetManagerAndExam().get(0);
         isManager = true;
 
-        Platform.runLater(()-> setFields());
+        setFields();
     }
 
 @Subscribe
@@ -105,7 +119,7 @@ public class ShowOneExamFormController {
     try {
 
         questionScoreList = event.getQuestionScores();
-
+        examForm.setQuestionScores(questionScoreList);
         ObservableList<Question_Score> questions1 = FXCollections.observableArrayList(questionScoreList);
         questionsListView.setItems(questions1);
 
@@ -168,7 +182,19 @@ public class ShowOneExamFormController {
 
     @FXML
     void handleBackButtonClick(ActionEvent event) {
-
+        try {
+            cleanup();
+            App.switchScreen("showExamForms");
+            Platform.runLater(()->{
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -206,4 +232,51 @@ public class ShowOneExamFormController {
         }
     }
 
+    @FXML
+    public void goToUpdateExamForm(ActionEvent event) throws IOException {
+        cleanup();
+        List<Object> setObjectAndExam = new ArrayList<>();
+        setObjectAndExam.add(teacherId);
+        setObjectAndExam.add(examForm);
+        App.switchScreen("createExamForm2");
+        Platform.runLater(()->{
+            try {
+                EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", teacherId));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", teacherId));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
 }

@@ -6,68 +6,14 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="scheduledDate" prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ScheduledTestController">
     <children>
-        <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;">
-            <children>
-                <Pane prefHeight="83.0" prefWidth="214.0">
-                    <children>
-                        <Label alignment="BASELINE_CENTER" layoutX="55.0" layoutY="8.0" prefHeight="43.0" prefWidth="133.0" text="MOYAM">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="29.0" />
-                            </font>
-                        </Label>
-                        <!--                        <FontAwesomeIconView glyphName="UNIVERSITY" layoutX="20.0" layoutY="39.0" size="30" text="" wrappingWidth="33.85714244842529" />-->
-                        <Label ellipsisString="" layoutX="62.0" layoutY="40.0" prefHeight="23.0" prefWidth="122.0" text="School Test System" textAlignment="CENTER">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="12.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </Pane>
-                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-background-color: #c76f04; -fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
-                    <graphic>
-                        <!--                        <FontAwesomeIconView glyphName="HOME" size="20" />-->
-                    </graphic>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                    <padding>
-                        <Insets left="20.0" />
-                    </padding>
-                    <font>
-                        <Font name="Oriya Sangam MN" size="15.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets bottom="1.0" top="1.0" />
-                    </VBox.margin>
-                </Button>
-            </children>
-        </VBox>
-        <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
-            <children>
-                <Label fx:id="statusLB" layoutX="11.0" layoutY="12.0" text="menu/students_lis/student#grades/">
-                    <font>
-                        <Font name="Oriya Sangam MN" size="13.0" />
-                    </font>
-                </Label>
-                <Button layoutX="720.0" layoutY="5.0" mnemonicParsing="false" opacity="0.0" prefHeight="28.0" prefWidth="32.0">
-                    <font>
-                        <Font name="FontAwesome" size="13.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="HAND" />
-                    </cursor>
-                </Button>
-                <!--                <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
-            </children>
-        </Pane>
       <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="164.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Date">
          <font>
             <Font size="20.0" />
@@ -78,12 +24,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="311.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Submission">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="395.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Exam Form">
+      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="316.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Exam Form">
          <font>
             <Font size="20.0" />
          </font>
@@ -92,22 +33,72 @@
          <opaqueInsets>
             <Insets />
          </opaqueInsets></DatePicker>
-      <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="410.0" layoutY="397.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
+      <ComboBox id="comboBoxExamForm" fx:id="comboBoxExamForm" layoutX="410.0" layoutY="318.0" onAction="#comboAction" prefHeight="26.0" prefWidth="165.0" promptText="Exams Form" />
       <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="421.0" layoutY="241.0" prefHeight="10.0" prefWidth="48.0" />
-      <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="718.0" layoutY="505.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="90.0" style="-fx-background-color: #FFD700;" text="Schedule Test" textFill="#661515" />
-      <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="482.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: orange;" text="teacher ID">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <Label id="labelTeacher" fx:id="labelTeacher" layoutX="419.0" layoutY="483.0" prefHeight="28.0" prefWidth="99.0" />
-      <TextField id="scheduleTime" fx:id="textFieldsubmission" layoutX="421.0" layoutY="313.0" prefHeight="10.0" prefWidth="48.0" />
+      <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="270.0" layoutY="456.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="228.0" style="-fx-background-color: #FFD700;" text="Add Schedule Test" textFill="#661515" />
       <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="84.0" prefHeight="19.0" prefWidth="114.0" style="-fx-background-color: orange;" text="Code">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
       <TextField id="scheduleTime" fx:id="scheduleCode" layoutX="421.0" layoutY="86.0" prefHeight="10.0" prefWidth="48.0" />
-      <Button fx:id="backBtn" layoutX="718.0" layoutY="59.0" mnemonicParsing="false" onAction="#handleBackBtn" prefHeight="26.0" prefWidth="55.0" style="-fx-background-color: orange; -fx-background-radius: 15;" text="Back" />
+      <RadioButton fx:id="radioManualTest" layoutX="261.0" layoutY="406.0" mnemonicParsing="false" onAction="#handleRadioManualTest" text="Local Test" textFill="#df9b07">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </RadioButton>
+      <RadioButton fx:id="radioComputerTest" layoutX="425.0" layoutY="406.0" mnemonicParsing="false" onAction="#handleRadioComputerTest" text="Computer Test" textFill="#df9b07fa">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </RadioButton>
+      <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
+         <children>
+            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
+               <font>
+                  <Font name="Oriya Sangam MN" size="13.0" />
+               </font>
+            </Label>
+            <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
+               <font>
+                  <Font name="Oriya Sangam MN" size="31.0" />
+               </font>
+            </Label>
+            <Button fx:id="HomeButton" layoutX="-4.0" layoutY="-1.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="32.0" prefWidth="123.0" style="-fx-background-color: TRANSPARENT;" text="MOYAM">
+               <font>
+                  <Font name="Oriya Sangam MN" size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="backBN" layoutX="871.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="logoutButton" layoutX="936.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleLogoutButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="X">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+         </children>
+      </Pane>
+      <Label fx:id="codeError" layoutX="623.0" layoutY="90.0" prefHeight="18.0" prefWidth="294.0" />
+      <Label fx:id="radioBtnError" layoutX="623.0" layoutY="405.0" prefHeight="18.0" prefWidth="204.0" />
+      <Label fx:id="examFormError" layoutX="623.0" layoutY="324.0" prefHeight="18.0" prefWidth="204.0" />
+      <Label fx:id="timeError" layoutX="625.0" layoutY="245.0" prefHeight="18.0" prefWidth="204.0" />
+      <Label fx:id="dateError" layoutX="623.0" layoutY="170.0" prefHeight="18.0" prefWidth="215.0" />
+      <Button id="buttonScheduleTest" fx:id="deleteScheduleTest" layoutX="665.0" layoutY="456.0" mnemonicParsing="false" onAction="#deleteScheduleTest" prefHeight="30.0" prefWidth="132.0" style="-fx-background-color: black;" text="Delete Schedule Test" textFill="#fffffa" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

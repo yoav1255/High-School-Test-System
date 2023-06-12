@@ -52,6 +52,7 @@
             <Button fx:id="ShowExamsbtn" mnemonicParsing="false" onAction="#handleShowExamFormsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exam Forms" />
             <Button fx:id="showScheduledbtn" mnemonicParsing="false" onAction="#handleShowScheduledTestsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Scheduled Tests" />
             <Button fx:id="showStatsbtn" mnemonicParsing="false" onAction="#handleShowStatsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Statistics" />
+            <Button fx:id="ExecExam" layoutX="10.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleExecExamButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exec Exam" />
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">
@@ -66,6 +67,22 @@
                         <Font name="FontAwesome" size="13.0" />
                     </font>
                 </Button>
+            <Button fx:id="backBN" layoutX="665.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="logoutButton" layoutX="730.0" layoutY="5.0" mnemonicParsing="false" onAction="#handleLogoutButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="X">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
                 <!--            <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>

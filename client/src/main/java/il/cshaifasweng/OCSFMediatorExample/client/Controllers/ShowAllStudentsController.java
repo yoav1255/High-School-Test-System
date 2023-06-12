@@ -2,10 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 
 import java.io.IOException;
-import java.sql.Time;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 //import il.cshaifasweng.OCSFMediatorExample.entities.EventBusManager;
@@ -15,6 +14,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowAllStudentsEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -96,13 +96,24 @@ public class ShowAllStudentsController {
 
     @FXML
     public void handleRowClick(MouseEvent event) {
-        if (!isManager) {
+        if (isManager) { // only the manager can access the students grades from all students
             try {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     Student selectedStudent = students_table_view.getSelectionModel().getSelectedItem();
+                    App.switchScreen("showOneStudent");
+
                     if (selectedStudent != null) {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", selectedStudent));
-                        App.switchScreen("showOneStudent");
+                        Platform.runLater(()->{
+                            try {
+                                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
+                                EventBus.getDefault().post(new MoveObjectToNextPageEvent(selectedStudent));
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", selectedStudent));
+                                // posts ShowOneStudentEvent
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
                     }
                 }
             } catch (IOException e) {
@@ -145,6 +156,42 @@ public class ShowAllStudentsController {
         }
     }
 
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
     }
+
+
+    public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
+        handleGoHomeButtonClick(null);
+    }
+
+}
 
 

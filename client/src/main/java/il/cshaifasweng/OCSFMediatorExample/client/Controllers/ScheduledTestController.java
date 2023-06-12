@@ -14,11 +14,15 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.regex.*;
 
 import java.io.IOException;
@@ -47,9 +51,6 @@ public class ScheduledTestController {
     @FXML // fx:id="dataTimescheduleDate"
     private DatePicker dataTimescheduleDate; // Value injected by FXMLLoader
 
-    @FXML // fx:id="labelTeacher"
-    private Label labelTeacher; // Value injected by FXMLLoader
-
     @FXML // fx:id="scheduleTime"
     private TextField scheduleTime; // Value injected by FXMLLoader
 
@@ -63,10 +64,26 @@ public class ScheduledTestController {
     private Label statusLB; // Value injected by FXMLLoader
 
     @FXML
-    private TextField textFieldsubmission;
+    private TextField scheduleCode;
+    @FXML
+    private RadioButton radioComputerTest;
 
     @FXML
-    private TextField scheduleCode;
+    private RadioButton radioManualTest;
+    @FXML
+    private Label codeError;
+    @FXML
+    private Label dateError;
+    @FXML
+    private Label examFormError;
+    @FXML
+    private Label timeError;
+    @FXML
+    private Label radioBtnError;
+    @FXML
+    private Button deleteScheduleTest;
+
+    private List<ScheduledTest> scheduledTests;
 
     public String getId() {
         return id;
@@ -76,14 +93,12 @@ public class ScheduledTestController {
         this.id = id;
     }
 
-    //    public ScheduledTest getSelectedTest(){return selectedTest;}
     public void setSelectedTest(ScheduledTest selectedTest) {
         this.selectedTest = selectedTest;
     }
 
     public ScheduledTestController() {
         EventBus.getDefault().register(this);
-
     }
 
     public void cleanup() {
@@ -107,16 +122,23 @@ public class ScheduledTestController {
         scheduleTime.setText("12:00");
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowScheduleTestEvent(ShowScheduleTestEvent event) {
+        scheduledTests = event.getScheduledTestList();
+    }
+
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         setSelectedTest(event.getSelectedTestEvent());
         scheduleCode.setText(selectedTest.getId());
         scheduleCode.setEditable(false);
         scheduleCode.setStyle("-fx-background-color: grey;");
-        labelTeacher.setText(selectedTest.getTeacher().getId());
         scheduleTime.setText(selectedTest.getTime().toString().substring(0, 5));
-        textFieldsubmission.setText(String.valueOf(selectedTest.getSubmissions()));
         dataTimescheduleDate.setValue(selectedTest.getDate());
+        radioComputerTest.setSelected(selectedTest.getIsComputerTest());
+        radioManualTest.setSelected(!selectedTest.getIsComputerTest());
+        deleteScheduleTest.setVisible(true);
+        buttonScheduleTest.setText("update Schedule Test");
         try {
             comboBoxExamForm.setValue(selectedTest.getExamForm().getCode());
         } catch (NullPointerException e) {
@@ -139,6 +161,20 @@ public class ScheduledTestController {
         }
     }
 
+    @FXML
+    void handleRadioComputerTest(ActionEvent event) {
+        if (radioComputerTest.isSelected()) {
+            radioManualTest.setSelected(false);
+        }
+    }
+
+    @FXML
+    void handleRadioManualTest(ActionEvent event) {
+        if (radioManualTest.isSelected()) {
+            radioComputerTest.setSelected(false);
+        }
+    }
+
     @Subscribe
     public void onScheduledTestEvent(ScheduledTestEvent event) {
         this.examForm = (ExamForm) event.getScheduledTestEvent();
@@ -146,52 +182,67 @@ public class ScheduledTestController {
     }
 
     public boolean validateDate() {
+        String errorTxt="the field is empty";
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
         LocalDateTime now = LocalDateTime.now();
         if (dataTimescheduleDate.getValue() != null) {
             String currentDate = dataTimescheduleDate.getValue().toString().replace('-', '0');
             String today = dtf.format(now);
-            if (Integer.parseInt(currentDate) >= Integer.parseInt(today)) //TODO change later to >
+            if (Integer.parseInt(currentDate) > Integer.parseInt(today)) //TODO change later to >
                 return true;
+            else if (Integer.parseInt(currentDate) == Integer.parseInt(today)) {
+                return validateTime(true);
+            }
+            else errorTxt="The day has passed";
         }
         dataTimescheduleDate.setStyle("-fx-border-color: #cc0000;");
+        setErrorLabel(dateError,errorTxt);
         return false;
     }
 
-    public boolean validateTime() {
+    public boolean validateTime(boolean today) {
+        String errorTxt="time format is not hh:mm";
         String pattern = "^([01]\\d|2[0-3]):[0-5]\\d$";
         // Check if the time matches the pattern
-        if (scheduleTime != null) {
+        if (scheduleTime != null && scheduleTime.getText().length() == 5) {
             if (Pattern.matches(pattern, scheduleTime.getText())) {
                 if (Integer.parseInt(scheduleTime.getText().split(":")[0]) < 24 && Integer.parseInt(scheduleTime.getText().split(":")[1]) < 60) {
-                    return true;
+                    if (!today)
+                        return true;
+                    else {
+                        int timeNumberNow = Integer.parseInt(LocalTime.now().toString().substring(0, 5).replace(":", "0"));
+                        int timeSchedule = Integer.parseInt(scheduleTime.getText().substring(0, 5).replace(":", "0"));
+                        if (timeSchedule > timeNumberNow)
+                            return true;
+                          errorTxt="time passed";
+                    }
                 }
-            }
-
-        }
-        scheduleTime.setStyle("-fx-border-color:#cc0000;");
-        return false;
-    }
-
-    public boolean validatesubmission() {
-        String sumbissionPattern = "\\d+";
-        if (textFieldsubmission != null) {
-            if (Pattern.matches(sumbissionPattern, textFieldsubmission.getText())) {
-                return true;
+                else errorTxt="time is not valid";
             }
         }
-        textFieldsubmission.setStyle("-fx-border-color:#cc0000;");
+        scheduleTime.setStyle("-fx-border-color: #cc0000;");
+        setErrorLabel(timeError,errorTxt);
         return false;
     }
 
     public boolean validateCode() {
+        String errorTxt="the field is empty";
         String patternCode = "[a-zA-Z0-9]{4}";
         if (scheduleCode != null) {
             if (Pattern.matches(patternCode, scheduleCode.getText())) {
+                for (ScheduledTest scheduledTest : scheduledTests) {
+                    if (scheduledTest.getId().equals(scheduleCode.getText()) && selectedTest == null) {
+                        scheduleCode.setStyle("-fx-border-color: #cc0000;");
+                        setErrorLabel(codeError,"code is already exist");
+                        return false;
+                    }
+                }
                 return true;
             }
+            errorTxt="need exactly 4 characters with only letters and numbers";
         }
         scheduleCode.setStyle("-fx-border-color: #cc0000;");
+        setErrorLabel(codeError,errorTxt);
         return false;
     }
 
@@ -199,14 +250,17 @@ public class ScheduledTestController {
         boolean valid;
         dataTimescheduleDate.setStyle("-fx-border-color:default;");
         scheduleTime.setStyle("-fx-border-color:default;");
-        textFieldsubmission.setStyle("-fx-border-color:default;");
         comboBoxExamForm.setStyle("-fx-border-color:default;");
         scheduleCode.setStyle("-fx-border-color:default;");
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("ERROR");
-        valid = validateDate() & validateTime() & validatesubmission() & validateCode();
+        valid = validateDate() & validateTime(false) & validateCode();
         if (comboBoxExamForm.getValue() == null) {
             comboBoxExamForm.setStyle("-fx-border-color:#cc0000;");
+            setErrorLabel(examFormError,"select examForm");
+            valid = false;
+        }
+        if (!(radioComputerTest.isSelected() || radioManualTest.isSelected())) {
+            setErrorLabel(radioBtnError,"has not selected");
             valid = false;
         }
         if (!valid) {
@@ -217,9 +271,54 @@ public class ScheduledTestController {
         return true;
     }
 
+    void setErrorLabel(Label label,String errorTxt){
+        label.setVisible(true);
+        label.setText(errorTxt);
+        label.setTextFill(Color.RED);
+    }
+    void resetVisibleLabel(){
+        codeError.setVisible(false);
+        dateError.setVisible(false);
+        timeError.setVisible(false);
+        examFormError.setVisible(false);
+        radioBtnError.setVisible(false);
+    }
 
+    @Subscribe
+    public void onUpdateScheduleTestEvent(UpdateScheduleTestEvent event){
+        Platform.runLater(() -> {
+            if (event.isCheck()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setHeaderText("Success");
+                alert.setContentText("update schedule test Succeed");
+                alert.show();
+            }
+            else{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("There was a problem and the test did not save. please enter it again");
+                alert.show();
+            }
+            try {
+                App.switchScreen("showScheduleTest");
+                Platform.runLater(() -> {
+                    try {
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                cleanup();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
     @FXML
     void sendSchedule(ActionEvent event) {
+        resetVisibleLabel();
         boolean valid = validateSchesuledForm();
         int day;
         int month;
@@ -233,50 +332,23 @@ public class ScheduledTestController {
             if (selectedTest != null) {
                 selectedTest.setDate(LocalDate.of(year, month, day));
                 selectedTest.setTime(LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0));
-                selectedTest.setSubmissions(Integer.parseInt(textFieldsubmission.getText()));
+                selectedTest.setIsComputerTest(radioComputerTest.isSelected());
                 selectedTest.setExamForm(examForm);
+                selectedTest.setTimeLimit(examForm.getTimeLimit());
                 selectedTest.setTeacher(teacher);
                 ScheduledTest scheduledTest1 = selectedTest;
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest1));
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
-                    success.setHeaderText("Success");
-                    success.setContentText("update schedule test Succeed");
-                    success.show();
-                    App.switchScreen("showScheduleTest");
-                    Platform.runLater(() -> {
-                        try {
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    cleanup();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), Integer.parseInt(textFieldsubmission.getText()));
+                ScheduledTest scheduledTest = new ScheduledTest(scheduleCode.getText(), LocalDate.of(year, month, day), LocalTime.of(Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3, 5)), 0), radioComputerTest.isSelected());
                 scheduledTest.setExamForm(examForm);
+                scheduledTest.setTimeLimit(examForm.getTimeLimit());
                 scheduledTest.setTeacher(teacher);
-
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#addScheduleTest", scheduledTest));
-                    Alert success = new Alert(Alert.AlertType.INFORMATION);
-                    success.setHeaderText("Success");
-                    success.setContentText("added new schedule test Succeed");
-                    success.show();
-                    App.switchScreen("showScheduleTest");
-                    Platform.runLater(() -> {
-                        try {
-                            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    cleanup();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -284,32 +356,100 @@ public class ScheduledTestController {
         }
     }
 
+    @FXML
+    void deleteScheduleTest(ActionEvent event) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete this Schedule Test?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#deleteRow", selectedTest));
+            cleanup();
+            App.switchScreen("showScheduleTest");
+
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
-        il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
-        Platform.runLater(() -> {
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
+            Platform.runLater(() -> {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
 
-        });
-        cleanup();
+            });
+            cleanup();
+        }
     }
 
     @FXML
-    void handleBackBtn(ActionEvent event) throws IOException {
-        cleanup();
-        App.switchScreen("showScheduleTest");
+    void handleBackButtonClick(ActionEvent event) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setContentText("Your changes will be lost. Do you wand to proceed?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            cleanup();
+            App.switchScreen("showScheduleTest");
 
-        Platform.runLater(() -> {
-            try {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
+            Platform.runLater(() -> {
+                try {
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
     }
 
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
 
 }

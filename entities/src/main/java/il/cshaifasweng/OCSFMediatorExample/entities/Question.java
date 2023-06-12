@@ -133,11 +133,11 @@ public class Question implements Serializable {
     public static List<Question> GenerateQuestions(){
         List<Question> questions = new ArrayList<>();
         questions.add(new Question("1+1 = ?", "2","5","11","None",0));
-        questions.add(new Question("3+7 = ?", "5","10","2","None",1));
+        questions.add(new Question("3+7 = ?", "5","10","2","75",1));
         questions.add(new Question("50-3 = ?", "5","10","47","None",2));
         questions.add(new Question("5-3 = ?", "5","10","2","None",2));
         questions.add(new Question("20+3 = ?", "5","10","20","None",3));
-        questions.add(new Question("50-3*7 = ?", "5","15","10","None",3));
+        questions.add(new Question("50-3*7 = ?", "5","15","10","9",3));
         questions.add(new Question("5+10 = ?", "5","15","2","None",1));
         questions.add(new Question("5+15 = ?", "5","20","2","None",1));
 
