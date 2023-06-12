@@ -73,7 +73,7 @@ public class App extends Application
         try {
 
             System.out.println("in start server");
-            scene = new Scene(loadFXML("serverControl"), 1200, 600);
+            scene = new Scene(loadFXML("serverControl"), 956, 578);
             stage.setScene(scene);
             stage.setTitle("Server Control");
             stage.show();
