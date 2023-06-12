@@ -191,8 +191,12 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setContentText("Exam Submitted Successfully");
+            alert.setHeaderText(null);
+            alert.show();
         });
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE); //TODO
     }
 
     @Subscribe
