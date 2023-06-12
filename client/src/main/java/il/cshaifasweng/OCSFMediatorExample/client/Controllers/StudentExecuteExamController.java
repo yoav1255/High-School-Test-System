@@ -78,6 +78,8 @@ public class StudentExecuteExamController {
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
         scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
+        //TODO handle active students to be 0 after schedule test ends
+        //TODO handle if student gets out and comes back again
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 

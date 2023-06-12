@@ -186,6 +186,21 @@ public class StudentExecuteExamLOCALController implements Serializable {
             endTest();
         }
     }
+    @Subscribe
+    public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
+        Platform.runLater(() -> {
+            List<Object> objectList = event.getData();
+            if (objectList.get(3).equals(scheduledTest.getId())){
+                if ((int)objectList.get(2) != 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The teacher added " + objectList.get(2) + " minutes to the test!");
+                    alert.show();
+                }
+            }
+        });
+    }
 
     public void endTest() throws IOException {
         studentTest.setScheduledTest(scheduledTest);

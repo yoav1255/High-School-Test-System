@@ -274,6 +274,9 @@ public class SimpleServer extends AbstractServer {
 		executorService.scheduleAtFixedRate(() -> {
 			try {
 				iterations++;
+				if(iterations==1){
+					App.logOffAllUsers();
+				}
 				scheduledTests = App.getScheduledTestsActive();
 			} catch (Exception e) {
 				e.printStackTrace();

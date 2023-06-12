@@ -56,6 +56,7 @@ public class ExamEntryController {
 
 @Subscribe
     public void onShowScheduleTestEvent(ShowScheduleTestEvent event) throws IOException {
+        scheduleTestIds.clear();
         List<Object> studentId_scheduleTestId = new ArrayList<>();
         studentId_scheduleTestId.add(id);
         studentId_scheduleTestId.add(text_testCode.getText());
@@ -77,8 +78,12 @@ public class ExamEntryController {
                 enterTest();
             }
             else{
-                msg.setVisible(true);
-                msg.setText("Already submitted this test!");
+                System.out.println("Denying entry with "+isFirstEntry);
+                Platform.runLater(()->{
+                    msg.setVisible(true);
+                    msg.setText("Already submitted this test!");
+                });
+
             }
         });
     }
@@ -112,13 +117,16 @@ public class ExamEntryController {
                     msg.setText("the test will be available at : " + scheduledTest.getDate() + " in " + scheduledTest.getTime());
                 });
             } else if (status == 2) { // test time has passed
-                msg.setVisible(true);
-                msg.setText("the test is not available anymore");
+                Platform.runLater(()->{
+                    msg.setVisible(true);
+                    msg.setText("the test is not available anymore");
+                });
+
             } else { // test is available
                 try {
                     cleanup();
-                    if(scheduledTest.getIsComputerTest()){App.switchScreen("studentExecuteExam");}
-                    else{App.switchScreen("studentExecuteExamLOCAL");}
+                    if(scheduledTest.getIsComputerTest()){ App.switchScreen("studentExecuteExam"); }
+                    else{ App.switchScreen("studentExecuteExamLOCAL"); }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

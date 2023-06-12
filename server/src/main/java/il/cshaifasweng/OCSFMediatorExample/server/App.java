@@ -97,14 +97,6 @@ public class App extends Application
             session.beginTransaction();
 
 //            generateObjects();
-            String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
-            session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-
-            updateLoggedInQuery = "UPDATE principal SET loggedIn = false";
-            session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-
-            updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false";
-            session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -740,7 +732,7 @@ public class App extends Application
     public static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
         session = sessionFactory.openSession();
-        session.clear();
+//        session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
         String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
         Query query = session.createQuery(qString, ExamForm.class);
@@ -1139,6 +1131,35 @@ public class App extends Application
         session.getTransaction().commit();
         session.close();
         return isFirstTime;
+    }
+
+    public static void logOffAllUsers(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+//        String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
+//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
+//
+//        updateLoggedInQuery = "UPDATE principal SET loggedIn = false";
+//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
+//
+//        updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false";
+//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
+
+        String hqlQuery = "UPDATE Student SET loggedIn = false WHERE loggedIn = true ";
+        Query query = session.createQuery(hqlQuery);
+        int rowCount = query.executeUpdate();
+
+         hqlQuery = "UPDATE Teacher SET loggedIn = false WHERE loggedIn = true ";
+         query = session.createQuery(hqlQuery);
+         rowCount = query.executeUpdate();
+
+         hqlQuery = "UPDATE Principal SET loggedIn = false WHERE loggedIn = true ";
+         query = session.createQuery(hqlQuery);
+         rowCount = query.executeUpdate();
+
+        session.getTransaction().commit();
+        session.close();
     }
 
 
