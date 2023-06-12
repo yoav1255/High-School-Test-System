@@ -120,7 +120,6 @@ public class ManagerHomeController {
     }
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
-        System.out.println("onTimeLeftEvent onTimeLeftEvent onTimeLeftEvent onTimeLeftEvent");
         try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExtraTimeRequests",""));
         } catch (Exception e) {
@@ -140,9 +139,9 @@ public class ManagerHomeController {
         });
         if (!extraTimeRequestEventList.isEmpty()){
             for (ExtraTime extraTime : extraTimeRequestEventList) {
-                //if (isScheduledTestActive(extraTime.getScheduledTest())) {
+                if (isScheduledTestActive(extraTime.getScheduledTest())) {
                     handleExtraTimeRequest(extraTime);
-              //  }
+                }
             }
         }
     }
