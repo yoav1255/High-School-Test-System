@@ -66,15 +66,7 @@ public class App extends Application
         return fxmlLoader.load();
     }
 
-    public static void deleteScheduleTest(ScheduledTest deleteScheduledTest) {
-        SessionFactory sessionFactory = getSessionFactory();
-        session=sessionFactory.openSession();
-        session.beginTransaction();
-        session.delete(deleteScheduledTest);
-        session.flush();
-        session.getTransaction().commit();
-        session.close();
-    }
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -158,7 +150,6 @@ public class App extends Application
         configuration.addAnnotatedClass(Question_Score.class);
         configuration.addAnnotatedClass(Question_Answer.class);
         configuration.addAnnotatedClass(ExtraTime.class);
-
         configuration.addAnnotatedClass(TestFile.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
@@ -174,6 +165,7 @@ public class App extends Application
         List<Course> courses = Course.GenerateCourses();
         List<Teacher> teachers = Teacher.GenerateTeachers();
         List<Question> questions = Question.GenerateQuestions();
+        Principal principal = new Principal("22","Oren", "Polishuk", "male", "PoliOren123@gmail.com", "1111");
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
@@ -274,7 +266,6 @@ public class App extends Application
     public static List<ScheduledTest> getScheduledTests() throws Exception {
 
         List<ScheduledTest> scheduledTests;
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
 
         String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et";
@@ -290,7 +281,6 @@ public class App extends Application
 
     static List<ScheduledTest> getScheduledTestsActive() throws Exception{
         List<ScheduledTest> scheduledTests;
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
 
         String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et WHERE st.status IN(1,0)";
@@ -305,7 +295,6 @@ public class App extends Application
     public static List<Student> getAllStudents() throws Exception{
 
         List<Student> students = new ArrayList<Student>();
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         //
         String queryString = "SELECT s FROM Student s";
@@ -332,7 +321,6 @@ public class App extends Application
    }
 
     public static List<String> getListExamFormCode(String teacherId){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         Teacher teacher = session.get(Teacher.class,teacherId);
@@ -345,7 +333,6 @@ public class App extends Application
     }
 
     public static ExamForm getExamForm(String examFormId) {
-        SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId",ExamForm.class);
@@ -357,7 +344,6 @@ public class App extends Application
     }
 
     public static void addScheduleTest(ScheduledTest scheduledTest) {
-        SessionFactory sessionFactory = getSessionFactory();
         session=sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(scheduledTest);
@@ -410,7 +396,6 @@ public class App extends Application
 
     public static List<Subject> getSubjectsFromTeacherId(String id){
         List<Subject> subjects = new ArrayList<>();
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         Teacher teacher = session.get(Teacher.class,id);
         String queryString = "SELECT s FROM Subject s WHERE :teacher IN elements(s.teachers)";
@@ -422,7 +407,6 @@ public class App extends Application
     }
     public static List<Subject> getAllSubjects(){
         List<Subject> subjects;
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String queryString = "SELECT s FROM Subject s";
         Query query = session.createQuery(queryString, Subject.class);
@@ -433,7 +417,6 @@ public class App extends Application
     }
 
     public static Teacher getTeacherFromId(String id){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         Teacher teacher = session.get(Teacher.class,id);
         session.close();
@@ -441,7 +424,6 @@ public class App extends Application
     }
 
     public static Principal getPrincipalFromId(String id){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         Principal principal = session.get(Principal.class,id);
         session.close();
@@ -450,7 +432,6 @@ public class App extends Application
 
     public static List<Course> getCoursesFromSubjectName(String subjectName){
         List<Course> courses = new ArrayList<>();
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String querySub = "SELECT s FROM Subject s WHERE s.name =:subjectName";
         Query q = session.createQuery(querySub, Subject.class);
@@ -467,7 +448,6 @@ public class App extends Application
     }
 
     public static Course getCourseFromCourseName(String courseName){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
         Query q = session.createQuery(querySub, Course.class);
@@ -479,7 +459,6 @@ public class App extends Application
 
     public static List<Question> getQuestionsFromCourseName(String courseName){
         List<Question> questions = new ArrayList<>();
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
         Query q = session.createQuery(querySub, Course.class);
@@ -494,7 +473,6 @@ public class App extends Application
     }
 
     public static void addExamForm(ExamForm examForm){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.save(examForm);
@@ -504,7 +482,6 @@ public class App extends Application
     }
 
     public static void addQuestionScores(List<Question_Score> questionScores) {
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         for(Question_Score questionScore:questionScores){
@@ -516,7 +493,6 @@ public class App extends Application
     }
 
     public static List<StudentTest> getStudentTests(Student student){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
@@ -544,7 +520,6 @@ public class App extends Application
     }
 
     public static List<StudentTest> getStudentTestsFromScheduled(ScheduledTest scheduledTest){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("FROM StudentTest s WHERE s.scheduledTest = :scheduledTest", StudentTest.class);
@@ -557,7 +532,6 @@ public class App extends Application
     }
 
     public static StudentTest getStudentTest(StudentTest studentTest){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         StudentTest studentTestToReturn = session.get(StudentTest.class,studentTest.getId());
@@ -574,7 +548,6 @@ public class App extends Application
     }
 
     public static void updateStudentTest(StudentTest stud){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.update(stud);
@@ -584,7 +557,6 @@ public class App extends Application
     }
 
     public static String login_auth(String username, String password){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -661,7 +633,6 @@ public class App extends Application
     }
 
     public static void logout(String username, String type) {
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         String updateLoggedInQuery = null;
@@ -686,7 +657,6 @@ public class App extends Application
 
     public static void addQuestion(Question question){
 
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -702,7 +672,6 @@ public class App extends Application
     public static void updateScheduleTest(ScheduledTest scheduledTest) {
         try {
             System.out.println("in app func , active students: " + scheduledTest.getActiveStudents());
-            SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
@@ -716,7 +685,6 @@ public class App extends Application
 
     public static List<ExamForm> getCourseExamForms(String courseName) {
         List<ExamForm> examForms;
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
         Query q = session.createQuery(querySub, Course.class);
@@ -732,7 +700,6 @@ public class App extends Application
     }
 
     public static List<Question_Score> getQuestionScoresFromExamForm(ExamForm examForm) {
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String queryString = "SELECT qs FROM Question_Score qs WHERE qs.examForm =:examForm";
         Query query = session.createQuery(queryString, Question_Score.class);
@@ -744,7 +711,6 @@ public class App extends Application
 
     public static ScheduledTest getScheduleTest(String id){
         ScheduledTest scheduledTest;
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         String queryString = "SELECT st from ScheduledTest st where id =:id";
         Query query = session.createQuery(queryString,ScheduledTest.class);
@@ -755,7 +721,6 @@ public class App extends Application
     }
     public static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
@@ -779,7 +744,6 @@ public class App extends Application
     }
 
     public static Student getStudent(String id){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         Student student = session.get(Student.class,id);
         String queryString = "SELECT st from StudentTest st where st.student =:student";
@@ -796,7 +760,6 @@ public class App extends Application
         Student student = (Student) items.get(0);
         StudentTest studentTest = (StudentTest) items.get(1);
 
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
 //        session.saveOrUpdate(student);
@@ -815,7 +778,6 @@ public class App extends Application
     }
 
     public static void saveQuestionScores(List<Question_Score> items){
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         for(Question_Score item:items){
@@ -830,7 +792,6 @@ public class App extends Application
         Student student = (Student) student_studentTest.get(0);
         StudentTest studentTest = (StudentTest) student_studentTest.get(1);
 
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(student);
@@ -841,7 +802,6 @@ public class App extends Application
     }
 
     public static void getTeacherExamStats(String teacherId) {
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
 
         Query query = session.createQuery(
@@ -937,7 +897,6 @@ public class App extends Application
 
 
     public static void getCourseExamStats(int courseId) {
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
 
         Query query = session.createQuery(
@@ -1032,7 +991,6 @@ public class App extends Application
     }
 
     public static void getStudentExamStats(String studentId) {
-        SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
 
         Query query = session.createQuery(
@@ -1131,6 +1089,15 @@ public class App extends Application
         System.out.println("trying to save local test " + testFile.getFileName());
         session.saveOrUpdate(testFile);
         System.out.println("save local test " + testFile.getFileName());
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public static void deleteScheduleTest(ScheduledTest deleteScheduledTest) {
+        session=sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(deleteScheduledTest);
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
