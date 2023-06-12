@@ -90,8 +90,8 @@ public class ShowStatisticsController {
             List<Statistics> statisticsList = event.getStatisticsList();
             ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticsList);
 
-            scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics, String>("scheduled_test"));
-            average.setCellValueFactory(new PropertyValueFactory<Statistics, Double>("average"));
+            scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics, String>("scheduleTestId"));
+            average.setCellValueFactory(new PropertyValueFactory<Statistics, Double>("avgGrade"));
             median.setCellValueFactory(new PropertyValueFactory<Statistics, Integer>("median"));
 
             statistics_table_view.setItems(observableStatisticsList);
@@ -99,6 +99,7 @@ public class ShowStatisticsController {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     public void handleRowClick(MouseEvent event) {

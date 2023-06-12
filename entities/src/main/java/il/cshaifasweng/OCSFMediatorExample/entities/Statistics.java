@@ -12,7 +12,6 @@ public class Statistics {
 
 
 
-
     public void setMedian(int median) {
         this.median = median;
     }

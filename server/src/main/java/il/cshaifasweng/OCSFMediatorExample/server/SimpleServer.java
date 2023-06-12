@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherExamStats;
+
 public class SimpleServer extends AbstractServer {
 	private static List<ScheduledTest> scheduledTests;
 	private List<ConnectionToClient> clients;
@@ -189,9 +191,11 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnAllStudentsNames",studentName));
 					break;
 				case ("#getTeacherStat"):
-					List<Statistics> teacherStat = App.getTeacherExamStats(message.getData().toString());
-					client.sendToClient(new CustomMessage("returnTeacherStat",teacherStat));
+					String teacherId = message.getData().toString();
+					List<Statistics> teacherStat = getTeacherExamStats(teacherId);
+					client.sendToClient(new CustomMessage("returnTeacherStat", teacherStat));
 					break;
+
 				case ("#getCourseStat"):
 					List<Statistics> courseStat = App.getCourseExamStats(Integer.parseInt(message.getData().toString()));
 					client.sendToClient(new CustomMessage("returnCourseStat",courseStat));

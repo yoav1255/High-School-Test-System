@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -146,8 +147,9 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new ShowAllStudentsNamesEvent(studentName));
 					break;
 				case ("returnTeacherStat"):
-					List<Statistics> teacherStat = (List<Statistics>) message.getData();
+					ArrayList<Statistics> teacherStat = (ArrayList<Statistics>) message.getData();
 					EventBus.getDefault().post(new ShowTeacherStatEvent(teacherStat));
+					System.out.println("orennnnnnnnnnnnnnn22222222222222222222");
 					break;
 				case ("returnCourseStat"):
 					List<Statistics> courseStat = (List<Statistics>) message.getData();
