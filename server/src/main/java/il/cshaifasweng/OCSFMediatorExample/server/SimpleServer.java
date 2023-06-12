@@ -235,11 +235,11 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
 					break;
 				case ("#getTeacherName"):
-					List<String> teacherName = App.getAllTeacherNames();
-					client.sendToClient(new CustomMessage("returnAllTeachersNames",teacherName));
+					List<Teacher> teacher2 = App.getAllTeacherNames();
+					client.sendToClient(new CustomMessage("returnAllTeachersNames",teacher2));
 					break;
 				case ("#getCourseName"):
-					List<String> courseName = App.getAllCourseNames();
+					List<Course> courseName = App.getAllCourseNames();
 					client.sendToClient(new CustomMessage("returnAllCoursesNames",courseName));
 					break;
 				case ("#getStudentName"):
@@ -247,8 +247,8 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnAllStudentsNames",studentName));
 					break;
 				case ("#getTeacherStat"):
-					String teacherId = message.getData().toString();
-					List<Statistics> teacherStat = getTeacherExamStats(teacherId);
+					String teacher1 = message.getData().toString();
+					List<Statistics> teacherStat = getTeacherExamStats(teacher1);
 					client.sendToClient(new CustomMessage("returnTeacherStat", teacherStat));
 					break;
 

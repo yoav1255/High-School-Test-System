@@ -1,9 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
-public class Statistics {
+public class Statistics implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
     String scheduleTestId;
     Double avgGrade;
     int median;

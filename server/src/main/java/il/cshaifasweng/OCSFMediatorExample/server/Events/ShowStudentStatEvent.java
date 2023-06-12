@@ -2,9 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
 
-public class showStudentStatEvent {
+public class ShowStudentStatEvent {
     private Statistics studentStat;
-    public showStudentStatEvent(Statistics studentStat)
+    public ShowStudentStatEvent(Statistics studentStat)
     {
         this.studentStat = studentStat;
     }

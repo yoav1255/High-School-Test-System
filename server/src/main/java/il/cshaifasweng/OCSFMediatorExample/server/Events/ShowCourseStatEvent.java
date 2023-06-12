@@ -4,9 +4,9 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
 
 import java.util.List;
 
-public class showCourseStatEvent {
+public class ShowCourseStatEvent {
    private List<Statistics> courseStat;
-   public showCourseStatEvent(List<Statistics> courseStat)
+   public ShowCourseStatEvent(List<Statistics> courseStat)
    {
        this.courseStat = courseStat;
    }

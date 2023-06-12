@@ -161,6 +161,31 @@ public class SimpleClient extends AbstractClient {
 				case ("updateScheduleTest"):
 					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));
 					break;
+				case ("returnAllTeachersNames"):
+					List<Teacher> teacherName = (List<Teacher>) message.getData();
+					EventBus.getDefault().post(new ShowAllTeachersNamesEvent(teacherName));
+					break;
+				case ("returnAllCoursesNames"):
+					List<Course> courseName =(List<Course>) message.getData();
+					EventBus.getDefault().post(new ShowAllCoursesNamesEvent(courseName));
+					break;
+				case ("returnAllStudentsNames"):
+					List<String> studentName =(List<String>) message.getData();
+					EventBus.getDefault().post(new ShowAllStudentsNamesEvent(studentName));
+					break;
+				case ("returnTeacherStat"):
+					ArrayList<Statistics> teacherStat = (ArrayList<Statistics>) message.getData();
+					EventBus.getDefault().post(new ShowTeacherStatEvent(teacherStat));
+					System.out.println("orennnnnnnnnnnnnnn22222222222222222222");
+					break;
+				case ("returnCourseStat"):
+					List<Statistics> courseStat = (List<Statistics>) message.getData();
+					EventBus.getDefault().post(new ShowCourseStatEvent(courseStat));
+					break;
+				case ("returnStudentStat"):
+					Statistics studentStat = (Statistics) message.getData();
+					EventBus.getDefault().post(new ShowStudentStatEvent(studentStat));
+					break;
 
 			}
 		}catch (Exception e){

@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.io.IOException;
 import java.util.*;
 
 import javax.persistence.Query;
@@ -1084,6 +1085,7 @@ public class App extends Application
         }
 
         session.close();
+        return examStatsList;
     }
 
     public static void saveFileToDatabase(TestFile testFile) {
@@ -1153,18 +1155,18 @@ public class App extends Application
 
         session.getTransaction().commit();
         session.close();
-        return examStatsList;
+
     }
 
 
-    public static List<String> getAllTeacherNames() throws Exception
+    public static List<Teacher> getAllTeacherNames() throws Exception
     {
-        List<String> teachers = new ArrayList<String>();
+        List<Teacher> teachers = new ArrayList<Teacher>();
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         //
-        String queryString = "SELECT s.id FROM Teacher s";
-        Query query = session.createQuery(queryString);
+        String queryString = "FROM Teacher";
+        Query query = session.createQuery(queryString,Teacher.class);
         teachers = query.getResultList();
         //
         session.close();
@@ -1172,13 +1174,13 @@ public class App extends Application
 
     }
 
-    public static List<String> getAllCourseNames() throws Exception
+    public static List<Course> getAllCourseNames() throws Exception
     {
-        List<String> courses = new ArrayList<String>();
+        List<Course> courses = new ArrayList<Course>();
         SessionFactory sessionFactory = getSessionFactory();
         session = sessionFactory.openSession();
         //
-        String queryString = "SELECT s.name FROM Course s";
+        String queryString = "FROM Course s";
         Query query = session.createQuery(queryString);
         courses = query.getResultList();
         //

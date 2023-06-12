@@ -2,10 +2,10 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,13 +30,13 @@ public class ShowStatisticsController {
     private Button goBack;
 
     @FXML
-    private TableColumn<Statistics, Integer> median;
+    private TableColumn<Statistics, String> median;
 
     @FXML
     private TableColumn<Statistics, String> scheduled_test;
 
     @FXML
-    private TableColumn<Statistics, Double> average;
+    private TableColumn<Statistics, String > average;
     @FXML
     private TableView<Statistics> statistics_table_view;
 
@@ -55,9 +56,9 @@ public class ShowStatisticsController {
     @FXML
     private TableView<Statistics> tableView;
 
-    private List<String> teacherNames;
+    private List<Teacher> teacherNames;
     private List<String> studentNames;
-    private List<String> courseNames;
+    private List<Course> courseNames;
 
 
     public ShowStatisticsController() {
@@ -83,23 +84,177 @@ public class ShowStatisticsController {
         this.statisticList = statisticList;
     }
 
+    public void selected_stat(ActionEvent actionEvent) throws IOException {
+        String selectedParameter = stat_combobox.getValue();
+        if(Objects.equals(selectedParameter, "by teacher"))
+        {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
+
+        } else if (Objects.equals(selectedParameter, "by course")) {
+
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
+        }
+        else if (Objects.equals(selectedParameter, "by student"))
+        {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
+        }
+    }
+
+
+
+    @Subscribe
+    public void onShowAllTeachersNamesEvent(ShowAllTeachersNamesEvent event)
+    {
+        Platform.runLater(()->{
+            combobox_id.getItems().clear();
+            teacherNames = event.getTeacherList();
+            for(Teacher teacher:teacherNames)
+                combobox_id.getItems().add(teacher.getFirst_name() + " " +  teacher.getLast_name());
+        });
+
+    }
+
+    @Subscribe
+    public void onShowAllCoursesNamesEvent(ShowAllCoursesNamesEvent event)
+    {
+        Platform.runLater(()->{
+        combobox_id.getItems().clear();
+        courseNames = event.getCourseList();
+        for(Course course:courseNames)
+            combobox_id.getItems().add(course.getName());
+    });
+        }
+
+    @Subscribe
+    public void onShowAllStudentsNamesEvent(ShowAllStudentsNamesEvent event)
+    {
+        combobox_id.getItems().clear();
+        studentNames = event.getStudentList();
+        for(String student:studentNames)
+            combobox_id.getItems().add(student);
+    }
+
+    public void handleShowStat(ActionEvent actionEvent) throws IOException {
+        String selectedParameter = stat_combobox.getValue();
+        String selectedName = combobox_id.getValue();
+        int index = combobox_id.getSelectionModel().getSelectedIndex();
+        String TeacherId = teacherNames.get(index).getId();
+        String CourseId = courseNames.get(index).getName();
+        //String StudentId = studentNames.get(index);
+        statistics_table_view.refresh();
+
+        if (selectedName != null && selectedParameter != null) {
+            switch (selectedParameter) {
+                case "by teacher" ->
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", TeacherId));
+                case "by course" ->
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", CourseId));
+                case "by student" ->
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", selectedName));
+            }
+        } else {
+            // Display an error message or show an alert to prompt the user to select values for both comboboxes
+            // For example:
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Missing Selection");
+            alert.setContentText("Please select values for both comboboxes.");
+            alert.showAndWait();
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    @FXML
-    public void onShowAllStatisticEvent(ShowAllStatisticEvent event) {
+    public void onShowTeacherStatEvent(ShowTeacherStatEvent event) {
         try {
-            List<Statistics> statisticsList = event.getStatisticsList();
-            ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticsList);
+        List<Statistics> teacherStat = event.getTeacherStat();
+        statisticList.clear();
+        statisticList.addAll(teacherStat);
 
-            scheduled_test.setCellValueFactory(new PropertyValueFactory<Statistics, String>("scheduleTestId"));
-            average.setCellValueFactory(new PropertyValueFactory<Statistics, Double>("avgGrade"));
-            median.setCellValueFactory(new PropertyValueFactory<Statistics, Integer>("median"));
+        scheduled_test.setCellValueFactory(cellData->{
+            Statistics stat = cellData.getValue();
+            String id = stat.getScheduleTestId();
+            return new SimpleStringProperty(id);
+        });
+        average.setCellValueFactory(cellData->{
+            Statistics stat = cellData.getValue();
+            String avg = Double.toString(stat.getAvgGrade());
+            return new SimpleStringProperty(avg);
+        });
+        median.setCellValueFactory(cellData->{
+            Statistics stat = cellData.getValue();
+            String med = Integer.toString(stat.getMedian());
+            return new SimpleStringProperty(med);
+        });
 
+        ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
+        statistics_table_view.setItems(observableStatisticsList);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowCourseStatEvent(ShowCourseStatEvent event) {
+        try {
+            List<Statistics> courseStat = event.getCourseStat();
+            statisticList.clear();
+            statisticList.addAll(courseStat);
+
+            scheduled_test.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                String id = stat.getScheduleTestId();
+                return new SimpleStringProperty(id);
+            });
+            average.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                String avg = Double.toString(stat.getAvgGrade());
+                return new SimpleStringProperty(avg);
+            });
+            median.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                String med = Integer.toString(stat.getMedian());
+                return new SimpleStringProperty(med);
+            });
+
+            ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
             statistics_table_view.setItems(observableStatisticsList);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowStudentStatEvent(ShowStudentStatEvent event) {
+        try {
+            Statistics studentStat = event.getStudentStat();
+            statisticList.clear();
+            statisticList.addAll((Collection<? extends Statistics>) studentStat);
+
+            scheduled_test.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                String id = stat.getScheduleTestId();
+                return new SimpleStringProperty(id);
+            });
+            average.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                String avg = Double.toString(stat.getAvgGrade());
+                return new SimpleStringProperty(avg);
+            });
+            median.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                String med = Integer.toString(stat.getMedian());
+                return new SimpleStringProperty(med);
+            });
+
+            ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
+            statistics_table_view.setItems(observableStatisticsList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @FXML
     public void handleRowClick(MouseEvent event) {
@@ -151,84 +306,12 @@ public class ShowStatisticsController {
         }
     }
 
-    public void selected_stat(ActionEvent actionEvent) throws IOException {
-        String selectedParameter = stat_combobox.getValue();
-        if(Objects.equals(selectedParameter, "by teacher"))
-        {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
-
-        } else if (Objects.equals(selectedParameter, "by course")) {
-
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
-        }
-        else if (Objects.equals(selectedParameter, "by student"))
-        {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
-        }
-    }
 
 
 
-    @Subscribe
-    public void onShowAllTeachersNamesEvent(ShowAllTeachersNamesEvent event)
-    {
-        combobox_id.getItems().clear();
-        teacherNames = event.getTeacherList();
-        for(String teacher:teacherNames)
-        combobox_id.getItems().add(teacher);
-    }
-
-    @Subscribe
-    public void onShowAllCoursesNamesEvent(ShowAllCoursesNamesEvent event)
-    {
-        combobox_id.getItems().clear();
-        courseNames = event.getCourseList();
-        for(String course:courseNames)
-            combobox_id.getItems().add(course);
-    }
-
-    @Subscribe
-    public void onShowAllStudentsNamesEvent(ShowAllStudentsNamesEvent event)
-    {
-        combobox_id.getItems().clear();
-        studentNames = event.getStudentList();
-        for(String student:studentNames)
-            combobox_id.getItems().add(student);
-    }
-
-    @Subscribe
-    (threadMode = ThreadMode.MAIN)
-    public void onShowTeacherStatEvent(ShowTeacherStatEvent event) {
-        List<Statistics> teacherStat = event.getTeacherStat();
-        statisticList.clear();
-        statisticList.addAll(teacherStat);
-        statistics_table_view.setItems((ObservableList<Statistics>) statisticList);
-    }
 
 
-    public void handleShowStat(ActionEvent actionEvent) throws IOException {
-        String selectedParameter = stat_combobox.getValue();
-        String selectedName = combobox_id.getValue();
 
-        if (selectedName != null && selectedParameter != null) {
-            switch (selectedParameter) {
-                case "by teacher" ->
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", selectedName));
-                case "by course" ->
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", selectedName));
-                case "by student" ->
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", selectedName));
-            }
-        } else {
-            // Display an error message or show an alert to prompt the user to select values for both comboboxes
-            // For example:
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Missing Selection");
-            alert.setContentText("Please select values for both comboboxes.");
-            alert.showAndWait();
-        }
-    }
 
 
 
