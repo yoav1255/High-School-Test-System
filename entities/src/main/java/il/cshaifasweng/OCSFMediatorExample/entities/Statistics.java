@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Statistics implements Serializable {
@@ -13,40 +14,7 @@ public class Statistics implements Serializable {
     int median;
     String id;
     List<Double> distribution;
-
-    public String getRange() {
-        int startRange = 0;
-        int endRange = 9;
-        String range = startRange + "-" + endRange;
-
-        int lastIndex = distribution.size() - 1;
-        if (lastIndex > 0) {
-            range = startRange + "-" + (endRange + (lastIndex * 10));
-        }
-
-        return range;
-    }
-
-    public String getPercentage() {
-        StringBuilder sb = new StringBuilder();
-        int rangeSize = 10; // Assuming each range represents 10 grades
-
-        for (int i = 0; i < distribution.size(); i++) {
-            int startRange = i * rangeSize;
-            int endRange = startRange + rangeSize - 1;
-            double percentage = distribution.get(i);
-
-            String range = startRange + "-" + endRange;
-            String percentageString = String.format("%.2f", percentage);
-
-            sb.append(range).append(": ").append(percentageString).append("%\n");
-        }
-
-        return sb.toString();
-    }
-
-
-
+    String range;
 
 
     public void setMedian(int median) {
@@ -84,5 +52,13 @@ public class Statistics implements Serializable {
 
     public String getStudentId() { return id;}
     public void setId(String id){this.id = id;}
+
+    public String setRange(int i) {
+        if(i == 9){return "Grade range " + (i * 10) + "-" + ((i + 1) * 10);}
+        else{return "Grade range " + (i * 10) + "-" + ((i + 1) * 10 - 1);}    }
+
+    public String getRange() {
+        return range;
+    }
 
 }

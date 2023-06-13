@@ -291,10 +291,6 @@ public class SimpleServer extends AbstractServer {
 					System.out.println("sending from s.s to client");
 					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
 					break;
-
-
-
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

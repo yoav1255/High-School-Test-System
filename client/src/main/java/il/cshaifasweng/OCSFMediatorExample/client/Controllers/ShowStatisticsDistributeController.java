@@ -45,19 +45,51 @@ public class ShowStatisticsDistributeController {
     @FXML
     private TableColumn<Statistics, String > percentage;
     private List<Double> distributeList = new ArrayList<>();
+    List<Double> distribution;
+    private TableColumn.CellDataFeatures<Statistics, String> cellData;
 
-   /* public ShowStatisticsDistributeController() {
+    public ShowStatisticsDistributeController() {
         EventBus.getDefault().register(this);
-    }*/
+    }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
 
 
-
-
     public void setSelectedStat(Statistics selectedStat) {
         this.selectedStat = selectedStat;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowStatisticsDistributeEvent(ShowStatisticsDistributeEvent event) {
+        try {
+            List<Double> statisticsList = event.getDistribution();
+            List<String> statisticRange = new ArrayList<>();
+            Statistics stats1 = event.getStats();
+
+            range.setCellValueFactory(cellData -> {
+                Statistics stat = cellData.getValue();
+                String range2 = stat.getRange();
+                return new SimpleStringProperty(range2);
+            });
+
+            percentage.setCellValueFactory(cellData -> {
+                Statistics stats = cellData.getValue();
+                List<Double> percentage2 = stats.getDistribution();
+                System.out.println(percentage2);
+                return new SimpleStringProperty(percentage2.toString());
+            });
+
+
+
+            Double distribution = selectedStat.getDistribution().get(1);
+            System.out.println(distribution);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
     @FXML
     void handleGoBackButtonClick(ActionEvent event) throws IOException {
@@ -136,31 +168,4 @@ public class ShowStatisticsDistributeController {
             alert.close();
         }
     }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShowStatisticsDistributeEvent(ShowStatisticsDistributeEvent event) {
-        try {
-            List<Double> statisticsList = event.getDistribution();
-
-            range.setCellValueFactory(cellData -> {
-                Statistics stat = cellData.getValue();
-                String range2 = stat.getRange(); // Assuming the Statistics class has a method to retrieve the range
-                return new SimpleStringProperty(range2);
-            });
-
-            percentage.setCellValueFactory(cellData -> {
-                Statistics stat = cellData.getValue();
-                String percentage2 = stat.getPercentage(); // Assuming the Statistics class has a method to retrieve the percentage
-                return new SimpleStringProperty(percentage2);
-            });
-
-            ObservableList<Double> observableStatisticsList = FXCollections.observableArrayList(statisticsList);
-            distribute_table_view.setItems(observableStatisticsList);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

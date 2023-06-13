@@ -58,6 +58,7 @@ public class ShowStatisticsController {
     private List<Course> courseNames;
 
 
+
     public ShowStatisticsController() {
         EventBus.getDefault().register(this);
     }
@@ -299,7 +300,6 @@ public class ShowStatisticsController {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
                     Statistics selectedStat = statistics_table_view.getSelectionModel().getSelectedItem();
                     if (selectedStat != null) {
-                        //SimpleClient.getClient().sendToServer(new CustomMessage("#getStatisticsDistribute", selectedStat));
                         App.switchScreen("showStatisticsDistribute");
                         Platform.runLater(()->{
                             if(isManager) {
@@ -308,11 +308,8 @@ public class ShowStatisticsController {
                             else {
                                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                             }
-                            try {
-                                SimpleClient.getClient().sendToServer(new CustomMessage("#showStatisticsDistribute",""));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                                EventBus.getDefault().post(new ShowStatisticsDistributeEvent(selectedStat));
+
                         });
                     }
                 }

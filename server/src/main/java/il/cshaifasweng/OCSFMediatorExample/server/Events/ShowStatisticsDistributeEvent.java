@@ -1,12 +1,22 @@
 package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
+
 import java.util.List;
 
 public class ShowStatisticsDistributeEvent {
     List<Double> distribution;
-    public ShowStatisticsDistributeEvent(List<Double> distribution){this.distribution = distribution;}
+    Statistics stats;
+    public ShowStatisticsDistributeEvent(Statistics distribution){
+        this.distribution = distribution.getDistribution();
+        this.stats = distribution;
+    }
 
     public List<Double> getDistribution() {
         return distribution;
+    }
+
+    public Statistics getStats() {
+        return stats;
     }
 }
