@@ -312,7 +312,6 @@ public class CreateQuestionController {
 
         });
 
-        //   comboAns.setItems(updateQuestion.getIndexAnswer());
 
     }
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
