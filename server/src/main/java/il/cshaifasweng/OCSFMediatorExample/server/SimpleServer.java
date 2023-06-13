@@ -301,7 +301,6 @@ public class SimpleServer extends AbstractServer {
 
 				if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
 				{
-					scheduledTest.setStatus(2);
 					App.updateScheduleTestStatus(scheduledTest);
 				}
 
@@ -309,7 +308,6 @@ public class SimpleServer extends AbstractServer {
 					// or if server is up now, we need to check if there is a test that should continue its task
 
 					if (currentDateTime.isAfter(scheduledDateTime)) {
-						scheduledTest.setStatus(1); // set as during test
 						App.updateScheduleTestStatus(scheduledTest);
 						timer = new Timer();
 
@@ -352,7 +350,6 @@ public class SimpleServer extends AbstractServer {
 									}
 
 									timer.cancel(); // Stop the timer when the time limit is reached
-									scheduledTest.setStatus(2);
 									App.updateScheduleTestStatus(scheduledTest);
 								}
 							}

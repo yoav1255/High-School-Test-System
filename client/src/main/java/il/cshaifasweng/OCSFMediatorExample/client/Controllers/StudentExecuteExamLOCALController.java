@@ -95,7 +95,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
             cleanup();
             javafx.application.Platform.exit();
         });
-
     }
 
     @Subscribe
@@ -115,8 +114,8 @@ public class StudentExecuteExamLOCALController implements Serializable {
         scheduledTest = event.getSelectedTestEvent();
         List<Object> sub_active = new ArrayList<>();
         sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions()+1);
-        sub_active.add(scheduledTest.getActiveStudents());
+        sub_active.add(scheduledTest.getSubmissions());
+        sub_active.add(scheduledTest.getActiveStudents()+1);
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
@@ -141,6 +140,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         }
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
         System.out.println("submit local test file to server");
+
         List<Object> sub_active = new ArrayList<>();
         sub_active.add(scheduledTest);
         sub_active.add(scheduledTest.getSubmissions()+1);
@@ -153,7 +153,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
-
 
     }
 

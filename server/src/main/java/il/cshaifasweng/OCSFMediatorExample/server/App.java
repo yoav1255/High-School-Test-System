@@ -576,7 +576,6 @@ public class App extends Application
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.update(stud);
-        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -703,7 +702,6 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
-            session.flush();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -817,9 +815,8 @@ public class App extends Application
 
             session = sessionFactory.openSession();
             session.beginTransaction();
-    //        session.saveOrUpdate(student);
             session.saveOrUpdate(studentTest);
-            session.flush();
+//            session.flush();
             for(int i=2;i<items.size();i++){
                 Question_Answer item = (Question_Answer) items.get(i);
                 System.out.println("saving question answer "+ item.getId());

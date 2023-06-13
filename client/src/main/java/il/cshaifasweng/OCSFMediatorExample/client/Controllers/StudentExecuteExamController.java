@@ -77,7 +77,6 @@ public class StudentExecuteExamController {
             cleanup();
             javafx.application.Platform.exit();
         });
-
     }
 
     @Subscribe
@@ -271,7 +270,7 @@ public class StudentExecuteExamController {
     public void endTest() throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
-        studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
+        studentTest.setTimeToComplete(scheduledTest.getTimeLimit()-timeLeft);
         int sum =0;
 
         // student test is ready
