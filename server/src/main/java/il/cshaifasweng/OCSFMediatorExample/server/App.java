@@ -711,23 +711,45 @@ public class App extends Application
         return true;
     }
 
-    public static boolean updateSubmissions_Active(ScheduledTest scheduledTest, int submissions, int active){
+    public static boolean updateSubmissions_Active_Start(String id){
         try {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString ="update ScheduledTest st " +
-                    "set st.submissions=:submissions , st.activeStudents=:active " +
+                    "set st.activeStudents= st.activeStudents+1 " +
                     "where st.id =:id";
             Query query = session.createQuery(queryString);
-            query.setParameter("id",scheduledTest.getId());
-            query.setParameter("submissions",submissions);
-            query.setParameter("active",active);
+            query.setParameter("id",id);
             int rowsAffected = query.executeUpdate();
             System.out.println(rowsAffected + " affected ");
 
             session.getTransaction().commit();
             session.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateSubmissions_Active_Finish(String id){
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.activeStudents= st.activeStudents-1 , st.submissions = st.submissions+1" +
+                    " where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",id);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+
         }catch (Exception e){
             e.printStackTrace();
             return false;

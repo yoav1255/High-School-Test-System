@@ -97,11 +97,8 @@ public class StudentExecuteExamController {
         scheduledTest = event.getSelectedTestEvent();
         //TODO handle active students to be 0 after schedule test ends
         //TODO handle if student gets out and comes back again
-        List<Object> sub_active = new ArrayList<>();
-        sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions());
-        sub_active.add(scheduledTest.getActiveStudents()+1);
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
+
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -291,11 +288,8 @@ public class StudentExecuteExamController {
         for(Question_Answer questionAnswer:questionAnswers){
             student_studentTest_questionAnswers.add(questionAnswer);
         }
-        List<Object> sub_active = new ArrayList<>();
-        sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions()+1);
-        sub_active.add(scheduledTest.getActiveStudents());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
 
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
