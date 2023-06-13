@@ -302,13 +302,14 @@ public class ShowStatisticsController {
                     if (selectedStat != null) {
                         App.switchScreen("showStatisticsDistribute");
                         Platform.runLater(()->{
+                            EventBus.getDefault().post(new ShowStatisticsDistributeEvent(selectedStat));
                             if(isManager) {
                                 EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
                             }
                             else {
                                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                             }
-                                EventBus.getDefault().post(new ShowStatisticsDistributeEvent(selectedStat));
+
 
                         });
                     }

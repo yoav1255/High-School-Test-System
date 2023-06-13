@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Distribution;
 import il.cshaifasweng.OCSFMediatorExample.entities.Statistics;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
@@ -38,15 +39,13 @@ public class ShowStatisticsDistributeController {
     private String managerId;
     private boolean isManager;
     @FXML
-    private TableView<Double> distribute_table_view;
+    private TableView<Distribution> distribute_table_view;
     @FXML
-    private TableColumn<Statistics, String> range;
+    private TableColumn<Distribution, String> range;
 
     @FXML
-    private TableColumn<Statistics, String > percentage;
-    private List<Double> distributeList = new ArrayList<>();
-    List<Double> distribution;
-    private TableColumn.CellDataFeatures<Statistics, String> cellData;
+    private TableColumn<Distribution, String > percentage;
+
 
     public ShowStatisticsDistributeController() {
         EventBus.getDefault().register(this);
@@ -63,33 +62,37 @@ public class ShowStatisticsDistributeController {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowStatisticsDistributeEvent(ShowStatisticsDistributeEvent event) {
         try {
-            List<Double> statisticsList = event.getDistribution();
+            List<Double> grades = event.getDistribution();
             List<String> statisticRange = new ArrayList<>();
             Statistics stats1 = event.getStats();
+            List<Distribution> distributionList = new ArrayList<>();
+
+            for(int i =0;i<10;i++)
+            {
+                statisticRange.add(stats1.getRange(i));
+                Distribution distribution1 = new Distribution(statisticRange.get(i),grades.get(i));
+                distributionList.add(distribution1);
+            }
 
             range.setCellValueFactory(cellData -> {
-                Statistics stat = cellData.getValue();
-                String range2 = stat.getRange();
+                Distribution distributionRow = cellData.getValue();
+                String range2 = distributionRow.getRange();
                 return new SimpleStringProperty(range2);
             });
 
             percentage.setCellValueFactory(cellData -> {
-                Statistics stats = cellData.getValue();
-                List<Double> percentage2 = stats.getDistribution();
-                System.out.println(percentage2);
+                Distribution distributionRow = cellData.getValue();
+                Double percentage2 = distributionRow.getPercentage();
                 return new SimpleStringProperty(percentage2.toString());
             });
 
-
-
-            Double distribution = selectedStat.getDistribution().get(1);
-            System.out.println(distribution);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+            ObservableList<Distribution> observableStatisticsList = FXCollections.observableArrayList(distributionList);
+            Platform.runLater(()->{
+                distribute_table_view.setItems(observableStatisticsList);
+            });
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
     @FXML
     void handleGoBackButtonClick(ActionEvent event) throws IOException {

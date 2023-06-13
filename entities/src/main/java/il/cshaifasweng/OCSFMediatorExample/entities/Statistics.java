@@ -53,12 +53,11 @@ public class Statistics implements Serializable {
     public String getStudentId() { return id;}
     public void setId(String id){this.id = id;}
 
-    public String setRange(int i) {
-        if(i == 9){return "Grade range " + (i * 10) + "-" + ((i + 1) * 10);}
-        else{return "Grade range " + (i * 10) + "-" + ((i + 1) * 10 - 1);}    }
+    public String setRange(String range) {return range;}
 
-    public String getRange() {
-        return range;
+    public String getRange(int i) {
+        if(i == 9){return  (i * 10) + "-" + ((i + 1) * 10);}
+        else{return  (i * 10) + "-" + ((i + 1) * 10 - 1);}
     }
 
 }
