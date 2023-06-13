@@ -171,7 +171,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnTeacher", teacher));
 					break;
 				case ("#fillComboBox"):
-					List<String> examFormCode = App.getListExamFormCode((String) message.getData().toString());
+					List<String> examFormCode = App.getListExamFormCode( message.getData().toString());
 					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
 					break;
 				case ("#addScheduleTest"):
@@ -261,15 +261,14 @@ public class SimpleServer extends AbstractServer {
 					System.out.println("sending from s.s to client");
 					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
 					break;
-				case ("#updateSubmissions_Active"):
-					List<Object> sub_active = (List<Object>) message.getData();
-					ScheduledTest st = (ScheduledTest) sub_active.get(0);
-					int submissions = (Integer) sub_active.get(1);
-					int active = (Integer) sub_active.get(2);
-					System.out.println("submissions new : "+submissions);
-					System.out.println("active new : "+ active);
-					System.out.println("Schedule test id : "+ st.getId());
-					App.updateSubmissions_Active(st,submissions,active);
+				case ("#updateSubmissions_Active_Start"):
+					String id = (String) message.getData();
+					App.updateSubmissions_Active_Start(id);
+					//TODO return confirmation to client?
+					break;
+				case ("#updateSubmissions_Active_Finish"):
+					String id1 = (String) message.getData();
+					App.updateSubmissions_Active_Finish(id1);
 					//TODO return confirmation to client?
 					break;
 				case ("#generateUniqueExamCode"):
@@ -309,16 +308,14 @@ public class SimpleServer extends AbstractServer {
 
 				if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
 				{
-					scheduledTest.setStatus(2);
-					App.updateScheduleTestStatus(scheduledTest);
+					App.updateScheduleTestStatus(scheduledTest,2);
 				}
 
 				else if((scheduledTest.getStatus()==0) || (iterations==1 && scheduledTest.getStatus()==1)) { // before test
 					// or if server is up now, we need to check if there is a test that should continue its task
 
 					if (currentDateTime.isAfter(scheduledDateTime)) {
-						scheduledTest.setStatus(1); // set as during test
-						App.updateScheduleTestStatus(scheduledTest);
+						App.updateScheduleTestStatus(scheduledTest,1);
 						timer = new Timer();
 
 						try {
@@ -360,8 +357,7 @@ public class SimpleServer extends AbstractServer {
 									}
 
 									timer.cancel(); // Stop the timer when the time limit is reached
-									scheduledTest.setStatus(2);
-									App.updateScheduleTestStatus(scheduledTest);
+									App.updateScheduleTestStatus(scheduledTest,2);
 								}
 							}
 						};
