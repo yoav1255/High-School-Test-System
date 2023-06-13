@@ -116,7 +116,7 @@ public class App extends Application
             System.out.println("Average Grade: " + averageGrade);
             System.out.println("Median Grade: " + median);
         }*/
-        List<Statistics> examStatsList = getTeacherExamStats("2");
+        /*List<Statistics> examStatsList = getTeacherExamStats("2");
         for (Statistics statistics : examStatsList) {
             System.out.println("Distribution for exam with scheduleTestId: " + statistics.getScheduleTestId());
             List<Double> distribution = statistics.getDistribution();
@@ -127,7 +127,7 @@ public class App extends Application
                     System.out.println("Grade range " + (i * 10) + "-" + ((i + 1) * 10 - 1) + ": " + distribution.get(i) + "%");
                 }
             }
-        }
+        }*/
     }
 
     @Override

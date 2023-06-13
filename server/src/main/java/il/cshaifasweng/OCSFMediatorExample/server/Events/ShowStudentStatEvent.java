@@ -13,4 +13,8 @@ public class ShowStudentStatEvent {
         return studentStat;
     }
 
+    public void setStudentStat(Statistics studentStat) {
+        this.studentStat = studentStat;
+    }
+
 }

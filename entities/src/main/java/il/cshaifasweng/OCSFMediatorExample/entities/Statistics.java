@@ -50,7 +50,9 @@ public class Statistics implements Serializable {
         return scheduleTestId;
     }
 
-    public String getStudentId() { return id;}
+    public String getId() {
+        return id;
+    }
     public void setId(String id){this.id = id;}
 
     public String setRange(String range) {return range;}
