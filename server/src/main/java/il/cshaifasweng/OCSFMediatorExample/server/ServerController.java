@@ -27,7 +27,7 @@ public class ServerController {
     @FXML
     private TableColumn<CustomMessage, String> To_From_Server;
     @FXML
-    private TableColumn<CustomMessage , String > clientInfo;
+    private TableColumn<CustomMessage , String > time;
     @FXML
     private TableColumn<CustomMessage, String> message;
     @FXML
@@ -82,6 +82,10 @@ public class ServerController {
 
     public void setTable() {
         try {
+
+//            time.setCellValueFactory(cellData->{
+//
+//            });
 
             To_From_Server.setCellValueFactory(cellData->{
                 return new SimpleStringProperty("To");
