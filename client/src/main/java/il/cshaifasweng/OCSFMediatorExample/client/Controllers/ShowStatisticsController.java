@@ -65,11 +65,24 @@ public class ShowStatisticsController {
         EventBus.getDefault().unregister(this);
     }
 
+    public void setFields() {
+        Platform.runLater(() -> {
+            if (!isManager) {
+                stat_combobox.setValue("by teacher writer");
+                stat_combobox.setDisable(true);
+            } else {
+                stat_combobox.setDisable(false);
+            }
+        });
+    }
+
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
         teacherId = event.getId();
         isManager = false;
+        setFields();
+
     }
     @Subscribe
     public void onMoveManagerIdEvent(MoveManagerIdEvent event) {
@@ -82,22 +95,23 @@ public class ShowStatisticsController {
     }
 
     public void selected_stat(ActionEvent actionEvent) throws IOException {
-        String selectedParameter = stat_combobox.getValue();
-        if(Objects.equals(selectedParameter, "by teacher"))
-        {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName",null));
+        if(isManager){
 
-        } else if (Objects.equals(selectedParameter, "by course")) {
+            String selectedParameter = stat_combobox.getValue();
+            if (Objects.equals(selectedParameter, "by teacher")) {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName", null));
 
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName",null));
+            } else if (Objects.equals(selectedParameter, "by course")) {
+
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName", null));
+            } else if (Objects.equals(selectedParameter, "by student")) {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName", null));
+            }}
+        else{
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName", null));
+
         }
-        else if (Objects.equals(selectedParameter, "by student"))
-        {
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName",null));
         }
-    }
-
-
 
     @Subscribe
     public void onShowAllTeachersNamesEvent(ShowAllTeachersNamesEvent event)
@@ -138,34 +152,44 @@ public class ShowStatisticsController {
         String TeacherId;
         int CourseId;
         String StudentId;
-        //String StudentId = studentNames.get(index);
-        statistics_table_view.refresh();
+        Platform.runLater(()->{
+            statistics_table_view.refresh();
+        });
+            if (selectedName != null && selectedParameter != null) {
+                if(isManager) {
+                    switch (selectedParameter) {
+                        case "by teacher" -> {
+                            TeacherId = teacherNames.get(index).getId();
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", TeacherId));
+                        }
+                        case "by course" -> {
+                            CourseId = courseNames.get(index).getCode();
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", CourseId));
+                        }
+                        case "by student" -> {
+                            StudentId = studentNames.get(index).getId();
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", StudentId));
+                        }
+                    }
+                }
+                else {
+                        TeacherId = teacherNames.get(index).getId();
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherWriterStat", TeacherId));
+                    }
+            } else {
+                // Display an error message or show an alert to prompt the user to select values for both comboboxes
+                // For example:
+                Platform.runLater(()->{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Missing Selection");
+                    alert.setContentText("Please select values for both comboboxes.");
+                    alert.showAndWait();
+                });
 
-        if (selectedName != null && selectedParameter != null) {
-            switch (selectedParameter) {
-                case "by teacher" -> {
-                    TeacherId = teacherNames.get(index).getId();
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherStat", TeacherId));
-                }
-                case "by course" -> {
-                    CourseId = courseNames.get(index).getCode();
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseStat", CourseId));
-                }
-                case "by student" -> {
-                    StudentId = studentNames.get(index).getId();
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", StudentId));
-                }
             }
-        } else {
-            // Display an error message or show an alert to prompt the user to select values for both comboboxes
-            // For example:
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Missing Selection");
-            alert.setContentText("Please select values for both comboboxes.");
-            alert.showAndWait();
         }
-    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherStatEvent(ShowTeacherStatEvent event) {
@@ -241,7 +265,7 @@ public class ShowStatisticsController {
             Platform.runLater(()-> {
                         scheduled_test.textProperty().setValue("Student ID");
                     });
-
+            if(studentStat != null){
             scheduled_test.setCellValueFactory(cellData->{
                 return new SimpleStringProperty(StudentId);
             });
@@ -257,7 +281,9 @@ public class ShowStatisticsController {
             });
 
             ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
-            statistics_table_view.setItems(observableStatisticsList);
+            Platform.runLater(()->{
+                statistics_table_view.setItems(observableStatisticsList);
+            });}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -313,19 +339,6 @@ public class ShowStatisticsController {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

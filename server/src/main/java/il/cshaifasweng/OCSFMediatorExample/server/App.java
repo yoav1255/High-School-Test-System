@@ -961,8 +961,8 @@ public class App extends Application
 
 
     public static Statistics getStudentExamStats(String studentId) {
-        SessionFactory sessionFactory = getSessionFactory();
         Session session = sessionFactory.openSession(); // Open a new session
+        List<Integer> grades = new ArrayList<>();
 
         Query query = session.createQuery(
                 "SELECT e.grade " +
@@ -971,8 +971,8 @@ public class App extends Application
                         "order by e.grade"
         );
         query.setParameter("studentId", studentId);
-
-        List<Integer> grades = query.getResultList();
+        grades = query.getResultList();
+        if(grades.size() == 0){return null;}
         double sum = 0;
         for (Integer grade : grades) {
             sum += grade;
@@ -982,6 +982,7 @@ public class App extends Application
         int med = grades.size() / 2;
         int median = 0;
         if (grades.size() % 2 == 0) {
+            if(med == 0){median = grades.get(med);};
             median = grades.get(med - 1);
         } else {
             median = grades.get(med);

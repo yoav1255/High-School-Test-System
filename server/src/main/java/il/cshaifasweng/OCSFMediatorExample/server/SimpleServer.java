@@ -18,6 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherExamStats;
+import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherWriterExamStats;
 
 public class SimpleServer extends AbstractServer {
 	private static List<ScheduledTest> scheduledTests;
@@ -251,7 +252,11 @@ public class SimpleServer extends AbstractServer {
 					List<Statistics> teacherStat = getTeacherExamStats(teacher1);
 					client.sendToClient(new CustomMessage("returnTeacherStat", teacherStat));
 					break;
-
+				case ("#getTeacherWriterStat"):
+					String teacherWriter = message.getData().toString();
+					List<Statistics> teacherStat2 = getTeacherWriterExamStats(teacherWriter);
+					client.sendToClient(new CustomMessage("returnTeacherStat", teacherStat2));
+					break;
 				case ("#getCourseStat"):
 					List<Statistics> courseStat = App.getCourseExamStats((Integer) message.getData());
 					client.sendToClient(new CustomMessage("returnCourseStat",courseStat));
