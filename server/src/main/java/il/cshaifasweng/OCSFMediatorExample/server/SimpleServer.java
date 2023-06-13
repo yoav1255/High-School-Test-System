@@ -272,6 +272,10 @@ public class SimpleServer extends AbstractServer {
 					App.updateSubmissions_Active(st,submissions,active);
 					//TODO return confirmation to client?
 					break;
+				case ("#generateUniqueExamCode"):
+					String codeExam=App.generateUniqueExamCode((String) message.getData());
+					client.sendToClient(new CustomMessage("generateUniqueExamCode",codeExam));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -16,10 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -1163,6 +1160,37 @@ public class App extends Application
         session.getTransaction().commit();
         session.close();
     }
+
+public static String generateUniqueExamCode(String examCode) {
+    String uniqueCode = null;
+    boolean isUnique = false;
+
+    try (Session session = sessionFactory.openSession()) {
+        Transaction transaction = session.beginTransaction();
+
+        while (!isUnique) {
+            int randomNumber = (int) (Math.random() * 100);
+            String formattedCode = examCode + String.format("%02d", randomNumber);
+
+            Query  query = session.createQuery("SELECT COUNT(*) FROM ExamForm WHERE code = :formattedCode", Long.class);
+            query.setParameter("formattedCode", formattedCode);
+            int count = Integer.parseInt(query.getSingleResult().toString());
+
+            if (count == 0) {
+                uniqueCode = formattedCode;
+                isUnique = true;
+            }
+        }
+
+        transaction.commit();
+    } catch (Exception e) {
+        // Handle exception
+    }
+System.out.println("unique code: "+uniqueCode);
+    return uniqueCode;
+}
+
+
 
     public static boolean getFirstTestEntryCheck(String studentId, String scheduleTestId) {
         boolean isFirstTime=true;
