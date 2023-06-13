@@ -73,7 +73,7 @@ public class App extends Application
         try {
 
             System.out.println("in start server");
-            scene = new Scene(loadFXML("serverControl"), 1200, 600);
+            scene = new Scene(loadFXML("serverControl"), 956, 578);
             stage.setScene(scene);
             stage.setTitle("Server Control");
             stage.show();
@@ -337,7 +337,6 @@ public class App extends Application
 
     public static boolean addScheduleTest(ScheduledTest scheduledTest) {
         try {
-            SessionFactory sessionFactory = getSessionFactory();
             session=sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
@@ -345,6 +344,27 @@ public class App extends Application
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest) {
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.status= st.status+1 where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",scheduledTest.getId());
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }
@@ -687,6 +707,30 @@ public class App extends Application
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateSubmissions_Active(ScheduledTest scheduledTest, int submissions, int active){
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.submissions=:submissions , st.activeStudents=:active " +
+                    "where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",scheduledTest.getId());
+            query.setParameter("submissions",submissions);
+            query.setParameter("active",active);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }
@@ -1144,15 +1188,6 @@ public class App extends Application
     public static void logOffAllUsers(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-
-//        String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-//
-//        updateLoggedInQuery = "UPDATE principal SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-//
-//        updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
         String hqlQuery = "UPDATE Student SET loggedIn = false WHERE loggedIn = true ";
         Query query = session.createQuery(hqlQuery);

@@ -261,7 +261,17 @@ public class SimpleServer extends AbstractServer {
 					System.out.println("sending from s.s to client");
 					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
 					break;
-
+				case ("#updateSubmissions_Active"):
+					List<Object> sub_active = (List<Object>) message.getData();
+					ScheduledTest st = (ScheduledTest) sub_active.get(0);
+					int submissions = (Integer) sub_active.get(1);
+					int active = (Integer) sub_active.get(2);
+					System.out.println("submissions new : "+submissions);
+					System.out.println("active new : "+ active);
+					System.out.println("Schedule test id : "+ st.getId());
+					App.updateSubmissions_Active(st,submissions,active);
+					//TODO return confirmation to client?
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -292,7 +302,7 @@ public class SimpleServer extends AbstractServer {
 				if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
 				{
 					scheduledTest.setStatus(2);
-					App.addScheduleTest(scheduledTest);
+					App.updateScheduleTestStatus(scheduledTest);
 				}
 
 				else if((scheduledTest.getStatus()==0) || (iterations==1 && scheduledTest.getStatus()==1)) { // before test
@@ -300,7 +310,7 @@ public class SimpleServer extends AbstractServer {
 
 					if (currentDateTime.isAfter(scheduledDateTime)) {
 						scheduledTest.setStatus(1); // set as during test
-						App.addScheduleTest(scheduledTest);
+						App.updateScheduleTestStatus(scheduledTest);
 						timer = new Timer();
 
 						try {
@@ -343,7 +353,7 @@ public class SimpleServer extends AbstractServer {
 
 									timer.cancel(); // Stop the timer when the time limit is reached
 									scheduledTest.setStatus(2);
-									App.addScheduleTest(scheduledTest);
+									App.updateScheduleTestStatus(scheduledTest);
 								}
 							}
 						};
