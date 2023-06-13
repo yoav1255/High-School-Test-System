@@ -100,7 +100,7 @@
                         </descriptorRefs>
                         <archive>
                             <manifest>
-                                <mainClass>il.cshaifasweng.OCSFMediatorExample.server.App</mainClass>
+                                <mainClass>il.cshaifasweng.OCSFMediatorExample.server.Main</mainClass>
                             </manifest>
                         </archive>
                     </configuration>

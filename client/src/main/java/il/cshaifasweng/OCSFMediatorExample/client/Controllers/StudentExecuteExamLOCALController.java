@@ -204,8 +204,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);
-
-            endTest();
         }
     }
     @Subscribe

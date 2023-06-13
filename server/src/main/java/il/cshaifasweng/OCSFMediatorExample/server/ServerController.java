@@ -106,7 +106,7 @@ public class ServerController {
     public void disconnectClients(ActionEvent event) throws IOException {
         EventBus.getDefault().post(new TerminateAllClientsEvent());
         clientObservableList.clear();
-
+        App.logOffAllUsers();
         Platform.runLater(()->{
             connected.setText((Integer.toString(clientObservableList.size())));
             clients_table_view.refresh();
