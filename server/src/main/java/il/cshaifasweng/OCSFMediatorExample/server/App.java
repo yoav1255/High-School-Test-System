@@ -64,7 +64,6 @@ public class App extends Application
     }
 
 
-
     @Override
     public void start(Stage stage) throws IOException {
         try {
@@ -93,7 +92,7 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+           // generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -681,7 +680,6 @@ public class App extends Application
         try {
         session = sessionFactory.openSession();
         session.beginTransaction();
-
         session.save(question);
 
 
@@ -1160,7 +1158,33 @@ public class App extends Application
         session.getTransaction().commit();
         session.close();
     }
+    public static String generateUniqueQuestionCode(String subjectCode) {
+        String uniqueCode = null;
+        boolean isUnique = false;
 
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            while (!isUnique) {
+                int randomNumber = (int) (Math.random() * 1000);
+                String formattedCode = subjectCode + String.format("%03d", randomNumber);
+
+                Query  query = session.createQuery("SELECT COUNT(*) FROM Question WHERE id = :formattedCode", Long.class);
+                query.setParameter("formattedCode", formattedCode);
+                int count = Integer.parseInt(query.getSingleResult().toString());
+
+                if (count == 0) {
+                    uniqueCode = formattedCode;
+                    isUnique = true;
+                }
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            // Handle exception
+        }
+        System.out.println("unique code: "+uniqueCode);
+        return uniqueCode; }
 public static String generateUniqueExamCode(String examCode) {
     String uniqueCode = null;
     boolean isUnique = false;
