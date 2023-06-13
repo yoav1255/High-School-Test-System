@@ -171,7 +171,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnTeacher", teacher));
 					break;
 				case ("#fillComboBox"):
-					List<String> examFormCode = App.getListExamFormCode((String) message.getData().toString());
+					List<String> examFormCode = App.getListExamFormCode( message.getData().toString());
 					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
 					break;
 				case ("#addScheduleTest"):
@@ -300,14 +300,14 @@ public class SimpleServer extends AbstractServer {
 
 				if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
 				{
-					App.updateScheduleTestStatus(scheduledTest);
+					App.updateScheduleTestStatus(scheduledTest,2);
 				}
 
 				else if((scheduledTest.getStatus()==0) || (iterations==1 && scheduledTest.getStatus()==1)) { // before test
 					// or if server is up now, we need to check if there is a test that should continue its task
 
 					if (currentDateTime.isAfter(scheduledDateTime)) {
-						App.updateScheduleTestStatus(scheduledTest);
+						App.updateScheduleTestStatus(scheduledTest,1);
 						timer = new Timer();
 
 						try {
@@ -349,7 +349,7 @@ public class SimpleServer extends AbstractServer {
 									}
 
 									timer.cancel(); // Stop the timer when the time limit is reached
-									App.updateScheduleTestStatus(scheduledTest);
+									App.updateScheduleTestStatus(scheduledTest,2);
 								}
 							}
 						};

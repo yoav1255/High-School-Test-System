@@ -350,15 +350,16 @@ public class App extends Application
         return true;
     }
 
-    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest) {
+    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest,int newStatus) {
         try {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString ="update ScheduledTest st " +
-                    "set st.status= st.status+1 where st.id =:id";
+                    "set st.status=:newStatus where st.id =:id";
             Query query = session.createQuery(queryString);
             query.setParameter("id",scheduledTest.getId());
+            query.setParameter("newStatus",newStatus);
             int rowsAffected = query.executeUpdate();
             System.out.println(rowsAffected + " affected ");
 
