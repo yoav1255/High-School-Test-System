@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
+import com.mysql.cj.xdevapi.Client;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
@@ -46,6 +47,19 @@ public class TeacherHomeController {
     @FXML
     void initialize(){
         EventBus.getDefault().register(this);
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
         instances++;
     }
 
@@ -75,12 +89,10 @@ public class TeacherHomeController {
                 idLabel.setText("ID: " + this.id);
             }
         });
-    }
 
-    @FXML
-    void handleGoHomeButtonClick(ActionEvent event) {
 
     }
+
 
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event) {
@@ -210,5 +222,4 @@ public class TeacherHomeController {
 
     public void handleBackButtonClick(ActionEvent actionEvent) {
     }
-
 }

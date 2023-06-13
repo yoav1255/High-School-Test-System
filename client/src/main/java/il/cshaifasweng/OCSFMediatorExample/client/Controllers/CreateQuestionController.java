@@ -23,9 +23,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 public class CreateQuestionController {
     @FXML
     private ComboBox<String> comboSubject;
+    @FXML
+    private Label label1;
+    @FXML
+    private Label label2;
     @FXML
     private TextField theQuestion;
     @FXML
@@ -65,6 +70,8 @@ public class CreateQuestionController {
     void initialize() {
         Platform.runLater(() -> {
             courseOptions.setVisible(false);
+            label1.setVisible(false);
+            label2.setVisible(false);
             courseOptions.getItems().clear();
 
             confirmBN.setDisable(true);
@@ -76,6 +83,21 @@ public class CreateQuestionController {
 
             courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
+
+        });
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+
 
         });
 
@@ -96,6 +118,8 @@ public class CreateQuestionController {
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
+            label1.setVisible(true);
+            label2.setVisible(true);
             courseOptions.setVisible(true);
             String subjectName = comboSubject.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
@@ -283,6 +307,8 @@ public class CreateQuestionController {
         comboSubject.setValue(selectedSub.getName());
         courseOptions.setVisible(true);
         comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
+        label1.setVisible(true);
+        label2.setVisible(true);
 
         });
 

@@ -68,7 +68,19 @@ public class CreateExamFormController2 {
         courseChanged=0;
         questionScoreList = new ArrayList<>();
         questionList = new ArrayList<>();
-
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(teacherId);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -62,6 +62,24 @@ public class StudentExecuteExamController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
+    }
+
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
@@ -195,8 +213,12 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setContentText("Exam Submitted Successfully");
+            alert.setHeaderText(null);
+            alert.show();
         });
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE); //TODO
     }
 
     @Subscribe

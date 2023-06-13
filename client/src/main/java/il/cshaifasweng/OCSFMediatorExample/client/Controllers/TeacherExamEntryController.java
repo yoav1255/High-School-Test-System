@@ -9,7 +9,10 @@ import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowScheduleTestEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.TeacherExecuteExamEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.TimeLeftEvent;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;
@@ -17,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TeacherExamEntryController {
     private ScheduledTest myScheduledTest;
@@ -41,9 +45,24 @@ public class TeacherExamEntryController {
             }
         });
     }
+
     @FXML
-    void initialize() {
+    void initialize(){
         textDisplay.setVisible(false);
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -108,7 +127,7 @@ public class TeacherExamEntryController {
         }
     }
     @FXML
-    public void handleHomeButtonClick(){
+    public void handleGoHomeButtonClick(){
         try {
             String teacherId = this.id;
             cleanup();
@@ -129,5 +148,34 @@ public class TeacherExamEntryController {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+    public void handleBackButtonClick(ActionEvent actionEvent) {
+        handleGoHomeButtonClick();
     }
 }

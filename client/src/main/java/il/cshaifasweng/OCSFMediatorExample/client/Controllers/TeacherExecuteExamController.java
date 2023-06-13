@@ -18,6 +18,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TeacherExecuteExamController {
     private String id;
@@ -88,9 +89,22 @@ public class TeacherExecuteExamController {
             errorLabel.setVisible(false);
             studentsActiveLabel.setText("0/0");
             timeLeftText.setText("time will update shortly");
+            App.getStage().setOnCloseRequest(event -> {
+                ArrayList<String> info = new ArrayList<>();
+                info.add(id);
+                info.add("teacher");
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("Perform logout");
+                cleanup();
+                javafx.application.Platform.exit();
+            });
         });
-
     }
+
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         setId(event.getId());
@@ -297,7 +311,7 @@ public class TeacherExecuteExamController {
     }
 
     @FXML
-    public void handleHomeButtonClick(){
+    public void handleGoHomeButtonClick(){
         try {
             String teacherId = this.id;
             cleanup();
@@ -308,5 +322,34 @@ public class TeacherExecuteExamController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+    public void handleBackButtonClick(ActionEvent actionEvent) {
+        handleGoHomeButtonClick();
     }
 }

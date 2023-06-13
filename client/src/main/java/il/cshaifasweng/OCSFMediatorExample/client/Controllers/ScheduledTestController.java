@@ -105,6 +105,23 @@ public class ScheduledTestController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+    }
+
     @Subscribe
     public void onTeacherFromIdEvent(TeacherFromIdEvent event) {
         teacher = event.getTeacherFromId();
@@ -182,7 +199,7 @@ public class ScheduledTestController {
     }
 
     public boolean validateDate() {
-        String errorTxt="the field is empty";
+        String errorTxt = "the field is empty";
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy0MM0dd");
         LocalDateTime now = LocalDateTime.now();
         if (dataTimescheduleDate.getValue() != null) {
@@ -192,21 +209,20 @@ public class ScheduledTestController {
                 return true;
             else if (Integer.parseInt(currentDate) == Integer.parseInt(today)) {
                 return validateTime(true);
-            }
-            else errorTxt="The day has passed";
+            } else errorTxt = "The day has passed";
         }
         dataTimescheduleDate.setStyle("-fx-border-color: #cc0000;");
-        setErrorLabel(dateError,errorTxt);
+        setErrorLabel(dateError, errorTxt);
         return false;
     }
 
     public boolean validateTime(boolean today) {
-        String errorTxt="time format is not hh:mm";
+        String errorTxt = "time format is not hh:mm";
         String pattern = "^([01]\\d|2[0-3]):[0-5]\\d$";
         // Check if the time matches the pattern
         if (scheduleTime != null && scheduleTime.getText().length() == 5) {
             if (Pattern.matches(pattern, scheduleTime.getText())) {
-                if (Integer.parseInt(scheduleTime.getText().split(":")[0]) < 24 && Integer.parseInt(scheduleTime.getText().split(":")[1]) < 60) {
+                System.out.println("inui");
                     if (!today)
                         return true;
                     else {
@@ -214,35 +230,35 @@ public class ScheduledTestController {
                         int timeSchedule = Integer.parseInt(scheduleTime.getText().substring(0, 5).replace(":", "0"));
                         if (timeSchedule > timeNumberNow)
                             return true;
-                          errorTxt="time passed";
+                        errorTxt = "time passed";
                     }
-                }
-                else errorTxt="time is not valid";
-            }
+                } else {
+                    System.out.println("lolo");
+                    errorTxt = "time is not valid";}
         }
         scheduleTime.setStyle("-fx-border-color: #cc0000;");
-        setErrorLabel(timeError,errorTxt);
+        setErrorLabel(timeError, errorTxt);
         return false;
     }
 
     public boolean validateCode() {
-        String errorTxt="the field is empty";
+        String errorTxt = "the field is empty";
         String patternCode = "[a-zA-Z0-9]{4}";
         if (scheduleCode != null) {
             if (Pattern.matches(patternCode, scheduleCode.getText())) {
                 for (ScheduledTest scheduledTest : scheduledTests) {
                     if (scheduledTest.getId().equals(scheduleCode.getText()) && selectedTest == null) {
                         scheduleCode.setStyle("-fx-border-color: #cc0000;");
-                        setErrorLabel(codeError,"code is already exist");
+                        setErrorLabel(codeError, "code is already exist");
                         return false;
                     }
                 }
                 return true;
             }
-            errorTxt="need exactly 4 characters with only letters and numbers";
+            errorTxt = "need exactly 4 characters with only letters and numbers";
         }
         scheduleCode.setStyle("-fx-border-color: #cc0000;");
-        setErrorLabel(codeError,errorTxt);
+        setErrorLabel(codeError, errorTxt);
         return false;
     }
 
@@ -256,11 +272,11 @@ public class ScheduledTestController {
         valid = validateDate() & validateTime(false) & validateCode();
         if (comboBoxExamForm.getValue() == null) {
             comboBoxExamForm.setStyle("-fx-border-color:#cc0000;");
-            setErrorLabel(examFormError,"select examForm");
+            setErrorLabel(examFormError, "select examForm");
             valid = false;
         }
         if (!(radioComputerTest.isSelected() || radioManualTest.isSelected())) {
-            setErrorLabel(radioBtnError,"has not selected");
+            setErrorLabel(radioBtnError, "has not selected");
             valid = false;
         }
         if (!valid) {
@@ -271,12 +287,13 @@ public class ScheduledTestController {
         return true;
     }
 
-    void setErrorLabel(Label label,String errorTxt){
+    void setErrorLabel(Label label, String errorTxt) {
         label.setVisible(true);
         label.setText(errorTxt);
         label.setTextFill(Color.RED);
     }
-    void resetVisibleLabel(){
+
+    void resetVisibleLabel() {
         codeError.setVisible(false);
         dateError.setVisible(false);
         timeError.setVisible(false);
@@ -285,15 +302,14 @@ public class ScheduledTestController {
     }
 
     @Subscribe
-    public void onUpdateScheduleTestEvent(UpdateScheduleTestEvent event){
+    public void onUpdateScheduleTestEvent(UpdateScheduleTestEvent event) {
         Platform.runLater(() -> {
             if (event.isCheck()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText("Success");
                 alert.setContentText("update schedule test Succeed");
                 alert.show();
-            }
-            else{
+            } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
@@ -316,6 +332,7 @@ public class ScheduledTestController {
             }
         });
     }
+
     @FXML
     void sendSchedule(ActionEvent event) {
         resetVisibleLabel();

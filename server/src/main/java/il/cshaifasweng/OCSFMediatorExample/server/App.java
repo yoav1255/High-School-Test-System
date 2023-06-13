@@ -73,7 +73,7 @@ public class App extends Application
         try {
 
             System.out.println("in start server");
-            scene = new Scene(loadFXML("serverControl"), 1200, 600);
+            scene = new Scene(loadFXML("serverControl"), 956, 578);
             stage.setScene(scene);
             stage.setTitle("Server Control");
             stage.show();
@@ -810,21 +810,31 @@ public class App extends Application
         return student;
     }
 
-    public static void saveQuestionAnswers(List<Object> items){
-        Student student = (Student) items.get(0);
-        StudentTest studentTest = (StudentTest) items.get(1);
+    public static boolean saveQuestionAnswers(List<Object> items){
+        try{
+            Student student = (Student) items.get(0);
+            StudentTest studentTest = (StudentTest) items.get(1);
 
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.saveOrUpdate(studentTest);
-        session.flush();
-        for(int i=2;i<items.size();i++){
-            Question_Answer item = (Question_Answer) items.get(i);
-            session.save(item);
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+    //        session.saveOrUpdate(student);
+            session.saveOrUpdate(studentTest);
+            session.flush();
+            for(int i=2;i<items.size();i++){
+                Question_Answer item = (Question_Answer) items.get(i);
+                System.out.println("saving question answer "+ item.getId());
+                System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
+                System.out.println("in question answer st id "+ item.getStudentTest().getId());
+                session.save(item);
+            }
+            session.flush();
+            session.getTransaction().commit(); // Save Everything in the transaction area
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        session.flush();
-        session.getTransaction().commit(); // Save Everything in the transaction area
-        session.close();
+        return true;
     }
 
     public static void saveQuestionScores(List<Question_Score> items){
@@ -836,6 +846,7 @@ public class App extends Application
         session.flush();
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
+
     }
 
     public static void saveStudentTest(List<Object> student_studentTest){
@@ -849,6 +860,7 @@ public class App extends Application
         session.flush();
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
+
     }
 
     public static void getTeacherExamStats(String teacherId) {

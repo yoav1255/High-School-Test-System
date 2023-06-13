@@ -21,7 +21,7 @@
                         <Font name="Oriya Sangam MN" size="13.0" />
                     </font>
                 </Label>
-                <Button fx:id="backBN" layoutX="895.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
+                <Button fx:id="backBN" layoutX="874.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
                     <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
                     </font>
@@ -37,6 +37,14 @@
             <Button fx:id="HomeButton" layoutX="-4.0" layoutY="-1.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="32.0" prefWidth="123.0" style="-fx-background-color: TRANSPARENT;" text="MOYAM">
                <font>
                   <Font name="Oriya Sangam MN" size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="logoutButton" layoutX="937.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleLogoutButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="X">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
                </font>
                <cursor>
                   <Cursor fx:constant="HAND" />
