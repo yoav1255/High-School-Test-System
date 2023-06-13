@@ -112,11 +112,9 @@ public class StudentExecuteExamLOCALController implements Serializable {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        List<Object> sub_active = new ArrayList<>();
-        sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions());
-        sub_active.add(scheduledTest.getActiveStudents()+1);
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
+
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -141,11 +139,8 @@ public class StudentExecuteExamLOCALController implements Serializable {
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
         System.out.println("submit local test file to server");
 
-        List<Object> sub_active = new ArrayList<>();
-        sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions()+1);
-        sub_active.add(scheduledTest.getActiveStudents());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         studentTest.setScheduledTest(scheduledTest);
 
@@ -203,11 +198,8 @@ public class StudentExecuteExamLOCALController implements Serializable {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);
 
-            List<Object> sub_active = new ArrayList<>();
-            sub_active.add(scheduledTest);
-            sub_active.add(scheduledTest.getSubmissions()+1);
-            sub_active.add(scheduledTest.getActiveStudents());
-            SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+
             studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
             studentTest.setScheduledTest(scheduledTest);
 
