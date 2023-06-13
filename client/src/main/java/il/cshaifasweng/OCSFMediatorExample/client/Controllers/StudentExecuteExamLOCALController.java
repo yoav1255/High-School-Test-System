@@ -98,8 +98,11 @@ public class StudentExecuteExamLOCALController implements Serializable {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents() + 1);
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", scheduledTest));
+        List<Object> sub_active = new ArrayList<>();
+        sub_active.add(scheduledTest);
+        sub_active.add(scheduledTest.getSubmissions()+1);
+        sub_active.add(scheduledTest.getActiveStudents());
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -123,8 +126,11 @@ public class StudentExecuteExamLOCALController implements Serializable {
         }
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
         System.out.println("submit local test file to server");
-        scheduledTest.setSubmissions(scheduledTest.getSubmissions()+1);
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()-1);
+        List<Object> sub_active = new ArrayList<>();
+        sub_active.add(scheduledTest);
+        sub_active.add(scheduledTest.getSubmissions()+1);
+        sub_active.add(scheduledTest.getActiveStudents());
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
         studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
         studentTest.setScheduledTest(scheduledTest);
 
@@ -210,8 +216,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
         // student test is ready
         //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
-        scheduledTest.setSubmissions(scheduledTest.getSubmissions()+1);
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()-1);
 
 
         for(Question_Answer questionAnswer:questionAnswers){
@@ -229,7 +233,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
         for(Question_Answer questionAnswer:questionAnswers){
             student_studentTest_questionAnswers.add(questionAnswer);
         }
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
 

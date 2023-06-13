@@ -337,7 +337,6 @@ public class App extends Application
 
     public static boolean addScheduleTest(ScheduledTest scheduledTest) {
         try {
-            SessionFactory sessionFactory = getSessionFactory();
             session=sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
@@ -345,6 +344,27 @@ public class App extends Application
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest) {
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.status= st.status+1 where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",scheduledTest.getId());
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }
