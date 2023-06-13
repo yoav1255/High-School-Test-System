@@ -151,7 +151,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
 
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
 
     }
@@ -203,6 +202,17 @@ public class StudentExecuteExamLOCALController implements Serializable {
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);
+
+            List<Object> sub_active = new ArrayList<>();
+            sub_active.add(scheduledTest);
+            sub_active.add(scheduledTest.getSubmissions()+1);
+            sub_active.add(scheduledTest.getActiveStudents());
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+            studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
+            studentTest.setScheduledTest(scheduledTest);
+
+
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
         }
     }
     @Subscribe
