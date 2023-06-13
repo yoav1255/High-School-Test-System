@@ -295,7 +295,6 @@ public class SimpleServer extends AbstractServer {
 
 
 
-
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -38,7 +38,7 @@ public class ShowStatisticsDistributeController {
     private String managerId;
     private boolean isManager;
     @FXML
-    private TableView<Statistics> distribute_table_view;
+    private TableView<Double> distribute_table_view;
     @FXML
     private TableColumn<Statistics, String> range;
 
@@ -79,7 +79,7 @@ public class ShowStatisticsDistributeController {
     }
 
 
-    /*public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
+    public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
         if (!isManager) {
             try {
                 App.switchScreen("teacherHome");
@@ -109,7 +109,7 @@ public class ShowStatisticsDistributeController {
                 e.printStackTrace();
             }
         }
-    }*/
+    }
 
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
@@ -136,32 +136,31 @@ public class ShowStatisticsDistributeController {
             alert.close();
         }
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShowStatisticsDistributeEvent(ShowStatisticsDistributeEvent event)
-    {
-        try{
-            List<Double> distribute = event.getDistribution();
-            distributeList.clear();
-            distribute.addAll(distribute);
 
-            range.setCellValueFactory(cellData->{
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowStatisticsDistributeEvent(ShowStatisticsDistributeEvent event) {
+        try {
+            List<Double> statisticsList = event.getDistribution();
+
+            range.setCellValueFactory(cellData -> {
                 Statistics stat = cellData.getValue();
-                String range2 = stat.getDistribution().toString();
+                String range2 = stat.getRange(); // Assuming the Statistics class has a method to retrieve the range
                 return new SimpleStringProperty(range2);
             });
 
-            percentage.setCellValueFactory(cellData->{
+            percentage.setCellValueFactory(cellData -> {
                 Statistics stat = cellData.getValue();
-                String percentage2 = stat.getDistribution().toString();
+                String percentage2 = stat.getPercentage(); // Assuming the Statistics class has a method to retrieve the percentage
                 return new SimpleStringProperty(percentage2);
             });
 
-            ObservableList<Double> observableStatisticsList = FXCollections.observableArrayList(distributeList);
-            //distribute_table_view.setItems(observableStatisticsList);
+            ObservableList<Double> observableStatisticsList = FXCollections.observableArrayList(statisticsList);
+            distribute_table_view.setItems(observableStatisticsList);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    }
 }

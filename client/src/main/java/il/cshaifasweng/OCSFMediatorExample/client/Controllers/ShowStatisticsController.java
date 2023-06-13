@@ -70,8 +70,12 @@ public class ShowStatisticsController {
             if (!isManager) {
                 stat_combobox.setValue("by teacher writer");
                 stat_combobox.setDisable(true);
+                combobox_id.setValue(this.teacherId);
+                combobox_id.setDisable(true);
+
             } else {
                 stat_combobox.setDisable(false);
+                combobox_id.setDisable(false);
             }
         });
     }
@@ -173,8 +177,7 @@ public class ShowStatisticsController {
                     }
                 }
                 else {
-                        TeacherId = teacherNames.get(index).getId();
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherWriterStat", TeacherId));
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherWriterStat", teacherId));
                     }
             } else {
                 // Display an error message or show an alert to prompt the user to select values for both comboboxes
@@ -298,6 +301,19 @@ public class ShowStatisticsController {
                     if (selectedStat != null) {
                         //SimpleClient.getClient().sendToServer(new CustomMessage("#getStatisticsDistribute", selectedStat));
                         App.switchScreen("showStatisticsDistribute");
+                        Platform.runLater(()->{
+                            if(isManager) {
+                                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
+                            }
+                            else {
+                                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                            }
+                            try {
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#showStatisticsDistribute",""));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
                     }
                 }
             } catch (IOException e) {

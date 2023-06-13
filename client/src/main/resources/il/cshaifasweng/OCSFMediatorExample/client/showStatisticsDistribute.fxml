@@ -44,8 +44,8 @@
             <children>
                 <TableView fx:id="statistics_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
-                        <TableColumn fx:id="range" prefWidth="75.0" text="Scheduled Test" />
-                        <TableColumn fx:id="Percent" prefWidth="75.0" text="Average" />
+                        <TableColumn fx:id="range" prefWidth="75.0" text="Range" />
+                        <TableColumn fx:id="Percent" prefWidth="75.0" text="Percent" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

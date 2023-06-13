@@ -14,6 +14,38 @@ public class Statistics implements Serializable {
     String id;
     List<Double> distribution;
 
+    public String getRange() {
+        int startRange = 0;
+        int endRange = 9;
+        String range = startRange + "-" + endRange;
+
+        int lastIndex = distribution.size() - 1;
+        if (lastIndex > 0) {
+            range = startRange + "-" + (endRange + (lastIndex * 10));
+        }
+
+        return range;
+    }
+
+    public String getPercentage() {
+        StringBuilder sb = new StringBuilder();
+        int rangeSize = 10; // Assuming each range represents 10 grades
+
+        for (int i = 0; i < distribution.size(); i++) {
+            int startRange = i * rangeSize;
+            int endRange = startRange + rangeSize - 1;
+            double percentage = distribution.get(i);
+
+            String range = startRange + "-" + endRange;
+            String percentageString = String.format("%.2f", percentage);
+
+            sb.append(range).append(": ").append(percentageString).append("%\n");
+        }
+
+        return sb.toString();
+    }
+
+
 
 
 
