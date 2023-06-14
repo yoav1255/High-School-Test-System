@@ -27,7 +27,7 @@ public class ServerController {
     @FXML
     private TableColumn<CustomMessage, String> To_From_Server;
     @FXML
-    private TableColumn<CustomMessage , String > clientInfo;
+    private TableColumn<CustomMessage , String > time;
     @FXML
     private TableColumn<CustomMessage, String> message;
     @FXML
@@ -83,6 +83,10 @@ public class ServerController {
     public void setTable() {
         try {
 
+//            time.setCellValueFactory(cellData->{
+//
+//            });
+
             To_From_Server.setCellValueFactory(cellData->{
                 return new SimpleStringProperty("To");
             });
@@ -91,7 +95,8 @@ public class ServerController {
                 return new SimpleStringProperty(msgString);
             });
             data_transfered.setCellValueFactory(cellData->{
-                String objectTransferred = cellData.getValue().getData().getClass().getSimpleName();
+                Object data = cellData.getValue().getData();
+                String objectTransferred = data.getClass().getSimpleName();
                 return new SimpleStringProperty(objectTransferred);
             });
         } catch (Exception e) {
@@ -102,7 +107,7 @@ public class ServerController {
     public void disconnectClients(ActionEvent event) throws IOException {
         EventBus.getDefault().post(new TerminateAllClientsEvent());
         clientObservableList.clear();
-
+        App.logOffAllUsers();
         Platform.runLater(()->{
             connected.setText((Integer.toString(clientObservableList.size())));
             clients_table_view.refresh();

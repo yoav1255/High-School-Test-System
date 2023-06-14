@@ -16,10 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -67,7 +64,6 @@ public class App extends Application
     }
 
 
-
     @Override
     public void start(Stage stage) throws IOException {
         try {
@@ -96,7 +92,7 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+           // generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -350,15 +346,16 @@ public class App extends Application
         return true;
     }
 
-    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest) {
+    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest,int newStatus) {
         try {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString ="update ScheduledTest st " +
-                    "set st.status= st.status+1 where st.id =:id";
+                    "set st.status=:newStatus where st.id =:id";
             Query query = session.createQuery(queryString);
             query.setParameter("id",scheduledTest.getId());
+            query.setParameter("newStatus",newStatus);
             int rowsAffected = query.executeUpdate();
             System.out.println(rowsAffected + " affected ");
 
@@ -576,7 +573,6 @@ public class App extends Application
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.update(stud);
-        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -684,7 +680,6 @@ public class App extends Application
         try {
         session = sessionFactory.openSession();
         session.beginTransaction();
-
         session.save(question);
 
 
@@ -703,7 +698,6 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
-            session.flush();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -713,23 +707,45 @@ public class App extends Application
         return true;
     }
 
-    public static boolean updateSubmissions_Active(ScheduledTest scheduledTest, int submissions, int active){
+    public static boolean updateSubmissions_Active_Start(String id){
         try {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString ="update ScheduledTest st " +
-                    "set st.submissions=:submissions , st.activeStudents=:active " +
+                    "set st.activeStudents= st.activeStudents+1 " +
                     "where st.id =:id";
             Query query = session.createQuery(queryString);
-            query.setParameter("id",scheduledTest.getId());
-            query.setParameter("submissions",submissions);
-            query.setParameter("active",active);
+            query.setParameter("id",id);
             int rowsAffected = query.executeUpdate();
             System.out.println(rowsAffected + " affected ");
 
             session.getTransaction().commit();
             session.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateSubmissions_Active_Finish(String id){
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.activeStudents= st.activeStudents-1 , st.submissions = st.submissions+1" +
+                    " where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",id);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+
         }catch (Exception e){
             e.printStackTrace();
             return false;
@@ -817,9 +833,8 @@ public class App extends Application
 
             session = sessionFactory.openSession();
             session.beginTransaction();
-    //        session.saveOrUpdate(student);
             session.saveOrUpdate(studentTest);
-            session.flush();
+//            session.flush();
             for(int i=2;i<items.size();i++){
                 Question_Answer item = (Question_Answer) items.get(i);
                 System.out.println("saving question answer "+ item.getId());
@@ -1163,6 +1178,63 @@ public class App extends Application
         session.getTransaction().commit();
         session.close();
     }
+    public static String generateUniqueQuestionCode(String subjectCode) {
+        String uniqueCode = null;
+        boolean isUnique = false;
+
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            while (!isUnique) {
+                int randomNumber = (int) (Math.random() * 1000);
+                String formattedCode = subjectCode + String.format("%03d", randomNumber);
+
+                Query  query = session.createQuery("SELECT COUNT(*) FROM Question WHERE id = :formattedCode", Long.class);
+                query.setParameter("formattedCode", formattedCode);
+                int count = Integer.parseInt(query.getSingleResult().toString());
+
+                if (count == 0) {
+                    uniqueCode = formattedCode;
+                    isUnique = true;
+                }
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            // Handle exception
+        }
+        System.out.println("unique code: "+uniqueCode);
+        return uniqueCode; }
+public static String generateUniqueExamCode(String examCode) {
+    String uniqueCode = null;
+    boolean isUnique = false;
+
+    try (Session session = sessionFactory.openSession()) {
+        Transaction transaction = session.beginTransaction();
+
+        while (!isUnique) {
+            int randomNumber = (int) (Math.random() * 100);
+            String formattedCode = examCode + String.format("%02d", randomNumber);
+
+            Query  query = session.createQuery("SELECT COUNT(*) FROM ExamForm WHERE code = :formattedCode", Long.class);
+            query.setParameter("formattedCode", formattedCode);
+            int count = Integer.parseInt(query.getSingleResult().toString());
+
+            if (count == 0) {
+                uniqueCode = formattedCode;
+                isUnique = true;
+            }
+        }
+
+        transaction.commit();
+    } catch (Exception e) {
+        // Handle exception
+    }
+System.out.println("unique code: "+uniqueCode);
+    return uniqueCode;
+}
+
+
 
     public static boolean getFirstTestEntryCheck(String studentId, String scheduleTestId) {
         boolean isFirstTime=true;

@@ -72,7 +72,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
     public StudentExecuteExamLOCALController() {
         EventBus.getDefault().register(this);
-
     }
 
     public void cleanup() {
@@ -95,13 +94,12 @@ public class StudentExecuteExamLOCALController implements Serializable {
             cleanup();
             javafx.application.Platform.exit();
         });
-
     }
 
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
-        questionAnswers= new ArrayList<>();
+        id = student.getId();
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
@@ -113,22 +111,11 @@ public class StudentExecuteExamLOCALController implements Serializable {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        List<Object> sub_active = new ArrayList<>();
-        sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions()+1);
-        sub_active.add(scheduledTest.getActiveStudents());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
+
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
+
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
-        for (Question_Score questionScore : questionScoreList) {
-            Question_Answer questionAnswer = new Question_Answer();
-            questionAnswer.setStudentTest(studentTest);
-            questionAnswer.setQuestionScore(questionScore);
-            questionAnswer.setAnswer(-1); // Initialize with no answer selected
-            questionScore.getQuestionAnswers().add(questionAnswer);
-
-            questionAnswers.add(questionAnswer);
-        }
     }
 
     @FXML
@@ -141,19 +128,15 @@ public class StudentExecuteExamLOCALController implements Serializable {
         }
         System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
         System.out.println("submit local test file to server");
-        List<Object> sub_active = new ArrayList<>();
-        sub_active.add(scheduledTest);
-        sub_active.add(scheduledTest.getSubmissions()+1);
-        sub_active.add(scheduledTest.getActiveStudents());
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active",sub_active));
-        studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
+
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+
+        studentTest.setTimeToComplete(scheduledTest.getTimeLimit()-timeLeft);
         studentTest.setScheduledTest(scheduledTest);
 
 
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
         SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
-
 
     }
 
@@ -200,12 +183,18 @@ public class StudentExecuteExamLOCALController implements Serializable {
     }
     @Subscribe
     public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
-        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
-        {
-            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+        if(event.getScheduledTest().getId().equals(scheduledTest.getId())) {
+            System.out.println(" on schedule test " + scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);
 
-            endTest();
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish", scheduledTest.getId()));
+
+            studentTest.setTimeToComplete(scheduledTest.getTimeLimit() - timeLeft);
+            studentTest.setScheduledTest(scheduledTest);
+//
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", null));
+
         }
     }
     @Subscribe
@@ -222,34 +211,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
                 }
             }
         });
-    }
-
-    public void endTest() throws IOException {
-        studentTest.setScheduledTest(scheduledTest);
-        studentTest.setQuestionAnswers(questionAnswers);
-        studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
-        int sum =0;
-
-        // student test is ready
-        //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
-
-
-        for(Question_Answer questionAnswer:questionAnswers){
-            int points = questionAnswer.getQuestionScore().getScore();
-            int indexAnsStudent = questionAnswer.getAnswer();
-            int indexCorrect = questionAnswer.getQuestionScore().getQuestion().getIndexAnswer();
-            if(indexAnsStudent == indexCorrect){
-                sum+=points;
-            }
-        }
-        studentTest.setGrade(sum);
-        List<Object> student_studentTest_questionAnswers = new ArrayList<>();
-        student_studentTest_questionAnswers.add(student);
-        student_studentTest_questionAnswers.add(studentTest);
-        for(Question_Answer questionAnswer:questionAnswers){
-            student_studentTest_questionAnswers.add(questionAnswer);
-        }
-        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
 
     public void handleDownloadButton(ActionEvent actionEvent) {
@@ -329,10 +290,10 @@ public class StudentExecuteExamLOCALController implements Serializable {
         inputFileTextBox.setText(selectedFile.getName());
         TestFile test = new TestFile();
         test.setStudentID(student.getId());
-        byte[] fileData = Files.readAllBytes(selectedFile.toPath());
-        test.setFileData(fileData);
         test.setFileName("test" + scheduledTest.getExamFormCode() + "for" + student.getId() + ".docx");
         test.setTestCode(scheduledTest.getId());
+        byte[] fileData = Files.readAllBytes(selectedFile.toPath());
+        test.setFileData(fileData);
         final_file = test;
     }
 

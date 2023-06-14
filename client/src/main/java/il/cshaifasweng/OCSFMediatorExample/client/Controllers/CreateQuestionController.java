@@ -52,6 +52,7 @@ public class CreateQuestionController {
     private List<String> courseNames;
     private List<Course> courses;
     private List<Subject> subjects;
+    private  Question myQuestion;
     private String id;
     public String getId() {return id;}
     public void setId(String id) {
@@ -230,7 +231,7 @@ public class CreateQuestionController {
     public void confirm() {
         String ans_str = comboAns.getValue();
         int ans_num = Integer.parseInt(ans_str);
-        Question myQuestion = new Question(theQuestion.getText(), ans1.getText(), ans2.getText(), ans3.getText(), ans4.getText(), ans_num);
+        myQuestion = new Question(theQuestion.getText(), ans1.getText(), ans2.getText(), ans3.getText(), ans4.getText(), ans_num);
 
         List<Course> filteredCourses = courses.stream()
                 .filter(course -> courseNames.contains(course.getName()))
@@ -247,7 +248,18 @@ public class CreateQuestionController {
             }
         }
         myQuestion.setSubject(selectedSubject);
-
+        String subjectCode = myQuestion.getSubject().getCode() < 10 ? String.format("%02d", myQuestion.getSubject().getCode()) : String.valueOf(myQuestion.getSubject().getCode());
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionCode", subjectCode));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Subscribe
+    public void onGetUniqueExamCode(GetUniqueExamCode event) throws IOException {
+        String quesId=(String) event.getUniqueExamCode();
+        System.out.println("code: "+quesId);
+        myQuestion.setId(quesId);
         try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestion", myQuestion));
         } catch (Exception e) {
