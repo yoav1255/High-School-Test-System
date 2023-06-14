@@ -17,9 +17,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CreateExamFormController2 {
 
@@ -328,7 +328,6 @@ public class CreateExamFormController2 {
     if (selectedQuestion != null) {
         openDialog(selectedQuestion,false,null);
         updateSelectedListView();
-        //TODO delete the question from the shown questions
         questionsListView.getItems().remove(selectedQuestion);
         updateQuestionListView();
     }
@@ -422,10 +421,11 @@ public class CreateExamFormController2 {
         });
     }
 
-    public void openDialog(Question selectedQuestion , boolean isUpdateScore, Question_Score selectedQuestionScore){
+    public void openDialog(Question selectedQuestion, boolean isUpdateScore, Question_Score selectedQuestionScore) {
         try {
             Dialog<Question_Score> scoreDialog = new Dialog<>();
             scoreDialog.setTitle("Enter Score and Notes");
+            boolean showLabel = false;
 
             DialogPane dialogPane = scoreDialog.getDialogPane();
             dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -434,13 +434,17 @@ public class CreateExamFormController2 {
             TextField scoreField = new TextField();
             TextArea teacherNoteArea = new TextArea();
             TextArea studentNoteArea = new TextArea();
-            if(isUpdateScore){
-                Platform.runLater(()->{
+            Label errLabel = new Label("Invalid score");
+            errLabel.setVisible(false);
+
+            if (isUpdateScore) { // update mode
+                Platform.runLater(() -> {
                     scoreField.setText(Integer.toString(selectedQuestionScore.getScore()));
                     teacherNoteArea.setText(selectedQuestionScore.getTeacher_note());
                     studentNoteArea.setText(selectedQuestionScore.getStudent_note());
                 });
             }
+
             GridPane gridPane = new GridPane();
             gridPane.add(new Label("Question:"), 0, 0);
             gridPane.add(questionTextLabel, 1, 0);
@@ -450,44 +454,54 @@ public class CreateExamFormController2 {
             gridPane.add(teacherNoteArea, 1, 2);
             gridPane.add(new Label("Student's Note:"), 0, 3);
             gridPane.add(studentNoteArea, 1, 3);
+            gridPane.add(errLabel, 0, 4);
             dialogPane.setContent(gridPane);
-            scoreDialog.setResultConverter(dialogButton -> {
-                if (dialogButton == ButtonType.OK) {
-                    try {
-                        int score = Integer.parseInt(scoreField.getText());
-                        if (score > 100 || score < 0) {
-                            //TODO add something
-                        }
+
+            Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                try {
+                    int score = Integer.parseInt(scoreField.getText());
+                    if (score > 100 || score < 0) {
+                        errLabel.setVisible(true);
+                        event.consume(); // Prevents the dialog from closing
+                    } else {
                         String teacherNote = teacherNoteArea.getText();
                         String studentNote = studentNoteArea.getText();
-                        if(isUpdateScore) {
+                        Question_Score result;
+                        if (isUpdateScore) {
                             selectedQuestionScore.setScore(score);
                             selectedQuestionScore.setStudent_note(studentNote);
                             selectedQuestionScore.setTeacher_note(teacherNote);
-                            return selectedQuestionScore;
+                            result = selectedQuestionScore;
+                        } else {
+                            result = new Question_Score(score, selectedQuestion, teacherNote, studentNote);
                         }
-                        else {
-                            return new Question_Score(score,selectedQuestion,teacherNote,studentNote);
-                        }
-                    } catch (NumberFormatException e) {
-                        return null;
+                        scoreDialog.setResult(result);
                     }
+                } catch (NumberFormatException e) {
+                    // Handle invalid number format
+                    event.consume(); // Prevents the dialog from closing
+                }
+            });
+
+            scoreDialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return (Question_Score) scoreDialog.getResult();
                 }
                 return null;
             });
 
-                scoreDialog.showAndWait().ifPresent(questionScore -> {
-                    if(!isUpdateScore) {
-                        selectedQuestionsListView.getItems().add(questionScore);
-                        //questionScoreList.add(questionScore);
-                    }
-                });
+            Optional<Question_Score> result = scoreDialog.showAndWait();
+            result.ifPresent(questionScore -> {
+                if (!isUpdateScore) {
+                    selectedQuestionsListView.getItems().add(questionScore);
+                }
+            });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 @FXML
     public void handleBackButtonClick(ActionEvent event) {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
