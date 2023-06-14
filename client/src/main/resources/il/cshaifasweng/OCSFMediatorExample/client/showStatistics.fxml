@@ -83,8 +83,7 @@
                                 </FXCollections>
                             </items>
                         </ComboBox>
-                  <ComboBox fx:id="combobox_id" layoutX="210.0" layoutY="6.0" prefWidth="150.0" />
-                  <Button fx:id="show_buuton" layoutX="413.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleShowStat" text="Show" />
+                  <ComboBox fx:id="combobox_id" layoutX="210.0" layoutY="6.0" onAction="#name_stat" prefWidth="150.0" />
                     </children>
                 </Pane>
             </children>

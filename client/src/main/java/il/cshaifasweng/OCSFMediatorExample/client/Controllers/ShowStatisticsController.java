@@ -100,6 +100,9 @@ public class ShowStatisticsController {
     }
 
     public void selected_stat(ActionEvent actionEvent) throws IOException {
+        Platform.runLater(()->{
+            statistics_table_view.refresh();
+        });
         if(isManager){
 
             String selectedParameter = stat_combobox.getValue();
@@ -142,15 +145,16 @@ public class ShowStatisticsController {
         }
 
     @Subscribe
-    public void onShowAllStudentsNamesEvent(ShowAllStudentsNamesEvent event)
-    {
-        combobox_id.getItems().clear();
-        studentNames = event.getStudentList();
-        for(Student student:studentNames)
-            combobox_id.getItems().add(student.getFirst_name() + " " + student.getLast_name());
+    public void onShowAllStudentsNamesEvent(ShowAllStudentsNamesEvent event) {
+        Platform.runLater(() -> {
+            combobox_id.getItems().clear();
+            studentNames = event.getStudentList();
+            for (Student student : studentNames)
+                combobox_id.getItems().add(student.getFirst_name() + " " + student.getLast_name());
+        });
     }
 
-    public void handleShowStat(ActionEvent actionEvent) throws IOException {
+    public void name_stat(ActionEvent actionEvent) throws IOException {
         String selectedParameter = stat_combobox.getValue();
         String selectedName = combobox_id.getValue();
         int index = combobox_id.getSelectionModel().getSelectedIndex();
@@ -180,16 +184,6 @@ public class ShowStatisticsController {
                 else {
                         SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherWriterStat", teacherId));
                     }
-            } else {
-                // Display an error message or show an alert to prompt the user to select values for both comboboxes
-                // For example:
-                Platform.runLater(()->{
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Missing Selection");
-                    alert.setContentText("Please select values for both comboboxes.");
-                    alert.showAndWait();
-                });
 
             }
         }
@@ -260,34 +254,48 @@ public class ShowStatisticsController {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowStudentStatEvent(ShowStudentStatEvent event) {
         try {
+            Platform.runLater(()-> {
+                scheduled_test.textProperty().setValue("Student ID");
+            });
+
             Statistics studentStat = event.getStudentStat();
             statisticList.clear();
             statisticList.add(studentStat);
-            int index = combobox_id.getSelectionModel().getSelectedIndex();
-            String StudentId = studentNames.get(index).getId();
 
-            Platform.runLater(()-> {
-                scheduled_test.textProperty().setValue("Student ID");
-                    });
-            if(studentStat != null){
             scheduled_test.setCellValueFactory(cellData->{
-                return new SimpleStringProperty(StudentId);
+                Statistics stat = cellData.getValue();
+                if(stat != null) {
+                    String id = stat.getStudentId();
+                    return new SimpleStringProperty(id);
+                }
+                else {
+                    return new SimpleStringProperty(null);
+                }
             });
             average.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
-                String avg = Double.toString(stat.getAvgGrade());
-                return new SimpleStringProperty(avg);
+                if(stat != null) {
+                    String avg = Double.toString(stat.getAvgGrade());
+                    return new SimpleStringProperty(avg);
+                }
+                else {
+                    return new SimpleStringProperty(null);
+                }
             });
             median.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
-                String med = Integer.toString(stat.getMedian());
-                return new SimpleStringProperty(med);
+                if(stat != null) {
+                    String med = Integer.toString(stat.getMedian());
+                    return new SimpleStringProperty(med);
+                }
+                else {
+                    return new SimpleStringProperty(null);
+                }
+
             });
 
             ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
-            Platform.runLater(()->{
                 statistics_table_view.setItems(observableStatisticsList);
-            });}
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -110,10 +110,6 @@ public class ShowStatisticsDistributeController {
     }
 
 
-    public void handleRowClick(MouseEvent mouseEvent) {
-    }
-
-
     public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
         if (!isManager) {
             try {

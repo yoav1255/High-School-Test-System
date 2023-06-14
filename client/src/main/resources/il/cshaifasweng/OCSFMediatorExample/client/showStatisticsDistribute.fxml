@@ -42,7 +42,7 @@
                 <RowConstraints maxHeight="487.7233467102051" minHeight="10.0" prefHeight="480.58882904052734" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView fx:id="distribute_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
+                <TableView fx:id="distribute_table_view"  pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn fx:id="range" prefWidth="75.0" text="Range" />
                         <TableColumn fx:id="percentage" prefWidth="75.0" text="Percent" />

@@ -53,7 +53,7 @@ public class Statistics implements Serializable {
     public String getStudentId() {
         return studentId;
     }
-    public void setStudentId(String id){this.studentId = studentId;}
+    public void setStudentId(String studentId){this.studentId = studentId;}
 
     public String setRange(String range) {return range;}
 

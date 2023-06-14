@@ -1024,7 +1024,8 @@ public class App extends Application
         statistics.setScheduleTestId(null); // Set to null as it's not applicable for individual student statistics
         statistics.setAvgGrade(average);
         statistics.setMedian(median);
-        //statistics.setDistribution(distribution);
+        statistics.setStudentId(studentId);
+        statistics.setDistribution(distribution);
 
         session.close();
         return statistics;
@@ -1092,7 +1093,7 @@ public class App extends Application
             statistics.setScheduleTestId(scheduleTestId);
             statistics.setAvgGrade(averageGrade);
             statistics.setMedian(median);
-            //statistics.setDistribution(distribution);
+            statistics.setDistribution(distribution);
 
             examStatsList.add(statistics);
         }
