@@ -23,9 +23,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 public class CreateQuestionController {
     @FXML
     private ComboBox<String> comboSubject;
+    @FXML
+    private Label label1;
+    @FXML
+    private Label label2;
     @FXML
     private TextField theQuestion;
     @FXML
@@ -47,6 +52,7 @@ public class CreateQuestionController {
     private List<String> courseNames;
     private List<Course> courses;
     private List<Subject> subjects;
+    private  Question myQuestion;
     private String id;
     public String getId() {return id;}
     public void setId(String id) {
@@ -65,6 +71,8 @@ public class CreateQuestionController {
     void initialize() {
         Platform.runLater(() -> {
             courseOptions.setVisible(false);
+            label1.setVisible(false);
+            label2.setVisible(false);
             courseOptions.getItems().clear();
 
             confirmBN.setDisable(true);
@@ -76,6 +84,21 @@ public class CreateQuestionController {
 
             courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
+
+        });
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+
 
         });
 
@@ -96,6 +119,8 @@ public class CreateQuestionController {
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
+            label1.setVisible(true);
+            label2.setVisible(true);
             courseOptions.setVisible(true);
             String subjectName = comboSubject.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
@@ -206,7 +231,7 @@ public class CreateQuestionController {
     public void confirm() {
         String ans_str = comboAns.getValue();
         int ans_num = Integer.parseInt(ans_str);
-        Question myQuestion = new Question(theQuestion.getText(), ans1.getText(), ans2.getText(), ans3.getText(), ans4.getText(), ans_num);
+        myQuestion = new Question(theQuestion.getText(), ans1.getText(), ans2.getText(), ans3.getText(), ans4.getText(), ans_num);
 
         List<Course> filteredCourses = courses.stream()
                 .filter(course -> courseNames.contains(course.getName()))
@@ -223,7 +248,18 @@ public class CreateQuestionController {
             }
         }
         myQuestion.setSubject(selectedSubject);
-
+        String subjectCode = myQuestion.getSubject().getCode() < 10 ? String.format("%02d", myQuestion.getSubject().getCode()) : String.valueOf(myQuestion.getSubject().getCode());
+        try {
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionCode", subjectCode));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Subscribe
+    public void onGetUniqueExamCode(GetUniqueExamCode event) throws IOException {
+        String quesId=(String) event.getUniqueExamCode();
+        System.out.println("code: "+quesId);
+        myQuestion.setId(quesId);
         try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestion", myQuestion));
         } catch (Exception e) {
@@ -283,6 +319,8 @@ public class CreateQuestionController {
         comboSubject.setValue(selectedSub.getName());
         courseOptions.setVisible(true);
         comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
+        label1.setVisible(true);
+        label2.setVisible(true);
 
         });
 

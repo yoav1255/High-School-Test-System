@@ -115,7 +115,7 @@ public class ExamForm implements Serializable {
         return subject.getName();
     }
     public String getExamFormCode(){
-        return (code + getCourse().getCode() + getSubject().getCode());
+        return code;
     }
 
     public Teacher getTeacher() {

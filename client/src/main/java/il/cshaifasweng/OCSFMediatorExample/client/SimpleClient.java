@@ -185,6 +185,9 @@ public class SimpleClient extends AbstractClient {
 					Statistics studentStat = (Statistics) message.getData();
 					EventBus.getDefault().post(new ShowStudentStatEvent(studentStat));
 					break;
+				case ("generateUniqueExamCode"):
+					EventBus.getDefault().post(new GetUniqueExamCode((String)message.getData()));
+					break;
 
 			}
 		}catch (Exception e){

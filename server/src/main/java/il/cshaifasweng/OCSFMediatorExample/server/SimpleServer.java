@@ -12,7 +12,10 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -171,7 +174,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnTeacher", teacher));
 					break;
 				case ("#fillComboBox"):
-					List<String> examFormCode = App.getListExamFormCode((String) message.getData().toString());
+					List<String> examFormCode = App.getListExamFormCode( message.getData().toString());
 					client.sendToClient(new CustomMessage("returnListCodes", examFormCode));
 					break;
 				case ("#addScheduleTest"):
@@ -220,8 +223,8 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("returnStudent",student));
 					break;
 				case ("#saveQuestionAnswers"):
-					App.saveQuestionAnswers((List<Object>) message.getData());
-					client.sendToClient(new CustomMessage("savedQuestionAnswers","Success"));
+					boolean check4 = App.saveQuestionAnswers((List<Object>) message.getData());
+					client.sendToClient(new CustomMessage("savedQuestionAnswers",check4));
 					break;
 				case ("#saveQuestionScores"):
 					App.saveQuestionScores((List<Question_Score>) message.getData());
@@ -291,6 +294,24 @@ public class SimpleServer extends AbstractServer {
 					System.out.println("sending from s.s to client");
 					client.sendToClient(new CustomMessage("getIsFirstEntry",firstTime));
 					break;
+				case ("#updateSubmissions_Active_Start"):
+					String id = (String) message.getData();
+					App.updateSubmissions_Active_Start(id);
+					//TODO return confirmation to client?
+					break;
+				case ("#updateSubmissions_Active_Finish"):
+					String id1 = (String) message.getData();
+					App.updateSubmissions_Active_Finish(id1);
+					//TODO return confirmation to client?
+					break;
+				case ("#generateUniqueExamCode"):
+					String codeExam=App.generateUniqueExamCode((String) message.getData());
+					client.sendToClient(new CustomMessage("generateUniqueExamCode",codeExam));
+					break;
+				case ("#getQuestionCode"):
+					String codeQuestion=App.generateUniqueQuestionCode((String) message.getData());
+					client.sendToClient(new CustomMessage("generateUniqueExamCode",codeQuestion));
+					break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -320,16 +341,14 @@ public class SimpleServer extends AbstractServer {
 
 				if(scheduledTest.getStatus()==1 && currentDateTime.isAfter(endTime)) // test is done but not yet updated in the db
 				{
-					scheduledTest.setStatus(2);
-					App.addScheduleTest(scheduledTest);
+					App.updateScheduleTestStatus(scheduledTest,2);
 				}
 
 				else if((scheduledTest.getStatus()==0) || (iterations==1 && scheduledTest.getStatus()==1)) { // before test
 					// or if server is up now, we need to check if there is a test that should continue its task
 
 					if (currentDateTime.isAfter(scheduledDateTime)) {
-						scheduledTest.setStatus(1); // set as during test
-						App.addScheduleTest(scheduledTest);
+						App.updateScheduleTestStatus(scheduledTest,1);
 						timer = new Timer();
 
 						try {
@@ -371,8 +390,7 @@ public class SimpleServer extends AbstractServer {
 									}
 
 									timer.cancel(); // Stop the timer when the time limit is reached
-									scheduledTest.setStatus(2);
-									App.addScheduleTest(scheduledTest);
+									App.updateScheduleTestStatus(scheduledTest,2);
 								}
 							}
 						};

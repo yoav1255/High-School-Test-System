@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import java.io.IOException;
 import java.util.*;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
@@ -11,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -24,10 +22,9 @@ import org.hibernate.service.ServiceRegistry;
  * Hello world!
  *
  */
-public class App extends Application
-{
-	
-	private static SimpleServer server;
+public class App extends Application {
+
+    private static SimpleServer server;
     private static Session session;
     private static final SessionFactory sessionFactory = getSessionFactory();
     private static List<ScheduledTest> scheduledTests;
@@ -54,13 +51,12 @@ public class App extends Application
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = null;
         try {
-             fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        }catch (Exception e){
+            fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return fxmlLoader.load();
     }
-
 
 
     @Override
@@ -68,11 +64,11 @@ public class App extends Application
         try {
 
             System.out.println("in start server");
-            scene = new Scene(loadFXML("serverControl"), 1200, 600);
+            scene = new Scene(loadFXML("serverControl"), 956, 578);
             stage.setScene(scene);
             stage.setTitle("Server Control");
             stage.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -137,7 +133,7 @@ public class App extends Application
         super.stop();
     }
 
-    public static void main( String[] args ) throws Exception {
+    public static void main(String[] args) throws Exception {
         launch();
     }
 
@@ -146,7 +142,7 @@ public class App extends Application
         return session;
     }
 
-    private static SessionFactory getSessionFactory()throws HibernateException{
+    private static SessionFactory getSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Course.class);
@@ -170,13 +166,13 @@ public class App extends Application
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
-    private static void generateObjects() throws Exception{
+    private static void generateObjects() throws Exception {
         List<Student> students = Student.GenerateStudents();
         List<Subject> subjects = Subject.GenerateSubjects();
         List<Course> courses = Course.GenerateCourses();
         List<Teacher> teachers = Teacher.GenerateTeachers();
-        List<Question> questions = Question.GenerateQuestions();
-        Principal principal = new Principal("22","Oren", "Polishuk", "male", "PoliOren123@gmail.com", "1111");
+//        List<Question> questions = Question.GenerateQuestions();
+        Principal principal = new Principal("22", "Oren", "Polishuk", "male", "PoliOren123@gmail.com", "1111");
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
@@ -197,47 +193,47 @@ public class App extends Application
 
 //Update Questions
 
-        questions.get(0).setSubject(subjects.get(0));
-        questions.get(0).setCourses(subjects.get(0).getCourses());
-        questions.get(1).setSubject(subjects.get(0));
-        questions.get(1).setCourses(subjects.get(0).getCourses());
-        questions.get(2).setSubject(subjects.get(0));
-        questions.get(2).setCourses(subjects.get(0).getCourses());
-        questions.get(6).setSubject(subjects.get(0));
-        questions.get(6).setCourses(subjects.get(0).getCourses());
+//        questions.get(0).setSubject(subjects.get(0));
+//        questions.get(0).setCourses(subjects.get(0).getCourses());
+//        questions.get(1).setSubject(subjects.get(0));
+//        questions.get(1).setCourses(subjects.get(0).getCourses());
+//        questions.get(2).setSubject(subjects.get(0));
+//        questions.get(2).setCourses(subjects.get(0).getCourses());
+//        questions.get(6).setSubject(subjects.get(0));
+//        questions.get(6).setCourses(subjects.get(0).getCourses());
+//
+//        questions.get(3).setSubject(subjects.get(1));
+//        questions.get(3).setCourses(subjects.get(1).getCourses());
+//        questions.get(4).setSubject(subjects.get(1));
+//        questions.get(4).setCourses(subjects.get(1).getCourses());
+//        questions.get(5).setSubject(subjects.get(1));
+//        questions.get(5).setCourses(subjects.get(1).getCourses());
+//        questions.get(7).setSubject(subjects.get(1));
+//        questions.get(7).setCourses(subjects.get(1).getCourses());
 
-        questions.get(3).setSubject(subjects.get(1));
-        questions.get(3).setCourses(subjects.get(1).getCourses());
-        questions.get(4).setSubject(subjects.get(1));
-        questions.get(4).setCourses(subjects.get(1).getCourses());
-        questions.get(5).setSubject(subjects.get(1));
-        questions.get(5).setCourses(subjects.get(1).getCourses());
-        questions.get(7).setSubject(subjects.get(1));
-        questions.get(7).setCourses(subjects.get(1).getCourses());
-
-        subjects.get(0).addQuestion(questions.get(0));
-        subjects.get(0).addQuestion(questions.get(1));
-        subjects.get(0).addQuestion(questions.get(2));
-        subjects.get(0).addQuestion(questions.get(6));
-
-        subjects.get(1).addQuestion(questions.get(3));
-        subjects.get(1).addQuestion(questions.get(4));
-        subjects.get(1).addQuestion(questions.get(5));
-        subjects.get(1).addQuestion(questions.get(7));
-
-        for (Course course : subjects.get(0).getCourses()){
-            course.addQuestion(questions.get(0));
-            course.addQuestion(questions.get(1));
-            course.addQuestion(questions.get(2));
-            course.addQuestion(questions.get(6));
-        }
-
-        for (Course course : subjects.get(1).getCourses()){
-            course.addQuestion(questions.get(3));
-            course.addQuestion(questions.get(4));
-            course.addQuestion(questions.get(5));
-            course.addQuestion(questions.get(7));
-        }
+//        subjects.get(0).addQuestion(questions.get(0));
+//        subjects.get(0).addQuestion(questions.get(1));
+//        subjects.get(0).addQuestion(questions.get(2));
+//        subjects.get(0).addQuestion(questions.get(6));
+//
+//        subjects.get(1).addQuestion(questions.get(3));
+//        subjects.get(1).addQuestion(questions.get(4));
+//        subjects.get(1).addQuestion(questions.get(5));
+//        subjects.get(1).addQuestion(questions.get(7));
+//
+//        for (Course course : subjects.get(0).getCourses()){
+//            course.addQuestion(questions.get(0));
+//            course.addQuestion(questions.get(1));
+//            course.addQuestion(questions.get(2));
+//            course.addQuestion(questions.get(6));
+//        }
+//
+//        for (Course course : subjects.get(1).getCourses()){
+//            course.addQuestion(questions.get(3));
+//            course.addQuestion(questions.get(4));
+//            course.addQuestion(questions.get(5));
+//            course.addQuestion(questions.get(7));
+//        }
 
 //Update Teachers
 
@@ -259,15 +255,15 @@ public class App extends Application
 
 // ------------ Add objects to DB --------//
 
-        for(Subject subject:subjects)
+        for (Subject subject : subjects)
             session.save(subject);
-        for(Course course:courses)
+        for (Course course : courses)
             session.save(course);
-        for (Question question: questions)
-            session.save(question);
-        for (Teacher teacher:teachers)
+//        for (Question question: questions)
+//            session.save(question);
+        for (Teacher teacher : teachers)
             session.save(teacher);
-        for (Student student:students)
+        for (Student student : students)
             session.save(student);
 
 
@@ -287,10 +283,10 @@ public class App extends Application
             int timeLimit = scheduledTest.getExamForm().getTimeLimit();
         }
         session.close();
-            return scheduledTests;
+        return scheduledTests;
     }
 
-    static List<ScheduledTest> getScheduledTestsActive() throws Exception{
+    static List<ScheduledTest> getScheduledTestsActive() throws Exception {
         List<ScheduledTest> scheduledTests;
         session = sessionFactory.openSession();
 
@@ -303,13 +299,13 @@ public class App extends Application
         return scheduledTests;
     }
 
-    public static List<Student> getAllStudents() throws Exception{
+    public static List<Student> getAllStudents() throws Exception {
 
         List<Student> students = new ArrayList<Student>();
         session = sessionFactory.openSession();
         //
         String queryString = "SELECT s FROM Student s";
-        Query query = session.createQuery(queryString,Student.class);
+        Query query = session.createQuery(queryString, Student.class);
         students = query.getResultList();
         //
         session.close();
@@ -317,24 +313,23 @@ public class App extends Application
     }
 
 
-
-   public static Teacher getTeacher(){
-       // create a Criteria object for the Teacher class
-       Criteria criteria = session.createCriteria(Teacher.class);
+    public static Teacher getTeacher() {
+        // create a Criteria object for the Teacher class
+        Criteria criteria = session.createCriteria(Teacher.class);
 // set the first result to 0 (i.e., the first row)
-       criteria.setFirstResult(0);
+        criteria.setFirstResult(0);
 // set the maximum number of results to 1 (i.e., only one row)
-       criteria.setMaxResults(1);
+        criteria.setMaxResults(1);
 // execute the query and get the result
-       Teacher firstTeacher = (Teacher) criteria.uniqueResult();
+        Teacher firstTeacher = (Teacher) criteria.uniqueResult();
 
-       return firstTeacher;
-   }
+        return firstTeacher;
+    }
 
-    public static List<String> getListExamFormCode(String teacherId){
+    public static List<String> getListExamFormCode(String teacherId) {
         session = sessionFactory.openSession();
         session.beginTransaction();
-        Teacher teacher = session.get(Teacher.class,teacherId);
+        Teacher teacher = session.get(Teacher.class, teacherId);
         org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
         query.setParameterList("subjects", teacher.getSubjects());
         List<String> codes = query.getResultList();
@@ -344,11 +339,11 @@ public class App extends Application
     }
 
     public static ExamForm getExamForm(String examFormId) {
-        session=sessionFactory.openSession();
+        session = sessionFactory.openSession();
         session.beginTransaction();
-        Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId",ExamForm.class);
-        query.setParameter("examFormId",examFormId );
-        ExamForm examForm=(ExamForm) query.getSingleResult();
+        Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId", ExamForm.class);
+        query.setParameter("examFormId", examFormId);
+        ExamForm examForm = (ExamForm) query.getSingleResult();
         session.getTransaction().commit();
         session.close();
         return examForm;
@@ -356,8 +351,7 @@ public class App extends Application
 
     public static boolean addScheduleTest(ScheduledTest scheduledTest) {
         try {
-            SessionFactory sessionFactory = getSessionFactory();
-            session=sessionFactory.openSession();
+            session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
             session.flush();
@@ -370,8 +364,30 @@ public class App extends Application
         return true;
     }
 
-    public static void saveExtraTimeRequest(ExtraTime extraTime){
-        session=sessionFactory.openSession();
+    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest, int newStatus) {
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString = "update ScheduledTest st " +
+                    "set st.status=:newStatus where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id", scheduledTest.getId());
+            query.setParameter("newStatus", newStatus);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static void saveExtraTimeRequest(ExtraTime extraTime) {
+        session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(extraTime);
         session.flush();
@@ -401,10 +417,10 @@ public class App extends Application
     }
 
     public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
-        session=sessionFactory.openSession();
+        session = sessionFactory.openSession();
         session.beginTransaction();
-        for(ScheduledTest scheduledTest:scheduledTests) {
-            System.out.println("update "+scheduledTest.getId() + " status "+ scheduledTest.getStatus());
+        for (ScheduledTest scheduledTest : scheduledTests) {
+            System.out.println("update " + scheduledTest.getId() + " status " + scheduledTest.getStatus());
             session.saveOrUpdate(scheduledTest);
         }
         session.flush();
@@ -412,18 +428,19 @@ public class App extends Application
         session.close();
     }
 
-    public static List<Subject> getSubjectsFromTeacherId(String id){
+    public static List<Subject> getSubjectsFromTeacherId(String id) {
         List<Subject> subjects = new ArrayList<>();
         session = sessionFactory.openSession();
-        Teacher teacher = session.get(Teacher.class,id);
+        Teacher teacher = session.get(Teacher.class, id);
         String queryString = "SELECT s FROM Subject s WHERE :teacher IN elements(s.teachers)";
         Query query = session.createQuery(queryString, Subject.class);
-        query.setParameter("teacher",teacher);
+        query.setParameter("teacher", teacher);
         subjects = query.getResultList();
         session.close();
         return subjects;
     }
-    public static List<Subject> getAllSubjects(){
+
+    public static List<Subject> getAllSubjects() {
         List<Subject> subjects;
         session = sessionFactory.openSession();
         String queryString = "SELECT s FROM Subject s";
@@ -434,61 +451,90 @@ public class App extends Application
 
     }
 
-    public static Teacher getTeacherFromId(String id){
+    public static Teacher getTeacherFromId(String id) {
         session = sessionFactory.openSession();
-        Teacher teacher = session.get(Teacher.class,id);
+        Teacher teacher = session.get(Teacher.class, id);
         session.close();
         return teacher;
     }
 
-    public static Principal getPrincipalFromId(String id){
+    public static Principal getPrincipalFromId(String id) {
         session = sessionFactory.openSession();
-        Principal principal = session.get(Principal.class,id);
+        Principal principal = session.get(Principal.class, id);
         session.close();
         return principal;
     }
 
-    public static List<Course> getCoursesFromSubjectName(String subjectName){
+    public static List<Course> getCoursesFromSubjectName(String subjectName) {
         List<Course> courses = new ArrayList<>();
         session = sessionFactory.openSession();
         String querySub = "SELECT s FROM Subject s WHERE s.name =:subjectName";
         Query q = session.createQuery(querySub, Subject.class);
-        q.setParameter("subjectName",subjectName);
+        q.setParameter("subjectName", subjectName);
         Subject subject = (Subject) q.getSingleResult();
         String queryString = "SELECT c FROM Course c JOIN c.subject s WHERE s = :subject ";
         courses = session.createQuery(queryString, Course.class)
-                        .setParameter("subject",subject)
-                                .getResultList();
-        for(Course course:courses)
+                .setParameter("subject", subject)
+                .getResultList();
+        for (Course course : courses)
             course.setSubject(subject);
         session.close();
         return courses;
     }
 
-    public static Course getCourseFromCourseName(String courseName){
-        session = sessionFactory.openSession();
-        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
-        Query q = session.createQuery(querySub, Course.class);
-        q.setParameter("courseName",courseName);
-        Course course = (Course) q.getSingleResult();
-        session.close();
+    public static Course getCourseFromCourseName(String courseName) {
+        Session session = null;
+        Course course = null;
+
+        try {
+            session = sessionFactory.openSession();
+            String querySub = "SELECT c FROM Course c WHERE c.name = :courseName";
+            org.hibernate.Query<Course> query = session.createQuery(querySub, Course.class);
+            query.setParameter("courseName", courseName);
+            List<Course> results = query.getResultList();
+            if (!results.isEmpty()) {
+                course = results.get(0);
+            }
+        } catch (NoResultException nre) {
+            // No course found, return null or handle the situation as needed
+            course = null;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+
         return course;
     }
 
-    public static List<Question> getQuestionsFromCourseName(String courseName){
+
+    public static List<Question> getQuestionsFromCourseName(String courseName) {
         List<Question> questions = new ArrayList<>();
-        session = sessionFactory.openSession();
-        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
-        Query q = session.createQuery(querySub, Course.class);
-        q.setParameter("courseName",courseName);
-        Course course = (Course) q.getSingleResult();
-        String queryString = "SELECT DISTINCT q FROM Course c JOIN c.questions q WHERE c = :course";
-        Query query = session.createQuery(queryString, Question.class);
-        query.setParameter("course",course);
-        questions = query.getResultList();
-        session.close();
+        Session session = null;
+
+        try {
+            session = sessionFactory.openSession();
+            String querySub = "SELECT c FROM Course c WHERE c.name = :courseName";
+            org.hibernate.Query<Course> query = session.createQuery(querySub, Course.class);
+            query.setParameter("courseName", courseName);
+            Course course = (Course) query.getSingleResult();
+
+            String queryString = "SELECT DISTINCT q FROM Course c JOIN c.questions q WHERE c = :course";
+            org.hibernate.Query<Question> questionQuery = session.createQuery(queryString, Question.class);
+            questionQuery.setParameter("course", course);
+            questions = questionQuery.getResultList();
+        } catch (NoResultException nre) {
+            // No course found, return empty list or handle the situation as needed
+            questions = new ArrayList<>();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+
         return questions;
     }
+
 
     public static boolean addExamForm(ExamForm examForm) {
         try {
@@ -575,7 +621,6 @@ public class App extends Application
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.update(stud);
-        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -683,7 +728,6 @@ public class App extends Application
         try {
         session = sessionFactory.openSession();
         session.beginTransaction();
-
         session.save(question);
 
 
@@ -702,7 +746,6 @@ public class App extends Application
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
-            session.flush();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -712,21 +755,80 @@ public class App extends Application
         return true;
     }
 
-    public static List<ExamForm> getCourseExamForms(String courseName) {
-        List<ExamForm> examForms;
-        session = sessionFactory.openSession();
-        String querySub = "SELECT c FROM Course c WHERE c.name =:courseName";
-        Query q = session.createQuery(querySub, Course.class);
-        q.setParameter("courseName",courseName);
-        Course course = (Course) q.getSingleResult();
+    public static boolean updateSubmissions_Active_Start(String id){
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
 
-        String queryString = "SELECT DISTINCT e FROM Course c JOIN c.examForms e join fetch e.teacher WHERE c = :course";
-        Query query = session.createQuery(queryString, ExamForm.class);
-        query.setParameter("course",course);
-        examForms = query.getResultList();
-        session.close();
+            String queryString ="update ScheduledTest st " +
+                    "set st.activeStudents= st.activeStudents+1 " +
+                    "where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",id);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updateSubmissions_Active_Finish(String id){
+        try {
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            String queryString ="update ScheduledTest st " +
+                    "set st.activeStudents= st.activeStudents-1 , st.submissions = st.submissions+1" +
+                    " where st.id =:id";
+            Query query = session.createQuery(queryString);
+            query.setParameter("id",id);
+            int rowsAffected = query.executeUpdate();
+            System.out.println(rowsAffected + " affected ");
+
+            session.getTransaction().commit();
+            session.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static List<ExamForm> getCourseExamForms(String courseName) {
+        List<ExamForm> examForms = new ArrayList<>();
+        Session session = null;
+
+        try {
+            session = sessionFactory.openSession();
+            String querySub = "SELECT c FROM Course c WHERE c.name = :courseName";
+            org.hibernate.Query<Course> query = session.createQuery(querySub, Course.class);
+            query.setParameter("courseName", courseName);
+            Course course = (Course) query.getSingleResult();
+
+            String queryString = "SELECT DISTINCT e FROM Course c JOIN c.examForms e join fetch e.teacher WHERE c = :course";
+            org.hibernate.Query<ExamForm> examFormQuery = session.createQuery(queryString, ExamForm.class);
+            examFormQuery.setParameter("course", course);
+            examForms = examFormQuery.getResultList();
+        } catch (NoResultException nre) {
+            // No course found, return empty list or handle the situation as needed
+            examForms = new ArrayList<>();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+
         return examForms;
     }
+
+
 
     public static List<Question_Score> getQuestionScoresFromExamForm(ExamForm examForm) {
         session = sessionFactory.openSession();
@@ -785,25 +887,30 @@ public class App extends Application
         return student;
     }
 
-    public static void saveQuestionAnswers(List<Object> items){
-        Student student = (Student) items.get(0);
-        StudentTest studentTest = (StudentTest) items.get(1);
+    public static boolean saveQuestionAnswers(List<Object> items){
+        try{
+            Student student = (Student) items.get(0);
+            StudentTest studentTest = (StudentTest) items.get(1);
 
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-//        session.saveOrUpdate(student);
-        session.saveOrUpdate(studentTest);
-        session.flush();
-        for(int i=2;i<items.size();i++){
-            Question_Answer item = (Question_Answer) items.get(i);
-            System.out.println("saving question answer "+ item.getId());
-            System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
-            System.out.println("in question answer st id "+ item.getStudentTest().getId());
-            session.save(item);
+            session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.saveOrUpdate(studentTest);
+//            session.flush();
+            for(int i=2;i<items.size();i++){
+                Question_Answer item = (Question_Answer) items.get(i);
+                System.out.println("saving question answer "+ item.getId());
+                System.out.println("in question answer q.s id "+ item.getQuestionScore().getId());
+                System.out.println("in question answer st id "+ item.getStudentTest().getId());
+                session.save(item);
+            }
+            session.flush();
+            session.getTransaction().commit(); // Save Everything in the transaction area
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        session.flush();
-        session.getTransaction().commit(); // Save Everything in the transaction area
-        session.close();
+        return true;
     }
 
     public static void saveQuestionScores(List<Question_Score> items){
@@ -815,6 +922,7 @@ public class App extends Application
         session.flush();
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
+
     }
 
     public static void saveStudentTest(List<Object> student_studentTest){
@@ -828,6 +936,7 @@ public class App extends Application
         session.flush();
         session.getTransaction().commit(); // Save Everything in the transaction area
         session.close();
+
     }
 
     public static List<Statistics> getTeacherExamStats(String teacherId) {
@@ -1120,6 +1229,63 @@ public class App extends Application
         session.getTransaction().commit();
         session.close();
     }
+    public static String generateUniqueQuestionCode(String subjectCode) {
+        String uniqueCode = null;
+        boolean isUnique = false;
+
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            while (!isUnique) {
+                int randomNumber = (int) (Math.random() * 1000);
+                String formattedCode = subjectCode + String.format("%03d", randomNumber);
+
+                Query  query = session.createQuery("SELECT COUNT(*) FROM Question WHERE id = :formattedCode", Long.class);
+                query.setParameter("formattedCode", formattedCode);
+                int count = Integer.parseInt(query.getSingleResult().toString());
+
+                if (count == 0) {
+                    uniqueCode = formattedCode;
+                    isUnique = true;
+                }
+            }
+
+            transaction.commit();
+        } catch (Exception e) {
+            // Handle exception
+        }
+        System.out.println("unique code: "+uniqueCode);
+        return uniqueCode; }
+public static String generateUniqueExamCode(String examCode) {
+    String uniqueCode = null;
+    boolean isUnique = false;
+
+    try (Session session = sessionFactory.openSession()) {
+        Transaction transaction = session.beginTransaction();
+
+        while (!isUnique) {
+            int randomNumber = (int) (Math.random() * 100);
+            String formattedCode = examCode + String.format("%02d", randomNumber);
+
+            Query  query = session.createQuery("SELECT COUNT(*) FROM ExamForm WHERE code = :formattedCode", Long.class);
+            query.setParameter("formattedCode", formattedCode);
+            int count = Integer.parseInt(query.getSingleResult().toString());
+
+            if (count == 0) {
+                uniqueCode = formattedCode;
+                isUnique = true;
+            }
+        }
+
+        transaction.commit();
+    } catch (Exception e) {
+        // Handle exception
+    }
+System.out.println("unique code: "+uniqueCode);
+    return uniqueCode;
+}
+
+
 
     public static boolean getFirstTestEntryCheck(String studentId, String scheduleTestId) {
         boolean isFirstTime=true;
@@ -1145,15 +1311,6 @@ public class App extends Application
     public static void logOffAllUsers(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-
-//        String updateLoggedInQuery = "UPDATE student SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-//
-//        updateLoggedInQuery = "UPDATE principal SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
-//
-//        updateLoggedInQuery = "UPDATE Teacher SET loggedIn = false";
-//        session.createNativeQuery(updateLoggedInQuery).executeUpdate();
 
         String hqlQuery = "UPDATE Student SET loggedIn = false WHERE loggedIn = true ";
         Query query = session.createQuery(hqlQuery);

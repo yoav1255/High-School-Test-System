@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -68,7 +69,19 @@ public class CreateExamFormController2 {
         courseChanged=0;
         questionScoreList = new ArrayList<>();
         questionList = new ArrayList<>();
-
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(teacherId);
+            info.add("teacher");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -195,6 +208,31 @@ public class CreateExamFormController2 {
         questionScoreList = event.getQuestionScores();
     }
 
+    @Subscribe
+    public void onGetUniqueExamCode(GetUniqueExamCode event) throws IOException {
+
+        ExamCode=event.getUniqueExamCode();
+        examForm = new ExamForm(ExamCode,Integer.parseInt(timeLimit.getText()));
+        examForm.setSubject(sub);
+        examForm.setCourse(cour);
+        examForm.setTeacher(teacher);
+        examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" :\n"+generalNotes.getText());
+        questionScoreList.clear();
+        for(Question_Score questionScore : selectedQuestionsListView.getItems()){
+            Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
+            questionScoreList.add(questionScore1);
+        }
+        examForm.setQuestionScores(questionScoreList);
+
+            cleanup();
+            SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
+//                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
+            App.switchScreen("showExamForms");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
+        }
+
     @FXML
     public void submitForm(ActionEvent event) {
         try {
@@ -202,56 +240,46 @@ public class CreateExamFormController2 {
             int sum = 0;
             try {
                 timeLim = Integer.parseInt(timeLimit.getText());
-            }catch (NumberFormatException notNum){
-                Platform.runLater(()->{
+            } catch (NumberFormatException notNum) {
+                Platform.runLater(() -> {
                     labelMsg.setText("Time limit invalid!");
                 });
             }
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 labelMsg.setVisible(true);
             });
 
-            if(timeLim<=0 || timeLim>1000)
+            if (timeLim <= 0 || timeLim > 1000) {
                 labelMsg.setText("Time not allowed!");
+                labelMsg.setTextFill(Color.RED);
+            }
             else { // Time is valid
-                Random random = new Random();
-                int randomNumber = random.nextInt(999) + 1;//TODO change it
-                ExamCode = Integer.toString(cour.getCode()) + sub.getCode() + randomNumber;//TODO handle code properly!
-                examForm = new ExamForm(ExamCode,timeLim);
-                examForm.setSubject(sub);
-                examForm.setCourse(cour);
-                examForm.setTeacher(teacher);
-                examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" :\n"+generalNotes.getText());
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
                     Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
                     questionScoreList.add(questionScore1);
                 }
-                examForm.setQuestionScores(questionScoreList);
-
-
-                for(Question_Score questionScore:questionScoreList){
-                    questionScore.setExamForm(examForm);
-                    sum+=questionScore.getScore();
+                for (Question_Score questionScore : questionScoreList) {
+                    sum += questionScore.getScore();
                 }
-                if(sum!=100){
+                if (sum != 100) {
                     labelMsg.setText("Grade must sum to 100!");
-                }
-                else {
-                    cleanup();
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
-//                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-                    App.switchScreen("showExamForms");
-                    Platform.runLater(()->{
-                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-                    });
+                    labelMsg.setTextFill(Color.RED);
+                } else {
+                    try {
+                        String courseCode = cour.getCode() < 10 ? String.format("%02d", cour.getCode()) : String.valueOf(cour.getCode());
+                        String subjectCode = sub.getCode() < 10 ? String.format("%02d", sub.getCode()) : String.valueOf(sub.getCode());
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#generateUniqueExamCode", subjectCode + courseCode));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
+    }
     @Subscribe
     public void onAddExamFormResponseEvent(AddExamFormResponseEvent event){
         Platform.runLater(()->{

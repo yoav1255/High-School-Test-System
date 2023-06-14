@@ -78,11 +78,35 @@ public class ShowOneExamFormController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
+    }
+
     public void setFields(){
         Platform.runLater(()->{
             try {
                 txtCourse.setText(txtCourse.getText() + examForm.getCourseName());
-            txtSubject.setText(txtSubject.getText()+examForm.getSubjectName());
+                txtSubject.setText(txtSubject.getText()+examForm.getSubjectName());
             if(isManager){
                 update.setVisible(false);
             }
@@ -90,7 +114,7 @@ public class ShowOneExamFormController {
                 update.setVisible(true);
             }
             txtTimeLimit.setText(txtTimeLimit.getText() + Integer.toString(examForm.getTimeLimit()));
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
             } catch (Exception e) {
                 e.printStackTrace();
             }

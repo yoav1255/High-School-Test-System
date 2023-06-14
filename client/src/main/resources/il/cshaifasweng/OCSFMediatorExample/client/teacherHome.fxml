@@ -27,32 +27,48 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="homeBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoHomeButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Home">
-                    <graphic>
-                        <!--                  <FontAwesomeIconView glyphName="HOME" size="20" />-->
-                    </graphic>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                    <padding>
-                        <Insets left="20.0" />
-                    </padding>
-                    <font>
-                        <Font name="Oriya Sangam MN" size="15.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets bottom="1.0" top="1.0" />
-                    </VBox.margin>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </Button>
-            <Button fx:id="showStudents" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Students List" />
-            <Button fx:id="showQuestionsbtn" mnemonicParsing="false" onAction="#handleShowQuestionsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Questions" />
-            <Button fx:id="ShowExamsbtn" mnemonicParsing="false" onAction="#handleShowExamFormsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exam Forms" />
-            <Button fx:id="showScheduledbtn" mnemonicParsing="false" onAction="#handleShowScheduledTestsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Scheduled Tests" />
-            <Button fx:id="showStatsbtn" mnemonicParsing="false" onAction="#goToStatistics" prefHeight="47.0" prefWidth="220.0" text="Statistics" />
-            <Button fx:id="ExecExam" layoutX="10.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleExecExamButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exec Exam" />
+            <Button fx:id="showStudents" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Students List">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button fx:id="showQuestionsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowQuestionsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Questions">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button fx:id="ShowExamsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowExamFormsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exam Forms">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button fx:id="showScheduledbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowScheduledTestsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Scheduled Tests">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button fx:id="showStatsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowStatsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Statistics">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
+            <Button fx:id="ExecExam" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleExecExamButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exec Exam">
+               <VBox.margin>
+                  <Insets top="2.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Oriya Sangam MN" size="15.0" />
+               </font></Button>
             </children>
         </VBox>
         <Pane layoutX="207.0" layoutY="-1.0" prefHeight="36.0" prefWidth="760.0" style="-fx-background-color: #ffab2e;">

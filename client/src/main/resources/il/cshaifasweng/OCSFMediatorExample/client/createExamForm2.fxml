@@ -39,17 +39,21 @@
                     <children>
                   <ListView fx:id="questionsListView" layoutX="-1.0" prefHeight="158.0" prefWidth="714.0" />
                   <ListView fx:id="selectedQuestionsListView" layoutX="-1.0" layoutY="192.0" prefHeight="133.0" prefWidth="714.0" />
-                  <Button fx:id="removeButton" layoutX="606.0" layoutY="300.0" mnemonicParsing="false" onAction="#removeSelectedQuestion" text="Remove Question" textFill="RED" />
-                  <Button fx:id="updateButton" layoutX="608.0" layoutY="274.0" mnemonicParsing="false" onAction="#updateSelectedQuestion" prefWidth="110.0" text="Update Question" textFill="#ff9000" />
-                  <Button fx:id="addButton" layoutX="618.0" layoutY="132.0" mnemonicParsing="false" onAction="#addSelectedQuestion" text="Add Question" />
+                  <Button fx:id="removeButton" layoutX="720.0" layoutY="259.0" mnemonicParsing="false" onAction="#removeSelectedQuestion" style="-fx-background-radius: 20; -fx-background-color: white; -fx-border-color: red; -fx-border-radius: 20;" text="Remove Question" textFill="RED" />
+                  <Button fx:id="updateButton" layoutX="721.0" layoutY="222.0" mnemonicParsing="false" onAction="#updateSelectedQuestion" prefWidth="110.0" style="-fx-background-radius: 20; -fx-background-color: white; -fx-border-color: orange; -fx-border-radius: 20;" text="Update Question" textFill="#ff9000" />
+                  <Button fx:id="addButton" layoutX="725.0" layoutY="79.0" mnemonicParsing="false" onAction="#addSelectedQuestion" prefHeight="27.0" prefWidth="102.0" style="-fx-background-color: white; -fx-border-color: green; -fx-border-radius: 20; -fx-background-radius: 20;" text="Add Question" textFill="GREEN" />
                   <TextArea fx:id="generalNotes" layoutX="-1.0" layoutY="353.0" prefHeight="50.0" prefWidth="714.0" />
                   <Label layoutY="336.0" text="Notes for the test" />
+                        <Button layoutX="759.0" layoutY="367.0" mnemonicParsing="false" onAction="#submitForm" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-color: black; -fx-border-radius: 30;" text="Submit">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                  </Button>
                     </children>
                 </AnchorPane>
             </children>
         </GridPane>
-            <Button layoutX="483.0" layoutY="552.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
-            <Label fx:id="labelMsg" layoutX="371.0" layoutY="556.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+            <Label fx:id="labelMsg" layoutX="272.0" layoutY="556.0" prefHeight="18.0" prefWidth="172.0" text="Label" visible="false" />
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
             <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">

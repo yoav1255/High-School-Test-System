@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
+import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,6 +62,23 @@ public class StudentExecuteExamController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize(){
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            info.add(id);
+            info.add("student");
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+    }
+
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event){
         student =event.getStudent();
@@ -77,10 +95,10 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()+1);
         //TODO handle active students to be 0 after schedule test ends
         //TODO handle if student gets out and comes back again
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
+
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
         for (Question_Score questionScore : questionScoreList) {
@@ -191,8 +209,12 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setContentText("Exam Submitted Successfully");
+            alert.setHeaderText(null);
+            alert.show();
         });
-        JOptionPane.showMessageDialog(null, "Exam Submitted Successfully", "Success", JOptionPane.INFORMATION_MESSAGE); //TODO
     }
 
     @Subscribe
@@ -245,14 +267,11 @@ public class StudentExecuteExamController {
     public void endTest() throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
-        studentTest.setTimeToComplete(scheduledTest.getExamForm().getTimeLimit()-timeLeft);
+        studentTest.setTimeToComplete(scheduledTest.getTimeLimit()-timeLeft);
         int sum =0;
 
         // student test is ready
         //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
-        scheduledTest.setSubmissions(scheduledTest.getSubmissions()+1);
-        scheduledTest.setActiveStudents(scheduledTest.getActiveStudents()-1);
-
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();
@@ -269,7 +288,9 @@ public class StudentExecuteExamController {
         for(Question_Answer questionAnswer:questionAnswers){
             student_studentTest_questionAnswers.add(questionAnswer);
         }
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest",scheduledTest));
+
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+
         SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
     }
 
