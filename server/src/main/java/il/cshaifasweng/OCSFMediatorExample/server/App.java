@@ -94,6 +94,7 @@ public class App extends Application {
 
 //            generateObjects();
 
+
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception) {
@@ -154,6 +155,8 @@ public class App extends Application {
         List<Teacher> teachers = Teacher.GenerateTeachers();
 //        List<Question> questions = Question.GenerateQuestions();
         Principal principal = new Principal("22", "Oren", "Polishuk", "male", "PoliOren123@gmail.com", "1111");
+        session.save(principal);
+        session.flush();
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));

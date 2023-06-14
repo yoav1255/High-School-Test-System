@@ -126,10 +126,6 @@ public class ExamForm implements Serializable {
         this.teacher = teacher;
     }
 
-    public List <String> getListExamFormCodes(){
-        List<String> exam=getListExamFormCodes();
-        return exam;
-    }
 
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();

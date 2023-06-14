@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.ls.LSOutput;
 
 import java.io.IOException;
 import java.util.*;
@@ -220,20 +221,18 @@ public class CreateExamFormController2 {
         examForm.setCourse(cour);
         examForm.setTeacher(teacher);
         examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" :\n"+generalNotes.getText());
-        questionScoreList.clear();
-        for(Question_Score questionScore : selectedQuestionsListView.getItems()){
-            Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
-            questionScoreList.add(questionScore1);
+//        questionScoreList.clear();
+        for(Question_Score questionScore : questionScoreList){
+            questionScore.setExamForm(examForm);
         }
         examForm.setQuestionScores(questionScoreList);
 
-            cleanup();
-            SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
-//                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-            App.switchScreen("showExamForms");
-            Platform.runLater(()->{
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-            });
+        cleanup();
+        SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
+        App.switchScreen("showExamForms");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+        });
         }
 
     @FXML
@@ -259,7 +258,7 @@ public class CreateExamFormController2 {
             else { // Time is valid
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
-                    Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
+                    Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
                     questionScoreList.add(questionScore1);
                 }
                 for (Question_Score questionScore : questionScoreList) {
