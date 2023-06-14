@@ -70,16 +70,16 @@ public class ShowStatisticsController {
         Platform.runLater(() -> {
             if (!isManager) {
                 stat_combobox.setValue("by teacher writer");
-                stat_combobox.setVisible(true);
                 combobox_id.setValue(this.teacherId);
-                combobox_id.setVisible(true);
-
-            } else {
                 stat_combobox.setVisible(false);
                 combobox_id.setVisible(false);
+            } else {
+                stat_combobox.setVisible(true);
+                combobox_id.setVisible(true);
             }
         });
     }
+
 
 
     @Subscribe
@@ -267,7 +267,7 @@ public class ShowStatisticsController {
             String StudentId = studentNames.get(index).getId();
 
             Platform.runLater(()-> {
-                        scheduled_test.textProperty().setValue("Student ID");
+                scheduled_test.textProperty().setValue("Student ID");
                     });
             if(studentStat != null){
             scheduled_test.setCellValueFactory(cellData->{
@@ -302,16 +302,13 @@ public class ShowStatisticsController {
                     if (selectedStat != null) {
                         App.switchScreen("showStatisticsDistribute");
                         Platform.runLater(()->{
+                            EventBus.getDefault().post(new ShowStatisticsDistributeEvent(selectedStat));
                             if(isManager) {
                                 EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
                             }
                             else {
                                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                             }
-                            EventBus.getDefault().post(new ShowStatisticsDistributeEvent(selectedStat));
-
-
-
                         });
                     }
                 }

@@ -12,7 +12,7 @@ public class Statistics implements Serializable {
     String scheduleTestId;
     Double avgGrade;
     int median;
-    String id;
+    String studentId;
     List<Double> distribution;
     String range;
 
@@ -50,10 +50,10 @@ public class Statistics implements Serializable {
         return scheduleTestId;
     }
 
-    public String getId() {
-        return id;
+    public String getStudentId() {
+        return studentId;
     }
-    public void setId(String id){this.id = id;}
+    public void setStudentId(String id){this.studentId = studentId;}
 
     public String setRange(String range) {return range;}
 
