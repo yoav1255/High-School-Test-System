@@ -25,7 +25,7 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <Label fx:id="text_Id" layoutX="103.0" layoutY="16.0" prefHeight="17.0" prefWidth="105.0" text="ID: " />
+            <Label fx:id="text_Id" layoutX="103.0" layoutY="16.0" prefHeight="17.0" prefWidth="105.0" text="Name:" />
          </children>
       </AnchorPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
