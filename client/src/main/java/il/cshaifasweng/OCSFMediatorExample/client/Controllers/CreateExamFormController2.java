@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -248,8 +249,10 @@ public class CreateExamFormController2 {
                 labelMsg.setVisible(true);
             });
 
-            if (timeLim <= 0 || timeLim > 1000)
+            if (timeLim <= 0 || timeLim > 1000) {
                 labelMsg.setText("Time not allowed!");
+                labelMsg.setTextFill(Color.RED);
+            }
             else { // Time is valid
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
@@ -261,12 +264,12 @@ public class CreateExamFormController2 {
                 }
                 if (sum != 100) {
                     labelMsg.setText("Grade must sum to 100!");
+                    labelMsg.setTextFill(Color.RED);
                 } else {
                     try {
                         String courseCode = cour.getCode() < 10 ? String.format("%02d", cour.getCode()) : String.valueOf(cour.getCode());
                         String subjectCode = sub.getCode() < 10 ? String.format("%02d", sub.getCode()) : String.valueOf(sub.getCode());
                         SimpleClient.getClient().sendToServer(new CustomMessage("#generateUniqueExamCode", subjectCode + courseCode));
-                        System.out.println("in submitForm");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
