@@ -228,7 +228,7 @@ public class CreateExamFormController2 {
             else { // Time is valid
                 Random random = new Random();
                 int randomNumber = random.nextInt(999) + 1;//TODO change it
-                ExamCode = Integer.toString(cour.getCode()) + sub.getCode() + randomNumber;//TODO handle code properly!
+                ExamCode = Integer.toString(cour.getCode()) + Integer.toString(sub.getCode()) + Integer.toString(randomNumber);//TODO handle code properly!
                 examForm = new ExamForm(ExamCode,timeLim);
                 examForm.setSubject(sub);
                 examForm.setCourse(cour);
