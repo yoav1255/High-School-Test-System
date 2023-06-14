@@ -601,7 +601,8 @@ public class App extends Application {
     public static void updateStudentTest(StudentTest stud){
         session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(stud);
+        session.saveOrUpdate(stud);
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
@@ -711,7 +712,6 @@ public class App extends Application {
         session.beginTransaction();
         session.save(question);
 
-
         session.flush();
         session.getTransaction().commit();
         session.close();
@@ -727,6 +727,7 @@ public class App extends Application {
             session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
+            session.flush();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -1207,6 +1208,7 @@ public class App extends Application {
         session.beginTransaction();
         System.out.println("trying to save local test " + testFile.getFileName());
         session.saveOrUpdate(testFile);
+        session.flush();
         System.out.println("save local test " + testFile.getFileName());
         session.getTransaction().commit();
         session.close();
