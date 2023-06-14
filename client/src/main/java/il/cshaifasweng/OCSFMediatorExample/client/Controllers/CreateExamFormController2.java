@@ -115,7 +115,10 @@ public class CreateExamFormController2 {
             Platform.runLater(()->{
                 ComboSubject.setValue(examForm.getSubjectName());
                 timeLimit.setText(Integer.toString( examForm.getTimeLimit()));
-                generalNotes.setText(examForm.getGeneralNotes());
+                int index = examForm.getGeneralNotes().indexOf(':');
+                String substring = examForm.getGeneralNotes().substring(index+1);
+                System.out.println(substring);
+                generalNotes.setText(substring);
             });
         }
     }
