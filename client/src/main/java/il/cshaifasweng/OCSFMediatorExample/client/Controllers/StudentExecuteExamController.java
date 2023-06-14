@@ -223,6 +223,7 @@ public class StudentExecuteExamController {
             List<Object> objectList = event.getData();
             if (objectList.get(3).equals(scheduledTest.getId())){
                 if ((int)objectList.get(2) != 0){
+                    scheduledTest.setTimeLimit(scheduledTest.getTimeLimit()+ Integer.parseInt(objectList.get(2).toString()));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
                     alert.setHeaderText(null);
