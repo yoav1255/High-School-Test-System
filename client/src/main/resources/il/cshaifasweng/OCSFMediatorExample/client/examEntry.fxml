@@ -4,15 +4,25 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ExamEntryController">
    <children>
       <TextField fx:id="text_id" layoutX="248.0" layoutY="132.0" />
       <TextField fx:id="text_testCode" layoutX="248.0" layoutY="199.0" />
-      <Label layoutX="196.0" layoutY="136.0" prefHeight="18.0" prefWidth="30.0" text="ID:" />
-      <Label layoutX="160.0" layoutY="203.0" prefHeight="18.0" prefWidth="74.0" text="Test Code:" />
+      <Label layoutX="196.0" layoutY="136.0" prefHeight="18.0" prefWidth="30.0" text="ID:">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
+      <Label layoutX="160.0" layoutY="203.0" prefHeight="18.0" prefWidth="74.0" text="Test Code:">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font></Label>
       <Label fx:id="msg" layoutX="160.0" layoutY="302.0" text="Label" />
-      <Button layoutX="251.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterTest_btn" text="Enter Test" />
-      <Button layoutX="534.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBackButton" text="go back" />
+      <Button layoutX="287.0" layoutY="257.0" mnemonicParsing="false" onAction="#EnterTest_btn" style="-fx-background-color: orange;" text="Enter Test">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font></Button>
+      <Button layoutX="534.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBackButton" style="-fx-background-color: #ffab2e; -fx-background-radius: 10; -fx-border-color: black; -fx-border-radius: 10;" text="go back" />
    </children>
 </AnchorPane>
