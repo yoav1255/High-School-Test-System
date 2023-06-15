@@ -119,13 +119,21 @@ public class CreateQuestionController {
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
-            label1.setVisible(true);
-            label2.setVisible(true);
-            courseOptions.setVisible(true);
             String subjectName = comboSubject.getValue();
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
-            confirmBN.setDisable(false);
-            courseOptions.setDisable(false);
+            Platform.runLater(()->{
+                label1.setVisible(true);
+                label2.setVisible(true);
+                courseOptions.setVisible(true);
+                confirmBN.setDisable(false);
+                courseOptions.setDisable(false);
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
