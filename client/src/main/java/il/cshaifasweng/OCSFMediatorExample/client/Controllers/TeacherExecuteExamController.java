@@ -121,11 +121,17 @@ public class TeacherExecuteExamController {
     }
     @Subscribe
     public void onTeacherExecuteExamEvent(TeacherExecuteExamEvent event) throws IOException {
-        setScheduledTest(event.getScheduledTest());
-        setCourseName(scheduledTest.getCourseName());
-        setSubjectName(scheduledTest.getSubjectName());
-        examForm = scheduledTest.getExamForm();
-        SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+        Platform.runLater(() -> {
+            setScheduledTest(event.getScheduledTest());
+            setCourseName(scheduledTest.getCourseName());
+            setSubjectName(scheduledTest.getSubjectName());
+            examForm = scheduledTest.getExamForm();
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores", examForm));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
     @Subscribe
     public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
