@@ -55,7 +55,7 @@
                <font>
                   <Font name="Oriya Sangam MN" size="15.0" />
                </font></Button>
-            <Button fx:id="showStatsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowStatsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Statistics">
+            <Button fx:id="showStatsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStatistics" prefHeight="47.0" prefWidth="220.0" text="Statistics">
                <VBox.margin>
                   <Insets top="2.0" />
                </VBox.margin>

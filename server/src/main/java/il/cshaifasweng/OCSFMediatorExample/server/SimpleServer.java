@@ -20,6 +20,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherExamStats;
+import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherWriterExamStats;
+
 public class SimpleServer extends AbstractServer {
 	private static List<ScheduledTest> scheduledTests;
 	private static List<ConnectionToClient> clients;
@@ -234,6 +237,36 @@ public class SimpleServer extends AbstractServer {
 				case ("#getAllSubjects"):
 					List<Subject> subjects1 = App.getAllSubjects();
 					client.sendToClient(new CustomMessage("returnAllSubjects",subjects1));
+					break;
+				case ("#getTeacherName"):
+					List<Teacher> teacher2 = App.getAllTeacherNames();
+					client.sendToClient(new CustomMessage("returnAllTeachersNames",teacher2));
+					break;
+				case ("#getCourseName"):
+					List<Course> courseName = App.getAllCourseNames();
+					client.sendToClient(new CustomMessage("returnAllCoursesNames",courseName));
+					break;
+				case ("#getStudentName"):
+					List<String> studentName = App.getAllStudentNames();
+					client.sendToClient(new CustomMessage("returnAllStudentsNames",studentName));
+					break;
+				case ("#getTeacherStat"):
+					String teacher1 = message.getData().toString();
+					List<Statistics> teacherStat = getTeacherExamStats(teacher1);
+					client.sendToClient(new CustomMessage("returnTeacherStat", teacherStat));
+					break;
+				case ("#getTeacherWriterStat"):
+					String teacherWriter = message.getData().toString();
+					List<Statistics> teacherStat2 = getTeacherWriterExamStats(teacherWriter);
+					client.sendToClient(new CustomMessage("returnTeacherStat", teacherStat2));
+					break;
+				case ("#getCourseStat"):
+					List<Statistics> courseStat = App.getCourseExamStats((Integer) message.getData());
+					client.sendToClient(new CustomMessage("returnCourseStat",courseStat));
+					break;
+				case ("#getStudentStat"):
+					Statistics studentStat = App.getStudentExamStats(message.getData().toString());
+					client.sendToClient(new CustomMessage("returnStudentStat",studentStat));
 					break;
 				case ("#endLocalTest"):
 					TestFile file = (TestFile) message.getData();

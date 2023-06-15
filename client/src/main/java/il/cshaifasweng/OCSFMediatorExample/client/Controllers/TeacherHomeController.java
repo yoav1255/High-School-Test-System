@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdTestOverEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -164,6 +165,15 @@ public class TeacherHomeController {
     }
 
     public void handleShowStatsButtonClick(ActionEvent event) {
+    }
+
+    @FXML
+    public void goToStatistics(ActionEvent event) throws IOException {
+        cleanup();
+        App.switchScreen("showStatistics");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+        });
     }
 
     @FXML
