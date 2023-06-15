@@ -225,46 +225,34 @@ public class StudentExecuteExamLOCALController implements Serializable {
         titleRun.setText(", " + scheduledTest.getTeacherName());
         //titleRun.setText("Local Test Format");
         titleRun.addBreak();
-        titleRun.setText("Exam Form Code : " + scheduledTest.getExamFormCode());
+        titleRun.setText("Exam Form Code : " + scheduledTest.getId());
         titleRun.setText(", For student " + student.getFirst_name() + " " + student.getLast_name());
         titleRun.addBreak();
         int counter = 1;
 
         for (Question_Score questionScore : questionScoreList) {
-            Question_Answer questionAnswer = new Question_Answer();
-            questionAnswer.setStudentTest(studentTest);
-            questionAnswer.setQuestionScore(questionScore);
-            questionAnswer.setAnswer(-1); // Initialize with no answer selected
-            questionScore.getQuestionAnswers().add(questionAnswer);
-            questionAnswers.add(questionAnswer);
-            Question_Score qs = questionAnswer.getQuestionScore();
-            Question q = qs.getQuestion();
-            String questionText = q.getText();
-            String answer0 = q.getAnswer0();
-            String answer1 = q.getAnswer1();
-            String answer2 = q.getAnswer2();
-            String answer3 = q.getAnswer3();
 
+            Question question = questionScore.getQuestion();
             XWPFParagraph questionParagraph = document.createParagraph();
             XWPFRun questionRun = questionParagraph.createRun();
             questionRun.setFontFamily("Arial");
             questionRun.setBold(true);
-            String score = String.valueOf(questionAnswer.getQuestionScore().getScore());
-            questionRun.setText(counter + ".  " + questionText + " (" + score + ").");
+            String score = String.valueOf(questionScore.getScore());
+            questionRun.setText(counter + ".  " + question.getText() + " (" + score + ").");
             questionRun.addBreak();
             XWPFRun questionRun2 = questionParagraph.createRun();
             questionRun2.setFontFamily("Arial");
             questionRun2.setBold(false);
-            questionRun2.setText("  1.  " + answer0);
+            questionRun2.setText("  1.  " + question.getAnswer0());
             questionRun2.addBreak();
-            questionRun2.setText("  2.  " + answer1);
+            questionRun2.setText("  2.  " + question.getAnswer1());
             questionRun2.addBreak();
-            questionRun2.setText("  3.  " + answer2);
+            questionRun2.setText("  3.  " + question.getAnswer2());
             questionRun2.addBreak();
-            questionRun2.setText("  4.  " + answer3);
-            if(!Objects.equals(qs.getStudent_note(), "")){
+            questionRun2.setText("  4.  " + question.getAnswer3());
+            if(!Objects.equals(questionScore.getStudent_note(), "")){
                 questionRun2.addBreak();
-                questionRun2.setText("Teacher note : " + qs.getStudent_note());
+                questionRun2.setText("Teacher note : " + questionScore.getStudent_note());
             }
             questionRun2.addBreak();
             questionRun2.addBreak();
@@ -272,7 +260,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         }
 
         try {
-            String filename = "test" + scheduledTest.getExamFormCode() + "for" + student.getId() + ".docx";
+            String filename = "test" + scheduledTest.getId() + "for" + student.getId() + ".docx";
             FileOutputStream output = new FileOutputStream(filename);
             document.write(output);
             output.close();
