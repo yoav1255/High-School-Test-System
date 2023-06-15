@@ -42,7 +42,7 @@
                   <Font name="Oriya Sangam MN" size="16.0" />
                </font>
             </Label>
-                <Label fx:id="text_Id" layoutX="165.0" layoutY="15.0" prefHeight="17.0" prefWidth="105.0" text="ID: " />
+                <Label fx:id="text_Id" layoutX="165.0" layoutY="15.0" prefHeight="17.0" prefWidth="105.0" text="Name:" />
             </children>
         </AnchorPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">

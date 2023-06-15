@@ -1,7 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.Timer;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -89,6 +94,7 @@ public class App extends Application {
 
 //            generateObjects();
 
+
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception) {
@@ -100,30 +106,6 @@ public class App extends Application {
         } finally {
             session.close();
         }
-
-        /*List<Statistics> examStatsList = getTeacherExamStats("2");
-        for (Statistics statistics : examStatsList) {
-            String scheduledTestId = statistics.getScheduleTestId();
-            Double averageGrade = statistics.getAvgGrade();
-            int median = statistics.getMedian();
-            //List<Double> distribution = statistics.getDistribution();
-
-            System.out.println("Scheduled Test ID: " + scheduledTestId);
-            System.out.println("Average Grade: " + averageGrade);
-            System.out.println("Median Grade: " + median);
-        }*/
-        /*List<Statistics> examStatsList = getTeacherExamStats("2");
-        for (Statistics statistics : examStatsList) {
-            System.out.println("Distribution for exam with scheduleTestId: " + statistics.getScheduleTestId());
-            List<Double> distribution = statistics.getDistribution();
-            for (int i = 0; i < 10; i++) {
-                if (i == 9) {
-                    System.out.println("Grade range " + (i * 10) + "-" + ((i + 1) * 10) + ": " + distribution.get(i) + "%");
-                } else {
-                    System.out.println("Grade range " + (i * 10) + "-" + ((i + 1) * 10 - 1) + ": " + distribution.get(i) + "%");
-                }
-            }
-        }*/
     }
 
     @Override
@@ -173,6 +155,8 @@ public class App extends Application {
         List<Teacher> teachers = Teacher.GenerateTeachers();
 //        List<Question> questions = Question.GenerateQuestions();
         Principal principal = new Principal("22", "Oren", "Polishuk", "male", "PoliOren123@gmail.com", "1111");
+        session.save(principal);
+        session.flush();
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
@@ -273,28 +257,34 @@ public class App extends Application {
     public static List<ScheduledTest> getScheduledTests() throws Exception {
 
         List<ScheduledTest> scheduledTests;
-        session = sessionFactory.openSession();
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
 
-        String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et";
-        Query query = session.createQuery(hql, ScheduledTest.class);
-        scheduledTests = query.getResultList();
+            String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et";
+            Query query = session.createQuery(hql, ScheduledTest.class);
+            scheduledTests = query.getResultList();
 
-        for (ScheduledTest scheduledTest : scheduledTests) {
-            int timeLimit = scheduledTest.getExamForm().getTimeLimit();
+            for (ScheduledTest scheduledTest : scheduledTests) {
+                int timeLimit = scheduledTest.getExamForm().getTimeLimit();
+            }
+            session.getTransaction().commit();
+            return scheduledTests;
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        session.close();
-        return scheduledTests;
+        return null;
     }
 
     static List<ScheduledTest> getScheduledTestsActive() throws Exception {
         List<ScheduledTest> scheduledTests;
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
 
         String hql = "SELECT st FROM ScheduledTest st JOIN FETCH st.examForm et WHERE st.status IN(1,0)";
         Query query = session.createQuery(hql, ScheduledTest.class);
         scheduledTests = query.getResultList();
 
-
+        session.getTransaction().commit();
         session.close();
         return scheduledTests;
     }
@@ -302,12 +292,15 @@ public class App extends Application {
     public static List<Student> getAllStudents() throws Exception {
 
         List<Student> students = new ArrayList<Student>();
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
         //
         String queryString = "SELECT s FROM Student s";
         Query query = session.createQuery(queryString, Student.class);
         students = query.getResultList();
         //
+        session.getTransaction().commit();
         session.close();
         return students;
     }
@@ -327,7 +320,7 @@ public class App extends Application {
     }
 
     public static List<String> getListExamFormCode(String teacherId) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         Teacher teacher = session.get(Teacher.class, teacherId);
         org.hibernate.Query<String> query = session.createQuery("SELECT code FROM ExamForm WHERE subject IN (:subjects)", String.class);
@@ -339,7 +332,7 @@ public class App extends Application {
     }
 
     public static ExamForm getExamForm(String examFormId) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("FROM ExamForm ef WHERE  ef.code = :examFormId", ExamForm.class);
         query.setParameter("examFormId", examFormId);
@@ -351,7 +344,7 @@ public class App extends Application {
 
     public static boolean addScheduleTest(ScheduledTest scheduledTest) {
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
             session.flush();
@@ -366,7 +359,7 @@ public class App extends Application {
 
     public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest, int newStatus) {
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString = "update ScheduledTest st " +
@@ -387,7 +380,7 @@ public class App extends Application {
     }
 
     public static void saveExtraTimeRequest(ExtraTime extraTime) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(extraTime);
         session.flush();
@@ -397,7 +390,7 @@ public class App extends Application {
 
     public static List<ExtraTime> getAllExtraTimes() {
         List<ExtraTime> extraTimes = new ArrayList<>();
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         String queryString = "SELECT e FROM ExtraTime e";
         extraTimes = session.createQuery(queryString, ExtraTime.class).getResultList();
         session.close();
@@ -405,7 +398,7 @@ public class App extends Application {
     }
 
     public static void clearExtraTimeTable() {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
 
         String queryString = "DELETE FROM ExtraTime";
@@ -417,7 +410,7 @@ public class App extends Application {
     }
 
     public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         for (ScheduledTest scheduledTest : scheduledTests) {
             System.out.println("update " + scheduledTest.getId() + " status " + scheduledTest.getStatus());
@@ -430,7 +423,7 @@ public class App extends Application {
 
     public static List<Subject> getSubjectsFromTeacherId(String id) {
         List<Subject> subjects = new ArrayList<>();
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         Teacher teacher = session.get(Teacher.class, id);
         String queryString = "SELECT s FROM Subject s WHERE :teacher IN elements(s.teachers)";
         Query query = session.createQuery(queryString, Subject.class);
@@ -442,7 +435,7 @@ public class App extends Application {
 
     public static List<Subject> getAllSubjects() {
         List<Subject> subjects;
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         String queryString = "SELECT s FROM Subject s";
         Query query = session.createQuery(queryString, Subject.class);
         subjects = query.getResultList();
@@ -452,14 +445,14 @@ public class App extends Application {
     }
 
     public static Teacher getTeacherFromId(String id) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         Teacher teacher = session.get(Teacher.class, id);
         session.close();
         return teacher;
     }
 
     public static Principal getPrincipalFromId(String id) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         Principal principal = session.get(Principal.class, id);
         session.close();
         return principal;
@@ -467,7 +460,7 @@ public class App extends Application {
 
     public static List<Course> getCoursesFromSubjectName(String subjectName) {
         List<Course> courses = new ArrayList<>();
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         String querySub = "SELECT s FROM Subject s WHERE s.name =:subjectName";
         Query q = session.createQuery(querySub, Subject.class);
         q.setParameter("subjectName", subjectName);
@@ -483,11 +476,11 @@ public class App extends Application {
     }
 
     public static Course getCourseFromCourseName(String courseName) {
-        Session session = null;
+         session = null;
         Course course = null;
 
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             String querySub = "SELECT c FROM Course c WHERE c.name = :courseName";
             org.hibernate.Query<Course> query = session.createQuery(querySub, Course.class);
             query.setParameter("courseName", courseName);
@@ -510,10 +503,10 @@ public class App extends Application {
 
     public static List<Question> getQuestionsFromCourseName(String courseName) {
         List<Question> questions = new ArrayList<>();
-        Session session = null;
+        session = null;
 
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             String querySub = "SELECT c FROM Course c WHERE c.name = :courseName";
             org.hibernate.Query<Course> query = session.createQuery(querySub, Course.class);
             query.setParameter("courseName", courseName);
@@ -538,7 +531,7 @@ public class App extends Application {
 
     public static boolean addExamForm(ExamForm examForm) {
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
             session.save(examForm);
             session.flush();
@@ -552,7 +545,7 @@ public class App extends Application {
     }
 
     public static void addQuestionScores(List<Question_Score> questionScores) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         for(Question_Score questionScore:questionScores){
             session.save(questionScore);
@@ -563,7 +556,7 @@ public class App extends Application {
     }
 
     public static List<StudentTest> getStudentTests(Student student){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("FROM StudentTest s WHERE s.student = :studentToTake", StudentTest.class);
         query.setParameter("studentToTake", student);
@@ -590,7 +583,7 @@ public class App extends Application {
     }
 
     public static List<StudentTest> getStudentTestsFromScheduled(ScheduledTest scheduledTest){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         Query query = session.createQuery("FROM StudentTest s WHERE s.scheduledTest = :scheduledTest", StudentTest.class);
         query.setParameter("scheduledTest", scheduledTest);
@@ -602,7 +595,7 @@ public class App extends Application {
     }
 
     public static StudentTest getStudentTest(StudentTest studentTest){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         StudentTest studentTestToReturn = session.get(StudentTest.class,studentTest.getId());
         Query query = session.createQuery("select qa from Question_Answer qa join fetch qa.questionScore qs " +
@@ -618,15 +611,16 @@ public class App extends Application {
     }
 
     public static void updateStudentTest(StudentTest stud){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(stud);
+        session.saveOrUpdate(stud);
+        session.flush();
         session.getTransaction().commit();
         session.close();
     }
 
     public static String login_auth(String username, String password){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
 
 // Check in the student table
@@ -702,7 +696,7 @@ public class App extends Application {
     }
 
     public static void logout(String username, String type) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         String updateLoggedInQuery = null;
         switch (type){
@@ -726,10 +720,9 @@ public class App extends Application {
 
     public static boolean addQuestion(Question question){
         try {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.save(question);
-
 
         session.flush();
         session.getTransaction().commit();
@@ -743,9 +736,10 @@ public class App extends Application {
 
     public static boolean updateScheduleTest(ScheduledTest scheduledTest) {
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(scheduledTest);
+            session.flush();
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -757,7 +751,7 @@ public class App extends Application {
 
     public static boolean updateSubmissions_Active_Start(String id){
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString ="update ScheduledTest st " +
@@ -780,7 +774,7 @@ public class App extends Application {
 
     public static boolean updateSubmissions_Active_Finish(String id){
         try {
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
 
             String queryString ="update ScheduledTest st " +
@@ -831,7 +825,7 @@ public class App extends Application {
 
 
     public static List<Question_Score> getQuestionScoresFromExamForm(ExamForm examForm) {
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         String queryString = "SELECT qs FROM Question_Score qs WHERE qs.examForm =:examForm";
         Query query = session.createQuery(queryString, Question_Score.class);
         query.setParameter("examForm",examForm);
@@ -842,7 +836,7 @@ public class App extends Application {
 
     public static ScheduledTest getScheduleTest(String id){
         ScheduledTest scheduledTest;
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         String queryString = "SELECT st from ScheduledTest st where id =:id";
         Query query = session.createQuery(queryString,ScheduledTest.class);
         query.setParameter("id",id);
@@ -852,7 +846,7 @@ public class App extends Application {
     }
     public static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
 //        session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
         String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
@@ -875,7 +869,7 @@ public class App extends Application {
     }
 
     public static Student getStudent(String id){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         Student student = session.get(Student.class,id);
         String queryString = "SELECT st from StudentTest st where st.student =:student";
         Query query = session.createQuery(queryString, StudentTest.class);
@@ -892,10 +886,9 @@ public class App extends Application {
             Student student = (Student) items.get(0);
             StudentTest studentTest = (StudentTest) items.get(1);
 
-            session = sessionFactory.openSession();
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
             session.saveOrUpdate(studentTest);
-//            session.flush();
             for(int i=2;i<items.size();i++){
                 Question_Answer item = (Question_Answer) items.get(i);
                 System.out.println("saving question answer "+ item.getId());
@@ -914,7 +907,7 @@ public class App extends Application {
     }
 
     public static void saveQuestionScores(List<Question_Score> items){
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         for(Question_Score item:items){
             session.saveOrUpdate(item);
@@ -929,7 +922,7 @@ public class App extends Application {
         Student student = (Student) student_studentTest.get(0);
         StudentTest studentTest = (StudentTest) student_studentTest.get(1);
 
-        session = sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(student);
         session.saveOrUpdate(studentTest);
@@ -1216,13 +1209,14 @@ public class App extends Application {
         session.beginTransaction();
         System.out.println("trying to save local test " + testFile.getFileName());
         session.saveOrUpdate(testFile);
+        session.flush();
         System.out.println("save local test " + testFile.getFileName());
         session.getTransaction().commit();
         session.close();
     }
 
     public static void deleteScheduleTest(ScheduledTest deleteScheduledTest) {
-        session=sessionFactory.openSession();
+        Session session=sessionFactory.openSession();
         session.beginTransaction();
         session.delete(deleteScheduledTest);
         session.flush();
@@ -1233,7 +1227,8 @@ public class App extends Application {
         String uniqueCode = null;
         boolean isUnique = false;
 
-        try (Session session = sessionFactory.openSession()) {
+        try  {
+            Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
 
             while (!isUnique) {
@@ -1251,16 +1246,20 @@ public class App extends Application {
             }
 
             transaction.commit();
+            session.close();
         } catch (Exception e) {
             // Handle exception
         }
         System.out.println("unique code: "+uniqueCode);
-        return uniqueCode; }
+        return uniqueCode;
+    }
+
 public static String generateUniqueExamCode(String examCode) {
     String uniqueCode = null;
     boolean isUnique = false;
 
-    try (Session session = sessionFactory.openSession()) {
+    try {
+        Session session = sessionFactory.openSession() ;
         Transaction transaction = session.beginTransaction();
 
         while (!isUnique) {
@@ -1278,6 +1277,7 @@ public static String generateUniqueExamCode(String examCode) {
         }
 
         transaction.commit();
+        session.close();
     } catch (Exception e) {
         // Handle exception
     }

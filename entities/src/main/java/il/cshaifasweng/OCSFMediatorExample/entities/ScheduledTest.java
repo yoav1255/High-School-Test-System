@@ -15,7 +15,7 @@ public class ScheduledTest implements Serializable {
     @Id
     private String id;
     private LocalDate date;
-    private LocalTime time; //Todo check Time and Date format
+    private LocalTime time;
     @ManyToOne
     @JoinColumn(name = "examForm_id")
     private ExamForm examForm;

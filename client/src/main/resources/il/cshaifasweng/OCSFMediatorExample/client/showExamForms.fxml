@@ -38,15 +38,24 @@
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
                <children>
-                  <Button fx:id="btnNewExamForm" layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" text="create test" />
+                  <Button fx:id="btnNewExamForm" layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" style="-fx-background-color: orange;" text="create test">
+                     <font>
+                        <Font name="System Bold Italic" size="12.0" />
+                     </font></Button>
                </children>
                 </Pane>
                 <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                     <children>
-                  <Label layoutX="284.0" layoutY="11.0" prefHeight="17.0" prefWidth="83.0" text="choose subject" />
-                  <ComboBox fx:id="ComboSubject" layoutX="367.0" layoutY="7.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="110.0" />
-                  <Label layoutX="487.0" layoutY="11.0" prefHeight="17.0" prefWidth="83.0" text="choose course" />
-                  <ComboBox fx:id="ComboCourse" layoutX="570.0" layoutY="7.0" onAction="#onSelectCourse" prefHeight="25.0" prefWidth="124.0" />
+                  <Label layoutX="275.0" layoutY="12.0" prefHeight="17.0" prefWidth="83.0" text="choose subject">
+                     <font>
+                        <Font name="System Bold Italic" size="12.0" />
+                     </font></Label>
+                  <ComboBox fx:id="ComboSubject" layoutX="367.0" layoutY="7.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: white; -fx-border-color: orange;" />
+                  <Label layoutX="487.0" layoutY="11.0" prefHeight="17.0" prefWidth="83.0" text="choose course">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                  <ComboBox fx:id="ComboCourse" layoutX="576.0" layoutY="7.0" onAction="#onSelectCourse" prefHeight="25.0" prefWidth="124.0" style="-fx-background-color: white; -fx-border-color: orange;" />
                     </children>
                 </Pane>
             </children>

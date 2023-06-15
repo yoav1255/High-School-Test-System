@@ -123,6 +123,10 @@ public class ShowUpdateStudentController {
 
                         // Add the answers as separate labels in the VBox
 
+                        if(questionAnswer.getAnswer()==-1){
+                            questionText.setStyle("-fx-font-weight: bold; -fx-background-color: gray;");
+                        }
+
                         Label answerLabel0 = new Label("1.      " + question.getAnswer0());
                         if (questionAnswer.getAnswer() == 0)
                             answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: red;");

@@ -19,9 +19,6 @@ public class User implements Serializable {
     private String password;
     private boolean loggedIn;
 
-    //TODO make User abstract class
-
-
     public User(String id, String first_name, String last_name, String gender, String email, String password) {
         this.id = id;
         this.first_name = first_name;

@@ -198,6 +198,8 @@ public class ManagerHomeController {
             alert.setTitle("Extra time request");
             alert.setContentText("The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
                     + subCourse  + " from the reason: " + '"'+ explanation + '"' + ". Select if you want to approve this request.");
+            alert.setResizable(true);
+            alert.getDialogPane().setPrefSize(480, 320);
 
             Optional<ButtonType> result = alert.showAndWait();
 

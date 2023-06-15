@@ -53,10 +53,13 @@
                         <Cursor fx:constant="HAND" />
                      </cursor></Button>
                   <CheckBox fx:id="onlyMyTestCheckBox" layoutX="340.0" layoutY="6.0" mnemonicParsing="false" onAction="#handleOnlyMyTest" style="-fx-background-color: white;" text="show only my tests" />
-                  <Button fx:id="currentTestBtn" layoutX="490.0" mnemonicParsing="false" onAction="#showCurrentTest" style="-fx-background-color: #E7AD75; -fx-border-color: orange;" text="current Test">
+                  <Button fx:id="currentTestBtn" layoutX="490.0" layoutY="1.0" mnemonicParsing="false" onAction="#showCurrentTest" style="-fx-background-color: white; -fx-border-color: orange;" text="current Test">
                      <cursor>
                         <Cursor fx:constant="HAND" />
-                     </cursor></Button>
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
       
                   <Button fx:id="btnNewTest" layoutX="688.0" layoutY="1.0" mnemonicParsing="false" onAction="#goToScheduleNewTest" prefHeight="27.0" prefWidth="123.0" style="-fx-background-color: orange;" text="Schedule New Test">
                      <font>

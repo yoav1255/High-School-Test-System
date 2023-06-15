@@ -121,7 +121,6 @@ public class StudentExecuteExamLOCALController implements Serializable {
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
-        //endTest();
         if(final_file == null){
             errorLabel.setVisible(true);
             return;
@@ -203,6 +202,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
             List<Object> objectList = event.getData();
             if (objectList.get(3).equals(scheduledTest.getId())){
                 if ((int)objectList.get(2) != 0){
+                    scheduledTest.setTimeLimit(scheduledTest.getTimeLimit()+ Integer.parseInt(objectList.get(2).toString()));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
                     alert.setHeaderText(null);
@@ -290,7 +290,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         inputFileTextBox.setText(selectedFile.getName());
         TestFile test = new TestFile();
         test.setStudentID(student.getId());
-        test.setFileName("test" + scheduledTest.getExamFormCode() + "for" + student.getId() + ".docx");
+        test.setFileName("test: " + scheduledTest.getId() + " for " + student.getId() + ".docx");
         test.setTestCode(scheduledTest.getId());
         byte[] fileData = Files.readAllBytes(selectedFile.toPath());
         test.setFileData(fileData);

@@ -10,8 +10,14 @@
 
 <AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherExamEntryController">
     <children>
-      <Button layoutX="465.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="26.0" prefWidth="53.0" text="Enter" />
-      <Label layoutX="456.0" layoutY="97.0" text="Enter Exam ID:" />
+      <Button layoutX="465.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="26.0" prefWidth="53.0" style="-fx-background-color: orange; -fx-border-color: white;" text="Enter" textFill="WHITE">
+         <font>
+            <Font name="System Bold Italic" size="12.0" />
+         </font></Button>
+      <Label layoutX="456.0" layoutY="97.0" text="Enter Exam ID:">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Label>
       <TextField fx:id="textEntered" layoutX="418.0" layoutY="129.0" />
       <Label fx:id="textDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="202.0" layoutY="248.0" prefHeight="74.0" prefWidth="579.0" text="lable" textAlignment="CENTER" textFill="#ea0b0b">
          <font>
