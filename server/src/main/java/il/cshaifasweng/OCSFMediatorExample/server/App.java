@@ -1250,7 +1250,6 @@ public class App extends Application {
         } catch (Exception e) {
             // Handle exception
         }
-        System.out.println("unique code: "+uniqueCode);
         return uniqueCode;
     }
 
@@ -1281,7 +1280,6 @@ public static String generateUniqueExamCode(String examCode) {
     } catch (Exception e) {
         // Handle exception
     }
-System.out.println("unique code: "+uniqueCode);
     return uniqueCode;
 }
 
