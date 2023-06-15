@@ -83,7 +83,8 @@ public class ShowStatisticsDistributeController {
             percentage.setCellValueFactory(cellData -> {
                 Distribution distributionRow = cellData.getValue();
                 Double percentage2 = distributionRow.getPercentage();
-                return new SimpleStringProperty(percentage2.toString());
+                String formattedPercentage = String.format("%.2f", percentage2);
+                return new SimpleStringProperty(formattedPercentage);
             });
 
             ObservableList<Distribution> observableStatisticsList = FXCollections.observableArrayList(distributionList);

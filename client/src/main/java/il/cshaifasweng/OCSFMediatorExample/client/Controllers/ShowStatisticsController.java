@@ -192,6 +192,7 @@ public class ShowStatisticsController {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowTeacherStatEvent(ShowTeacherStatEvent event) {
         try {
+            Platform.runLater(() -> {
         List<Statistics> teacherStat = event.getTeacherStat();
         statisticList.clear();
         statisticList.addAll(teacherStat);
@@ -214,6 +215,7 @@ public class ShowStatisticsController {
 
         ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
         statistics_table_view.setItems(observableStatisticsList);
+            });
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -223,6 +225,7 @@ public class ShowStatisticsController {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowCourseStatEvent(ShowCourseStatEvent event) {
         try {
+            Platform.runLater(() -> {
             List<Statistics> courseStat = event.getCourseStat();
             statisticList.clear();
             statisticList.addAll(courseStat);
@@ -245,6 +248,7 @@ public class ShowStatisticsController {
 
             ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);
             statistics_table_view.setItems(observableStatisticsList);
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -273,7 +277,6 @@ public class ShowStatisticsController {
                     return new SimpleStringProperty(null);
                 }
             });
-            });
             average.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
                 if(stat != null) {
@@ -294,6 +297,7 @@ public class ShowStatisticsController {
                     return new SimpleStringProperty(null);
                 }
 
+            });
             });
 
             ObservableList<Statistics> observableStatisticsList = FXCollections.observableArrayList(statisticList);

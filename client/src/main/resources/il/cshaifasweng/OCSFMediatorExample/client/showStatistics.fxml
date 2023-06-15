@@ -100,6 +100,7 @@
                         <Font name="FontAwesome" size="13.0" />
                     </font>
                 </Button>
+
                 <!--                <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
