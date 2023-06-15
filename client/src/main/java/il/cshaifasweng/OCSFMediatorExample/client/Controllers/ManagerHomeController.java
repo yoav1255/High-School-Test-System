@@ -71,7 +71,7 @@ public class ManagerHomeController {
                 throw new RuntimeException(e);
             }
             System.out.println("Perform logout");
-//            cleanup();
+            cleanup();
             javafx.application.Platform.exit();
         });
 
@@ -91,7 +91,7 @@ public class ManagerHomeController {
     }
     @FXML
     void handleGoToAllStudentsButtonClick(ActionEvent event) throws IOException {
-//        cleanup();
+        cleanup();
         App.switchScreen("allStudents");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveManagerIdEvent(id));
@@ -104,7 +104,7 @@ public class ManagerHomeController {
     }
     @FXML
     public void goToQuestions(ActionEvent event) throws IOException {
-//        cleanup();
+        cleanup();
         App.switchScreen("showAllQuestions");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveManagerIdEvent(id));
@@ -112,7 +112,7 @@ public class ManagerHomeController {
     }
     @FXML
     public void goToExamForms(ActionEvent event) throws IOException {
-//        cleanup();
+        cleanup();
         App.switchScreen("showExamForms");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveManagerIdEvent(id));
@@ -120,7 +120,7 @@ public class ManagerHomeController {
     }
     @FXML
     public void goToScheduledTests(ActionEvent event) throws IOException {
-//        cleanup();
+        cleanup();
         App.switchScreen("showScheduleTest");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveManagerIdEvent(id));
@@ -133,7 +133,7 @@ public class ManagerHomeController {
     }
     @FXML
     public void goToStatistics(ActionEvent event) throws IOException {
-//        cleanup();
+        cleanup();
         App.switchScreen("showStatistics");
     Platform.runLater(()->{
         EventBus.getDefault().post(new MoveManagerIdEvent(id));
@@ -271,7 +271,7 @@ public class ManagerHomeController {
             info.add("manager");
             SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
             System.out.println("Perform logout");
-//            cleanup();
+            cleanup();
             javafx.application.Platform.exit();
         } else {
             alert.close();
