@@ -262,6 +262,7 @@ public class ShowStatisticsController {
             statisticList.clear();
             statisticList.add(studentStat);
 
+            Platform.runLater(()-> {
             scheduled_test.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
                 if(stat != null) {
@@ -271,6 +272,7 @@ public class ShowStatisticsController {
                 else {
                     return new SimpleStringProperty(null);
                 }
+            });
             });
             average.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
