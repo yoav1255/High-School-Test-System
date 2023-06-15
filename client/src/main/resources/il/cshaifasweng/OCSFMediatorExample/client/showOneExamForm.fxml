@@ -38,7 +38,10 @@
                         <Label layoutY="336.0" text="Notes for the test" />
                     </children>
                 </AnchorPane>
-            <Button fx:id="update" mnemonicParsing="false" onAction="#goToUpdateExamForm" text="Update Exam Form" GridPane.rowIndex="1" />
+            <Button fx:id="update" mnemonicParsing="false" onAction="#goToUpdateExamForm" style="-fx-background-color: white; -fx-border-color: orange;" text="Update Exam Form" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
             </children>
         </GridPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">

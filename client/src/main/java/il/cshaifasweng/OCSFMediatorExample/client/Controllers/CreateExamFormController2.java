@@ -12,13 +12,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.ls.LSOutput;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CreateExamFormController2 {
 
@@ -114,7 +116,10 @@ public class CreateExamFormController2 {
             Platform.runLater(()->{
                 ComboSubject.setValue(examForm.getSubjectName());
                 timeLimit.setText(Integer.toString( examForm.getTimeLimit()));
-                generalNotes.setText(examForm.getGeneralNotes());
+                int index = examForm.getGeneralNotes().indexOf(':');
+                String substring = examForm.getGeneralNotes().substring(index+1);
+                System.out.println(substring);
+                generalNotes.setText(substring);
             });
         }
     }
@@ -207,6 +212,34 @@ public class CreateExamFormController2 {
         questionScoreList = event.getQuestionScores();
     }
 
+    @Subscribe
+    public void onGetUniqueExamCode(GetUniqueExamCode event) throws IOException {
+
+        ExamCode=event.getUniqueExamCode();
+        examForm = new ExamForm(ExamCode,Integer.parseInt(timeLimit.getText()));
+        examForm.setSubject(sub);
+        examForm.setCourse(cour);
+        examForm.setTeacher(teacher);
+        examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" :\n"+generalNotes.getText());
+//        questionScoreList.clear();
+        for(Question_Score questionScore : questionScoreList){
+            questionScore.setExamForm(examForm);
+        }
+        examForm.setQuestionScores(questionScoreList);
+
+        cleanup();
+        SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
+        App.switchScreen("showExamForms");
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Exam created successfully! Exam code is: " + ExamCode);
+            alert.show();
+        });
+        }
+
     @FXML
     public void submitForm(ActionEvent event) {
         try {
@@ -214,56 +247,46 @@ public class CreateExamFormController2 {
             int sum = 0;
             try {
                 timeLim = Integer.parseInt(timeLimit.getText());
-            }catch (NumberFormatException notNum){
-                Platform.runLater(()->{
+            } catch (NumberFormatException notNum) {
+                Platform.runLater(() -> {
                     labelMsg.setText("Time limit invalid!");
                 });
             }
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 labelMsg.setVisible(true);
             });
 
-            if(timeLim<=0 || timeLim>1000)
+            if (timeLim <= 0 || timeLim > 1000) {
                 labelMsg.setText("Time not allowed!");
+                labelMsg.setTextFill(Color.RED);
+            }
             else { // Time is valid
-                Random random = new Random();
-                int randomNumber = random.nextInt(999) + 1;//TODO change it
-                ExamCode = Integer.toString(cour.getCode()) + sub.getCode() + randomNumber;//TODO handle code properly!
-                examForm = new ExamForm(ExamCode,timeLim);
-                examForm.setSubject(sub);
-                examForm.setCourse(cour);
-                examForm.setTeacher(teacher);
-                examForm.setGeneralNotes(teacher.getFirst_name() + " " + teacher.getLast_name() +" :\n"+generalNotes.getText());
                 questionScoreList.clear();
                 for(Question_Score questionScore : selectedQuestionsListView.getItems()){
-                    Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getExamForm(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
+                    Question_Score questionScore1 = new Question_Score(questionScore.getScore(),questionScore.getQuestion(),questionScore.getStudent_note(),questionScore.getTeacher_note());
                     questionScoreList.add(questionScore1);
                 }
-                examForm.setQuestionScores(questionScoreList);
-
-
-                for(Question_Score questionScore:questionScoreList){
-                    questionScore.setExamForm(examForm);
-                    sum+=questionScore.getScore();
+                for (Question_Score questionScore : questionScoreList) {
+                    sum += questionScore.getScore();
                 }
-                if(sum!=100){
+                if (sum != 100) {
                     labelMsg.setText("Grade must sum to 100!");
-                }
-                else {
-                    cleanup();
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#addExamForm", examForm));
-//                    SimpleClient.getClient().sendToServer(new CustomMessage("#addQuestionScores", questionScoreList));
-                    App.switchScreen("showExamForms");
-                    Platform.runLater(()->{
-                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-                    });
+                    labelMsg.setTextFill(Color.RED);
+                } else {
+                    try {
+                        String courseCode = cour.getCode() < 10 ? String.format("%02d", cour.getCode()) : String.valueOf(cour.getCode());
+                        String subjectCode = sub.getCode() < 10 ? String.format("%02d", sub.getCode()) : String.valueOf(sub.getCode());
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#generateUniqueExamCode", subjectCode + courseCode));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
+    }
     @Subscribe
     public void onAddExamFormResponseEvent(AddExamFormResponseEvent event){
         Platform.runLater(()->{
@@ -309,7 +332,6 @@ public class CreateExamFormController2 {
     if (selectedQuestion != null) {
         openDialog(selectedQuestion,false,null);
         updateSelectedListView();
-        //TODO delete the question from the shown questions
         questionsListView.getItems().remove(selectedQuestion);
         updateQuestionListView();
     }
@@ -403,10 +425,11 @@ public class CreateExamFormController2 {
         });
     }
 
-    public void openDialog(Question selectedQuestion , boolean isUpdateScore, Question_Score selectedQuestionScore){
+    public void openDialog(Question selectedQuestion, boolean isUpdateScore, Question_Score selectedQuestionScore) {
         try {
             Dialog<Question_Score> scoreDialog = new Dialog<>();
             scoreDialog.setTitle("Enter Score and Notes");
+            boolean showLabel = false;
 
             DialogPane dialogPane = scoreDialog.getDialogPane();
             dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -415,13 +438,17 @@ public class CreateExamFormController2 {
             TextField scoreField = new TextField();
             TextArea teacherNoteArea = new TextArea();
             TextArea studentNoteArea = new TextArea();
-            if(isUpdateScore){
-                Platform.runLater(()->{
+            Label errLabel = new Label("Invalid score");
+            errLabel.setVisible(false);
+
+            if (isUpdateScore) { // update mode
+                Platform.runLater(() -> {
                     scoreField.setText(Integer.toString(selectedQuestionScore.getScore()));
                     teacherNoteArea.setText(selectedQuestionScore.getTeacher_note());
                     studentNoteArea.setText(selectedQuestionScore.getStudent_note());
                 });
             }
+
             GridPane gridPane = new GridPane();
             gridPane.add(new Label("Question:"), 0, 0);
             gridPane.add(questionTextLabel, 1, 0);
@@ -431,44 +458,54 @@ public class CreateExamFormController2 {
             gridPane.add(teacherNoteArea, 1, 2);
             gridPane.add(new Label("Student's Note:"), 0, 3);
             gridPane.add(studentNoteArea, 1, 3);
+            gridPane.add(errLabel, 0, 4);
             dialogPane.setContent(gridPane);
-            scoreDialog.setResultConverter(dialogButton -> {
-                if (dialogButton == ButtonType.OK) {
-                    try {
-                        int score = Integer.parseInt(scoreField.getText());
-                        if (score > 100 || score < 0) {
-                            //TODO add something
-                        }
+
+            Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
+            okButton.addEventFilter(ActionEvent.ACTION, event -> {
+                try {
+                    int score = Integer.parseInt(scoreField.getText());
+                    if (score > 100 || score < 0) {
+                        errLabel.setVisible(true);
+                        event.consume(); // Prevents the dialog from closing
+                    } else {
                         String teacherNote = teacherNoteArea.getText();
                         String studentNote = studentNoteArea.getText();
-                        if(isUpdateScore) {
+                        Question_Score result;
+                        if (isUpdateScore) {
                             selectedQuestionScore.setScore(score);
                             selectedQuestionScore.setStudent_note(studentNote);
                             selectedQuestionScore.setTeacher_note(teacherNote);
-                            return selectedQuestionScore;
+                            result = selectedQuestionScore;
+                        } else {
+                            result = new Question_Score(score, selectedQuestion, teacherNote, studentNote);
                         }
-                        else {
-                            return new Question_Score(score,selectedQuestion,teacherNote,studentNote);
-                        }
-                    } catch (NumberFormatException e) {
-                        return null;
+                        scoreDialog.setResult(result);
                     }
+                } catch (NumberFormatException e) {
+                    // Handle invalid number format
+                    event.consume(); // Prevents the dialog from closing
+                }
+            });
+
+            scoreDialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return (Question_Score) scoreDialog.getResult();
                 }
                 return null;
             });
 
-                scoreDialog.showAndWait().ifPresent(questionScore -> {
-                    if(!isUpdateScore) {
-                        selectedQuestionsListView.getItems().add(questionScore);
-                        //questionScoreList.add(questionScore);
-                    }
-                });
+            Optional<Question_Score> result = scoreDialog.showAndWait();
+            result.ifPresent(questionScore -> {
+                if (!isUpdateScore) {
+                    selectedQuestionsListView.getItems().add(questionScore);
+                }
+            });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 @FXML
     public void handleBackButtonClick(ActionEvent event) {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

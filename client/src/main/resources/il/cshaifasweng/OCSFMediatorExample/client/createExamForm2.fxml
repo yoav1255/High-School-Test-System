@@ -28,28 +28,50 @@
             <children>
                 <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0">
                     <children>
-                        <Label layoutX="-2.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose subject" />
-                        <ComboBox fx:id="ComboSubject" layoutX="86.0" layoutY="14.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="110.0" />
-                        <Label layoutX="213.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose course" />
-                        <ComboBox fx:id="ComboCourse" layoutX="295.0" layoutY="14.0" onAction="#onSelectCourse" prefHeight="25.0" prefWidth="124.0" />
-                        <Label layoutX="432.0" layoutY="18.0" prefHeight="17.0" prefWidth="71.0" text="time limit" />
-                        <TextField fx:id="timeLimit" layoutX="499.0" layoutY="10.0" />
+                        <Label layoutX="-2.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose subject">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                        <ComboBox fx:id="ComboSubject" layoutX="86.0" layoutY="14.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: white; -fx-border-color: orange;" />
+                        <Label layoutX="213.0" layoutY="17.0" prefHeight="17.0" prefWidth="117.0" text="choose course">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                        <ComboBox fx:id="ComboCourse" layoutX="295.0" layoutY="14.0" onAction="#onSelectCourse" prefHeight="25.0" prefWidth="124.0" style="-fx-background-color: white; -fx-border-color: orange;" />
+                        <Label layoutX="432.0" layoutY="18.0" prefHeight="17.0" prefWidth="71.0" text="time limit">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Label>
+                        <TextField fx:id="timeLimit" layoutX="503.0" layoutY="14.0" style="-fx-border-color: orange;" />
                     </children></Pane>
                 <AnchorPane prefHeight="439.0" prefWidth="796.0" GridPane.rowIndex="2">
                     <children>
                   <ListView fx:id="questionsListView" layoutX="-1.0" prefHeight="158.0" prefWidth="714.0" />
                   <ListView fx:id="selectedQuestionsListView" layoutX="-1.0" layoutY="192.0" prefHeight="133.0" prefWidth="714.0" />
-                  <Button fx:id="removeButton" layoutX="606.0" layoutY="300.0" mnemonicParsing="false" onAction="#removeSelectedQuestion" text="Remove Question" textFill="RED" />
-                  <Button fx:id="updateButton" layoutX="608.0" layoutY="274.0" mnemonicParsing="false" onAction="#updateSelectedQuestion" prefWidth="110.0" text="Update Question" textFill="#ff9000" />
-                  <Button fx:id="addButton" layoutX="618.0" layoutY="132.0" mnemonicParsing="false" onAction="#addSelectedQuestion" text="Add Question" />
+                  <Button fx:id="removeButton" layoutX="720.0" layoutY="259.0" mnemonicParsing="false" onAction="#removeSelectedQuestion" prefWidth="118.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Remove Question">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
+                  <Button fx:id="updateButton" layoutX="721.0" layoutY="222.0" mnemonicParsing="false" onAction="#updateSelectedQuestion" prefHeight="27.0" prefWidth="117.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Update Question">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
+                  <Button fx:id="addButton" layoutX="725.0" layoutY="79.0" mnemonicParsing="false" onAction="#addSelectedQuestion" prefHeight="27.0" prefWidth="102.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Add Question">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font></Button>
                   <TextArea fx:id="generalNotes" layoutX="-1.0" layoutY="353.0" prefHeight="50.0" prefWidth="714.0" />
                   <Label layoutY="336.0" text="Notes for the test" />
+                        <Button layoutX="744.0" layoutY="363.0" mnemonicParsing="false" onAction="#submitForm" style="-fx-background-color: orange; -fx-background-radius: 30; -fx-border-color: white; -fx-border-radius: 30;" text="Submit" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold Italic" size="13.0" />
+                     </font>
+                  </Button>
                     </children>
                 </AnchorPane>
             </children>
         </GridPane>
-            <Button layoutX="483.0" layoutY="552.0" mnemonicParsing="false" onAction="#submitForm" text="Submit" />
-            <Label fx:id="labelMsg" layoutX="371.0" layoutY="556.0" prefHeight="17.0" prefWidth="140.0" text="Label" visible="false" />
+            <Label fx:id="labelMsg" layoutX="272.0" layoutY="556.0" prefHeight="18.0" prefWidth="172.0" text="Label" visible="false" />
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
             <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">

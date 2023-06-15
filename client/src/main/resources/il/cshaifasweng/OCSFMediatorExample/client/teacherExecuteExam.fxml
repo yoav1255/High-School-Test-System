@@ -39,7 +39,10 @@
       </Label>
       <TextField fx:id="comments" layoutX="374.0" layoutY="98.0" prefHeight="58.0" prefWidth="244.0" promptText="Write here the explanation for the request" />
       <TextField fx:id="extraTime" layoutX="640.0" layoutY="95.0" prefHeight="26.0" prefWidth="204.0" promptText="Write here the extra time in minutes" />
-      <Button layoutX="720.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleSendClick" text="Send" />
+      <Button layoutX="720.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleSendClick" style="-fx-background-color: orange; -fx-border-color: white;" text="Send" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
       <Label fx:id="errorLabel" alignment="CENTER" layoutX="127.0" layoutY="173.0" prefHeight="30.0" prefWidth="737.0" text="Label" textFill="#f41515">
          <font>
             <Font size="18.0" />

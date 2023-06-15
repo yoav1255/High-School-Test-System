@@ -55,7 +55,7 @@ public class ShowQuestionsController {
     @FXML
     TableView<Question> tableView;
     @FXML
-    private TableColumn<Question, Integer> tableQuestID;
+    private TableColumn<Question, String> tableQuestID;
     @FXML
     private TableColumn<Question, String> tableText;
     @FXML

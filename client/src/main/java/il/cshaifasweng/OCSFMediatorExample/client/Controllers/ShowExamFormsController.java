@@ -209,7 +209,6 @@ public class ShowExamFormsController {
 @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowExamFormsEvent(ShowExamFormsEvent event){
     try {
-        //TODO show more things
         List<ExamForm> examForms = event.getExamForms();
 
         TableTestID.setCellValueFactory(cellData -> {

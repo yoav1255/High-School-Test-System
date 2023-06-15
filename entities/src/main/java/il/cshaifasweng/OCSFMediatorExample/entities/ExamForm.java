@@ -11,7 +11,7 @@ public class ExamForm implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String code; //TODO handle code properly!!
+    private String code;
     private int timeLimit;
 
     @Column(name = "general_notes", columnDefinition = "TEXT")
@@ -115,7 +115,7 @@ public class ExamForm implements Serializable {
         return subject.getName();
     }
     public String getExamFormCode(){
-        return (code + getCourse().getCode() + getSubject().getCode());
+        return code;
     }
 
     public Teacher getTeacher() {
@@ -126,10 +126,6 @@ public class ExamForm implements Serializable {
         this.teacher = teacher;
     }
 
-    public List <String> getListExamFormCodes(){
-        List<String> exam=getListExamFormCodes();
-        return exam;
-    }
 
     public static List<ExamForm> GenerateExamForms(){
         List<ExamForm> examForms = new ArrayList<ExamForm>();

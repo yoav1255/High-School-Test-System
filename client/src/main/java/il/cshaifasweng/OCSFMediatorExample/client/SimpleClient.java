@@ -161,7 +161,9 @@ public class SimpleClient extends AbstractClient {
 				case ("updateScheduleTest"):
 					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));
 					break;
-
+				case ("generateUniqueExamCode"):
+					EventBus.getDefault().post(new GetUniqueExamCode((String)message.getData()));
+					break;
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -170,7 +172,7 @@ public class SimpleClient extends AbstractClient {
 	
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("0.tcp.eu.ngrok.io", 17107);
+			client = new SimpleClient("localhost", 3028);
 		}
 		return client;
 	}
