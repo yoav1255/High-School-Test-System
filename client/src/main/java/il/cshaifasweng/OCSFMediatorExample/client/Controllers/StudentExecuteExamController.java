@@ -286,7 +286,6 @@ public class StudentExecuteExamController {
         int sum =0;
 
         // student test is ready
-        //TODO subtract 1 to scheduled test active students executing test and add 1 to submissions
 
         for(Question_Answer questionAnswer:questionAnswers){
             int points = questionAnswer.getQuestionScore().getScore();

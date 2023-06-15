@@ -97,7 +97,6 @@ public class Question_Score implements Serializable {
     }
 
     public List<Question_Answer> getQuestionAnswers() {
-        //TODO remove the first line!!!!!!!!!
         questionAnswers = new ArrayList<>();
         return questionAnswers;
     }

@@ -175,7 +175,6 @@ public class TestGradesController {
 
     @Subscribe
     public void onShowSuccessEvent(ShowSuccessEvent event){
-        //TODO create message for success
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
