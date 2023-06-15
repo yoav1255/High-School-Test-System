@@ -54,6 +54,30 @@ public class ShowStatisticsDistributeController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize() {
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
+    }
+
 
     public void setSelectedStat(Statistics selectedStat) {
         this.selectedStat = selectedStat;
@@ -113,33 +137,18 @@ public class ShowStatisticsDistributeController {
 
     public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
         if (!isManager) {
-            try {
-                App.switchScreen("teacherHome");
-                Platform.runLater(() -> {
-                    try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                cleanup();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                App.switchScreen("managerHome");
-                Platform.runLater(() -> {
-                    try {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                cleanup();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            cleanup();
+            App.switchScreen("showStatistics");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            });
+        }
+        else{
+            cleanup();
+            App.switchScreen("showStatistics");
+            Platform.runLater(()->{
+                EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
+            });
         }
     }
 
@@ -158,8 +167,14 @@ public class ShowStatisticsDistributeController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yesButton) {
             ArrayList<String> info = new ArrayList<>();
-            info.add(teacherId);
-            info.add("teacher");
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
             SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
             System.out.println("Perform logout");
             cleanup();
@@ -168,4 +183,38 @@ public class ShowStatisticsDistributeController {
             alert.close();
         }
     }
+
+    public void handleGoHomeButtonClick(ActionEvent event) throws IOException {
+        cleanup();
+        if (!isManager) {
+            try {
+                App.switchScreen("teacherHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                App.switchScreen("managerHome");
+                Platform.runLater(() -> {
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#managerHome", managerId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
