@@ -232,6 +232,11 @@ public class CreateExamFormController2 {
         App.switchScreen("showExamForms");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Exam created successfully! Exam code is: " + ExamCode);
+            alert.show();
         });
         }
 
