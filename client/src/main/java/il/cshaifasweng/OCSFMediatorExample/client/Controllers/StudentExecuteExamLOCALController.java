@@ -171,11 +171,11 @@ public class StudentExecuteExamLOCALController implements Serializable {
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
         List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
-        timeLeft = (long)scheduleTestId_timeLeft.get(1);
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
         if(scheduleTestId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
+                timeLeft = (long)scheduleTestId_timeLeft.get(1);
                 timeLeftText.setText(Long.toString(timeLeft));
             });
         }

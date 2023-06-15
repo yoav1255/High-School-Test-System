@@ -258,11 +258,11 @@ public class StudentExecuteExamController {
 @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
         List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
-        timeLeft = (long)scheduleTestId_timeLeft.get(1);
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
         Platform.runLater(() -> {
             if(scheduleTestId.equals(scheduledTest.getId())) {
+                timeLeft = (long)scheduleTestId_timeLeft.get(1);
                 timeLeftText.setText(Long.toString(timeLeft));
             }
         });
