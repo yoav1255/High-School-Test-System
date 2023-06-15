@@ -95,8 +95,10 @@ public class ServerController {
                 return new SimpleStringProperty(msgString);
             });
             data_transfered.setCellValueFactory(cellData->{
+                String objectTransferred= "String";
                 Object data = cellData.getValue().getData();
-                String objectTransferred = data.getClass().getSimpleName();
+                if(data!=null)
+                    objectTransferred = data.getClass().getSimpleName();
                 return new SimpleStringProperty(objectTransferred);
             });
         } catch (Exception e) {

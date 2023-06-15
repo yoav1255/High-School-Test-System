@@ -213,7 +213,6 @@ public class StudentExecuteExamController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             endTest();
         }
-
     }
 
 @Subscribe
