@@ -122,10 +122,7 @@ public class ExamEntryController {
             });
             //TODO add more validation checks
         }
-        else { // valid id and valid schedule test id
-            //TODO check if status == 1 .
-            //if status is 0 write the time and date that test starts
-            //if status is 2 write that the test isnt available anymore
+        else {
             int index = scheduleTestIds.indexOf(codeInput);
             ScheduledTest scheduledTest = scheduledTests.get(index);
             int status = scheduledTest.getStatus();
@@ -161,8 +158,6 @@ public class ExamEntryController {
         }
     }
 
-
-    //TODO add buttons for home and back (matan)
 
     @FXML
     public void goBackButton() throws IOException {

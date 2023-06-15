@@ -95,8 +95,6 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
         scheduledTest = event.getSelectedTestEvent();
-        //TODO handle active students to be 0 after schedule test ends
-        //TODO handle if student gets out and comes back again
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
 
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
@@ -199,7 +197,23 @@ public class StudentExecuteExamController {
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
-        endTest();
+        boolean answeredAll = true;
+        String msg = "";
+        for(Question_Answer questionAnswer:questionAnswers){
+            if(questionAnswer.getAnswer()==-1)
+                answeredAll=false;
+        }
+        if(!answeredAll) msg = "There are still Unchecked answers, Are you sure you want to submit?";
+        else msg =  "Are you sure you want to submit?";
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Confirmation");
+        alert.setContentText(msg);
+        alert.setHeaderText("Submit");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            endTest();
+        }
+
     }
 
 @Subscribe
@@ -209,7 +223,7 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Success");
             alert.setContentText("Exam Submitted Successfully");
             alert.setHeaderText(null);
