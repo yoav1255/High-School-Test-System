@@ -285,7 +285,6 @@ public class ShowQuestionsController {
                         App.switchScreen("createQuestion");
                         Platform.runLater(() -> {
                             try {
-                                //SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
                                 Platform.runLater(() -> {
                                     try {
                                         SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionToUpdate",setTeacherAndQuestion));

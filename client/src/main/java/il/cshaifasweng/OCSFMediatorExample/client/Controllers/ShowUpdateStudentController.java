@@ -60,6 +60,7 @@ public class ShowUpdateStudentController {
 
     @FXML
     void initialize(){
+        update_status.setVisible(false);
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(teacherId);
@@ -129,40 +130,40 @@ public class ShowUpdateStudentController {
 
                         Label answerLabel0 = new Label("1.      " + question.getAnswer0());
                         if (questionAnswer.getAnswer() == 0)
-                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 0) {
-                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel0);
 
                         Label answerLabel1 = new Label("2.      " + question.getAnswer1());
                         if (questionAnswer.getAnswer() == 1)
-                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 1) {
-                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel1);
 
                         Label answerLabel2 = new Label("3.      " + question.getAnswer2());
                         if (questionAnswer.getAnswer() == 2)
-                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 2) {
-                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel2);
 
                         Label answerLabel3 = new Label("4.      " + question.getAnswer3());
                         if (questionAnswer.getAnswer() == 3)
-                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 3) {
-                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel3);
 
                         Label score = new Label("( " + questionScore.getScore() + " points )");
                         vbox.getChildren().add(score);
 
-                        if (questionAnswer.getNote() != "") {
+                        if (questionAnswer.getNote()!=null) {
                             Label studentNotes = new Label("Student Note: " + questionAnswer.getNote());
                             vbox.getChildren().add(studentNotes);
                         }
@@ -184,7 +185,8 @@ public class ShowUpdateStudentController {
                 int newG = Integer.parseInt(newGrade.getText());
                 if (newG >= 0 && newG <= 100) {
                     if (!Integer.toString(newG).equals(oldGrade.getText()) && (txtChange.getText().equals(""))) {
-                    update_status.setText("Explanation must be provided!");
+                        update_status.setVisible(true);
+                        update_status.setText("Explanation must be provided!");
                     } else {
                         if(studentTest.isChecked()==false) {
                             studentTest.setChecked(true);
