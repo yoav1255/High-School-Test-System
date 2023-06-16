@@ -113,7 +113,12 @@ public class ShowStatisticsDistributeController {
                 distributeBarChart.getData().add(series);
                 xAxis.setTickLength(1); // Set the tick mark unit to 1
                 xAxis.setCategories(FXCollections.observableArrayList(series.getData().stream().map(XYChart.Data::getXValue).collect(Collectors.toList())));
-                xAxis.setGapStartAndEnd(false);
+
+                double barGap = 0.8; // Adjust this value as needed
+                double categoryGap = 0.0; // Adjust this value as needed
+                distributeBarChart.setCategoryGap(categoryGap);
+                distributeBarChart.setBarGap(barGap);
+                //xAxis.setGapStartAndEnd(false);
             });
             distributeBarChart.setTitle("Distribution of Grades");
 
