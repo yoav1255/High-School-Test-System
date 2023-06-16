@@ -99,17 +99,17 @@
         </Pane>
         <Pane layoutX="331.0" layoutY="111.0" prefHeight="385.0" prefWidth="512.0">
             <children>
-                <Label layoutX="150.0" layoutY="110.0" text="Hello Student !">
+                <Label fx:id="helloLabel" layoutX="26.0" layoutY="129.0" text="Hello Student !">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
-                    </font>
-                </Label>
-                <Label fx:id="idLabel" layoutX="298.0" layoutY="110.0" text="ID : ">
-                    <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Label>
             </children>
         </Pane>
+          <Label fx:id="idLabel" layoutX="856.0" layoutY="58.0" text="ID : ">
+              <font>
+                  <Font name="Oriya Sangam MN" size="18.0" />
+              </font>
+          </Label>
     </children>
 </AnchorPane>

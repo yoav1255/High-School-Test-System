@@ -34,9 +34,13 @@ public class StudentHomeController{
     private Label idLabel;
 
     @FXML
+    private Label helloLabel;
+
+    @FXML
     private Label statusLB;
 
     private String id;
+    private String name;
 
     public StudentHomeController(){
         EventBus.getDefault().register(this);
@@ -69,17 +73,18 @@ public class StudentHomeController{
 
     public void init_getStudent(){
         initializeIfIdNotNull();
-        try {
+        /*try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudent",id));
         } catch (IOException ex) {
             throw new RuntimeException(ex);
-        }
+        }*/
     }
 
     @FXML
     @Subscribe
     public void onUserHomeEvent(UserHomeEvent event){
-        id = event.getUserID();
+        id = (String) event.getUserID().get(0);
+        student = (Student) event.getUserID().get(1);
         Platform.runLater(()->{
             init_getStudent();
         });
@@ -94,9 +99,14 @@ public class StudentHomeController{
     }
 
     private void initializeIfIdNotNull() {
-        if (id != null) {
-            idLabel.setText("ID: " + id);
-        }
+        Platform.runLater(()->{
+            if (id != null) {
+                idLabel.setText("ID: " + this.id);
+            }
+            if (student != null) {
+                helloLabel.setText("Hello Student " + student.getFirst_name() + " " + student.getLast_name());
+            }
+        });
     }
     @Subscribe
     public void onSelectedStudentEvent(SelectedStudentEvent event) {
