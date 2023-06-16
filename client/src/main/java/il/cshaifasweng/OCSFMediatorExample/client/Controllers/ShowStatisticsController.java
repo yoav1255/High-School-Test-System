@@ -66,6 +66,31 @@ public class ShowStatisticsController {
         EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    void initialize() {
+        App.getStage().setOnCloseRequest(event -> {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        });
+
+    }
+
+
     public void setFields() {
         Platform.runLater(() -> {
             if (!isManager) {
@@ -366,6 +391,41 @@ public class ShowStatisticsController {
         }
     }
 
+    public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("LOGOUT");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to logout?");
+
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            ArrayList<String> info = new ArrayList<>();
+            if(isManager){
+                info.add(managerId);
+                info.add("manager");
+            }
+            else {
+                info.add(teacherId);
+                info.add("teacher");
+            }
+            SimpleClient.getClient().sendToServer(new CustomMessage("#logout", info));
+            System.out.println("Perform logout");
+            cleanup();
+            javafx.application.Platform.exit();
+        } else {
+            alert.close();
+        }
+    }
+
+
+    public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
+        handleGoHomeButtonClick(null);
+    }
 
 }
 

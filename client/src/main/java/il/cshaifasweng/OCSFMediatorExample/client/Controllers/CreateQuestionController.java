@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import org.controlsfx.control.ListSelectionView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -30,8 +31,6 @@ public class CreateQuestionController {
     @FXML
     private Label label1;
     @FXML
-    private Label label2;
-    @FXML
     private TextField theQuestion;
     @FXML
     private TextField ans1;
@@ -44,23 +43,29 @@ public class CreateQuestionController {
     @FXML
     private ComboBox<String> comboAns;
     @FXML
-    private Button cancelBN;
-    @FXML
     private Button confirmBN;
     @FXML
-    private ListView<String> courseOptions;
-    private List<String> courseNames;
+    private ListSelectionView<String> listSelectionView_Courses;
+
+
+    private Question updateQuestion;
+    private ObservableList<String> selected;
+    private ObservableList<String> unSelected ;
     private List<Course> courses;
     private List<Subject> subjects;
     private  Question myQuestion;
     private String id;
+
+    private boolean isUpdate = false;
+    private boolean firstEntryUpdate = true;
+
     public String getId() {return id;}
     public void setId(String id) {
         this.id = id;
     }
+
     public CreateQuestionController() {
         EventBus.getDefault().register(this);
-        courseNames = new ArrayList<>(); // The selected courses names.
         courses = new ArrayList<>(); // The courses that are in the selected subject.
         subjects = new ArrayList<>(); // The subjects the teacher teach.
     }
@@ -70,20 +75,13 @@ public class CreateQuestionController {
     @FXML
     void initialize() {
         Platform.runLater(() -> {
-            courseOptions.setVisible(false);
+            listSelectionView_Courses.setDisable(true);
             label1.setVisible(false);
-            label2.setVisible(false);
-            courseOptions.getItems().clear();
-
             confirmBN.setDisable(true);
-            courseOptions.setDisable(true);
             comboAns.getItems().add("1");
             comboAns.getItems().add("2");
             comboAns.getItems().add("3");
             comboAns.getItems().add("4");
-
-            courseOptions.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            courseOptions.getSelectionModel().selectedItemProperty().addListener(this::selectCourseListener);
 
         });
         App.getStage().setOnCloseRequest(event -> {
@@ -98,22 +96,28 @@ public class CreateQuestionController {
             System.out.println("Perform logout");
             cleanup();
             javafx.application.Platform.exit();
-
-
         });
 
     }
     @Subscribe
     public void onShowTeacherSubjects(ShowTeacherSubjectsEvent event) {
-        subjects.clear();
-        subjects.addAll(event.getSubjects());
-        ObservableList<String> items = FXCollections.observableArrayList();
-        for (Subject subject : subjects) {
-            items.add(subject.getName());
+        try {
+            subjects.clear();
+            subjects.addAll(event.getSubjects());
+            ObservableList<String> items = FXCollections.observableArrayList();
+            for (Subject subject : subjects) {
+                items.add(subject.getName());
+            }
+            Platform.runLater(() -> {
+                comboSubject.setItems(items);
+                if(isUpdate && firstEntryUpdate){
+                    comboSubject.setValue(updateQuestion.getSubject().getName());
+                }
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        Platform.runLater(() -> {
-            comboSubject.setItems(items);
-        });
 
     }
     @FXML
@@ -122,17 +126,13 @@ public class CreateQuestionController {
             String subjectName = comboSubject.getValue();
             Platform.runLater(()->{
                 label1.setVisible(true);
-                label2.setVisible(true);
-                courseOptions.setVisible(true);
                 confirmBN.setDisable(false);
-                courseOptions.setDisable(false);
                 try {
                     SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,24 +146,61 @@ public class CreateQuestionController {
         for (Course course : courses) {
             items.add(course.getName());
         }
-        courseOptions.setItems(items);
+        Platform.runLater(()->{
+
+            if(isUpdate && firstEntryUpdate){ // on update
+
+                ObservableList<String> selected = FXCollections.observableArrayList();
+                ObservableList<String> unSelected = FXCollections.observableArrayList();
+
+                List<Course> QuestionsCourses = updateQuestion.getCourses();
+                for(Course course : courses){
+                    String courseName = course.getName();
+                    boolean select = false;
+                    for(Course qc : QuestionsCourses) {
+                        if (qc.getCode() == course.getCode()) {
+                            selected.add(courseName);
+                            select = true;
+                        }
+                    }
+                    if(!select){
+                        unSelected.add(courseName);
+                    }
+                    select=false;
+                }
+
+                Platform.runLater(()->{
+                    listSelectionView_Courses.getSourceItems().addAll(unSelected);
+                    listSelectionView_Courses.getTargetItems().addAll(selected);
+                });
+
+            }
+            else { // not on update
+                unSelected = FXCollections.observableArrayList(items);
+                selected = FXCollections.observableArrayList();
+                listSelectionView_Courses.getSourceItems().addAll(unSelected);
+                listSelectionView_Courses.getTargetItems().addAll(selected);
+            }
+
+            listSelectionView_Courses.setDisable(false);
+            firstEntryUpdate = false;
+        });
     }
-    public void selectCourseListener(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        ObservableList<String> selectedItems = courseOptions.getSelectionModel().getSelectedItems();
-        courseNames.clear();
-        courseNames.addAll(selectedItems);
-        //TODO לתקן את הבחירה המרובה של הקורסים
-    }
+
     @FXML
     public void handleConfirmButtonClick(ActionEvent event) {
+        System.out.println("size selected: " +listSelectionView_Courses.getTargetItems().size());
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
-                || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || courseNames.isEmpty()) {
+                || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || selected.isEmpty()) {
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("Error! Fill all the fields");
-            alert.show();
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error! Fill all the fields");
+                alert.show();
+            });
+
         } else
             confirm();
     }
@@ -242,7 +279,7 @@ public class CreateQuestionController {
         myQuestion = new Question(theQuestion.getText(), ans1.getText(), ans2.getText(), ans3.getText(), ans4.getText(), ans_num);
 
         List<Course> filteredCourses = courses.stream()
-                .filter(course -> courseNames.contains(course.getName()))
+                .filter(course -> selected.contains(course.getName()))
                 .collect(Collectors.toList());
 
         myQuestion.setCourses(filteredCourses);
@@ -304,35 +341,32 @@ public class CreateQuestionController {
     }
     @Subscribe
     public void onShowUpdateQuestFormEvent(ShowUpdateQuestFormEvent event){
-        List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
-        Platform.runLater(()->{
-            try {
-                id = (String)setTeacherAndQuest.get(0);
-                SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            isUpdate = true;
+            firstEntryUpdate = true;
+            List<Object> setTeacherAndQuest = event.getSetTeacherAndQuest();
+            updateQuestion = (Question) setTeacherAndQuest.get(1);
+            Platform.runLater(()->{
+                try {
+                    id = (String)setTeacherAndQuest.get(0);
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
 
-        Platform.runLater(()->{
-        Question updateQuestion = (Question)setTeacherAndQuest.get(1);
-        theQuestion.setText(updateQuestion.getText());
-        ans1.setText(updateQuestion.getAnswer0());
-        ans2.setText(updateQuestion.getAnswer1());
-        ans3.setText(updateQuestion.getAnswer2());
-        ans4.setText(updateQuestion.getAnswer3());
+            Platform.runLater(()->{
+                theQuestion.setText(updateQuestion.getText());
+                ans1.setText(updateQuestion.getAnswer0());
+                ans2.setText(updateQuestion.getAnswer1());
+                ans3.setText(updateQuestion.getAnswer2());
+                ans4.setText(updateQuestion.getAnswer3());
+                comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
 
-        Subject selectedSub = updateQuestion.getSubject();
-
-        comboSubject.setValue(selectedSub.getName());
-        courseOptions.setVisible(true);
-        comboAns.setValue(String.valueOf((updateQuestion.getIndexAnswer())));
-        label1.setVisible(true);
-        label2.setVisible(true);
-
-        });
-
-
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

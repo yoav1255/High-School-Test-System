@@ -105,6 +105,8 @@ public class ShowOneStudentController {
     @Subscribe
     public void onMoveObjectToNextPageEvent(MoveObjectToNextPageEvent event){
         student = (Student) event.getObject();
+        student_id.setText(student_id.getText() + student.getId());
+        student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
     }
 
     @Subscribe public void onMoveManagerIdEvent(MoveManagerIdEvent event){
@@ -123,21 +125,6 @@ public class ShowOneStudentController {
     public void onShowOneStudentEvent(ShowOneStudentEvent event){
         try{
             setStudentTests(event.getStudentTests());
-            if(studentTests!=null){
-                for(StudentTest test : studentTests){
-                    if(!test.isChecked()){
-                        test.setGrade(-1);
-                    }
-                }
-                Student student = studentTests.get(0).getStudent();
-                setStudentID(student.getId());
-                Platform.runLater(()->{
-                    setStudentID(student.getId());
-                    statusLB.setText(statusLB.getText() + student.getId());
-                    student_id.setText(student_id.getText() + student.getId());
-                    student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
-                });
-            }
 
             TableGrade.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();

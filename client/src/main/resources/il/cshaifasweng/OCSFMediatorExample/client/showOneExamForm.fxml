@@ -51,15 +51,6 @@
                   <Font name="Oriya Sangam MN" size="13.0" />
                </font>
             </Label>
-            <Pane layoutX="295.0" layoutY="-16.0" prefHeight="83.0" prefWidth="214.0">
-               <children>
-                  <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER" visible="false">
-                     <font>
-                        <Font name="Oriya Sangam MN" size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Pane>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

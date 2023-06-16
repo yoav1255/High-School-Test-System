@@ -287,7 +287,11 @@ public class ShowQuestionsController {
                             try {
                                 //SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
                                 Platform.runLater(() -> {
-                                    EventBus.getDefault().post(new ShowUpdateQuestFormEvent(setTeacherAndQuestion));
+                                    try {
+                                        SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionToUpdate",setTeacherAndQuestion));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 });
                             } catch (Exception e) {
                                 e.printStackTrace();
