@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class ShowStatisticsDistributeController {
@@ -110,6 +111,8 @@ public class ShowStatisticsDistributeController {
             Platform.runLater(() -> {
                 distributeBarChart.getData().clear();
                 distributeBarChart.getData().add(series);
+                xAxis.setTickLength(1); // Set the tick mark unit to 1
+                xAxis.setCategories(FXCollections.observableArrayList(series.getData().stream().map(XYChart.Data::getXValue).collect(Collectors.toList())));
                 xAxis.setGapStartAndEnd(false);
             });
             distributeBarChart.setTitle("Distribution of Grades");
