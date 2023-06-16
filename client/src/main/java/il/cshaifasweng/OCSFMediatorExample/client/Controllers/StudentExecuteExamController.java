@@ -263,7 +263,7 @@ public class StudentExecuteExamController {
         Platform.runLater(() -> {
             if(scheduleTestId.equals(scheduledTest.getId())) {
                 timeLeft = (long)scheduleTestId_timeLeft.get(1);
-                timeLeftText.setText(Long.toString(timeLeft)+ " Minutes");
+                timeLeftText.setText(Long.toString(timeLeft));
             }
         });
 }
