@@ -328,6 +328,16 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "showStatisticsDistribute":
+                Platform.runLater(()->{
+                    setWindowTitle("StatisticsDistribute");
+                    try {
+                        setContent("showStatisticsDistribute");
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     }
     //-------------Menu Functions----------//

@@ -135,6 +135,9 @@ public class ManagerHomeController {
     public void goToStatistics(ActionEvent event) throws IOException {
         cleanup();
         App.switchScreen("showStatistics");
+    Platform.runLater(()->{
+        EventBus.getDefault().post(new MoveManagerIdEvent(id));
+    });
     }
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){

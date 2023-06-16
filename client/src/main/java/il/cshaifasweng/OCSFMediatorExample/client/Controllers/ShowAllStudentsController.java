@@ -93,7 +93,7 @@ public class ShowAllStudentsController {
         isManager = false;
     }
     @Subscribe
-    public void onMoveManagerIdEvent(MoveManagerIdEvent event) {
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event)  {
         isManager = true;
         managerId = event.getId();
     }
