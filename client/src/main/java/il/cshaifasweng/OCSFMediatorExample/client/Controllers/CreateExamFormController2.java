@@ -232,7 +232,7 @@ public class CreateExamFormController2 {
         App.switchScreen("showExamForms");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION); ///
             alert.setTitle("Exam Added Successfully");
             alert.setHeaderText("Success!");
             alert.setContentText("Exam created successfully! Exam code is: " + ExamCode);
@@ -289,7 +289,7 @@ public class CreateExamFormController2 {
     }
     @FXML
     void handleGoBackButtonClick(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("Confirmation");
         alert.setContentText("Your changes will be lost. Do you wand to proceed?");
         alert.setHeaderText("Wait!");
@@ -490,7 +490,7 @@ public class CreateExamFormController2 {
     }
 @FXML
     public void handleBackButtonClick(ActionEvent event) {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ///
     alert.setTitle("Confirmation");
     alert.setContentText("Your changes will be lost. Do you wand to proceed?");
     alert.setHeaderText("Wait!");
@@ -533,7 +533,7 @@ public class CreateExamFormController2 {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("Confirmation");
         alert.setContentText("Your changes will be lost. Do you wand to proceed?");
         alert.setHeaderText("Wait!");
@@ -552,7 +552,7 @@ public class CreateExamFormController2 {
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");

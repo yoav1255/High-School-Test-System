@@ -73,6 +73,10 @@ public class ShowUpdateStudentController {
             cleanup();
             javafx.application.Platform.exit();
         });
+        Platform.runLater(() -> {
+            update_status.setVisible(false);
+        });
+
 
     }
 
@@ -185,6 +189,7 @@ public class ShowUpdateStudentController {
                 if (newG >= 0 && newG <= 100) {
                     if (!Integer.toString(newG).equals(oldGrade.getText()) && (txtChange.getText().equals(""))) {
                     update_status.setText("Explanation must be provided!");
+                    update_status.setVisible(true);
                     } else {
                         if(studentTest.isChecked()==false) {
                             studentTest.setChecked(true);
@@ -212,6 +217,7 @@ public class ShowUpdateStudentController {
                 } else {
                     Platform.runLater(() -> {
                         update_status.setText("Invalid input, please enter a grade between 0 to 100");
+                        update_status.setVisible(true);
                         newGrade.clear();
                     });
 
@@ -223,6 +229,7 @@ public class ShowUpdateStudentController {
         } catch (NumberFormatException notNum) {
             Platform.runLater(() -> {
                 update_status.setText("Invalid input, please enter a valid number");
+                update_status.setVisible(true);
                 newGrade.clear();
             });
 

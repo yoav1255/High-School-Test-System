@@ -1,14 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,12 +28,14 @@ public class ShowOneStudentController {
 
     @FXML
     private TableView<StudentTest> GradesTable;
+    @FXML
+    private Label labelInfo;
 
     @FXML
     private TableColumn<StudentTest, String> TableCourse;
 
     @FXML
-    private TableColumn<StudentTest, String > TableGrade;
+    private TableColumn<StudentTest, String> TableGrade;
 
     @FXML
     private TableColumn<StudentTest, String> TableSubject;
@@ -70,23 +69,26 @@ public class ShowOneStudentController {
         this.studentTests = studentTests;
     }
 
-    public void setStudentID(String ids){studentId = ids;}
-    public ShowOneStudentController(){
+    public void setStudentID(String ids) {
+        studentId = ids;
+    }
+
+    public ShowOneStudentController() {
         EventBus.getDefault().register(this);
     }
+
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
 
     @FXML
-    void initialize(){
+    void initialize() {
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
-            if(isManager){
+            if (isManager) {
                 info.add(managerId);
                 info.add("manager");
-            }
-            else {
+            } else {
                 info.add(studentId);
                 info.add("student");
             }
@@ -103,19 +105,34 @@ public class ShowOneStudentController {
     }
 
     @Subscribe
-    public void onMoveObjectToNextPageEvent(MoveObjectToNextPageEvent event){
+    public void onMoveObjectToNextPageEvent(MoveObjectToNextPageEvent event) {
         student = (Student) event.getObject();
+        Platform.runLater(() -> {
+            labelInfo.setVisible(false);
+        });
     }
 
-    @Subscribe public void onMoveManagerIdEvent(MoveManagerIdEvent event){
+    @Subscribe
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event) {
         isManager = true;
         managerId = event.getId();
     }
 
     @Subscribe
-    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
+    public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         isManager = false;
         studentId = event.getId();
+    }
+
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event) {
+        Platform.runLater(() -> {
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Subscribe

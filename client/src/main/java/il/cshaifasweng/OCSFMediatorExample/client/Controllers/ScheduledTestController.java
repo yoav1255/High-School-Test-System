@@ -379,8 +379,8 @@ public class ScheduledTestController {
     @FXML
     void deleteScheduleTest(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Delete");
-        alert.setHeaderText(null);
+        alert.setTitle("Delete scheduled test?");
+        alert.setHeaderText("Please confirm your choice");
         alert.setContentText("Are you sure you want to delete this Schedule Test?");
 
         ButtonType yesButton = new ButtonType("Yes");

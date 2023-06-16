@@ -323,15 +323,15 @@ public class ShowQuestionsController {
     public void displayMsg(String questId) {
         Platform.runLater(() -> {
             if (!Objects.equals(questId, "0")){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION); ////
                 alert.setTitle("Question added successfully");
                 alert.setHeaderText("Success!");
                 alert.setContentText("Question added. Question ID: " + questId);
                 alert.show();
           }
             else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Question didn't add...");
+                Alert alert = new Alert(Alert.AlertType.ERROR); ////
+                alert.setTitle("Question did not add...");
                 alert.setContentText("There was a problem and the question was not saved. Please enter it again");
                 alert.setHeaderText("Error");
                 alert.show();
@@ -340,7 +340,7 @@ public class ShowQuestionsController {
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");

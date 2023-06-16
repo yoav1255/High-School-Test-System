@@ -194,7 +194,7 @@ public class CreateQuestionController {
                 || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || selected.isEmpty()) {
 
             Platform.runLater(()->{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                Alert alert = new Alert(Alert.AlertType.ERROR); //////
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText("Error! Fill all the fields");
@@ -219,7 +219,7 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION); /////
             alert.setTitle("Confirmation");
             alert.setContentText("Your changes will be lost. Do you wand to proceed?");
             alert.setHeaderText("Wait!");
@@ -254,7 +254,7 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION); /////
             alert.setTitle("Confirmation");
             alert.setContentText("Your changes will be lost. Do you wand to proceed?");
             alert.setHeaderText("Wait!");
@@ -369,7 +369,7 @@ public class CreateQuestionController {
         }
     }
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); /////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");
