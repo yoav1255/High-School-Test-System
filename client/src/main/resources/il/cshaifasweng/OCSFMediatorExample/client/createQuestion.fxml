@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -12,8 +11,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.ListSelectionView?>
 
-<AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.CreateQuestionController">
+<AnchorPane prefHeight="631.0" prefWidth="967.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.CreateQuestionController">
    <children>
       <GridPane fx:id="OneStudentGR" layoutX="61.0" layoutY="61.0" prefHeight="498.0" prefWidth="832.0">
          <columnConstraints>
@@ -26,50 +26,50 @@
          <children>
             <Pane fx:id="student_details_PN" prefHeight="20.0" prefWidth="713.0">
                <children>
-                  <ListView fx:id="courseOptions" layoutX="527.0" layoutY="17.0" prefHeight="120.0" prefWidth="200.0" />
-                  <Label fx:id="label1" layoutX="389.0" layoutY="59.0" prefHeight="18.0" prefWidth="94.0" text="Choose courses:">
+                  <Label fx:id="label1" layoutX="271.0" layoutY="76.0" prefHeight="18.0" prefWidth="94.0" text="Choose courses:">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Label>
-                  <Label fx:id="label2" layoutX="366.0" layoutY="84.0" prefHeight="18.0" prefWidth="140.0" text="Hold Ctrl for multyple selection">
+               </children></Pane>
+            <AnchorPane prefHeight="537.0" prefWidth="832.0" GridPane.rowIndex="1">
+               <children>
+                  <Label layoutX="14.0" layoutY="100.0" prefHeight="17.0" prefWidth="110.0" text="Write the question:">
                      <font>
-                        <Font size="10.0" />
+                        <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-               </children></Pane>
-            <AnchorPane prefHeight="439.0" prefWidth="713.0" GridPane.rowIndex="1">
-               <children>
-                  <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="117.0" text="Choose subject:">
+                  <TextField fx:id="theQuestion" layoutX="128.0" layoutY="87.0" prefHeight="39.0" prefWidth="627.0" />
+                  <Label layoutX="18.0" layoutY="144.0" prefHeight="17.0" prefWidth="110.0" text="Answer 1:" />
+                  <Label layoutX="18.0" layoutY="192.0" prefHeight="17.0" prefWidth="110.0" text="Answer 2:" />
+                  <Label layoutX="19.0" layoutY="238.0" prefHeight="17.0" prefWidth="110.0" text="Answer 3:" />
+                  <Label layoutX="19.0" layoutY="289.0" prefHeight="17.0" prefWidth="110.0" text="Answer 4:" />
+                  <TextField fx:id="ans1" layoutX="128.0" layoutY="132.0" prefHeight="39.0" prefWidth="627.0" />
+                  <TextField fx:id="ans2" layoutX="128.0" layoutY="179.0" prefHeight="39.0" prefWidth="627.0" />
+                  <TextField fx:id="ans3" layoutX="129.0" layoutY="226.0" prefHeight="39.0" prefWidth="627.0" />
+                  <TextField fx:id="ans4" layoutX="130.0" layoutY="275.0" prefHeight="39.0" prefWidth="627.0" />
+                  <Label layoutX="18.0" layoutY="357.0" prefHeight="18.0" prefWidth="161.0" text="Choose the correct answer:">
                      <font>
                         <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <Label layoutX="10.0" layoutY="59.0" prefHeight="17.0" prefWidth="110.0" text="Write the question:">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <ComboBox fx:id="comboSubject" layoutX="123.0" layoutY="10.0" onAction="#onSelectSubject" prefWidth="150.0" promptText="click here" style="-fx-background-color: white;" />
-                  <TextField fx:id="theQuestion" layoutX="124.0" layoutY="46.0" prefHeight="39.0" prefWidth="627.0" />
-                  <Label layoutX="14.0" layoutY="103.0" prefHeight="17.0" prefWidth="110.0" text="Answer 1:" />
-                  <Label layoutX="14.0" layoutY="151.0" prefHeight="17.0" prefWidth="110.0" text="Answer 2:" />
-                  <Label layoutX="15.0" layoutY="197.0" prefHeight="17.0" prefWidth="110.0" text="Answer 3:" />
-                  <Label layoutX="15.0" layoutY="248.0" prefHeight="17.0" prefWidth="110.0" text="Answer 4:" />
-                  <TextField fx:id="ans1" layoutX="124.0" layoutY="91.0" prefHeight="39.0" prefWidth="627.0" />
-                  <TextField fx:id="ans2" layoutX="124.0" layoutY="138.0" prefHeight="39.0" prefWidth="627.0" />
-                  <TextField fx:id="ans3" layoutX="125.0" layoutY="185.0" prefHeight="39.0" prefWidth="627.0" />
-                  <TextField fx:id="ans4" layoutX="126.0" layoutY="234.0" prefHeight="39.0" prefWidth="627.0" />
-                  <Label layoutX="14.0" layoutY="316.0" prefHeight="18.0" prefWidth="161.0" text="Choose the correct answer:">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <ComboBox fx:id="comboAns" layoutX="203.0" layoutY="311.0" onAction="#onSelectSubject" prefWidth="150.0" style="-fx-background-color: white;" />
-                  <Button fx:id="cancelBN" layoutX="533.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefHeight="25.0" prefWidth="81.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: red;" text="Cancel">
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="comboAns" layoutX="207.0" layoutY="352.0" prefWidth="150.0" style="-fx-background-color: white;" />
+                  <Button fx:id="cancelBN" layoutX="575.0" layoutY="395.0" mnemonicParsing="false" onAction="#handleCancelButtonClick" prefHeight="25.0" prefWidth="81.0" style="-fx-background-color: white; -fx-background-radius: 30; -fx-border-radius: 30; -fx-border-color: red;" text="Cancel">
                      <font>
                         <Font name="System Bold Italic" size="12.0" />
-                     </font></Button>
-                  <Button fx:id="confirmBN" layoutX="631.0" layoutY="368.0" mnemonicParsing="false" onAction="#handleConfirmButtonClick" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-background-color: white; -fx-border-color: green;" text="Confirm">
+                     </font>
+                  </Button>
+                  <Button fx:id="confirmBN" layoutX="673.0" layoutY="395.0" mnemonicParsing="false" onAction="#handleConfirmButtonClick" prefHeight="25.0" prefWidth="81.0" style="-fx-background-radius: 30; -fx-border-radius: 30; -fx-background-color: white; -fx-border-color: green;" text="Confirm">
                      <font>
                         <Font name="System Bold Italic" size="12.0" />
-                     </font></Button>
+                     </font>
+                  </Button>
+                  <ListSelectionView fx:id="listSelectionView_Courses" layoutX="369.0" layoutY="-88.0" prefHeight="133.0" prefWidth="387.0" />
+                  <ComboBox fx:id="comboSubject" layoutX="122.0" layoutY="33.0" onAction="#onSelectSubject" prefHeight="25.0" prefWidth="123.0" promptText="click here" style="-fx-background-color: white;" />
+                  <Label layoutX="7.0" layoutY="38.0" prefHeight="17.0" prefWidth="117.0" text="Choose subject:">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
          </children>

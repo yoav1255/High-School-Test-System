@@ -188,6 +188,9 @@ public class SimpleClient extends AbstractClient {
 				case ("generateUniqueExamCode"):
 					EventBus.getDefault().post(new GetUniqueExamCode((String)message.getData()));
 					break;
+				case ("returnQuestionToUpdate"):
+					EventBus.getDefault().post(new ShowUpdateQuestFormEvent((List<Object>) message.getData()));
+					break;
 
 			}
 		}catch (Exception e){
@@ -197,7 +200,7 @@ public class SimpleClient extends AbstractClient {
 	
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("192.168.53.65", 3028);
+			client = new SimpleClient("localhost", 3028);
 		}
 		return client;
 	}
