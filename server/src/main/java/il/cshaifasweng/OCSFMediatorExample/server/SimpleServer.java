@@ -147,6 +147,13 @@ public class SimpleServer extends AbstractServer {
 					List<Question> questions = App.getQuestionsFromCourseName(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnQuestions",questions));
 					break;
+				case ("#getQuestionToUpdate"):
+					List<Object> setTeacherAndQuestion = (List<Object>) message.getData();
+					String teacherId = (String)setTeacherAndQuestion.get(0);
+					Question question2 = (Question) setTeacherAndQuestion.get(1);
+					setTeacherAndQuestion.set(1 , App.getQuestionToUpdate(question2)) ;
+					client.sendToClient(new CustomMessage("returnQuestionToUpdate",setTeacherAndQuestion));
+					break;
 				case ("#addQuestion"):
 					Question question = (Question)message.getData();
 					boolean check = App.addQuestion(question);
@@ -162,8 +169,7 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#addExamForm"):
 					ExamForm examForm = (ExamForm) message.getData();
-					boolean check1 = App.addExamForm(examForm);
-					client.sendToClient(new CustomMessage("addExamForm",check1));
+					App.addExamForm(examForm);
 					break;
 				case ("#addQuestionScores"):
 					List<Question_Score> questionScores = (List<Question_Score>) message.getData();

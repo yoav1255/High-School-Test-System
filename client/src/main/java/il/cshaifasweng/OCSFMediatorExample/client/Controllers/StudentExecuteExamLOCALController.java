@@ -125,18 +125,26 @@ public class StudentExecuteExamLOCALController implements Serializable {
             errorLabel.setVisible(true);
             return;
         }
-        System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
-        System.out.println("submit local test file to server");
 
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm submission");
+        alert.setContentText("Are you sure you want to submit?");
+        alert.setHeaderText(null);
+        Optional<ButtonType> result = alert.showAndWait();
 
-        studentTest.setTimeToComplete(scheduledTest.getTimeLimit()-timeLeft);
-        studentTest.setScheduledTest(scheduledTest);
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            System.out.println(final_file.getFileName() + " " + final_file.getStudentID());
+            System.out.println("submit local test file to server");
+
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+
+            studentTest.setTimeToComplete(scheduledTest.getTimeLimit()-timeLeft);
+            studentTest.setScheduledTest(scheduledTest);
 
 
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
-        SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
-
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest",studentTest));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", final_file));
+        }
     }
 
 
@@ -176,7 +184,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         if(scheduleTestId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
                 timeLeft = (long)scheduleTestId_timeLeft.get(1);
-                timeLeftText.setText(Long.toString(timeLeft)+" Minutes");
+                timeLeftText.setText(Long.toString(timeLeft));
             });
         }
     }
@@ -190,9 +198,26 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
             studentTest.setTimeToComplete(scheduledTest.getTimeLimit() - timeLeft);
             studentTest.setScheduledTest(scheduledTest);
-//
-            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
-            SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", null));
+
+            //SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
+            //SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", null));
+
+            cleanup();
+            Platform.runLater(()->{
+                try {
+                    App.switchScreen("studentHome");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Platform.runLater(()->{
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Time ended");
+                    alert.setHeaderText("The test is over");
+                    alert.setContentText("You did not submit any file");
+                    alert.show();
+                    EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+                });
+            });
 
         }
     }
@@ -205,7 +230,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
                     scheduledTest.setTimeLimit(scheduledTest.getTimeLimit()+ Integer.parseInt(objectList.get(2).toString()));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
-                    alert.setHeaderText(null);
+                    alert.setHeaderText("Extra time!");
                     alert.setContentText("The teacher added " + objectList.get(2) + " minutes to the test!");
                     alert.show();
                 }

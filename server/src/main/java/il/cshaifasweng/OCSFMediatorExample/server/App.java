@@ -528,20 +528,30 @@ public class App extends Application {
         return questions;
     }
 
+    public static Question getQuestionToUpdate(Question question){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
 
-    public static boolean addExamForm(ExamForm examForm) {
-        try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.save(examForm);
-            session.flush();
-            session.getTransaction().commit();
-            session.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+        String  queryString ="select q from Question q join fetch q.courses " +
+                "where q.id =:id";
+        Query query = session.createQuery(queryString,Question.class);
+        query.setParameter("id",question.getId());
+        Question question1 = (Question) query.getSingleResult();
+        session.getTransaction().commit();
+        session.close();
+        for(Course cour : question1.getCourses())
+            System.out.println(cour.getName());
+        return question1;
+    }
+
+
+    public static void addExamForm(ExamForm examForm) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(examForm);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
     }
 
     public static void addQuestionScores(List<Question_Score> questionScores) {
@@ -1250,7 +1260,6 @@ public class App extends Application {
         } catch (Exception e) {
             // Handle exception
         }
-        System.out.println("unique code: "+uniqueCode);
         return uniqueCode;
     }
 
@@ -1281,7 +1290,6 @@ public static String generateUniqueExamCode(String examCode) {
     } catch (Exception e) {
         // Handle exception
     }
-System.out.println("unique code: "+uniqueCode);
     return uniqueCode;
 }
 

@@ -17,7 +17,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="timeLeftText" layoutX="299.0" layoutY="98.0" prefHeight="30.0" prefWidth="55.0" text="timer">
+      <Label fx:id="timeLeftText" layoutX="299.0" layoutY="98.0" prefHeight="30.0" prefWidth="62.0" text="timer">
          <font>
             <Font size="20.0" />
          </font>
