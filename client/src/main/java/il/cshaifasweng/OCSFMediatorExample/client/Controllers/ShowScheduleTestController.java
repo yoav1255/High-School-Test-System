@@ -338,7 +338,7 @@ public class ShowScheduleTestController {
             try {
                 if (event.getClickCount() == 2 && scheduleTest_table_view.getSelectionModel().getSelectedItem() != null) { // Check if the user double-clicked the row
                     ScheduledTest selectedTest = scheduleTest_table_view.getSelectionModel().getSelectedItem();
-                    if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && edit == true) {
+                    if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && selectedTest.getStatus() == 0) {
                         App.switchScreen("scheduledTest");
                         Platform.runLater(() -> {
                             try {
@@ -353,7 +353,7 @@ public class ShowScheduleTestController {
 
                         });
 
-                    } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) && showGrades == true&&scheduleTest_table_view.getSelectionModel().getSelectedItem().getIsComputerTest()) {
+                    } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) &&scheduleTest_table_view.getSelectionModel().getSelectedItem().getIsComputerTest()) {
                         App.switchScreen("testGrade");
                         Platform.runLater(() -> {
                             try {

@@ -460,7 +460,7 @@ public class CreateExamFormController2 {
                             selectedQuestionScore.setTeacher_note(teacherNote);
                             result = selectedQuestionScore;
                         } else {
-                            result = new Question_Score(score, selectedQuestion, teacherNote, studentNote);
+                            result = new Question_Score(score, selectedQuestion, studentNote,teacherNote);
                         }
                         scoreDialog.setResult(result);
                     }

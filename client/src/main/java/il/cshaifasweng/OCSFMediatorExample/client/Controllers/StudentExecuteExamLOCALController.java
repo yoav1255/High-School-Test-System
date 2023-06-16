@@ -184,7 +184,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
         if(scheduleTestId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
                 timeLeft = (long)scheduleTestId_timeLeft.get(1);
-                timeLeftText.setText(Long.toString(timeLeft)+" Minutes");
+                timeLeftText.setText(Long.toString(timeLeft));
             });
         }
     }
