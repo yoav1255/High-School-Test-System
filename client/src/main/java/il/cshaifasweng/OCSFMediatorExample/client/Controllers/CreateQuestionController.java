@@ -150,13 +150,13 @@ public class CreateQuestionController {
 
             if(isUpdate && firstEntryUpdate){ // on update
 
-                ObservableList<String> selected = FXCollections.observableArrayList();
-                ObservableList<String> unSelected = FXCollections.observableArrayList();
+                selected = FXCollections.observableArrayList();
+                unSelected = FXCollections.observableArrayList();
 
                 List<Course> QuestionsCourses = updateQuestion.getCourses();
+                boolean select = false;
                 for(Course course : courses){
                     String courseName = course.getName();
-                    boolean select = false;
                     for(Course qc : QuestionsCourses) {
                         if (qc.getCode() == course.getCode()) {
                             selected.add(courseName);
@@ -173,7 +173,6 @@ public class CreateQuestionController {
                     listSelectionView_Courses.getSourceItems().addAll(unSelected);
                     listSelectionView_Courses.getTargetItems().addAll(selected);
                 });
-
             }
             else { // not on update
                 unSelected = FXCollections.observableArrayList(items);
@@ -189,7 +188,8 @@ public class CreateQuestionController {
 
     @FXML
     public void handleConfirmButtonClick(ActionEvent event) {
-        System.out.println("size selected: " +listSelectionView_Courses.getTargetItems().size());
+        selected = listSelectionView_Courses.getTargetItems();
+        unSelected = listSelectionView_Courses.getSourceItems();
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
                 || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || selected.isEmpty()) {
 
