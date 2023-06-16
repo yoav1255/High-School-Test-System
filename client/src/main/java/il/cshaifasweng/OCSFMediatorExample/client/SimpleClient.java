@@ -185,6 +185,9 @@ public class SimpleClient extends AbstractClient {
 				case ("generateUniqueExamCode"):
 					EventBus.getDefault().post(new GetUniqueExamCode((String)message.getData()));
 					break;
+				case ("returnQuestionToUpdate"):
+					EventBus.getDefault().post(new ShowUpdateQuestFormEvent((List<Object>) message.getData()));
+					break;
 
 			}
 		}catch (Exception e){

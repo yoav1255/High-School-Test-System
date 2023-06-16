@@ -528,6 +528,22 @@ public class App extends Application {
         return questions;
     }
 
+    public static Question getQuestionToUpdate(Question question){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String  queryString ="select q from Question q join fetch q.courses " +
+                "where q.id =:id";
+        Query query = session.createQuery(queryString,Question.class);
+        query.setParameter("id",question.getId());
+        Question question1 = (Question) query.getSingleResult();
+        session.getTransaction().commit();
+        session.close();
+        for(Course cour : question1.getCourses())
+            System.out.println(cour.getName());
+        return question1;
+    }
+
 
     public static void addExamForm(ExamForm examForm) {
         Session session = sessionFactory.openSession();

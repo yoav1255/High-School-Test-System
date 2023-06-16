@@ -147,6 +147,13 @@ public class SimpleServer extends AbstractServer {
 					List<Question> questions = App.getQuestionsFromCourseName(message.getData().toString());
 					client.sendToClient(new CustomMessage("returnQuestions",questions));
 					break;
+				case ("#getQuestionToUpdate"):
+					List<Object> setTeacherAndQuestion = (List<Object>) message.getData();
+					String teacherId = (String)setTeacherAndQuestion.get(0);
+					Question question2 = (Question) setTeacherAndQuestion.get(1);
+					setTeacherAndQuestion.set(1 , App.getQuestionToUpdate(question2)) ;
+					client.sendToClient(new CustomMessage("returnQuestionToUpdate",setTeacherAndQuestion));
+					break;
 				case ("#addQuestion"):
 					Question question = (Question)message.getData();
 					boolean check = App.addQuestion(question);
