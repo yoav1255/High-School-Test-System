@@ -53,7 +53,7 @@ public class Question_Score implements Serializable {
         this.score = score;
         this.question = question;
         this.teacher_note = teacher_note;
-        this.student_note =student_note;
+        this.student_note = student_note;
         this.examForm = examForm;
         this.questionAnswers = new ArrayList<>();
     }

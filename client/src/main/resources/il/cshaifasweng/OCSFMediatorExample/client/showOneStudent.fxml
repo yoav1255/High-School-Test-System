@@ -90,15 +90,7 @@
 <!--                        <FontAwesomeIconView glyphName="USER" layoutX="43.0" layoutY="35.0" size="20" />-->
                     </children>
                 </Pane>
-                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-                    <children>
-                        <Label layoutX="384.0" layoutY="12.0" text="if you want to change grade - double click the grade">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="12.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </Pane>
+                <Pane fx:id="grade_upgrade_info" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
             </children>
         </GridPane>
     </children>
