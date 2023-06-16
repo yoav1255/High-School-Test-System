@@ -153,6 +153,7 @@ public class ShowStatisticsDistributeController {
         managerId = event.getId();
     }
 
+
     public void handleBackButtonClick(ActionEvent actionEvent) throws IOException {
         if (!isManager) {
             cleanup();
@@ -233,6 +234,5 @@ public class ShowStatisticsDistributeController {
             }
         }
     }
-
 
 }
