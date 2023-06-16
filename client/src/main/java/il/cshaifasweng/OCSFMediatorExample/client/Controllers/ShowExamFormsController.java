@@ -334,7 +334,7 @@ public void goHome(){
 
     @FXML
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");

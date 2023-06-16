@@ -155,9 +155,6 @@ public class SimpleClient extends AbstractClient {
 				case ("Terminate"):
 					System.exit(0);
 					break;
-				case ("addExamForm"):
-					EventBus.getDefault().post(new AddExamFormResponseEvent((Boolean)message.getData()));
-					break;
 				case ("updateScheduleTest"):
 					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));
 					break;

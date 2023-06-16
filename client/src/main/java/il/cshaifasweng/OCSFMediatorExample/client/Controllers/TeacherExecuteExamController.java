@@ -121,11 +121,17 @@ public class TeacherExecuteExamController {
     }
     @Subscribe
     public void onTeacherExecuteExamEvent(TeacherExecuteExamEvent event) throws IOException {
-        setScheduledTest(event.getScheduledTest());
-        setCourseName(scheduledTest.getCourseName());
-        setSubjectName(scheduledTest.getSubjectName());
-        examForm = scheduledTest.getExamForm();
-        SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores",examForm));
+        Platform.runLater(() -> {
+            setScheduledTest(event.getScheduledTest());
+            setCourseName(scheduledTest.getCourseName());
+            setSubjectName(scheduledTest.getSubjectName());
+            examForm = scheduledTest.getExamForm();
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores", examForm));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
     @Subscribe
     public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
@@ -135,17 +141,18 @@ public class TeacherExecuteExamController {
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Manager response");
-            alert.setHeaderText(null);
 
             if (eventTest.getId().equals(scheduledTest.getId())) {
                 if ((Boolean) eventObj.get(1)) {
                     Platform.runLater(() -> {
-                       alert.setContentText("Manager approved your request and the time will update shortly");
-                       alert.show();
+                        alert.setContentText("Time will update shortly");
+                        alert.setHeaderText("Manager approved your request!");
+                        alert.show();
                     });
                 } else {
                     Platform.runLater(() -> {
-                        alert.setContentText("Manager did not approve your request");
+                        alert.setHeaderText("Manager did not approve your request");
+                        alert.setContentText("The time limit did not change. You can send another request");
                         alert.show();
                     });
                 }

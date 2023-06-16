@@ -1,14 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneStudentEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveObjectToNextPageEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,12 +28,14 @@ public class ShowOneStudentController {
 
     @FXML
     private TableView<StudentTest> GradesTable;
+    @FXML
+    private Label labelInfo;
 
     @FXML
     private TableColumn<StudentTest, String> TableCourse;
 
     @FXML
-    private TableColumn<StudentTest, String > TableGrade;
+    private TableColumn<StudentTest, String> TableGrade;
 
     @FXML
     private TableColumn<StudentTest, String> TableSubject;
@@ -107,9 +106,13 @@ public class ShowOneStudentController {
         student = (Student) event.getObject();
         student_id.setText(student_id.getText() + student.getId());
         student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
+        Platform.runLater(() -> {
+            labelInfo.setVisible(false);
+        });
     }
 
-    @Subscribe public void onMoveManagerIdEvent(MoveManagerIdEvent event){
+    @Subscribe
+    public void onMoveManagerIdEvent(MoveManagerIdEvent event) {
         isManager = true;
         managerId = event.getId();
     }
@@ -118,6 +121,17 @@ public class ShowOneStudentController {
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event){
         isManager = false;
         studentId = event.getId();
+    }
+
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event) {
+        Platform.runLater(() -> {
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     @Subscribe

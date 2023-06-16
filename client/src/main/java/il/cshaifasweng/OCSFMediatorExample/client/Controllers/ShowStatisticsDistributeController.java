@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class ShowStatisticsDistributeController {
@@ -84,7 +85,6 @@ public class ShowStatisticsDistributeController {
 
     }
 
-
     public void setSelectedStat(Statistics selectedStat) {
         this.selectedStat = selectedStat;
     }
@@ -111,7 +111,14 @@ public class ShowStatisticsDistributeController {
             Platform.runLater(() -> {
                 distributeBarChart.getData().clear();
                 distributeBarChart.getData().add(series);
-                xAxis.setGapStartAndEnd(false);
+                xAxis.setTickLength(1); // Set the tick mark unit to 1
+                xAxis.setCategories(FXCollections.observableArrayList(series.getData().stream().map(XYChart.Data::getXValue).collect(Collectors.toList())));
+
+                double barGap = 0.8; // Adjust this value as needed
+                double categoryGap = 0.0; // Adjust this value as needed
+                distributeBarChart.setCategoryGap(categoryGap);
+                distributeBarChart.setBarGap(barGap);
+                //xAxis.setGapStartAndEnd(false);
             });
             distributeBarChart.setTitle("Distribution of Grades");
 
@@ -227,6 +234,5 @@ public class ShowStatisticsDistributeController {
             }
         }
     }
-
 
 }

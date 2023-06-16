@@ -221,12 +221,21 @@ public class StudentExecuteExamController {
         cleanup();
         App.switchScreen("studentHome");
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Success");
-            alert.setContentText("Exam Submitted Successfully");
-            alert.setHeaderText(null);
-            alert.show();
+            if (studentTest.isOnTime()) {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setContentText("Exam Submitted Successfully");
+                alert.setHeaderText(null);
+                alert.show();
+            }
+            else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Test is over");
+                alert.setContentText("Exam Submitted automatically");
+                alert.setHeaderText("Time ran out!");
+                alert.show();
+            }
         });
     }
 
@@ -239,7 +248,7 @@ public class StudentExecuteExamController {
                     scheduledTest.setTimeLimit(scheduledTest.getTimeLimit()+ Integer.parseInt(objectList.get(2).toString()));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
-                    alert.setHeaderText(null);
+                    alert.setHeaderText("Extra Time!");
                     alert.setContentText("The teacher added " + objectList.get(2) + " minutes to the test!");
                     alert.show();
                 }

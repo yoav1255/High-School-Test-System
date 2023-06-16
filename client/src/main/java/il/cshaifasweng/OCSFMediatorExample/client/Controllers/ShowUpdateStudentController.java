@@ -60,7 +60,6 @@ public class ShowUpdateStudentController {
 
     @FXML
     void initialize(){
-        update_status.setVisible(false);
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(teacherId);
@@ -74,6 +73,10 @@ public class ShowUpdateStudentController {
             cleanup();
             javafx.application.Platform.exit();
         });
+        Platform.runLater(() -> {
+            update_status.setVisible(false);
+        });
+
 
     }
 
@@ -214,6 +217,7 @@ public class ShowUpdateStudentController {
                 } else {
                     Platform.runLater(() -> {
                         update_status.setText("Invalid input, please enter a grade between 0 to 100");
+                        update_status.setVisible(true);
                         newGrade.clear();
                     });
 
@@ -225,6 +229,7 @@ public class ShowUpdateStudentController {
         } catch (NumberFormatException notNum) {
             Platform.runLater(() -> {
                 update_status.setText("Invalid input, please enter a valid number");
+                update_status.setVisible(true);
                 newGrade.clear();
             });
 

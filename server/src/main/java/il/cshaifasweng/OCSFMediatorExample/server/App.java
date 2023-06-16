@@ -545,19 +545,13 @@ public class App extends Application {
     }
 
 
-    public static boolean addExamForm(ExamForm examForm) {
-        try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.save(examForm);
-            session.flush();
-            session.getTransaction().commit();
-            session.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    public static void addExamForm(ExamForm examForm) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(examForm);
+        session.flush();
+        session.getTransaction().commit();
+        session.close();
     }
 
     public static void addQuestionScores(List<Question_Score> questionScores) {

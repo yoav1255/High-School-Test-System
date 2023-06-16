@@ -169,8 +169,7 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#addExamForm"):
 					ExamForm examForm = (ExamForm) message.getData();
-					boolean check1 = App.addExamForm(examForm);
-					client.sendToClient(new CustomMessage("addExamForm",check1));
+					App.addExamForm(examForm);
 					break;
 				case ("#addQuestionScores"):
 					List<Question_Score> questionScores = (List<Question_Score>) message.getData();
