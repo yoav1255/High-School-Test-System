@@ -285,7 +285,6 @@ public class ShowQuestionsController {
                         App.switchScreen("createQuestion");
                         Platform.runLater(() -> {
                             try {
-                                //SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
                                 Platform.runLater(() -> {
                                     EventBus.getDefault().post(new ShowUpdateQuestFormEvent(setTeacherAndQuestion));
                                 });
@@ -321,16 +320,16 @@ public class ShowQuestionsController {
         Platform.runLater(() -> {
             if (!Objects.equals(questId, "0")){
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText(null);
+                alert.setTitle("Question added successfully");
+                alert.setHeaderText("Success!");
                 alert.setContentText("Question added. Question ID: " + questId);
                 alert.show();
           }
             else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setContentText("There was a problem and the question did not save. please enter it again");
-                alert.setHeaderText(null);
+                alert.setTitle("Question didn't add...");
+                alert.setContentText("There was a problem and the question was not saved. Please enter it again");
+                alert.setHeaderText("Error");
                 alert.show();
             }
         });

@@ -280,7 +280,9 @@ public class ScheduledTestController {
             valid = false;
         }
         if (!valid) {
-            errorAlert.setContentText("input not valid!");
+            errorAlert.setTitle("input not valid!");
+            errorAlert.setContentText("Please fill all the fields correctly!");
+            errorAlert.setHeaderText("Error!");
             errorAlert.show();
             return false;
         }
@@ -306,13 +308,14 @@ public class ScheduledTestController {
         Platform.runLater(() -> {
             if (event.isCheck()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Success");
-                alert.setContentText("update schedule test Succeed");
+                alert.setHeaderText("Success!");
+                alert.setContentText("Scheduled test saved successfully!");
+                alert.setTitle("Information");
                 alert.show();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
+                alert.setTitle("Something went wrong");
+                alert.setHeaderText("Error");
                 alert.setContentText("There was a problem and the test did not save. please enter it again");
                 alert.show();
             }

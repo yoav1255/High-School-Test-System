@@ -185,7 +185,7 @@ public class CreateQuestionController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation");
             alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-            alert.setHeaderText(null);
+            alert.setHeaderText("Wait!");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
@@ -220,7 +220,7 @@ public class CreateQuestionController {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation");
             alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-            alert.setHeaderText(null);
+            alert.setHeaderText("Wait!");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {

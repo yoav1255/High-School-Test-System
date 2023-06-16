@@ -155,9 +155,6 @@ public class SimpleClient extends AbstractClient {
 				case ("Terminate"):
 					System.exit(0);
 					break;
-				case ("addExamForm"):
-					EventBus.getDefault().post(new AddExamFormResponseEvent((Boolean)message.getData()));
-					break;
 				case ("updateScheduleTest"):
 					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));
 					break;
@@ -197,7 +194,7 @@ public class SimpleClient extends AbstractClient {
 	
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("192.168.53.65", 3028);
+			client = new SimpleClient("localhost", 3028);
 		}
 		return client;
 	}
