@@ -29,7 +29,7 @@
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label layoutX="467.0" layoutY="14.0" text="New Grade:">
+                <Label layoutX="458.0" layoutY="14.0" text="New Grade:">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
@@ -63,17 +63,11 @@
                 </Button>
             <Label layoutX="287.0" layoutY="78.0" prefHeight="19.0" prefWidth="161.0" text="Explanation for grade change" />
             <TextArea fx:id="txtChange" layoutX="447.0" layoutY="53.0" prefHeight="70.0" prefWidth="285.0" />
-            <Label fx:id="update_status" layoutX="120.0" layoutY="115.0" text="Label" />
             </children>
         </Pane>
       <ListView fx:id="questionsListView" layoutX="119.0" layoutY="176.0" prefHeight="401.0" prefWidth="752.0" />
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

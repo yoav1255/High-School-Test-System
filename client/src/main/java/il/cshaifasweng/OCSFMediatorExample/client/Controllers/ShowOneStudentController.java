@@ -133,7 +133,6 @@ public class ShowOneStudentController {
                 setStudentID(student.getId());
                 Platform.runLater(()->{
                     setStudentID(student.getId());
-                    statusLB.setText(statusLB.getText() + student.getId());
                     student_id.setText(student_id.getText() + student.getId());
                     student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
                 });

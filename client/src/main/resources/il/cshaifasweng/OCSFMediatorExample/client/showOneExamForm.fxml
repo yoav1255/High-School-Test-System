@@ -26,9 +26,18 @@
             <children>
                 <Pane fx:id="student_details_PN" prefHeight="77.0" prefWidth="713.0">
                     <children>
-                        <Label fx:id="txtTimeLimit" layoutX="527.0" layoutY="18.0" prefHeight="17.0" prefWidth="161.0" text="time limit : " />
-                  <Label fx:id="txtSubject" layoutX="14.0" layoutY="18.0" prefHeight="17.0" prefWidth="176.0" text="Subject : " />
-                  <Label fx:id="txtCourse" layoutX="222.0" layoutY="18.0" prefHeight="17.0" prefWidth="187.0" text="Course : " />
+                        <Label fx:id="txtTimeLimit" layoutX="527.0" layoutY="18.0" prefHeight="17.0" prefWidth="161.0" text="time limit : ">
+                     <font>
+                        <Font size="16.0" />
+                     </font></Label>
+                  <Label fx:id="txtSubject" layoutX="14.0" layoutY="18.0" prefHeight="17.0" prefWidth="176.0" text="Subject : ">
+                     <font>
+                        <Font size="16.0" />
+                     </font></Label>
+                  <Label fx:id="txtCourse" layoutX="222.0" layoutY="18.0" prefHeight="17.0" prefWidth="187.0" text="Course : ">
+                     <font>
+                        <Font size="16.0" />
+                     </font></Label>
                     </children></Pane>
                 <AnchorPane prefHeight="439.0" prefWidth="726.0" GridPane.rowIndex="2">
                     <children>
@@ -40,17 +49,12 @@
                 </AnchorPane>
             <Button fx:id="update" mnemonicParsing="false" onAction="#goToUpdateExamForm" style="-fx-background-color: white; -fx-border-color: orange;" text="Update Exam Form" GridPane.rowIndex="1">
                <font>
-                  <Font name="System Bold" size="12.0" />
+                  <Font name="System Bold" size="14.0" />
                </font></Button>
             </children>
         </GridPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

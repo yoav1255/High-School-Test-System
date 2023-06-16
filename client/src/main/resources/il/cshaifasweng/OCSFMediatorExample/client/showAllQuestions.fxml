@@ -29,7 +29,7 @@
                <children>
                         <Button fx:id="btnNew" layoutX="22.0" layoutY="13.0" mnemonicParsing="false" onAction="#GoToAddQuestion" style="-fx-background-color: orange;" text="Create new question">
                      <font>
-                        <Font name="System Bold Italic" size="12.0" />
+                        <Font name="System Bold Italic" size="14.0" />
                      </font></Button>
                </children>
                 </Pane>
@@ -37,7 +37,7 @@
                <children>
                   <ComboBox fx:id="comboSubject" layoutX="14.0" layoutY="2.0" onAction="#onSelectSubject" prefHeight="26.0" prefWidth="169.0" promptText="Choose the Subject" style="-fx-background-color: white; -fx-border-color: orange;" />
                   <ComboBox fx:id="comboCourse" layoutX="230.0" layoutY="2.0" onAction="#onSelectCourse" prefHeight="26.0" prefWidth="169.0" promptText="Choose the Course" style="-fx-background-color: white; -fx-border-color: orange;" />
-                        <Label fx:id="labelX" layoutX="434.0" layoutY="5.0" prefHeight="17.0" prefWidth="359.0" text="if you wish to edit from an existing question- double click the it">
+                        <Label fx:id="labelX" layoutX="434.0" layoutY="5.0" prefHeight="18.0" prefWidth="461.0" text="if you wish to edit from an existing question- double click the questions row">
                             <font>
                                 <Font name="Oriya Sangam MN" size="12.0" />
                             </font>
@@ -60,11 +60,6 @@
         </GridPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

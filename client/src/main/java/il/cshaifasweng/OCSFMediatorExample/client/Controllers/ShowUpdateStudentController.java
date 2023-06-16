@@ -86,7 +86,6 @@ public class ShowUpdateStudentController {
         try {
             studentTest = event.getStudentTest();
             Platform.runLater(() -> {
-                statusLB.setText(statusLB.getText() + studentTest.getExamFormCode());
                 test_id.setText(String.valueOf(studentTest.getExamFormCode()));
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
