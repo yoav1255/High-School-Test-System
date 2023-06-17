@@ -265,7 +265,7 @@ public class StudentExecuteExamController {
             VBox vbox = new VBox();
             vbox.setSpacing(10);
 
-            Label questionLabel = new Label(questionIndex + 1 + ") Question:      " + questionText);
+            Label questionLabel = new Label(questionIndex + 1 + ") " + questionText);
             vbox.getChildren().add(questionLabel);
 
             ToggleGroup toggleGroup = new ToggleGroup();
@@ -285,6 +285,12 @@ public class StudentExecuteExamController {
             RadioButton answer4RadioButton = new RadioButton("4.     " + answer3);
             answer4RadioButton.setToggleGroup(toggleGroup);
             vbox.getChildren().add(answer4RadioButton);
+
+            if(questionAnswer.getAnswer()==0) answer1RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==1) answer2RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==2) answer3RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==3) answer4RadioButton.setSelected(true);
+
 
             if(qs.getStudent_note()!=null) {
                 Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
