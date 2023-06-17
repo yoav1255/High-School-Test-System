@@ -13,7 +13,7 @@
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
-                <Pane prefHeight="83.0" prefWidth="214.0">
+                <Pane prefHeight="110.0" prefWidth="214.0">
                     <children>
                         <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
                             <font>
