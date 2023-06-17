@@ -98,6 +98,11 @@ public class ShowStatisticsController {
                 combobox_id.setValue(this.teacherId);
                 stat_combobox.setVisible(false);
                 combobox_id.setVisible(false);
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherWriterStat", teacherId));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 stat_combobox.setVisible(true);
                 combobox_id.setVisible(true);
@@ -128,8 +133,6 @@ public class ShowStatisticsController {
         Platform.runLater(()->{
             statistics_table_view.refresh();
         });
-        if(isManager){
-
             String selectedParameter = stat_combobox.getValue();
             if (Objects.equals(selectedParameter, "by teacher")) {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName", null));
@@ -139,11 +142,7 @@ public class ShowStatisticsController {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getCourseName", null));
             } else if (Objects.equals(selectedParameter, "by student")) {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentName", null));
-            }}
-        else{
-            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherName", null));
-
-        }
+            }
         }
 
     @Subscribe
@@ -190,7 +189,6 @@ public class ShowStatisticsController {
             statistics_table_view.refresh();
         });
             if (selectedName != null && selectedParameter != null) {
-                if(isManager) {
                     switch (selectedParameter) {
                         case "by teacher" -> {
                             TeacherId = teacherNames.get(index).getId();
@@ -205,10 +203,8 @@ public class ShowStatisticsController {
                             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentStat", StudentId));
                         }
                     }
-                }
-                else {
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacherWriterStat", teacherId));
-                    }
+
+
 
             }
         }
