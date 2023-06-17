@@ -379,7 +379,7 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
+    public synchronized void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
         Platform.runLater(() -> {
             List<Object> objectList = event.getData();
             if (objectList.get(3).equals(scheduledTest.getId())) {
@@ -403,7 +403,7 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event) {
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
         List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
         Platform.runLater(() -> {
@@ -420,7 +420,7 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
+    public synchronized void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
         if (event.getScheduledTest().getId().equals(scheduledTest.getId())) {
             System.out.println(" on schedule test " + scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);

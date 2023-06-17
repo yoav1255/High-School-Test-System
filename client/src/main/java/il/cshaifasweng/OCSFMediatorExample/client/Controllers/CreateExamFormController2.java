@@ -66,7 +66,7 @@ public class CreateExamFormController2 {
 
     @FXML
     void initialize(){
-        ComboCourse.setDisable(true);
+        Platform.runLater(()-> ComboCourse.setDisable(true));
         courseChanged=0;
         questionScoreList = new ArrayList<>();
         questionList = new ArrayList<>();
@@ -110,7 +110,7 @@ public class CreateExamFormController2 {
         for(Subject subject:subjects){
             items.add(subject.getName());
         }
-        ComboSubject.setItems(items);
+        Platform.runLater(()-> ComboSubject.setItems(items));
 
         if(isUpdate){ // We are in update mode
             Platform.runLater(()->{
@@ -162,7 +162,9 @@ public class CreateExamFormController2 {
     public void onSelectCourse(ActionEvent event) {
         try {
             String courseName = ComboCourse.getValue();
-            selectedQuestionsListView.getItems().clear(); // course changed
+            Platform.runLater(()->{
+                selectedQuestionsListView.getItems().clear(); // course changed
+            });
 
             Platform.runLater(()->{
                 try {
@@ -190,18 +192,20 @@ public class CreateExamFormController2 {
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questionList);
             Platform.runLater(()->{
                 questionsListView.setItems(questions1);
+                updateQuestionListView();
+
             });
-            updateQuestionListView();
 
             if(isUpdate && courseChanged==0) {
-                for (Question_Score questionScore : examForm.getQuestionScores()) {
-                    selectedQuestionsListView.getItems().add(questionScore);
-                    updateSelectedListView();
-                }
-                updateQuestionListView();
+                Platform.runLater(()->{
+                    for (Question_Score questionScore : examForm.getQuestionScores()) {
+                        selectedQuestionsListView.getItems().add(questionScore);
+                        updateSelectedListView();
+                        updateQuestionListView();
+                    }
+                });
             }
                 courseChanged++;
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -490,40 +494,41 @@ public class CreateExamFormController2 {
     alert.setTitle("Confirmation");
     alert.setContentText("Your changes will be lost. Do you wand to proceed?");
     alert.setHeaderText("Wait!");
-    Optional<ButtonType> result = alert.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-        try {
-            cleanup();
-            if (isUpdate) { // return to the show test
-                List<Object> setObjectAndExam = new ArrayList<>();
-                setObjectAndExam.add(teacherId);
-                setObjectAndExam.add(examForm);
+    Platform.runLater(()->{
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                cleanup();
+                if (isUpdate) { // return to the show test
+                    List<Object> setObjectAndExam = new ArrayList<>();
+                    setObjectAndExam.add(teacherId);
+                    setObjectAndExam.add(examForm);
 
-                App.switchScreen("showOneExamForm");
-                Platform.runLater(() -> {
-                    try {
-                        EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                    App.switchScreen("showOneExamForm");
+                    Platform.runLater(() -> {
+                        try {
+                            EventBus.getDefault().post(new ShowOneExamFormEvent(setObjectAndExam));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
 
-            } else {  // return to all tests
-                App.switchScreen("showExamForms");
-                Platform.runLater(()->{
-                    try {
-                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                } else {  // return to all tests
+                    App.switchScreen("showExamForms");
+                    Platform.runLater(()->{
+                        try {
+                            EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
 
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
-    }
-
+    });
 }
 
 

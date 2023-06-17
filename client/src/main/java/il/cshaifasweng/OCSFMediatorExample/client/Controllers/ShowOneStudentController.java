@@ -121,7 +121,7 @@ public class ShowOneStudentController {
     }
 
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event) {
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
         Platform.runLater(() -> {
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));

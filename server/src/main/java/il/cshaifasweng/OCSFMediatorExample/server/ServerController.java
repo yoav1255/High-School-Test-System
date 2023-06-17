@@ -108,17 +108,19 @@ public class ServerController {
 @FXML
     public void disconnectClients(ActionEvent event) throws IOException {
         EventBus.getDefault().post(new TerminateAllClientsEvent());
-        clientObservableList.clear();
         App.logOffAllUsers();
         Platform.runLater(()->{
+            clientObservableList.clear();
             connected.setText((Integer.toString(clientObservableList.size())));
             clients_table_view.refresh();
         });
     }
 
     public void refreshMessagesButton(ActionEvent event) {
-        setTable();
-        messageObservableList = FXCollections.observableList(SimpleServer.getAllMessages());
-        clients_table_view.setItems(messageObservableList);
+        Platform.runLater(()->{
+            setTable();
+            messageObservableList = FXCollections.observableList(SimpleServer.getAllMessages());
+            clients_table_view.setItems(messageObservableList);
+        });
     }
 }

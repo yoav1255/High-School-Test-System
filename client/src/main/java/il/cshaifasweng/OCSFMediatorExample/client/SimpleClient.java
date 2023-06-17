@@ -7,7 +7,9 @@ import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,23 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	protected void connectionEstablished(){
+	}
+
+	@Override
+	protected void connectionClosed() {
+		// Handle the case when the connection is closed
+		System.out.println("Connection closed");
+	}
+
+	@Override
+	protected void connectionException(Exception exception) {
+		if (exception instanceof SocketException) {
+			System.out.println("Socket Exception!");
+		} else if (exception instanceof IOException) {
+			System.out.println("IO Exception!");
+		} else {
+			System.out.println("Other Exception");
+		}
 	}
 
 	@Override
