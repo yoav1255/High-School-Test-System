@@ -38,7 +38,7 @@
             <Cursor fx:constant="NONE" />
          </cursor></ComboBox>
         <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="421.0" layoutY="241.0" prefHeight="10.0" prefWidth="48.0" />
-        <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="333.0" layoutY="467.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="34.0" prefWidth="148.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Add Schedule Test">
+        <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="333.0" layoutY="467.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="34.0" prefWidth="155.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Add Schedule Test">
          <font>
             <Font size="14.0" />
          </font></Button>
