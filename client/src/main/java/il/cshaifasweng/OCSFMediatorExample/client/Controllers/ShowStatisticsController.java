@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ShowStatisticsController {
@@ -31,6 +32,8 @@ public class ShowStatisticsController {
 
     @FXML
     private TableColumn<Statistics, String> scheduled_test;
+    @FXML
+    private TableColumn<Statistics, String> date_test;
 
     @FXML
     private TableColumn<Statistics, String > average;
@@ -217,9 +220,18 @@ public class ShowStatisticsController {
     public void onShowTeacherStatEvent(ShowTeacherStatEvent event) {
         try {
             Platform.runLater(() -> {
-        List<Statistics> teacherStat = event.getTeacherStat();
+                date_test.setVisible(true);
+                scheduled_test.textProperty().setValue("Scheduled Test");
+
+                List<Statistics> teacherStat = event.getTeacherStat();
         statisticList.clear();
         statisticList.addAll(teacherStat);
+
+        date_test.setCellValueFactory(cellData->{
+            Statistics stat = cellData.getValue();
+            LocalDate date = stat.getDate();
+            return new SimpleStringProperty(date.toString());
+        });
 
         scheduled_test.setCellValueFactory(cellData->{
             Statistics stat = cellData.getValue();
@@ -250,9 +262,17 @@ public class ShowStatisticsController {
     public void onShowCourseStatEvent(ShowCourseStatEvent event) {
         try {
             Platform.runLater(() -> {
-            List<Statistics> courseStat = event.getCourseStat();
+                date_test.setVisible(true);
+                scheduled_test.textProperty().setValue("Scheduled Test");
+                List<Statistics> courseStat = event.getCourseStat();
             statisticList.clear();
             statisticList.addAll(courseStat);
+
+            date_test.setCellValueFactory(cellData->{
+                Statistics stat = cellData.getValue();
+                LocalDate date = stat.getDate();
+                return new SimpleStringProperty(date.toString());
+            });
 
             scheduled_test.setCellValueFactory(cellData->{
                 Statistics stat = cellData.getValue();
@@ -283,6 +303,7 @@ public class ShowStatisticsController {
     public void onShowStudentStatEvent(ShowStudentStatEvent event) {
         try {
             Platform.runLater(()-> {
+                date_test.setVisible(false);
                 scheduled_test.textProperty().setValue("Student ID");
             });
 

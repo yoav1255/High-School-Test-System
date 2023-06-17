@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -946,7 +947,7 @@ public class App extends Application {
         Session session = sessionFactory.openSession(); // Open a new session
 
         Query query = session.createQuery(
-                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                "SELECT e.scheduledTest.id as st,e.scheduledTest.date, AVG(e.grade) AS average " +
                         "FROM StudentTest e " +
                         "WHERE e.scheduledTest.teacher.id = :teacherId " +
                         "GROUP BY st"
@@ -958,7 +959,8 @@ public class App extends Application {
 
         for (Object[] result : results) {
             String scheduleTestId = (String) result[0];
-            Double averageGrade = (Double) result[1];
+            LocalDate date = (LocalDate) result[1];
+            Double averageGrade = (Double) result[2];
 
             Query gradeQuery = session.createQuery(
                     "SELECT e.grade " +
@@ -1003,6 +1005,7 @@ public class App extends Application {
             statistics.setAvgGrade(averageGrade);
             statistics.setMedian(median);
             statistics.setDistribution(distribution);
+            statistics.setDate(date.of(date.getYear(), date.getMonth(),date.getDayOfMonth()));
 
             examStatsList.add(statistics);
         }
@@ -1018,7 +1021,7 @@ public class App extends Application {
         Session session = sessionFactory.openSession(); // Open a new session
 
         Query query = session.createQuery(
-                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                "SELECT e.scheduledTest.id as st,e.scheduledTest.date, AVG(e.grade) AS average " +
                         "FROM StudentTest e " +
                         "WHERE e.scheduledTest.examForm.course.id = :courseId " +
                         "GROUP BY st"
@@ -1030,7 +1033,8 @@ public class App extends Application {
 
         for (Object[] result : results) {
             String scheduleTestId = (String) result[0];
-            Double averageGrade = (Double) result[1];
+            LocalDate date = (LocalDate) result[1];
+            Double averageGrade = (Double) result[2];
 
             Query gradeQuery = session.createQuery(
                     "SELECT e.grade " +
@@ -1075,6 +1079,7 @@ public class App extends Application {
             statistics.setAvgGrade(averageGrade);
             statistics.setMedian(median);
             statistics.setDistribution(distribution);
+            statistics.setDate(date.of(date.getYear(), date.getMonth(),date.getDayOfMonth()));
 
             examStatsList.add(statistics);
         }
@@ -1139,6 +1144,7 @@ public class App extends Application {
         statistics.setStudentId(studentId);
         statistics.setDistribution(distribution);
 
+
         session.close();
         return statistics;
     }
@@ -1149,7 +1155,7 @@ public class App extends Application {
         Session session = sessionFactory.openSession(); // Open a new session
 
         Query query = session.createQuery(
-                "SELECT e.scheduledTest.id as st, AVG(e.grade) AS average " +
+                "SELECT e.scheduledTest.id as st,e.scheduledTest.date, AVG(e.grade) AS average " +
                         "FROM StudentTest e " +
                         "WHERE e.scheduledTest.examForm.teacher.id = :teacherId " +
                         "GROUP BY st"
@@ -1161,7 +1167,8 @@ public class App extends Application {
 
         for (Object[] result : results) {
             String scheduleTestId = (String) result[0];
-            Double averageGrade = (Double) result[1];
+            LocalDate date = (LocalDate) result[1];
+            Double averageGrade = (Double) result[2];
 
             Query gradeQuery = session.createQuery(
                     "SELECT e.grade " +
@@ -1206,6 +1213,8 @@ public class App extends Application {
             statistics.setAvgGrade(averageGrade);
             statistics.setMedian(median);
             statistics.setDistribution(distribution);
+            statistics.setDate(date.of(date.getYear(), date.getMonth(),date.getDayOfMonth()));
+
 
             examStatsList.add(statistics);
         }

@@ -28,6 +28,7 @@
             <children>
                 <TableView fx:id="statistics_table_view" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
+                        <TableColumn fx:id="date_test" prefWidth="75.0" text="Date" />
                         <TableColumn fx:id="scheduled_test" prefWidth="75.0" text="Scheduled Test" />
                         <TableColumn fx:id="average" prefWidth="75.0" text="Average" />
                         <TableColumn fx:id="median" prefWidth="75.0" text="Median" />
