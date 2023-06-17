@@ -4,25 +4,26 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
-import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 public class StudentExecuteExamController {
 
 
@@ -53,9 +54,6 @@ public class StudentExecuteExamController {
     private Student student;
     private List<Question_Answer> questionAnswers ;
     private long timeLeft;
-//    private List<TextField> q_notes;
-
-
 
     public StudentExecuteExamController() {
         EventBus.getDefault().register(this);
@@ -89,7 +87,7 @@ public class StudentExecuteExamController {
         id = student.getId();
         questionAnswers= new ArrayList<>();
         Platform.runLater(() -> {
-            text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
+            text_Id.setText(text_Id.getText() + " " + student.getFirst_name() + " " + student.getLast_name());
         });
         studentTest = new StudentTest();
         studentTest.setStudent(student);
@@ -198,6 +196,23 @@ public class StudentExecuteExamController {
         //
 */
 
+        Platform.runLater(()->{
+            int width = 30;
+            int height = 30;
+            File file = new File("C:\\Users\\YoavS\\Desktop\\Study\\Year2\\SemesterB\\softwareEngineer\\HSTS-Team-2\\client\\src\\main\\resources\\right.png");
+            Image image = new Image(file.toURI().toString());
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(width);
+            imageView.setFitHeight(height);
+            nextButton.setGraphic(imageView);
+
+             file = new File("C:\\Users\\YoavS\\Desktop\\Study\\Year2\\SemesterB\\softwareEngineer\\HSTS-Team-2\\client\\src\\main\\resources\\left.png");
+             image = new Image(file.toURI().toString());
+             imageView = new ImageView(image);
+            imageView.setFitWidth(width);
+            imageView.setFitHeight(height);
+            previousButton.setGraphic(imageView);
+        });
         scheduledTest = event.getSelectedTestEvent();
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
 
@@ -250,7 +265,7 @@ public class StudentExecuteExamController {
             VBox vbox = new VBox();
             vbox.setSpacing(10);
 
-            Label questionLabel = new Label("Question:      " + questionText);
+            Label questionLabel = new Label(questionIndex + 1 + ") Question:      " + questionText);
             vbox.getChildren().add(questionLabel);
 
             ToggleGroup toggleGroup = new ToggleGroup();
@@ -271,8 +286,10 @@ public class StudentExecuteExamController {
             answer4RadioButton.setToggleGroup(toggleGroup);
             vbox.getChildren().add(answer4RadioButton);
 
-            Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
-            vbox.getChildren().add(noteStudentLabel);
+            if(qs.getStudent_note()!=null) {
+                Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
+                vbox.getChildren().add(noteStudentLabel);
+            }
 
             Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
             vbox.getChildren().add(scoreLabel);
