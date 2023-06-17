@@ -26,7 +26,6 @@ import java.util.Optional;
 public class StudentExecuteExamController {
 
 
-
     @FXML
     private Label text_Id;
     @FXML
@@ -51,10 +50,9 @@ public class StudentExecuteExamController {
     private StudentTest studentTest;
     private List<Question_Score> questionScoreList;
     private Student student;
-    private List<Question_Answer> questionAnswers ;
+    private List<Question_Answer> questionAnswers;
     private long timeLeft;
 //    private List<TextField> q_notes;
-
 
 
     public StudentExecuteExamController() {
@@ -67,7 +65,7 @@ public class StudentExecuteExamController {
     }
 
     @FXML
-    void initialize(){
+    void initialize() {
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(id);
@@ -84,10 +82,10 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public void onSelectedStudentEvent(SelectedStudentEvent event){
-        student =event.getStudent();
+    public void onSelectedStudentEvent(SelectedStudentEvent event) {
+        student = event.getStudent();
         id = student.getId();
-        questionAnswers= new ArrayList<>();
+        questionAnswers = new ArrayList<>();
         Platform.runLater(() -> {
             text_Id.setText(text_Id.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
@@ -199,7 +197,7 @@ public class StudentExecuteExamController {
 */
 
         scheduledTest = event.getSelectedTestEvent();
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start", scheduledTest.getId()));
 
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
 
@@ -294,7 +292,7 @@ public class StudentExecuteExamController {
                     questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
                 }
             });
-            Platform.runLater(()->{
+            Platform.runLater(() -> {
                 questionStackPane.getChildren().setAll(vbox);
                 // Enable/disable previous and next buttons based on the current question index
                 previousButton.setDisable(questionIndex == 0);
@@ -306,18 +304,17 @@ public class StudentExecuteExamController {
     }
 
 
-
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
         //TODO validation checks
         boolean answeredAll = true;
         String msg = "";
-        for(Question_Answer questionAnswer:questionAnswers){
-            if(questionAnswer.getAnswer()==-1)
-                answeredAll=false;
+        for (Question_Answer questionAnswer : questionAnswers) {
+            if (questionAnswer.getAnswer() == -1)
+                answeredAll = false;
         }
-        if(!answeredAll) msg = "There are still Unchecked answers, Are you sure you want to submit?";
-        else msg =  "Are you sure you want to submit?";
+        if (!answeredAll) msg = "There are still Unchecked answers, Are you sure you want to submit?";
+        else msg = "Are you sure you want to submit?";
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Confirmation");
         alert.setContentText(msg);
@@ -328,15 +325,15 @@ public class StudentExecuteExamController {
         }
     }
 
-@Subscribe
+    @Subscribe
     public void onShowSuccessEvent(ShowSuccessEvent event) throws IOException {
         System.out.println("good");
         cleanup();
         App.switchScreen("studentHome");
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             if (studentTest.isOnTime()) {
                 try {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", id));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -345,8 +342,7 @@ public class StudentExecuteExamController {
                 alert.setContentText("Exam Submitted Successfully");
                 alert.setHeaderText(null);
                 alert.show();
-            }
-            else {
+            } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Test is over");
                 alert.setContentText("Exam Submitted automatically");
@@ -360,9 +356,9 @@ public class StudentExecuteExamController {
     public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
         Platform.runLater(() -> {
             List<Object> objectList = event.getData();
-            if (objectList.get(3).equals(scheduledTest.getId())){
-                if ((int)objectList.get(2) != 0){
-                    scheduledTest.setTimeLimit(scheduledTest.getTimeLimit()+ Integer.parseInt(objectList.get(2).toString()));
+            if (objectList.get(3).equals(scheduledTest.getId())) {
+                if ((int) objectList.get(2) != 0) {
+                    scheduledTest.setTimeLimit(scheduledTest.getTimeLimit() + Integer.parseInt(objectList.get(2).toString()));
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
                     alert.setHeaderText("Extra Time!");
@@ -373,32 +369,34 @@ public class StudentExecuteExamController {
         });
     }
 
-@Subscribe
-    public void onTimerStartEvent(TimerStartEvent event){ // not necessary
-        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
-        {
-            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
+    @Subscribe
+    public void onTimerStartEvent(TimerStartEvent event) { // not necessary
+        if (event.getScheduledTest().getId().equals(scheduledTest.getId())) {
+            System.out.println(" on schedule test " + scheduledTest.getId() + " timer started ");
         }
     }
 
-@Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){
+    @Subscribe
+    public void onTimeLeftEvent(TimeLeftEvent event) {
         List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
-
         Platform.runLater(() -> {
-            if(scheduleTestId.equals(scheduledTest.getId())) {
-                timeLeft = (long)scheduleTestId_timeLeft.get(1);
-                timeLeftText.setText(Long.toString(timeLeft));
+            if (scheduleTestId.equals(scheduledTest.getId())) {
+                timeLeft = (long) scheduleTestId_timeLeft.get(1);
+                long hours = timeLeft / 60;
+                long remainingMinutes = timeLeft % 60;
+                System.out.println(remainingMinutes);
+                String formattedHours = String.format("%02d", hours);
+                String formattedMinutes = String.format("%02d", remainingMinutes);
+                timeLeftText.setText((formattedHours + ":" + formattedMinutes));
             }
         });
-}
+    }
 
-@Subscribe
+    @Subscribe
     public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
-        if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
-        {
-            System.out.println(" on schedule test "+ scheduledTest.getId() + " timer FINISHED ");
+        if (event.getScheduledTest().getId().equals(scheduledTest.getId())) {
+            System.out.println(" on schedule test " + scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);
             endTest();
         }
@@ -407,30 +405,30 @@ public class StudentExecuteExamController {
     public void endTest() throws IOException {
         studentTest.setScheduledTest(scheduledTest);
         studentTest.setQuestionAnswers(questionAnswers);
-        studentTest.setTimeToComplete(scheduledTest.getTimeLimit()-timeLeft);
-        int sum =0;
+        studentTest.setTimeToComplete(scheduledTest.getTimeLimit() - timeLeft);
+        int sum = 0;
 
         // student test is ready
 
-        for(Question_Answer questionAnswer:questionAnswers){
+        for (Question_Answer questionAnswer : questionAnswers) {
             int points = questionAnswer.getQuestionScore().getScore();
             int indexAnsStudent = questionAnswer.getAnswer();
             int indexCorrect = questionAnswer.getQuestionScore().getQuestion().getIndexAnswer();
-            if(indexAnsStudent == indexCorrect){
-                sum+=points;
+            if (indexAnsStudent == indexCorrect) {
+                sum += points;
             }
         }
         studentTest.setGrade(sum);
         List<Object> student_studentTest_questionAnswers = new ArrayList<>();
         student_studentTest_questionAnswers.add(student);
         student_studentTest_questionAnswers.add(studentTest);
-        for(Question_Answer questionAnswer:questionAnswers){
+        for (Question_Answer questionAnswer : questionAnswers) {
             student_studentTest_questionAnswers.add(questionAnswer);
         }
 
-        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish",scheduledTest.getId()));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Finish", scheduledTest.getId()));
 
-        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers",student_studentTest_questionAnswers));
+        SimpleClient.getClient().sendToServer(new CustomMessage("#saveQuestionAnswers", student_studentTest_questionAnswers));
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
@@ -466,7 +464,7 @@ public class StudentExecuteExamController {
         ButtonType yesButton = new ButtonType("return");
         alert.getButtonTypes().setAll(yesButton);
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == yesButton){
+        if (result.isPresent() && result.get() == yesButton) {
             alert.close();
         }
     }

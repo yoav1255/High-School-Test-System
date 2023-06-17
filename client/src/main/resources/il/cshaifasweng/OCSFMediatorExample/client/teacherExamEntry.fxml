@@ -10,7 +10,7 @@
 
 <AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherExamEntryController">
     <children>
-      <Button layoutX="465.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="26.0" prefWidth="53.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Enter">
+      <Button layoutX="465.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="31.0" prefWidth="59.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Enter">
          <font>
             <Font name="System Bold Italic" size="14.0" />
          </font></Button>

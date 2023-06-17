@@ -206,9 +206,14 @@ public class TeacherExecuteExamController {
         List<Object> testIdTime = event.getScheduleTestId_timeLeft();
         timeLeft = Integer.parseInt(testIdTime.get(1).toString()) ;
         String eventId = (String) testIdTime.get(0);
+        int hours = timeLeft / 60;
+        int remainingMinutes = timeLeft % 60;
+        System.out.println(remainingMinutes);
+        String formattedHours = String.format("%02d", hours);
+        String formattedMinutes = String.format("%02d", remainingMinutes);
         if (eventId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
-                timeLeftText.setText(Integer.toString(timeLeft));
+                timeLeftText.setText((formattedHours + ":" + formattedMinutes));
                 updateStudentsStatus(scheduledTest.getId());
             });
         }
