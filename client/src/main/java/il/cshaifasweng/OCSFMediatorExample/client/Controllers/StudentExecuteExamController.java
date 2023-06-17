@@ -458,7 +458,8 @@ public class StudentExecuteExamController {
         }
     }
 
-    public void handleBackButtonClick(ActionEvent actionEvent) { Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    public void handleBackButtonClick(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("EXIT");
         alert.setHeaderText(null);
         alert.setContentText("Cant go back, please submit test");

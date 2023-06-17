@@ -255,7 +255,7 @@ public class ShowUpdateStudentController {
         App.switchScreen("teacherHome");
         Platform.runLater(() -> {
             try {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
             } catch (Exception e) {
                 e.printStackTrace();
             }
