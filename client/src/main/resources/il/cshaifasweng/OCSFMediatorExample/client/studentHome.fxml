@@ -41,7 +41,7 @@
                         <Font name="Oriya Sangam MN" size="15.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="1.0" top="2.0" />
+                        <Insets top="-2.0" />
                     </VBox.margin>
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
@@ -61,7 +61,7 @@
                         <Font name="Oriya Sangam MN" size="15.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="1.0" top="2.0" />
+                        <Insets top="-2.0" />
                     </VBox.margin>
                 </Button>
             </children>
@@ -111,5 +111,7 @@
                   <Font name="Oriya Sangam MN" size="18.0" />
               </font>
           </Label>
+      <Pane layoutX="208.0" layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
+      <Pane layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
     </children>
 </AnchorPane>
