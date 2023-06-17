@@ -173,7 +173,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
     }
 
     @Subscribe
-    public void onTimerStartEvent(TimerStartEvent event){ // not necessary
+    public synchronized void onTimerStartEvent(TimerStartEvent event){ // not necessary
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");

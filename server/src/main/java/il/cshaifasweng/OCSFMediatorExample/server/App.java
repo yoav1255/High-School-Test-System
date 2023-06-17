@@ -250,11 +250,10 @@ public class App extends Application {
         for (Student student : students)
             session.save(student);
 
-
         session.flush();
     }
 
-    public static List<ScheduledTest> getScheduledTests() throws Exception {
+    public synchronized static List<ScheduledTest> getScheduledTests() throws Exception {
 
         List<ScheduledTest> scheduledTests;
         try (Session session = sessionFactory.openSession()) {
@@ -275,7 +274,7 @@ public class App extends Application {
         return null;
     }
 
-    static List<ScheduledTest> getScheduledTestsActive() throws Exception {
+    public static synchronized List<ScheduledTest> getScheduledTestsActive() throws Exception {
         List<ScheduledTest> scheduledTests;
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -357,7 +356,7 @@ public class App extends Application {
         return true;
     }
 
-    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest, int newStatus) {
+    public synchronized static boolean updateScheduleTestStatus(ScheduledTest scheduledTest, int newStatus) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
@@ -844,7 +843,7 @@ public class App extends Application {
         return questionScores;
     }
 
-    public static ScheduledTest getScheduleTest(String id){
+    public synchronized static ScheduledTest getScheduleTest(String id){
         ScheduledTest scheduledTest;
         Session session = sessionFactory.openSession();
         String queryString = "SELECT st from ScheduledTest st where id =:id";

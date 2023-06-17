@@ -172,43 +172,45 @@ public class ShowScheduleTestController {
         PresentsTable();
     }
     public void PresentsTable(){
-        try {
-            id.setCellValueFactory(new PropertyValueFactory<>("id"));
-            date.setCellValueFactory(new PropertyValueFactory<>("date"));
-            time.setCellValueFactory(cellData -> {
-                String formattedTime = cellData.getValue().getTime().toString();
-                formattedTime = formattedTime.substring(0, 5);
-                return new SimpleStringProperty(formattedTime);
-            });
-            checked.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getCheckedSubmissions() + "/" + param.getValue().getSubmissions()));
-            examFormId.setCellValueFactory(param -> {
-                try {
-                    return new SimpleStringProperty(param.getValue().getExamForm().getCode());
-                } catch (NullPointerException e) {
-                    // Handle the exception here (e.g., set a default value)
-                    return new SimpleStringProperty("N/A");
-                }
-            });
-            teacherId.setCellValueFactory(param -> {
-                try {
-                    return new SimpleStringProperty(param.getValue().getTeacher().getId());
-                } catch (NullPointerException e) {
-                    // Handle the exception here (e.g., set a default value)
-                    return new SimpleStringProperty("N/A");
-                }
-            });
-            //InComputer.setCellValueFactory(new PropertyValueFactory<>("isComputerTest"));
-            InComputer.setCellValueFactory(cellData -> {
-                boolean isComputerTest = cellData.getValue().getIsComputerTest();
-                return new SimpleStringProperty(isComputerTest ? "Online" : "Local");
-            });
-            ShowScheduleTest(presentThis);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Platform.runLater(()->{
+            try {
+                id.setCellValueFactory(new PropertyValueFactory<>("id"));
+                date.setCellValueFactory(new PropertyValueFactory<>("date"));
+                time.setCellValueFactory(cellData -> {
+                    String formattedTime = cellData.getValue().getTime().toString();
+                    formattedTime = formattedTime.substring(0, 5);
+                    return new SimpleStringProperty(formattedTime);
+                });
+                checked.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getCheckedSubmissions() + "/" + param.getValue().getSubmissions()));
+                examFormId.setCellValueFactory(param -> {
+                    try {
+                        return new SimpleStringProperty(param.getValue().getExamForm().getCode());
+                    } catch (NullPointerException e) {
+                        // Handle the exception here (e.g., set a default value)
+                        return new SimpleStringProperty("N/A");
+                    }
+                });
+                teacherId.setCellValueFactory(param -> {
+                    try {
+                        return new SimpleStringProperty(param.getValue().getTeacher().getId());
+                    } catch (NullPointerException e) {
+                        // Handle the exception here (e.g., set a default value)
+                        return new SimpleStringProperty("N/A");
+                    }
+                });
+                //InComputer.setCellValueFactory(new PropertyValueFactory<>("isComputerTest"));
+                InComputer.setCellValueFactory(cellData -> {
+                    boolean isComputerTest = cellData.getValue().getIsComputerTest();
+                    return new SimpleStringProperty(isComputerTest ? "Online" : "Local");
+                });
+                ShowScheduleTest(presentThis);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    public void ShowScheduleTest(String show) {
+    public synchronized void ShowScheduleTest(String show) {
         ObservableList<ScheduledTest> scheduledTestObservableList = FXCollections.observableArrayList();
 
         if (show.equals("ShowAllTests")) {
@@ -281,9 +283,11 @@ public class ShowScheduleTestController {
     }
     @FXML
     void showTestHasntPerformed(ActionEvent event) {
-        testHasntPerformed.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
-        testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
-        showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        Platform.runLater(()->{
+            testHasntPerformed.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
+            testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+            showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        });
 
         this.presentThis="ShowTestHasntPerformed";
         testsPerformed = false;
@@ -295,9 +299,11 @@ public class ShowScheduleTestController {
 
     @FXML
     void showTestPerformed(ActionEvent event) {
-        testPerformed.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
-        showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
-        testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        Platform.runLater(()->{
+            testPerformed.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
+            showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+            testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        });
 
         this.presentThis="ShowTestPerformed";
         testsPerformed = true;
@@ -309,9 +315,11 @@ public class ShowScheduleTestController {
 
     @FXML
     void handleShowAllTest(ActionEvent event) {
-        showAllTest.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
-        testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
-        testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        Platform.runLater(()->{
+            showAllTest.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
+            testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+            testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        });
 
         this.presentThis="ShowAllTests";
         testsPerformed = false;
