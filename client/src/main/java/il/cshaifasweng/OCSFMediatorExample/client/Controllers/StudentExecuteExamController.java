@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,22 +26,25 @@ import java.util.Optional;
 public class StudentExecuteExamController {
 
 
-    @FXML
-    private GridPane StudentsGR;
-    @FXML
-    private Button homeBN;
+
     @FXML
     private Label text_Id;
     @FXML
     private Label timeLeftText;
-    @FXML
-    private Button submitButton;
+
     @FXML
     private List<ToggleGroup> toggleGroups = new ArrayList<>();
     @FXML
     private ToggleGroup toggleGroup;
     @FXML
-    private ListView<Question_Answer> questionsListView;
+    private StackPane questionStackPane;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private Button previousButton;
+
+    private int currentQuestionIndex = 0;
+    private int totalQuestions;
 
     private String id;
     private ScheduledTest scheduledTest;
@@ -94,7 +98,7 @@ public class StudentExecuteExamController {
 
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
-        scheduledTest = event.getSelectedTestEvent();
+        /*scheduledTest = event.getSelectedTestEvent();
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
 
         questionScoreList = scheduledTest.getExamForm().getQuestionScores();
@@ -112,7 +116,7 @@ public class StudentExecuteExamController {
         ObservableList<Question_Answer> questionAnswerObservableList = FXCollections.observableArrayList(questionAnswers);
         questionsListView.setItems(questionAnswerObservableList);
 
-        questionsListView.setCellFactory(param -> new ListCell<Question_Answer>() {
+        questionsListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Question_Answer questionAnswer, boolean empty) {
                 super.updateItem(questionAnswer, empty);
@@ -187,12 +191,121 @@ public class StudentExecuteExamController {
                     });
 
 
-
                     //
                 }
             }
         });
+        //
+*/
+
+        scheduledTest = event.getSelectedTestEvent();
+        SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start",scheduledTest.getId()));
+
+        questionScoreList = scheduledTest.getExamForm().getQuestionScores();
+
+        for (Question_Score questionScore : questionScoreList) {
+            Question_Answer questionAnswer = new Question_Answer();
+            questionAnswer.setStudentTest(studentTest);
+            questionAnswer.setQuestionScore(questionScore);
+            questionAnswer.setAnswer(-1); // Initialize with no answer selected
+            questionScore.getQuestionAnswers().add(questionAnswer);
+
+            questionAnswers.add(questionAnswer);
+        }
+
+        totalQuestions = questionAnswers.size();
+        displayQuestion(currentQuestionIndex);
     }
+
+    @FXML
+    private void previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion(currentQuestionIndex);
+        }
+    }
+
+    @FXML
+    private void nextQuestion() {
+        if (currentQuestionIndex < totalQuestions - 1) {
+            currentQuestionIndex++;
+            displayQuestion(currentQuestionIndex);
+        }
+    }
+
+    private void displayQuestion(int questionIndex) {
+        if (questionIndex >= 0 && questionIndex < totalQuestions) {
+
+            Question_Answer questionAnswer = questionAnswers.get(questionIndex);
+            Question_Score qs = questionAnswer.getQuestionScore();
+            Question q = qs.getQuestion();
+
+            String questionText = q.getText();
+            String answer0 = q.getAnswer0();
+            String answer1 = q.getAnswer1();
+            String answer2 = q.getAnswer2();
+            String answer3 = q.getAnswer3();
+
+
+            VBox vbox = new VBox();
+            vbox.setSpacing(10);
+
+            Label questionLabel = new Label("Question:      " + questionText);
+            vbox.getChildren().add(questionLabel);
+
+            ToggleGroup toggleGroup = new ToggleGroup();
+
+            RadioButton answer1RadioButton = new RadioButton("1.    " + answer0);
+            answer1RadioButton.setToggleGroup(toggleGroup);
+            vbox.getChildren().add(answer1RadioButton);
+
+            RadioButton answer2RadioButton = new RadioButton("2.     " + answer1);
+            answer2RadioButton.setToggleGroup(toggleGroup);
+            vbox.getChildren().add(answer2RadioButton);
+
+            RadioButton answer3RadioButton = new RadioButton("3.     " + answer2);
+            answer3RadioButton.setToggleGroup(toggleGroup);
+            vbox.getChildren().add(answer3RadioButton);
+
+            RadioButton answer4RadioButton = new RadioButton("4.     " + answer3);
+            answer4RadioButton.setToggleGroup(toggleGroup);
+            vbox.getChildren().add(answer4RadioButton);
+
+            Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
+            vbox.getChildren().add(noteStudentLabel);
+
+            Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
+            vbox.getChildren().add(scoreLabel);
+
+            Label note = new Label("note: ");
+            vbox.getChildren().add(note);
+            TextField noteText = new TextField();
+            vbox.getChildren().add(noteText);
+
+            noteText.textProperty().addListener((observable, oldValue, newValue) -> {
+                // Save the entered note to the Question_Answer object
+                questionAnswer.setNote(newValue);
+            });
+
+            toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+                RadioButton selectedRadioButton = (RadioButton) newValue;
+                if (selectedRadioButton != null) {
+                    int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
+                    questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
+                }
+            });
+            Platform.runLater(()->{
+                questionStackPane.getChildren().setAll(vbox);
+                // Enable/disable previous and next buttons based on the current question index
+                previousButton.setDisable(questionIndex == 0);
+                nextButton.setDisable(questionIndex == totalQuestions - 1);
+            });
+
+
+        }
+    }
+
+
 
     @FXML
     public void submitTestBtn(ActionEvent event) throws IOException {
@@ -222,7 +335,11 @@ public class StudentExecuteExamController {
         App.switchScreen("studentHome");
         Platform.runLater(()->{
             if (studentTest.isOnTime()) {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setContentText("Exam Submitted Successfully");

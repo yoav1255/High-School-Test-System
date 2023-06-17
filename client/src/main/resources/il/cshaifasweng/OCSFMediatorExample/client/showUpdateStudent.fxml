@@ -63,6 +63,7 @@
                 </Button>
             <Label layoutX="287.0" layoutY="78.0" prefHeight="19.0" prefWidth="161.0" text="Explanation for grade change" />
             <TextArea fx:id="txtChange" layoutX="447.0" layoutY="53.0" prefHeight="70.0" prefWidth="285.0" />
+            <Label fx:id="update_status" layoutX="257.0" layoutY="119.0" prefHeight="17.0" prefWidth="221.0" text="update status" />
             </children>
         </Pane>
       <ListView fx:id="questionsListView" layoutX="119.0" layoutY="176.0" prefHeight="401.0" prefWidth="752.0" />
