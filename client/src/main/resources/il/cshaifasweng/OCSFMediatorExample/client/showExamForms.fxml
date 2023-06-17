@@ -38,9 +38,9 @@
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
                <children>
-                  <Button fx:id="btnNewExamForm" layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" style="-fx-background-color: orange;" text="create test">
+                  <Button fx:id="btnNewExamForm" layoutX="6.0" layoutY="12.0" mnemonicParsing="false" onAction="#handleAddExamForm" style="-fx-background-color: orange;" text="Create Test">
                      <font>
-                        <Font name="System Bold Italic" size="12.0" />
+                        <Font name="System Bold Italic" size="18.0" />
                      </font></Button>
                </children>
                 </Pane>
@@ -62,11 +62,6 @@
         </GridPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Pane layoutX="295.0" layoutY="-16.0" prefHeight="83.0" prefWidth="214.0">
                <children>
                   <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER" visible="false">

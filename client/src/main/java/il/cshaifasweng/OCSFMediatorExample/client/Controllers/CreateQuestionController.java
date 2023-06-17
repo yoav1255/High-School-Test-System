@@ -150,13 +150,13 @@ public class CreateQuestionController {
 
             if(isUpdate && firstEntryUpdate){ // on update
 
-                ObservableList<String> selected = FXCollections.observableArrayList();
-                ObservableList<String> unSelected = FXCollections.observableArrayList();
+                selected = FXCollections.observableArrayList();
+                unSelected = FXCollections.observableArrayList();
 
                 List<Course> QuestionsCourses = updateQuestion.getCourses();
+                boolean select = false;
                 for(Course course : courses){
                     String courseName = course.getName();
-                    boolean select = false;
                     for(Course qc : QuestionsCourses) {
                         if (qc.getCode() == course.getCode()) {
                             selected.add(courseName);
@@ -173,7 +173,6 @@ public class CreateQuestionController {
                     listSelectionView_Courses.getSourceItems().addAll(unSelected);
                     listSelectionView_Courses.getTargetItems().addAll(selected);
                 });
-
             }
             else { // not on update
                 unSelected = FXCollections.observableArrayList(items);
@@ -189,12 +188,13 @@ public class CreateQuestionController {
 
     @FXML
     public void handleConfirmButtonClick(ActionEvent event) {
-        System.out.println("size selected: " +listSelectionView_Courses.getTargetItems().size());
+        selected = listSelectionView_Courses.getTargetItems();
+        unSelected = listSelectionView_Courses.getSourceItems();
         if (theQuestion.getText().isEmpty() || ans1.getText().isEmpty() || ans2.getText().isEmpty() || ans3.getText().isEmpty()
                 || ans4.getText().isEmpty() || comboAns.getSelectionModel().isEmpty() || selected.isEmpty()) {
 
             Platform.runLater(()->{
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                Alert alert = new Alert(Alert.AlertType.ERROR); //////
                 alert.setTitle("Error");
                 alert.setHeaderText(null);
                 alert.setContentText("Error! Fill all the fields");
@@ -219,10 +219,10 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION); /////
             alert.setTitle("Confirmation");
             alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-            alert.setHeaderText(null);
+            alert.setHeaderText("Wait!");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
@@ -254,10 +254,10 @@ public class CreateQuestionController {
                 e.printStackTrace();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION); /////
             alert.setTitle("Confirmation");
             alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-            alert.setHeaderText(null);
+            alert.setHeaderText("Wait!");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
@@ -369,7 +369,7 @@ public class CreateQuestionController {
         }
     }
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); /////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");

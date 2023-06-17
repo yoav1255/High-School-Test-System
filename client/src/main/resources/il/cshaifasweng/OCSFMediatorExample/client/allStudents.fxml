@@ -34,24 +34,11 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
-            <Pane prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <Label fx:id="statusLB1" layoutX="383.0" layoutY="9.0" text="to show student grades, double click his row">
-                     <font>
-                        <Font name="Oriya Sangam MN" size="12.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Pane>
+            <Pane prefHeight="200.0" prefWidth="200.0" />
             </children>
         </GridPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

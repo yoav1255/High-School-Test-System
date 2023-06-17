@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExtraTime;
+import il.cshaifasweng.OCSFMediatorExample.entities.Principal;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
@@ -36,11 +37,12 @@ public class ManagerHomeController {
 
     @FXML
     private Label idLabel;
-
     @FXML
-    private Label statusLB;
+    private Label helloLabel;
 
     private String id;
+
+    private Principal manager;
 
     public ManagerHomeController(){
         EventBus.getDefault().register(this);
@@ -52,10 +54,12 @@ public class ManagerHomeController {
     public void setId(String id){this.id = id;}
 
 
+
     @FXML
     @Subscribe
     public void onUserHomeEvent(UserHomeEvent event){
-        setId(event.getUserID());
+        setId((String) event.getUserID().get(0));
+        manager = (Principal) event.getUserID().get(1);
         initializeIfIdNotNull();
     }
 
@@ -78,12 +82,14 @@ public class ManagerHomeController {
     }
 
     private void initializeIfIdNotNull() {
-        if (id != null) {
-            Platform.runLater(()->{
-                idLabel.setText("ID: " + id);
-            });
-
-        }
+        Platform.runLater(()->{
+            if (id != null) {
+                idLabel.setText("ID: " + this.id);
+            }
+            if (manager != null) {
+                helloLabel.setText("Hello Manager " + manager.getFirst_name() + " " + manager.getLast_name());
+            }
+        });
     }
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {

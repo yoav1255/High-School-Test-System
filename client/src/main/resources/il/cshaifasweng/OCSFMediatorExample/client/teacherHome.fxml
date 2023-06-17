@@ -13,7 +13,7 @@
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
-                <Pane prefHeight="83.0" prefWidth="214.0">
+                <Pane prefHeight="110.0" prefWidth="214.0">
                     <children>
                         <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
                             <font>
@@ -29,45 +29,45 @@
                 </Pane>
             <Button fx:id="showStudents" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Students List">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
-                  <Font name="Oriya Sangam MN" size="15.0" />
+                  <Font name="Arial Black" size="16.0" />
                </font></Button>
             <Button fx:id="showQuestionsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowQuestionsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Questions">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
-                  <Font name="Oriya Sangam MN" size="15.0" />
+                  <Font name="Arial Black" size="16.0" />
                </font></Button>
             <Button fx:id="ShowExamsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowExamFormsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exam Forms">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
-                  <Font name="Oriya Sangam MN" size="15.0" />
+                  <Font name="Arial Black" size="16.0" />
                </font></Button>
             <Button fx:id="showScheduledbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleShowScheduledTestsButtonClick" prefHeight="47.0" prefWidth="220.0" text="Scheduled Tests">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
-                  <Font name="Oriya Sangam MN" size="15.0" />
+                  <Font name="Arial Black" size="16.0" />
                </font></Button>
             <Button fx:id="showStatsbtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStatistics" prefHeight="47.0" prefWidth="220.0" text="Statistics">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
-                  <Font name="Oriya Sangam MN" size="15.0" />
+                  <Font name="Arial Black" size="16.0" />
                </font></Button>
-            <Button fx:id="ExecExam" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleExecExamButtonClick" prefHeight="47.0" prefWidth="220.0" text="Exec Exam">
+            <Button fx:id="ExecExam" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="287.0" mnemonicParsing="false" onAction="#handleExecExamButtonClick" prefHeight="47.0" prefWidth="218.0" text="Exec Exam">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
-                  <Font name="Oriya Sangam MN" size="15.0" />
+                  <Font name="Arial Black" size="16.0" />
                </font></Button>
             </children>
         </VBox>
@@ -102,16 +102,20 @@
                 <!--            <FontAwesomeIconView glyphName="ARROW_LEFT" layoutX="726.0" layoutY="26.0" size="20" />-->
             </children>
         </Pane>
-        <Pane layoutX="299.0" layoutY="110.0" prefHeight="385.0" prefWidth="512.0" />
-          <Label layoutX="704.0" layoutY="59.0" text="Hello teacher !">
+        <Pane layoutX="299.0" layoutY="110.0" prefHeight="385.0" prefWidth="512.0">
+         <children>
+                <Label fx:id="helloLabel" layoutX="38.0" layoutY="171.0" text="Hello teacher !">
+                    <font>
+                        <Font name="Arial Bold" size="20.0" />
+                    </font>
+                </Label>
+         </children></Pane>
+          <Label fx:id="idLabel" layoutX="868.0" layoutY="49.0" text="ID : ">
               <font>
                   <Font name="Oriya Sangam MN" size="18.0" />
               </font>
           </Label>
-          <Label fx:id="idLabel" layoutX="701.0" layoutY="90.0" text="ID : ">
-              <font>
-                  <Font name="Oriya Sangam MN" size="18.0" />
-              </font>
-          </Label>
+      <Pane layoutX="208.0" layoutY="33.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
+      <Pane layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
     </children>
 </AnchorPane>

@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
+import il.cshaifasweng.OCSFMediatorExample.entities.Teacher;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdTestOverEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveManagerIdEvent;
@@ -37,9 +38,10 @@ public class TeacherHomeController {
     private Label idLabel;
 
     @FXML
-    private Label statusLB;
+    private Label helloLabel;
 
     private String id;
+    private Teacher teacher;
     private static int instances = 0;
 
     public TeacherHomeController(){
@@ -75,7 +77,8 @@ public class TeacherHomeController {
     @FXML
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserHomeEvent(UserHomeEvent event){
-            setId(event.getUserID());
+            setId((String) event.getUserID().get(0));
+            teacher = (Teacher) event.getUserID().get(1);
             initializeIfIdNotNull();
     }
 
@@ -88,6 +91,9 @@ public class TeacherHomeController {
         Platform.runLater(()->{
             if (id != null) {
                 idLabel.setText("ID: " + this.id);
+            }
+            if (teacher != null) {
+                helloLabel.setText("Hello Teacher " + teacher.getFirst_name() + " " + teacher.getLast_name());
             }
         });
 

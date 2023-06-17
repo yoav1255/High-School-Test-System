@@ -20,8 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherExamStats;
-import static il.cshaifasweng.OCSFMediatorExample.server.App.getTeacherWriterExamStats;
+import static il.cshaifasweng.OCSFMediatorExample.server.App.*;
 
 public class SimpleServer extends AbstractServer {
 	private static List<ScheduledTest> scheduledTests;
@@ -127,13 +126,22 @@ public class SimpleServer extends AbstractServer {
 					App.logout(info.get(0), info.get(1));
 					break;
 				case ("#studentHome"):
-					client.sendToClient(new CustomMessage("studentHome", message.getData()));
+					ArrayList<Object> student_info = new ArrayList<>();
+					student_info.add((String) message.getData());
+					student_info.add(getStudent((String) message.getData()));
+					client.sendToClient(new CustomMessage("studentHome", student_info));
 					break;
 				case ("#teacherHome"):
-					client.sendToClient(new CustomMessage("teacherHome", message.getData()));
+					ArrayList<Object> teacher_info = new ArrayList<>();
+					teacher_info.add((String) message.getData());
+					teacher_info.add(getTeacherFromId((String) message.getData()));
+					client.sendToClient(new CustomMessage("teacherHome", teacher_info));
 					break;
 				case ("#managerHome"):
-					client.sendToClient(new CustomMessage("managerHome", message.getData()));
+					ArrayList<Object> manager_info = new ArrayList<>();
+					manager_info.add((String) message.getData());
+					manager_info.add(getPrincipalFromId((String) message.getData()));
+					client.sendToClient(new CustomMessage("managerHome", manager_info));
 					break;
 				case ("#getSubjects"):
 					List<Subject> subjects = App.getSubjectsFromTeacherId(message.getData().toString());
@@ -169,8 +177,7 @@ public class SimpleServer extends AbstractServer {
 					break;
 				case ("#addExamForm"):
 					ExamForm examForm = (ExamForm) message.getData();
-					boolean check1 = App.addExamForm(examForm);
-					client.sendToClient(new CustomMessage("addExamForm",check1));
+					App.addExamForm(examForm);
 					break;
 				case ("#addQuestionScores"):
 					List<Question_Score> questionScores = (List<Question_Score>) message.getData();

@@ -34,10 +34,6 @@ public class ShowStudentTest {
 
     @FXML
     private Label oldGrade;
-
-    @FXML
-    private Label statusLB;
-
     @FXML
     private Label test_course;
 
@@ -91,8 +87,7 @@ public class ShowStudentTest {
         try {
             studentTest = event.getStudentTest();
             Platform.runLater(() -> {
-                statusLB.setText(statusLB.getText() + studentTest.getExamFormCode());
-                test_id.setText(String.valueOf(studentTest.getExamFormCode()));
+                test_id.setText(String.valueOf(studentTest.getScheduledTest().getId()));
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
                 timeToComplete.setText(String.valueOf(studentTest.getTimeToComplete()));
@@ -134,48 +129,45 @@ public class ShowStudentTest {
                         }
 
                         Label answerLabel0 = new Label("1.      " + question.getAnswer0());
-
                         if (questionAnswer.getAnswer() == 0)
-                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 0) {
-                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel0);
 
                         Label answerLabel1 = new Label("2.      " + question.getAnswer1());
                         if (questionAnswer.getAnswer() == 1)
-                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 1) {
-                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel1);
 
                         Label answerLabel2 = new Label("3.      " + question.getAnswer2());
                         if (questionAnswer.getAnswer() == 2)
-                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 2) {
-                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel2);
 
                         Label answerLabel3 = new Label("4.      " + question.getAnswer3());
                         if (questionAnswer.getAnswer() == 3)
-                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: red;");
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(indianred,0%,50%);");
                         if (question.getIndexAnswer() == 3) {
-                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");
                         }
                         vbox.getChildren().add(answerLabel3);
 
                         Label score = new Label("( " + questionScore.getScore() + " points )");
                         vbox.getChildren().add(score);
 
-                        if (questionAnswer.getNote() != "") {
+                        if (questionAnswer.getNote()!=null) {
                             Label studentNotes = new Label("Student Note: " + questionAnswer.getNote());
                             vbox.getChildren().add(studentNotes);
                         }
                         setGraphic(vbox);
-
-
                     }
                 }
             });

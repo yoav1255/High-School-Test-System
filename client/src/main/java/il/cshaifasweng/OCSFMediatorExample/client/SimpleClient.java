@@ -56,7 +56,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new loginEvent(login_auth));
 					break;
 				case ("studentHome"),("teacherHome"),("managerHome"):
-					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
+					EventBus.getDefault().post(new UserHomeEvent((ArrayList<Object>) message.getData()));
 					break;
 				case ("returnSubjects"):
 					List<Subject> subjects = (List<Subject>) message.getData();
@@ -154,9 +154,6 @@ public class SimpleClient extends AbstractClient {
 					break;
 				case ("Terminate"):
 					System.exit(0);
-					break;
-				case ("addExamForm"):
-					EventBus.getDefault().post(new AddExamFormResponseEvent((Boolean)message.getData()));
 					break;
 				case ("updateScheduleTest"):
 					EventBus.getDefault().post(new UpdateScheduleTestEvent((Boolean)message.getData()));

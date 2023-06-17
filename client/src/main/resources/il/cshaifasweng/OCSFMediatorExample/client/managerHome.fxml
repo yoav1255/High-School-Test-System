@@ -13,7 +13,7 @@
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
-                <Pane prefHeight="83.0" prefWidth="214.0">
+                <Pane prefHeight="110.0" prefWidth="214.0">
                     <children>
                         <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
                             <font>
@@ -27,7 +27,7 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Students List">
+                <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" text="Students List">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
@@ -41,33 +41,33 @@
                         <Font name="Oriya Sangam MN" size="15.0" />
                     </font>
                     <VBox.margin>
-                        <Insets top="2.0" />
+                        <Insets top="-2.0" />
                     </VBox.margin>
                 </Button>
             <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToQuestions" prefHeight="45.0" prefWidth="218.0" text="Questions">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
                   <Font name="Oriya Sangam MN" size="15.0" />
                </font></Button>
             <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToExamForms" prefHeight="45.0" prefWidth="218.0" text="Exam Forms">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
                   <Font name="Oriya Sangam MN" size="15.0" />
                </font></Button>
             <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToScheduledTests" prefHeight="45.0" prefWidth="218.0" text="Scheduled Tests">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
                   <Font name="Oriya Sangam MN" size="15.0" />
                </font></Button>
             <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#goToStatistics" prefHeight="45.0" prefWidth="218.0" text="Statistics">
                <VBox.margin>
-                  <Insets top="2.0" />
+                  <Insets top="-2.0" />
                </VBox.margin>
                <font>
                   <Font name="Oriya Sangam MN" size="15.0" />
@@ -107,17 +107,19 @@
         </Pane>
         <Pane layoutX="331.0" layoutY="106.0" prefHeight="385.0" prefWidth="512.0">
             <children>
-                <Label layoutX="150.0" layoutY="110.0" text="Hello manager !">
+                <Label fx:id="helloLabel" layoutX="38.0" layoutY="155.0" text="Hello manager !">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
-                    </font>
-                </Label>
-                <Label fx:id="idLabel" layoutX="302.0" layoutY="110.0" text="ID : ">
-                    <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Label>
             </children>
         </Pane>
+          <Label fx:id="idLabel" layoutX="856.0" layoutY="63.0" text="ID : ">
+              <font>
+                  <Font name="Arial" size="18.0" />
+              </font>
+          </Label>
+      <Pane layoutX="208.0" layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
+      <Pane layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
     </children>
 </AnchorPane>

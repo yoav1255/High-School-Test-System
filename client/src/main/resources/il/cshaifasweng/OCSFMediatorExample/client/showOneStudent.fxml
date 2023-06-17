@@ -16,11 +16,6 @@
     <children>
         <Pane layoutY="-1.0" prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
             <children>
-                <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-                    <font>
-                        <Font name="Oriya Sangam MN" size="13.0" />
-                    </font>
-                </Label>
                 <Button fx:id="backBN" layoutX="874.0" layoutY="4.0" mnemonicParsing="false" onAction="#handleBackButtonClick" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20;" text="BACK">
                     <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
@@ -77,12 +72,12 @@
                 </TableView>
                 <Pane fx:id="student_details_PN" prefHeight="200.0" prefWidth="710.0">
                     <children>
-                        <Label fx:id="student_id" layoutX="14.0" layoutY="13.0" prefHeight="30.0" prefWidth="348.0" text="Student ID: ">
+                        <Label fx:id="student_id" layoutX="33.0" layoutY="13.0" prefHeight="30.0" prefWidth="348.0" text="Student ID: ">
                             <font>
                                 <Font name="Oriya Sangam MN" size="18.0" />
                             </font>
                         </Label>
-                        <Label fx:id="student_name" layoutX="362.0" layoutY="13.0" prefHeight="30.0" prefWidth="362.0" text="Student Name: ">
+                        <Label fx:id="student_name" layoutX="381.0" layoutY="13.0" prefHeight="30.0" prefWidth="362.0" text="Student Name: ">
                             <font>
                                 <Font name="Oriya Sangam MN" size="18.0" />
                             </font>

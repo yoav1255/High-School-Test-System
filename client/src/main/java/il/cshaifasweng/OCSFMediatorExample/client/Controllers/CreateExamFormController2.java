@@ -232,9 +232,9 @@ public class CreateExamFormController2 {
         App.switchScreen("showExamForms");
         Platform.runLater(()->{
             EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText(null);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION); ///
+            alert.setTitle("Exam Added Successfully");
+            alert.setHeaderText("Success!");
             alert.setContentText("Exam created successfully! Exam code is: " + ExamCode);
             alert.show();
         });
@@ -287,30 +287,12 @@ public class CreateExamFormController2 {
         }
 
     }
-    @Subscribe
-    public void onAddExamFormResponseEvent(AddExamFormResponseEvent event){
-        Platform.runLater(()->{
-            if (event.isCheck()){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText(null);
-                alert.setContentText("Exam Added Successfully");
-                alert.show();
-            }
-            else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("There was a problem and the Exam did not save. please enter it again");
-            }
-        });
-    }
     @FXML
     void handleGoBackButtonClick(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("Confirmation");
         alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-        alert.setHeaderText(null);
+        alert.setHeaderText("Wait!");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             cleanup();
@@ -395,26 +377,22 @@ public class CreateExamFormController2 {
 
                         Label answerLabel0 = new Label("1.      " + question.getAnswer0());
                         if (question.getIndexAnswer() == 0) {
-                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                        }
+                            answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
                         vbox.getChildren().add(answerLabel0);
 
                         Label answerLabel1 = new Label("2.      " + question.getAnswer1());
                         if (question.getIndexAnswer() == 1) {
-                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                        }
+                            answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
                         vbox.getChildren().add(answerLabel1);
 
                         Label answerLabel2 = new Label("3.      " + question.getAnswer2());
                         if (question.getIndexAnswer() == 2) {
-                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                        }
+                            answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
                         vbox.getChildren().add(answerLabel2);
 
                         Label answerLabel3 = new Label("4.      " + question.getAnswer3());
                         if (question.getIndexAnswer() == 3) {
-                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
-                        }
+                            answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
                         vbox.getChildren().add(answerLabel3);
 
                         setGraphic(vbox);
@@ -508,10 +486,10 @@ public class CreateExamFormController2 {
     }
 @FXML
     public void handleBackButtonClick(ActionEvent event) {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ///
     alert.setTitle("Confirmation");
     alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-    alert.setHeaderText(null);
+    alert.setHeaderText("Wait!");
     Optional<ButtonType> result = alert.showAndWait();
     if (result.isPresent() && result.get() == ButtonType.OK) {
         try {
@@ -551,10 +529,10 @@ public class CreateExamFormController2 {
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("Confirmation");
         alert.setContentText("Your changes will be lost. Do you wand to proceed?");
-        alert.setHeaderText(null);
+        alert.setHeaderText("Wait!");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try{
@@ -570,7 +548,7 @@ public class CreateExamFormController2 {
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");

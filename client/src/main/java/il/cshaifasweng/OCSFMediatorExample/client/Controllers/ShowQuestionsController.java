@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -55,35 +56,62 @@ public class ShowQuestionsController {
     @FXML
     TableView<Question> tableView;
     @FXML
-    private TableColumn<Question, String> tableQuestID;
-    @FXML
-    private TableColumn<Question, String> tableText;
-    @FXML
-    private TableColumn<Question, String> tableAns1;
-    @FXML
-    private TableColumn<Question, String> tableAns2;
-    @FXML
-    private TableColumn<Question, String> tableAns3;
-    @FXML
-    private TableColumn<Question, String> tableAns4;
-    @FXML
     private Label labelX;
+    @FXML
+    private ListView<Question> question_list_view;
 
     @Subscribe
     public void onShowCourseQuestions(ShowCourseQuestionsEvent event){
         try {
             questions.clear();
             questions = event.getQuestions();
-            tableQuestID.setCellValueFactory(new PropertyValueFactory<>("id"));
-            tableText.setCellValueFactory(new PropertyValueFactory<>("text"));
-            tableAns1.setCellValueFactory(new PropertyValueFactory<>("answer0"));
-            tableAns2.setCellValueFactory(new PropertyValueFactory<>("answer1"));
-            tableAns3.setCellValueFactory(new PropertyValueFactory<>("answer2"));
-            tableAns4.setCellValueFactory(new PropertyValueFactory<>("answer3"));
 
             ObservableList<Question> questions1 = FXCollections.observableArrayList(questions);
-            tableView.setItems(questions1);
-            tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+            Platform.runLater(()->{
+                question_list_view.setItems(questions1);
+            });
+
+            question_list_view.setCellFactory(param -> new ListCell<>() {
+                @Override
+                protected void updateItem(Question question, boolean empty) {
+                    super.updateItem(question, empty);
+                    if (empty || question == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        Platform.runLater(() -> {
+                            VBox vbox = new VBox();
+                            Label questionText = new Label(question.getText());
+                            vbox.getChildren().add(questionText);
+
+                            // Add the answers as separate labels in the VBox
+
+                            Label answerLabel0 = new Label("1.      " + question.getAnswer0());
+                            if (question.getIndexAnswer() == 0) {
+                                answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
+                            vbox.getChildren().add(answerLabel0);
+
+                            Label answerLabel1 = new Label("2.      " + question.getAnswer1());
+                            if (question.getIndexAnswer() == 1) {
+                                answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
+                            vbox.getChildren().add(answerLabel1);
+
+                            Label answerLabel2 = new Label("3.      " + question.getAnswer2());
+                            if (question.getIndexAnswer() == 2) {
+                                answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
+                            vbox.getChildren().add(answerLabel2);
+
+                            Label answerLabel3 = new Label("4.      " + question.getAnswer3());
+                            if (question.getIndexAnswer() == 3) {
+                                answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
+                            vbox.getChildren().add(answerLabel3);
+
+                            setGraphic(vbox);
+
+                        });
+                    }
+                }
+            });
 
 
         }catch (Exception e){
@@ -275,7 +303,7 @@ public class ShowQuestionsController {
             try {
                 if (event.getClickCount() == 2) { // Check if the user double-clicked the row
 
-                    Question selectedQuestion = tableView.getSelectionModel().getSelectedItem();
+                    Question selectedQuestion = question_list_view.getSelectionModel().getSelectedItem();
                     if (selectedQuestion != null) {
 
                         List<Object> setTeacherAndQuestion = new ArrayList<>();
@@ -285,7 +313,6 @@ public class ShowQuestionsController {
                         App.switchScreen("createQuestion");
                         Platform.runLater(() -> {
                             try {
-                                //SimpleClient.getClient().sendToServer(new CustomMessage("#getSubjects", id));
                                 Platform.runLater(() -> {
                                     try {
                                         SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionToUpdate",setTeacherAndQuestion));
@@ -324,24 +351,24 @@ public class ShowQuestionsController {
     public void displayMsg(String questId) {
         Platform.runLater(() -> {
             if (!Objects.equals(questId, "0")){
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText(null);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION); ////
+                alert.setTitle("Question added successfully");
+                alert.setHeaderText("Success!");
                 alert.setContentText("Question added. Question ID: " + questId);
                 alert.show();
           }
             else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setContentText("There was a problem and the question did not save. please enter it again");
-                alert.setHeaderText(null);
+                Alert alert = new Alert(Alert.AlertType.ERROR); ////
+                alert.setTitle("Question did not add...");
+                alert.setContentText("There was a problem and the question was not saved. Please enter it again");
+                alert.setHeaderText("Error");
                 alert.show();
             }
         });
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION); ////
         alert.setTitle("LOGOUT");
         alert.setHeaderText(null);
         alert.setContentText("Are you sure you want to logout?");

@@ -87,7 +87,9 @@ public class ShowStatisticsController {
             cleanup();
             javafx.application.Platform.exit();
         });
-
+        Platform.runLater(() -> {
+            combobox_id.setDisable(true);
+        });
     }
 
 
@@ -131,6 +133,7 @@ public class ShowStatisticsController {
 
     public void selected_stat(ActionEvent actionEvent) throws IOException {
         Platform.runLater(()->{
+            combobox_id.setDisable(false);
             statistics_table_view.refresh();
         });
             String selectedParameter = stat_combobox.getValue();
