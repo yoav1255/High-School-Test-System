@@ -29,9 +29,6 @@ public class ShowOneStudentController {
     @FXML
     private TableView<StudentTest> GradesTable;
     @FXML
-    private Label labelInfo;
-
-    @FXML
     private TableColumn<StudentTest, String> TableCourse;
 
     @FXML
@@ -104,10 +101,10 @@ public class ShowOneStudentController {
     @Subscribe
     public void onMoveObjectToNextPageEvent(MoveObjectToNextPageEvent event){
         student = (Student) event.getObject();
-        student_id.setText(student_id.getText() + student.getId());
-        student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
+
         Platform.runLater(() -> {
-            labelInfo.setVisible(false);
+            student_id.setText(student_id.getText() + student.getId());
+            student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
         });
     }
 

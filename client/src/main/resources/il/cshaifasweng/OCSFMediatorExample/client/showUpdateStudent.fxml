@@ -29,7 +29,7 @@
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label layoutX="458.0" layoutY="14.0" text="New Grade:">
+                <Label layoutX="447.0" layoutY="14.0" text="New Grade:">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
@@ -49,7 +49,7 @@
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <TextField fx:id="newGrade" layoutX="568.0" layoutY="13.0" prefHeight="29.0" prefWidth="90.0" promptText="new grade" style="-fx-background-radius: 10;">
+                <TextField fx:id="newGrade" layoutX="564.0" layoutY="13.0" prefHeight="29.0" prefWidth="90.0" promptText="new grade" style="-fx-background-radius: 10;">
                <cursor>
                   <Cursor fx:constant="TEXT" />
                </cursor></TextField>
@@ -61,8 +61,9 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
                 </Button>
-            <Label layoutX="287.0" layoutY="78.0" prefHeight="19.0" prefWidth="161.0" text="Explanation for grade change" />
-            <TextArea fx:id="txtChange" layoutX="447.0" layoutY="53.0" prefHeight="70.0" prefWidth="285.0" />
+            <Label layoutX="448.0" layoutY="46.0" prefHeight="19.0" prefWidth="161.0" text="Explanation for grade change" />
+            <TextArea fx:id="txtChange" layoutX="447.0" layoutY="63.0" prefHeight="51.0" prefWidth="285.0" wrapText="true" />
+            <Label fx:id="update_status" layoutX="447.0" layoutY="119.0" prefHeight="17.0" prefWidth="228.0" text="update status" textFill="RED" />
             </children>
         </Pane>
       <ListView fx:id="questionsListView" layoutX="119.0" layoutY="176.0" prefHeight="401.0" prefWidth="752.0" />

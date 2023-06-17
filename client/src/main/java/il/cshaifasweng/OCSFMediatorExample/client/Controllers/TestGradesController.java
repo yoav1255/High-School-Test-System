@@ -11,6 +11,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowStudentFromScheduleEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -143,8 +144,11 @@ public class TestGradesController {
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
         il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
         Platform.runLater(()->{
-            EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
         cleanup();
     }
