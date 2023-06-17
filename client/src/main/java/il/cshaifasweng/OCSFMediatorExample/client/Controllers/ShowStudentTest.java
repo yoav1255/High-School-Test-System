@@ -96,7 +96,7 @@ public class ShowStudentTest {
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
                 timeToComplete.setText(String.valueOf(studentTest.getTimeToComplete()));
                 txtChange.setText(studentTest.getChange_explanation());
-                txtChange.setDisable(true);
+                //txtChange.setDisable(true);
             });
             questionAnswerList = studentTest.getQuestionAnswers();
             scheduledTest = studentTest.getScheduledTest();
