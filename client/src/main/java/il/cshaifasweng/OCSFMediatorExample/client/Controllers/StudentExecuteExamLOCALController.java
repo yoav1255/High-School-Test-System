@@ -163,7 +163,11 @@ public class StudentExecuteExamLOCALController implements Serializable {
                 throw new RuntimeException(e);
             }
             Platform.runLater(()->{
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             });
         });
     }
@@ -215,7 +219,11 @@ public class StudentExecuteExamLOCALController implements Serializable {
                     alert.setHeaderText("The test is over");
                     alert.setContentText("You did not submit any file");
                     alert.show();
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             });
 
