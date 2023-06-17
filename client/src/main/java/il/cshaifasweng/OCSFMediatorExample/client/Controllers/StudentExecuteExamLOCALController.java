@@ -208,7 +208,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
             studentTest.setTimeToComplete(scheduledTest.getTimeLimit() - timeLeft);
             studentTest.setScheduledTest(scheduledTest);
 
-            //SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
             //SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", null));
 
             cleanup();
@@ -219,16 +219,18 @@ public class StudentExecuteExamLOCALController implements Serializable {
                     throw new RuntimeException(e);
                 }
                 Platform.runLater(()->{
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Time ended");
-                    alert.setHeaderText("The test is over");
-                    alert.setContentText("You did not submit any file");
-                    alert.show();
                     try {
                         SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Time ended");
+                    alert.setHeaderText("The test is over");
+                    alert.setContentText("You did not submit any file");
+                    alert.show();
+
                 });
             });
 

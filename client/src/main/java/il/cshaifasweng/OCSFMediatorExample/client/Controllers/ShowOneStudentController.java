@@ -161,8 +161,8 @@ public class ShowOneStudentController {
             });
             TableTestID.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();
-                String examFormCode = test.getExamFormCode();
-                return new SimpleStringProperty(examFormCode);
+                String scheduledTestId = test.getScheduledTest().getId();
+                return new SimpleStringProperty(scheduledTestId);
             });
             ObservableList<StudentTest> allStudentTests = FXCollections.observableList(studentTests);
             GradesTable.setItems(allStudentTests);
