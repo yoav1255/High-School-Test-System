@@ -351,12 +351,12 @@ public class StudentExecuteExamController {
         cleanup();
         App.switchScreen("studentHome");
         Platform.runLater(() -> {
+            try {
+                SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", id));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             if (studentTest.isOnTime()) {
-                try {
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome", id));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setContentText("Exam Submitted Successfully");

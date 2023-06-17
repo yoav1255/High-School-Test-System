@@ -353,7 +353,7 @@ public class ShowScheduleTestController {
 
                         });
 
-                    } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) &&scheduleTest_table_view.getSelectionModel().getSelectedItem().getIsComputerTest()) {
+                    } else if (this.idTeacher != null && this.idTeacher.equals(selectedTest.getTeacher().getId()) ) {
                         App.switchScreen("testGrade");
                         Platform.runLater(() -> {
                             try {
