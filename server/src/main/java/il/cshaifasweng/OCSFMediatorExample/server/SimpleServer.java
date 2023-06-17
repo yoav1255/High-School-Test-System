@@ -202,7 +202,7 @@ public class SimpleServer extends AbstractServer {
 					client.sendToClient(new CustomMessage("deleteScheduleTestSuccess", ""));
 					break;
 				case ("#sendExamFormId"):
-					ExamForm examForm2 = App.getExamForm((message.getData().toString()));
+					ExamForm examForm2 = (ExamForm) App.getExamForm((message.getData().toString()));
 					client.sendToClient(new CustomMessage("returnExamForm", examForm2));
 					break;
 

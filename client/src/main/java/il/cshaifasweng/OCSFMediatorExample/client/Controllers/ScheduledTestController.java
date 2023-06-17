@@ -222,7 +222,6 @@ public class ScheduledTestController {
         // Check if the time matches the pattern
         if (scheduleTime != null && scheduleTime.getText().length() == 5) {
             if (Pattern.matches(pattern, scheduleTime.getText())) {
-                System.out.println("inui");
                     if (!today)
                         return true;
                     else {

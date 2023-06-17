@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,8 +97,9 @@ public class SimpleClient extends AbstractClient {
 				case ("deleteScheduleTestSuccess"):
 					EventBus.getDefault().post(new ShowSuccessEvent("Successfully deleted"));
 				case ("returnExamForm"):
-					ExamForm examForm1=(ExamForm) message.getData();
-					EventBus.getDefault().post(new ScheduledTestEvent(examForm1));
+					if(message.getData()  instanceof ExamForm) {
+						EventBus.getDefault().post(new ScheduledTestEvent((ExamForm) message.getData()));
+					}
 					break;
 				case ("returnScheduledTestList"):
 					List<ScheduledTest> scheduledTests = (List<ScheduledTest>) message.getData();
