@@ -117,7 +117,7 @@ public class TestGradesController {
             grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
         else
             grade.setCellValueFactory(param -> {
-                return new SimpleStringProperty("N/A");
+                return new SimpleStringProperty("Local");
             });
         ObservableList<StudentTest> studentTestObservableList = FXCollections.observableList(studentTests);
         studentTestTableView.setRowFactory(tv -> {

@@ -142,6 +142,8 @@ public class ShowOneStudentController {
                 String gradeToShow = "N/A";
                 if(test.isChecked())
                     gradeToShow = Integer.toString( test.getGrade());
+                if(!test.getScheduledTest().getIsComputerTest())
+                    gradeToShow = "Local";
                 return new SimpleStringProperty(gradeToShow);
             });
             TableCourse.setCellValueFactory(cellData -> {
