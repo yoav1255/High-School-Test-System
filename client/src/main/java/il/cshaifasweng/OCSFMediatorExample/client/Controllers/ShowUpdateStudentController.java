@@ -33,16 +33,10 @@ public class ShowUpdateStudentController {
     private Label oldGrade;
     @FXML
     private TextField newGrade;
-
-    @FXML
-    private Label statusLB;
-
     @FXML
     private Label test_course;
-
     @FXML
     private Label test_id;
-
     @FXML
     private TextArea txtChange;
     @FXML
@@ -76,8 +70,6 @@ public class ShowUpdateStudentController {
         Platform.runLater(() -> {
             update_status.setVisible(false);
         });
-
-
     }
 
     @Subscribe
