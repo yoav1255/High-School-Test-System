@@ -44,6 +44,8 @@ public class StudentExecuteExamController {
     private Button nextButton;
     @FXML
     private Button previousButton;
+    @FXML
+    private Label quesNum;
 
     private int currentQuestionIndex = 0;
     private int totalQuestions;
@@ -67,6 +69,21 @@ public class StudentExecuteExamController {
 
     @FXML
     void initialize() {
+        /*Image img = new Image("file:png/arrowback.png");
+        ImageView viewBack = new ImageView(img);
+        viewBack.setFitHeight(80);
+        viewBack.setPreserveRatio(true);
+
+        Image img2 = new Image("file:png/arrowforward.png");
+        ImageView viewForward = new ImageView(img2);
+        viewForward.setFitHeight(80);
+        viewForward.setPreserveRatio(true);
+
+        nextButton.setGraphic(viewForward);
+        previousButton.setGraphic(viewBack);*/
+        quesNum.setText("1/1");
+        quesNum.setStyle("-fx-font-size: 24px; -fx-font-family: Arial; -fx-font-weight: bold;");
+
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(id);
@@ -98,23 +115,23 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
 
-        Platform.runLater(()->{
+        /*Platform.runLater(()->{
             int width = 30;
             int height = 30;
-            File file = new File("C:\\Users\\YoavS\\Desktop\\Study\\Year2\\SemesterB\\softwareEngineer\\HSTS-Team-2\\client\\src\\main\\resources\\right.png");
+            File file = new File("right.png");
             Image image = new Image(file.toURI().toString());
             ImageView imageView = new ImageView(image);
             imageView.setFitWidth(width);
             imageView.setFitHeight(height);
             nextButton.setGraphic(imageView);
 
-             file = new File("C:\\Users\\YoavS\\Desktop\\Study\\Year2\\SemesterB\\softwareEngineer\\HSTS-Team-2\\client\\src\\main\\resources\\left.png");
+             file = new File("left.png");
              image = new Image(file.toURI().toString());
              imageView = new ImageView(image);
             imageView.setFitWidth(width);
             imageView.setFitHeight(height);
             previousButton.setGraphic(imageView);
-        });
+        });*/
         scheduledTest = event.getSelectedTestEvent();
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start", scheduledTest.getId()));
 
@@ -129,7 +146,6 @@ public class StudentExecuteExamController {
 
             questionAnswers.add(questionAnswer);
         }
-
         totalQuestions = questionAnswers.size();
         displayQuestion(currentQuestionIndex);
     }
@@ -153,6 +169,11 @@ public class StudentExecuteExamController {
     private void displayQuestion(int questionIndex) {
         if (questionIndex >= 0 && questionIndex < totalQuestions) {
 
+            Platform.runLater(()->{
+                quesNum.setText((questionIndex + 1) + "/" + totalQuestions);
+                quesNum.setStyle("-fx-font-size: 24px; -fx-font-family: Arial; -fx-font-weight: bold; -fx-text-alignment: center");
+            });
+
             Question_Answer questionAnswer = questionAnswers.get(questionIndex);
             Question_Score qs = questionAnswer.getQuestionScore();
             Question q = qs.getQuestion();
@@ -168,24 +189,33 @@ public class StudentExecuteExamController {
             vbox.setSpacing(10);
 
             Label questionLabel = new Label(questionIndex + 1 + ") " + questionText);
+            questionLabel.setStyle("-fx-font-size: 17px; -fx-font-family: Arial; -fx-font-weight: bold;");
             vbox.getChildren().add(questionLabel);
+
+            // SPACING
+            Label Space = new Label("");
+            vbox.getChildren().add(Space);
 
             ToggleGroup toggleGroup = new ToggleGroup();
 
             RadioButton answer1RadioButton = new RadioButton("1.    " + answer0);
             answer1RadioButton.setToggleGroup(toggleGroup);
+            answer1RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer1RadioButton);
 
             RadioButton answer2RadioButton = new RadioButton("2.     " + answer1);
             answer2RadioButton.setToggleGroup(toggleGroup);
+            answer2RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer2RadioButton);
 
             RadioButton answer3RadioButton = new RadioButton("3.     " + answer2);
             answer3RadioButton.setToggleGroup(toggleGroup);
+            answer3RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer3RadioButton);
 
             RadioButton answer4RadioButton = new RadioButton("4.     " + answer3);
             answer4RadioButton.setToggleGroup(toggleGroup);
+            answer4RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer4RadioButton);
 
             if(questionAnswer.getAnswer()==0) answer1RadioButton.setSelected(true);
@@ -196,13 +226,16 @@ public class StudentExecuteExamController {
 
             if(qs.getStudent_note()!=null) {
                 Label noteStudentLabel = new Label("teacher's note: " + qs.getStudent_note());
+                noteStudentLabel.setStyle("-fx-font-size: 14px; -fx-font-family: Arial;");
                 vbox.getChildren().add(noteStudentLabel);
             }
 
             Label scoreLabel = new Label("Points: " + questionAnswer.getQuestionScore().getScore());
+            scoreLabel.setStyle("-fx-font-size: 14px; -fx-font-family: Arial; -fx-font-weight: bold;");
             vbox.getChildren().add(scoreLabel);
 
             Label note = new Label("note: ");
+            note.setStyle("-fx-font-size: 14px; -fx-font-family: Arial;");
             vbox.getChildren().add(note);
             TextField noteText = new TextField();
             vbox.getChildren().add(noteText);
@@ -216,7 +249,7 @@ public class StudentExecuteExamController {
                 RadioButton selectedRadioButton = (RadioButton) newValue;
                 if (selectedRadioButton != null) {
                     int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
-                    questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
+                    questionAnswer.setAnswer(answerIndex+1); // Update the answer index in the Question_Answer object
                 }
             });
             Platform.runLater(() -> {
@@ -304,10 +337,19 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
-        List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
+    public void onTimeLeftEvent(TimeLeftEvent event) {
+
+        List<List<Object>> scheduleTestId_timeLeft_List = event.getScheduleTestId_timeLeft();
+        List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+        for(int i=0;i<scheduleTestId_timeLeft_List.size();i++){
+            List<Object> currObj = scheduleTestId_timeLeft_List.get(i);
+            String currId = (String)currObj.get(0);
+            if(currId.equals(scheduledTest.getId())){
+                scheduleTestId_timeLeft=currObj;
+            }
+        }
+
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
-        Platform.runLater(() -> {
             if (scheduleTestId.equals(scheduledTest.getId())) {
                 timeLeft = (long) scheduleTestId_timeLeft.get(1);
                 long hours = timeLeft / 60;
@@ -315,9 +357,11 @@ public class StudentExecuteExamController {
                 System.out.println(remainingMinutes);
                 String formattedHours = String.format("%02d", hours);
                 String formattedMinutes = String.format("%02d", remainingMinutes);
-                timeLeftText.setText((formattedHours + ":" + formattedMinutes));
+                Platform.runLater(() -> {
+                    timeLeftText.setText((formattedHours + ":" + formattedMinutes));
+                });
+
             }
-        });
     }
 
     @Subscribe

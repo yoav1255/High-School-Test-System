@@ -446,7 +446,7 @@ public class ShowScheduleTestController {
     }
 
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event) throws IOException {
+    public void onTimeLeftEvent(TimeLeftEvent event) throws IOException {
         SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
     }
 

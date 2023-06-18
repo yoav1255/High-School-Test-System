@@ -137,7 +137,8 @@ public class ShowStatisticsController {
     public void selected_stat(ActionEvent actionEvent) throws IOException {
         Platform.runLater(()->{
             combobox_id.setDisable(false);
-            statistics_table_view.refresh();
+            statisticList.clear();
+            statistics_table_view.setItems(null);
         });
             String selectedParameter = stat_combobox.getValue();
             if (Objects.equals(selectedParameter, "by teacher")) {

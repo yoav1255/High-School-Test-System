@@ -208,8 +208,19 @@ public class TeacherExecuteExamController {
         }
     }
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
-        List<Object> testIdTime = event.getScheduleTestId_timeLeft();
+    public void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
+
+        List<List<Object>> scheduleTestId_timeLeft_List = event.getScheduleTestId_timeLeft();
+        List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+        for(int i=0;i<scheduleTestId_timeLeft_List.size();i++){
+            List<Object> currObj = scheduleTestId_timeLeft_List.get(i);
+            String currId = (String)currObj.get(0);
+            if(currId.equals(scheduledTest.getId())){
+                scheduleTestId_timeLeft=currObj;
+            }
+        }
+
+        List<Object> testIdTime = scheduleTestId_timeLeft;
         timeLeft = Integer.parseInt(testIdTime.get(1).toString()) ;
         String eventId = (String) testIdTime.get(0);
         int hours = timeLeft / 60;
@@ -290,25 +301,25 @@ public class TeacherExecuteExamController {
                         // Add the answers as separate labels in the VBox
 
                         Label answerLabel0 = new Label("1.      "+question.getAnswer0());
-                        if (question.getIndexAnswer() == 0) {
+                        if (question.getIndexAnswer() == 1) {
                             answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                         }
                         vbox.getChildren().add(answerLabel0);
 
                         Label answerLabel1 = new Label("2.      "+question.getAnswer1());
-                        if (question.getIndexAnswer() == 1) {
+                        if (question.getIndexAnswer() == 2) {
                             answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                         }
                         vbox.getChildren().add(answerLabel1);
 
                         Label answerLabel2 = new Label("3.      "+question.getAnswer2());
-                        if (question.getIndexAnswer() == 2) {
+                        if (question.getIndexAnswer() == 3) {
                             answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                         }
                         vbox.getChildren().add(answerLabel2);
 
                         Label answerLabel3 = new Label("4.      "+question.getAnswer3());
-                        if (question.getIndexAnswer() == 3) {
+                        if (question.getIndexAnswer() == 4) {
                             answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                         }
                         vbox.getChildren().add(answerLabel3);

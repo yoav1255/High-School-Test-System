@@ -15,14 +15,14 @@
             <children>
                 <Pane prefHeight="110.0" prefWidth="214.0">
                     <children>
-                        <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
+                        <Label alignment="BASELINE_CENTER" layoutX="19.0" prefHeight="59.0" prefWidth="172.0" style="-fx-font-family: arial;" text="MOYAM">
                             <font>
-                                <Font name="Oriya Sangam MN" size="34.0" />
+                                <Font name="Arial" size="40.0" />
                             </font>
                         </Label>
-                        <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER">
+                        <Label ellipsisString="" layoutX="37.0" layoutY="42.0" prefHeight="23.0" prefWidth="140.0" style="-fx-font-family: arial;" text="School Test System" textAlignment="CENTER">
                             <font>
-                                <Font name="Oriya Sangam MN" size="14.0" />
+                                <Font name="Arial" size="15.0" />
                             </font>
                         </Label>
                     </children>

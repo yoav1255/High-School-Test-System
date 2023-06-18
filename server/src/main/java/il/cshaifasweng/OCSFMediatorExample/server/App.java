@@ -93,8 +93,7 @@ public class App extends Application {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
-
+           // generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -154,102 +153,107 @@ public class App extends Application {
         List<Subject> subjects = Subject.GenerateSubjects();
         List<Course> courses = Course.GenerateCourses();
         List<Teacher> teachers = Teacher.GenerateTeachers();
-//        List<Question> questions = Question.GenerateQuestions();
-        Principal principal = new Principal("22", "Oren", "Polishuk", "male", "PoliOren123@gmail.com", "1111");
+
+        Principal principal = new Principal("300", "Oren", "Polishuk", "male", "PoliOren123@gmail.com", "manager");
         session.save(principal);
         session.flush();
 
 // Update Courses
         courses.get(0).setSubject(subjects.get(0));
         courses.get(1).setSubject(subjects.get(0));
-        courses.get(2).setSubject(subjects.get(1));
-        courses.get(3).setSubject(subjects.get(1));
-        courses.get(4).setSubject(subjects.get(2));
-        courses.get(5).setSubject(subjects.get(2));
-
-//Update Subjects
+        courses.get(2).setSubject(subjects.get(0));
+        courses.get(3).setSubject(subjects.get(0));
 
         subjects.get(0).addCourse(courses.get(0));
         subjects.get(0).addCourse(courses.get(1));
-        subjects.get(1).addCourse(courses.get(2));
-        subjects.get(1).addCourse(courses.get(3));
-        subjects.get(2).addCourse(courses.get(4));
-        subjects.get(2).addCourse(courses.get(5));
+        subjects.get(0).addCourse(courses.get(2));
+        subjects.get(0).addCourse(courses.get(3));
 
-//Update Questions
 
-//        questions.get(0).setSubject(subjects.get(0));
-//        questions.get(0).setCourses(subjects.get(0).getCourses());
-//        questions.get(1).setSubject(subjects.get(0));
-//        questions.get(1).setCourses(subjects.get(0).getCourses());
-//        questions.get(2).setSubject(subjects.get(0));
-//        questions.get(2).setCourses(subjects.get(0).getCourses());
-//        questions.get(6).setSubject(subjects.get(0));
-//        questions.get(6).setCourses(subjects.get(0).getCourses());
-//
-//        questions.get(3).setSubject(subjects.get(1));
-//        questions.get(3).setCourses(subjects.get(1).getCourses());
-//        questions.get(4).setSubject(subjects.get(1));
-//        questions.get(4).setCourses(subjects.get(1).getCourses());
-//        questions.get(5).setSubject(subjects.get(1));
-//        questions.get(5).setCourses(subjects.get(1).getCourses());
-//        questions.get(7).setSubject(subjects.get(1));
-//        questions.get(7).setCourses(subjects.get(1).getCourses());
+        courses.get(4).setSubject(subjects.get(1));
+        courses.get(5).setSubject(subjects.get(1));
+        courses.get(6).setSubject(subjects.get(1));
 
-//        subjects.get(0).addQuestion(questions.get(0));
-//        subjects.get(0).addQuestion(questions.get(1));
-//        subjects.get(0).addQuestion(questions.get(2));
-//        subjects.get(0).addQuestion(questions.get(6));
-//
-//        subjects.get(1).addQuestion(questions.get(3));
-//        subjects.get(1).addQuestion(questions.get(4));
-//        subjects.get(1).addQuestion(questions.get(5));
-//        subjects.get(1).addQuestion(questions.get(7));
-//
-//        for (Course course : subjects.get(0).getCourses()){
-//            course.addQuestion(questions.get(0));
-//            course.addQuestion(questions.get(1));
-//            course.addQuestion(questions.get(2));
-//            course.addQuestion(questions.get(6));
-//        }
-//
-//        for (Course course : subjects.get(1).getCourses()){
-//            course.addQuestion(questions.get(3));
-//            course.addQuestion(questions.get(4));
-//            course.addQuestion(questions.get(5));
-//            course.addQuestion(questions.get(7));
-//        }
+        subjects.get(1).addCourse(courses.get(4));
+        subjects.get(1).addCourse(courses.get(5));
+        subjects.get(1).addCourse(courses.get(6));
+
+        courses.get(7).setSubject(subjects.get(2));
+        courses.get(8).setSubject(subjects.get(2));
+        courses.get(9).setSubject(subjects.get(2));
+
+        subjects.get(2).addCourse(courses.get(7));
+        subjects.get(2).addCourse(courses.get(8));
+        subjects.get(2).addCourse(courses.get(9));
 
 //Update Teachers
 
         teachers.get(0).addCourses(courses.get(0));
+        teachers.get(0).addCourses(courses.get(1));
+        teachers.get(0).addCourses(courses.get(2));
+        teachers.get(0).addCourses(courses.get(3));
+
         teachers.get(0).addSubject(subjects.get(0));
+
         courses.get(0).addTeacher(teachers.get(0));
+        courses.get(1).addTeacher(teachers.get(0));
+        courses.get(2).addTeacher(teachers.get(0));
+        courses.get(3).addTeacher(teachers.get(0));
+
         subjects.get(0).addTeacher(teachers.get(0));
 
+        teachers.get(1).addCourses(courses.get(0));
+        teachers.get(1).addCourses(courses.get(1));
+        teachers.get(1).addCourses(courses.get(2));
         teachers.get(1).addCourses(courses.get(3));
-        teachers.get(1).addSubject(subjects.get(1));
-        courses.get(3).addTeacher(teachers.get(1));
-        subjects.get(1).addTeacher(teachers.get(1));
+        teachers.get(1).addCourses(courses.get(4));
+        teachers.get(1).addCourses(courses.get(5));
+        teachers.get(1).addCourses(courses.get(6));
 
+        teachers.get(1).addSubject(subjects.get(0));
+        teachers.get(1).addSubject(subjects.get(1));
+
+        courses.get(0).addTeacher(teachers.get(1));
+        courses.get(1).addTeacher(teachers.get(1));
+        courses.get(2).addTeacher(teachers.get(1));
+        courses.get(3).addTeacher(teachers.get(1));
+        courses.get(4).addTeacher(teachers.get(1));
+        courses.get(5).addTeacher(teachers.get(1));
+        courses.get(6).addTeacher(teachers.get(1));
+
+        subjects.get(1).addTeacher(teachers.get(1));
+        subjects.get(2).addTeacher(teachers.get(1));
+
+
+        teachers.get(2).addCourses(courses.get(7));
+        teachers.get(2).addCourses(courses.get(8));
         teachers.get(2).addCourses(courses.get(4));
-        teachers.get(2).addSubject(subjects.get(2));
+        teachers.get(2).addCourses(courses.get(5));
+
+        teachers.get(2).addSubject(subjects.get(0));
+        teachers.get(2).addSubject(subjects.get(1));
+
+        courses.get(7).addTeacher(teachers.get(2));
+        courses.get(8).addTeacher(teachers.get(2));
         courses.get(4).addTeacher(teachers.get(2));
-        subjects.get(2).addTeacher(teachers.get(2));
+        courses.get(5).addTeacher(teachers.get(2));
+
+        subjects.get(0).addTeacher(teachers.get(2));
+        subjects.get(1).addTeacher(teachers.get(2));
+
+
 
 
 // ------------ Add objects to DB --------//
 
         for (Subject subject : subjects)
-            session.save(subject);
+            session.saveOrUpdate(subject);
         for (Course course : courses)
-            session.save(course);
-//        for (Question question: questions)
-//            session.save(question);
+            session.saveOrUpdate(course);
         for (Teacher teacher : teachers)
-            session.save(teacher);
+            session.saveOrUpdate(teacher);
         for (Student student : students)
-            session.save(student);
+            session.saveOrUpdate(student);
 
         session.flush();
     }
@@ -388,28 +392,27 @@ public class App extends Application {
         session.close();
     }
 
+
     public static List<ExtraTime> getAllExtraTimes() {
         List<ExtraTime> extraTimes = new ArrayList<>();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        String queryString = "SELECT e FROM ExtraTime e";
-        extraTimes = session.createQuery(queryString, ExtraTime.class).getResultList();
+
+        // Retrieve all ExtraTime records
+        String selectQuery = "SELECT e FROM ExtraTime e";
+        extraTimes = session.createQuery(selectQuery, ExtraTime.class).getResultList();
+
+        // Delete all data from ExtraTime table
+        String deleteQuery = "DELETE FROM ExtraTime";
+        Query deleteQueryObj = session.createQuery(deleteQuery);
+        deleteQueryObj.executeUpdate();
+
         session.getTransaction().commit();
         session.close();
+
         return extraTimes;
     }
 
-    public synchronized static void clearExtraTimeTable() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        String queryString = "DELETE FROM ExtraTime";
-        Query query = session.createQuery(queryString);
-        query.executeUpdate();
-
-        session.getTransaction().commit();
-        session.close();
-    }
 
     public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
         Session session = sessionFactory.openSession();
@@ -1148,7 +1151,6 @@ public class App extends Application {
         session.close();
         return statistics;
     }
-
 
     public static List<Statistics> getTeacherWriterExamStats(String teacherId) {
         SessionFactory sessionFactory = getSessionFactory();
