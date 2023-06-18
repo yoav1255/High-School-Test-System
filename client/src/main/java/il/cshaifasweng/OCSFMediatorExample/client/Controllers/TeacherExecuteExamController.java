@@ -89,7 +89,9 @@ public class TeacherExecuteExamController {
             errorLabel.setVisible(false);
             studentsActiveLabel.setText("0/0");
             timeLeftText.setText("time will update shortly");
-            App.getStage().setOnCloseRequest(event -> {
+        });
+
+        App.getStage().setOnCloseRequest(event -> {
                 ArrayList<String> info = new ArrayList<>();
                 info.add(id);
                 info.add("teacher");
@@ -102,14 +104,13 @@ public class TeacherExecuteExamController {
                 cleanup();
                 javafx.application.Platform.exit();
             });
-        });
     }
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         setId(event.getId());
         try{
-        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", id));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", id));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,10 +157,9 @@ public class TeacherExecuteExamController {
                     });
                 }
                 Platform.runLater(() -> {
-
-                errorLabel.setVisible(false);
-                comments.clear();
-                extraTime.clear();
+                    errorLabel.setVisible(false);
+                    comments.clear();
+                    extraTime.clear();
                 });
 
             }
@@ -205,8 +205,11 @@ public class TeacherExecuteExamController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                comments.clear();
-                extraTime.clear();
+                Platform.runLater(()->{
+                    comments.clear();
+                    extraTime.clear();
+                });
+
             }
         }
     }
@@ -277,7 +280,7 @@ public class TeacherExecuteExamController {
             questionScoreList = event.getQuestionScores();
             examForm.setQuestionScores(questionScoreList);
             ObservableList<Question_Score> questions1 = FXCollections.observableArrayList(questionScoreList);
-            Questions_List_View.setItems(questions1);
+            Platform.runLater(()-> Questions_List_View.setItems(questions1));
 
             Questions_List_View.setCellFactory(param -> new ListCell<Question_Score>() {
                 @Override
@@ -321,9 +324,7 @@ public class TeacherExecuteExamController {
                         Label score = new Label("( " + Integer.toString(questionScore.getScore()) + " points )");
                         vbox.getChildren().add(score);
 
-                        Platform.runLater(()->{
-                            setGraphic(vbox);
-                        });
+                        Platform.runLater(()-> setGraphic(vbox));
 
                     }
                 }

@@ -87,7 +87,7 @@ public class ExamEntryController {
 }
 
 @Subscribe
-    public void onCheckFirstEntryEvent(CheckFirstEntryEvent event){
+    public synchronized void onCheckFirstEntryEvent(CheckFirstEntryEvent event){
         System.out.println("is first changed to : " + event.isFirst());
         isFirstEntry = event.isFirst();
         Platform.runLater(()->{

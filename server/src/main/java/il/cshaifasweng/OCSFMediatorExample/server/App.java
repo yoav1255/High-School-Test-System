@@ -378,7 +378,7 @@ public class App extends Application {
         return true;
     }
 
-    public static void saveExtraTimeRequest(ExtraTime extraTime) {
+    public synchronized static void saveExtraTimeRequest(ExtraTime extraTime) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(extraTime);
@@ -387,7 +387,7 @@ public class App extends Application {
         session.close();
     }
 
-    public static List<ExtraTime> getAllExtraTimes() {
+    public synchronized static List<ExtraTime> getAllExtraTimes() {
         List<ExtraTime> extraTimes = new ArrayList<>();
         Session session = sessionFactory.openSession();
         String queryString = "SELECT e FROM ExtraTime e";
@@ -396,7 +396,7 @@ public class App extends Application {
         return extraTimes;
     }
 
-    public static void clearExtraTimeTable() {
+    public synchronized static void clearExtraTimeTable() {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -853,10 +853,9 @@ public class App extends Application {
         session.close();
         return scheduledTest;
     }
-    public static ScheduledTest getScheduleTestWithInfo(String id){
+    public synchronized static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
         Session session = sessionFactory.openSession();
-//        session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
         String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
         Query query = session.createQuery(qString, ExamForm.class);

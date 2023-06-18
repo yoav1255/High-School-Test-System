@@ -9,6 +9,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +21,6 @@ public class SimpleClient extends AbstractClient {
 	private SimpleClient(String host, int port) {
 		super(host, port);
 		System.out.println("host: "+host + " port: "+ port);
-	}
-
-	@Override
-	protected void connectionEstablished(){
-	}
-
-	@Override
-	protected void connectionClosed() {
-		// Handle the case when the connection is closed
-		System.out.println("Connection closed");
 	}
 
 	@Override
