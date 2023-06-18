@@ -388,11 +388,13 @@ public class App extends Application {
         session.close();
     }
 
-    public synchronized static List<ExtraTime> getAllExtraTimes() {
+    public static List<ExtraTime> getAllExtraTimes() {
         List<ExtraTime> extraTimes = new ArrayList<>();
         Session session = sessionFactory.openSession();
+        session.beginTransaction();
         String queryString = "SELECT e FROM ExtraTime e";
         extraTimes = session.createQuery(queryString, ExtraTime.class).getResultList();
+        session.getTransaction().commit();
         session.close();
         return extraTimes;
     }
