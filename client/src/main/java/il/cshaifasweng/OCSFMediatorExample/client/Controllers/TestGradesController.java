@@ -7,11 +7,9 @@ package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.ScheduledTest;
 import il.cshaifasweng.OCSFMediatorExample.entities.StudentTest;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowStudentFromScheduleEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowSuccessEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.UserHomeEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -67,15 +65,18 @@ public class TestGradesController {
     private String id;
     private List<StudentTest> studentTests;
 
+    private ScheduledTest selectedTest;
+
     public TestGradesController() {
         EventBus.getDefault().register(this);
     }
+
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
 
     @FXML
-    void initialize(){
+    void initialize() {
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(id);
@@ -91,29 +92,42 @@ public class TestGradesController {
         });
     }
 
-    public void setId(String id){this.id = id;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) throws IOException {
         setId(event.getId());
     }
+
     @Subscribe
-    public void onShowStudentFromScheduleEvent(ShowStudentFromScheduleEvent event)throws IOException{
-        this.studentTests=event.getStudentTests();
+    public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
+        this.selectedTest = event.getSelectedTestEvent();
+    }
+
+    @Subscribe
+    public void onShowStudentFromScheduleEvent(ShowStudentFromScheduleEvent event) throws IOException {
+        this.studentTests = event.getStudentTests();
         studentId.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getId()));
         studentName.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getFirst_name() + param.getValue().getStudent().getLast_name()));
         timeTook.setCellValueFactory(new PropertyValueFactory<>("timeToComplete"));
         gender.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getGender()));
-        grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        if (selectedTest.getIsComputerTest())
+            grade.setCellValueFactory(new PropertyValueFactory<>("grade"));
+        else
+            grade.setCellValueFactory(param -> {
+                return new SimpleStringProperty("Local");
+            });
         ObservableList<StudentTest> studentTestObservableList = FXCollections.observableList(studentTests);
         studentTestTableView.setRowFactory(tv -> {
             TableRow<StudentTest> row = new TableRow<StudentTest>() {
                 @Override
                 protected void updateItem(StudentTest studentTest, boolean empty) {
                     super.updateItem(studentTest, empty);
-                    if (studentTest != null && studentTest.isChecked()) {
+                    if (studentTest != null && studentTest.isChecked()&&selectedTest.getIsComputerTest()) {
                         setStyle("-fx-background-color: #2ECC71 ;");
-                    } else if (studentTest != null && !studentTest.isChecked()){
+                    } else if (studentTest != null && !studentTest.isChecked()&&selectedTest.getIsComputerTest()) {
                         setStyle("-fx-background-color: #E74C3C ;");
                     }
                 }
@@ -126,24 +140,24 @@ public class TestGradesController {
 
     @FXML
     void handleBackButtonClick(ActionEvent event) throws IOException {
-            cleanup();
-            App.switchScreen("showScheduleTest");
+        cleanup();
+        App.switchScreen("showScheduleTest");
 
-            Platform.runLater(()->{
-                try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
-                    SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest",""));
+        Platform.runLater(() -> {
+            try {
+                EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     void handleGoHomeButtonClick(ActionEvent event) throws IOException {
         il.cshaifasweng.OCSFMediatorExample.client.App.switchScreen("teacherHome");
-        Platform.runLater(()->{
+        Platform.runLater(() -> {
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
             } catch (IOException e) {
@@ -157,12 +171,12 @@ public class TestGradesController {
     @FXML
     void handleRowClick(MouseEvent event) {
         try {
-            if (event.getClickCount() == 2) { // Check if the user double-clicked the row
+            if (event.getClickCount() == 2 && selectedTest.getIsComputerTest()) { // Check if the user double-clicked the row
                 StudentTest selectedStudentTest = studentTestTableView.getSelectionModel().getSelectedItem();
 
-                if (selectedStudentTest != null){
+                if (selectedStudentTest != null) {
                     App.switchScreen("showUpdateStudent");
-                    Platform.runLater(()->{
+                    Platform.runLater(() -> {
                         try {
                             EventBus.getDefault().post(new MoveIdToNextPageEvent(id));
                             SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestWithInfo", selectedStudentTest));
@@ -178,7 +192,7 @@ public class TestGradesController {
     }
 
     @Subscribe
-    public void onShowSuccessEvent(ShowSuccessEvent event){
+    public void onShowSuccessEvent(ShowSuccessEvent event) {
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {

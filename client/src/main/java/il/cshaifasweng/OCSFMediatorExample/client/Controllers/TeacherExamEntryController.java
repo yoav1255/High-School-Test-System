@@ -48,7 +48,7 @@ public class TeacherExamEntryController {
 
     @FXML
     void initialize(){
-        textDisplay.setVisible(false);
+        Platform.runLater(()-> textDisplay.setVisible(false));
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(id);
@@ -121,8 +121,11 @@ public class TeacherExamEntryController {
                 });
             }
             else { //myScheduledTest.getStatus() == 2
-                textDisplay.setText("the test is not available anymore. the test took place in: " + myScheduledTest.getDate() + " at " + myScheduledTest.getTime());
-                textDisplay.setVisible(true);
+                Platform.runLater(()->{
+                    textDisplay.setText("the test is not available anymore. the test took place in: " + myScheduledTest.getDate() + " at " + myScheduledTest.getTime());
+                    textDisplay.setVisible(true);
+                });
+
             }
         }
     }
@@ -144,7 +147,7 @@ public class TeacherExamEntryController {
         }
     }
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event){
         Platform.runLater(() -> {
             try{
                 SimpleClient.getClient().sendToServer(new CustomMessage("#showScheduleTest", ""));

@@ -89,7 +89,9 @@ public class TeacherExecuteExamController {
             errorLabel.setVisible(false);
             studentsActiveLabel.setText("0/0");
             timeLeftText.setText("time will update shortly");
-            App.getStage().setOnCloseRequest(event -> {
+        });
+
+        App.getStage().setOnCloseRequest(event -> {
                 ArrayList<String> info = new ArrayList<>();
                 info.add(id);
                 info.add("teacher");
@@ -102,14 +104,13 @@ public class TeacherExecuteExamController {
                 cleanup();
                 javafx.application.Platform.exit();
             });
-        });
     }
 
     @Subscribe
     public void onMoveIdToNextPageEvent(MoveIdToNextPageEvent event) {
         setId(event.getId());
         try{
-        SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", id));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#getTeacher", id));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +135,7 @@ public class TeacherExecuteExamController {
         });
     }
     @Subscribe
-    public void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
-        Platform.runLater(() -> {
+    public synchronized void onManagerExtraTimeEvent (ManagerExtraTimeEvent event) {
             List<Object> eventObj = event.getData();
             ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
 
@@ -156,28 +156,37 @@ public class TeacherExecuteExamController {
                         alert.show();
                     });
                 }
-                errorLabel.setVisible(false);
-                comments.clear();
-                extraTime.clear();
+                Platform.runLater(() -> {
+                    errorLabel.setVisible(false);
+                    comments.clear();
+                    extraTime.clear();
+                });
+
             }
-        });
 
     }
     @FXML
     public void handleSendClick(ActionEvent event){
         if (comments.getText().isEmpty() || extraTime.getText().isEmpty()){
-            errorLabel.setText("fill both fields!");
-            errorLabel.setVisible(true);
+            Platform.runLater(()->{
+                errorLabel.setText("fill both fields!");
+                errorLabel.setVisible(true);
+            });
         }
         else {
             if (!extraTime.getText().matches("-?\\d+")) {
                 // The input is not a valid integer
-                errorLabel.setText("Extra time field not legal. Enter an Integer!");
-                errorLabel.setVisible(true);
+                Platform.runLater(()->{
+                    errorLabel.setText("Extra time field not legal. Enter an Integer!");
+                    errorLabel.setVisible(true);
+                });
+
             } else {
                 // The input is a valid integer
-                errorLabel.setText("The request was sent to the manager and will soon respond.");
-                errorLabel.setVisible(true);
+                Platform.runLater(()->{
+                    errorLabel.setText("The request was sent to the manager and will soon respond.");
+                    errorLabel.setVisible(true);
+                });
 
                 int number = Integer.parseInt(extraTime.getText());
                 //List<Object> data = new ArrayList<>();
@@ -196,25 +205,33 @@ public class TeacherExecuteExamController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                comments.clear();
-                extraTime.clear();
+                Platform.runLater(()->{
+                    comments.clear();
+                    extraTime.clear();
+                });
+
             }
         }
     }
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
         List<Object> testIdTime = event.getScheduleTestId_timeLeft();
         timeLeft = Integer.parseInt(testIdTime.get(1).toString()) ;
         String eventId = (String) testIdTime.get(0);
+        int hours = timeLeft / 60;
+        int remainingMinutes = timeLeft % 60;
+        System.out.println(remainingMinutes);
+        String formattedHours = String.format("%02d", hours);
+        String formattedMinutes = String.format("%02d", remainingMinutes);
         if (eventId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
-                timeLeftText.setText(Integer.toString(timeLeft));
+                timeLeftText.setText((formattedHours + ":" + formattedMinutes));
                 updateStudentsStatus(scheduledTest.getId());
             });
         }
     }
     @Subscribe
-    public void inTimeFinishedEvent(TimerFinishedEvent event) throws IOException {
+    public synchronized void inTimeFinishedEvent(TimerFinishedEvent event) throws IOException {
         if (scheduledTest.getId().equals(event.getScheduledTest().getId())) {
             try {
                 cleanup();
@@ -243,16 +260,17 @@ public class TeacherExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent (SelectedTestEvent event) throws IOException {
         setScheduledTest(event.getSelectedTestEvent());
-        Platform.runLater(() -> {
             try{
                 int activeStudents = scheduledTest.getActiveStudents();
                 int sumSubmissions = scheduledTest.getSubmissions();
                 int sumStudents = activeStudents + sumSubmissions;
-                studentsActiveLabel.setText(activeStudents + "/" + sumStudents);
+                Platform.runLater(() -> {
+                    studentsActiveLabel.setText(activeStudents + "/" + sumStudents);
+                });
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
     }
 
     @Subscribe
@@ -262,7 +280,7 @@ public class TeacherExecuteExamController {
             questionScoreList = event.getQuestionScores();
             examForm.setQuestionScores(questionScoreList);
             ObservableList<Question_Score> questions1 = FXCollections.observableArrayList(questionScoreList);
-            Questions_List_View.setItems(questions1);
+            Platform.runLater(()-> Questions_List_View.setItems(questions1));
 
             Questions_List_View.setCellFactory(param -> new ListCell<Question_Score>() {
                 @Override
@@ -306,7 +324,7 @@ public class TeacherExecuteExamController {
                         Label score = new Label("( " + Integer.toString(questionScore.getScore()) + " points )");
                         vbox.getChildren().add(score);
 
-                        setGraphic(vbox);
+                        Platform.runLater(()-> setGraphic(vbox));
 
                     }
                 }

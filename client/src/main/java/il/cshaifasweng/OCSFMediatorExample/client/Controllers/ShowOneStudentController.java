@@ -29,9 +29,6 @@ public class ShowOneStudentController {
     @FXML
     private TableView<StudentTest> GradesTable;
     @FXML
-    private Label labelInfo;
-
-    @FXML
     private TableColumn<StudentTest, String> TableCourse;
 
     @FXML
@@ -104,11 +101,11 @@ public class ShowOneStudentController {
     @Subscribe
     public void onMoveObjectToNextPageEvent(MoveObjectToNextPageEvent event){
         student = (Student) event.getObject();
-        student_id.setText(student_id.getText() + student.getId());
-        student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
-        /*Platform.runLater(() -> {
-            labelInfo.setVisible(false);
-        });*/
+
+        Platform.runLater(() -> {
+            student_id.setText(student_id.getText() + student.getId());
+            student_name.setText(student_name.getText() + student.getFirst_name() + " " + student.getLast_name());
+        });
     }
 
     @Subscribe
@@ -124,7 +121,7 @@ public class ShowOneStudentController {
     }
 
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event) {
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
         Platform.runLater(() -> {
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
@@ -145,6 +142,8 @@ public class ShowOneStudentController {
                 String gradeToShow = "N/A";
                 if(test.isChecked())
                     gradeToShow = Integer.toString( test.getGrade());
+                if(!test.getScheduledTest().getIsComputerTest())
+                    gradeToShow = "Local";
                 return new SimpleStringProperty(gradeToShow);
             });
             TableCourse.setCellValueFactory(cellData -> {
@@ -164,8 +163,8 @@ public class ShowOneStudentController {
             });
             TableTestID.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();
-                String examFormCode = test.getExamFormCode();
-                return new SimpleStringProperty(examFormCode);
+                String scheduledTestId = test.getScheduledTest().getId();
+                return new SimpleStringProperty(scheduledTestId);
             });
             ObservableList<StudentTest> allStudentTests = FXCollections.observableList(studentTests);
             GradesTable.setItems(allStudentTests);

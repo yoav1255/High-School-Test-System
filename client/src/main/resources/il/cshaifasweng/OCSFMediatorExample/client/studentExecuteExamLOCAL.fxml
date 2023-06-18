@@ -14,12 +14,12 @@
         <AnchorPane fx:id="DigitalTestView" layoutX="108.0" layoutY="43.0" prefHeight="529.0" prefWidth="741.0">
             <children>
                 <Button layoutX="335.0" layoutY="467.0" mnemonicParsing="false" onAction="#submitTestBtn" text="Submit" />
-                <Label layoutX="462.0" layoutY="14.0" prefHeight="20.0" prefWidth="140.0" text="Time Left in minutes: ">
+                <Label layoutX="462.0" layoutY="14.0" prefHeight="20.0" prefWidth="70.0" text="Time Left : ">
                     <font>
                         <Font size="14.0" />
                     </font>
                 </Label>
-                <Label fx:id="timeLeftText" layoutX="611.0" layoutY="9.0" prefHeight="30.0" prefWidth="140.0">
+                <Label fx:id="timeLeftText" layoutX="535.0" layoutY="9.0" prefHeight="30.0" prefWidth="140.0">
                     <font>
                         <Font size="20.0" />
                     </font>

@@ -6,10 +6,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.CustomMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.ExamForm;
 import il.cshaifasweng.OCSFMediatorExample.entities.Question;
 import il.cshaifasweng.OCSFMediatorExample.entities.Question_Score;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.MoveIdToNextPageEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowExamFormQuestionScoresEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneExamFormEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.Events.ShowOneExamFormManagerEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -211,7 +208,10 @@ public class ShowOneExamFormController {
             App.switchScreen("showExamForms");
             Platform.runLater(()->{
                 try {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    if(!isManager)
+                        EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    else
+                        EventBus.getDefault().post(new MoveManagerIdEvent(managerId));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
