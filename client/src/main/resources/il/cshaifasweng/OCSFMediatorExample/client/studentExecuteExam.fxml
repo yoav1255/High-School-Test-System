@@ -13,7 +13,6 @@
       <Pane layoutX="219.0" layoutY="502.0" prefHeight="75.0" prefWidth="679.0" />
       <AnchorPane fx:id="DigitalTestView" layoutX="128.0" layoutY="43.0" prefHeight="529.0" prefWidth="832.0">
          <children>
-            <Button layoutX="335.0" layoutY="484.0" mnemonicParsing="false" onAction="#submitTestBtn" text="Submit" />
             <Label layoutX="462.0" layoutY="14.0" prefHeight="20.0" prefWidth="70.0" text="Time Left : ">
                <font>
                   <Font size="14.0" />
@@ -25,9 +24,28 @@
                </font>
             </Label>
             <Label fx:id="text_Id" layoutX="103.0" layoutY="16.0" prefHeight="17.0" prefWidth="105.0" text="Name:" />
-            <StackPane fx:id="questionStackPane" layoutX="156.0" layoutY="103.0" prefHeight="259.0" prefWidth="386.0" />
-            <Button fx:id="previousButton" layoutX="240.0" layoutY="362.0" mnemonicParsing="false" onAction="#previousQuestion" prefHeight="27.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-border-color: black;" />
-            <Button fx:id="nextButton" layoutX="371.0" layoutY="362.0" mnemonicParsing="false" onAction="#nextQuestion" prefHeight="26.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-border-color: black;" />
+            <StackPane fx:id="questionStackPane" layoutX="118.0" layoutY="80.0" prefHeight="270.0" prefWidth="443.0" />
+            <Button fx:id="previousButton" alignment="CENTER" layoutX="135.0" layoutY="387.0" mnemonicParsing="false" onAction="#previousQuestion" prefHeight="33.0" prefWidth="177.0" style="-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10; -fx-font-family: Arial; -fx-font-weight: bold;" text="&lt;&lt;&lt;  Previous">
+               <font>
+                  <Font size="16.0" />
+               </font></Button>
+            <Button fx:id="nextButton" alignment="CENTER" layoutX="396.0" layoutY="385.0" mnemonicParsing="false" onAction="#nextQuestion" prefHeight="33.0" prefWidth="177.0" style="-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10; -fx-font-family: Arial; -fx-font-weight: bold;" text="Next  &gt;&gt;&gt;">
+               <font>
+                  <Font size="16.0" />
+               </font></Button>
+            <Label fx:id="quesNum" alignment="CENTER" layoutX="313.0" layoutY="386.0" prefHeight="33.0" prefWidth="82.0" style="-fx-text-alignment: center;">
+               <font>
+                  <Font name="Arial" size="16.0" />
+               </font>
+            </Label>
+            <Button fx:id="submitTestBtn" layoutX="264.0" layoutY="458.0" mnemonicParsing="false" onAction="#submitTestBtn" prefHeight="28.0" prefWidth="169.0" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20; -fx-font-family: Arial; -fx-font-size: 18;" text="Submit">
+               <font>
+                  <Font name="Oriya Sangam MN" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </AnchorPane>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">

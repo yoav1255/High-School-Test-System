@@ -160,25 +160,25 @@ public class ShowOneExamFormController {
                     // Add the answers as separate labels in the VBox
 
                     Label answerLabel0 = new Label("1.      "+question.getAnswer0());
-                    if (question.getIndexAnswer() == 0) {
+                    if (question.getIndexAnswer() == 1) {
                         answerLabel0.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                     }
                     vbox.getChildren().add(answerLabel0);
 
                     Label answerLabel1 = new Label("2.      "+question.getAnswer1());
-                    if (question.getIndexAnswer() == 1) {
+                    if (question.getIndexAnswer() == 2) {
                         answerLabel1.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                     }
                     vbox.getChildren().add(answerLabel1);
 
                     Label answerLabel2 = new Label("3.      "+question.getAnswer2());
-                    if (question.getIndexAnswer() == 2) {
+                    if (question.getIndexAnswer() == 3) {
                         answerLabel2.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                     }
                     vbox.getChildren().add(answerLabel2);
 
                     Label answerLabel3 = new Label("4.      "+question.getAnswer3());
-                    if (question.getIndexAnswer() == 3) {
+                    if (question.getIndexAnswer() == 4) {
                         answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: green;");
                     }
                     vbox.getChildren().add(answerLabel3);

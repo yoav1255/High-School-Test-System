@@ -431,7 +431,7 @@ public class SimpleServer extends AbstractServer {
 				}
 			}
 			sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_TimeLeft_List));
-		}, 0, 20, TimeUnit.SECONDS);
+		}, 0, 10, TimeUnit.SECONDS);
 	}
 
 	@Subscribe
