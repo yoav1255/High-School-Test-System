@@ -90,12 +90,9 @@ public class Subject implements Serializable {
     public static List<Subject> GenerateSubjects(){
         List<Subject> subjects = new ArrayList<>();
         subjects.add(new Subject("Math"));
-        subjects.add(new Subject("History"));
-        subjects.add(new Subject("Lecture"));
-        subjects.add(new Subject("Hebrew"));
+        subjects.add(new Subject("Computer Science"));
+        subjects.add(new Subject("Economics"));
         subjects.add(new Subject("English"));
-        subjects.add(new Subject("Economic"));
-        subjects.add(new Subject("Sport"));
 
         return subjects;
     }

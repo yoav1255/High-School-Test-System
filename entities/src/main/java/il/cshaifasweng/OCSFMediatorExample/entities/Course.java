@@ -14,7 +14,7 @@ public class Course implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int code;
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subject_id")
     private Subject subject;
     @OneToMany(mappedBy = "course")
@@ -101,10 +101,9 @@ public class Course implements Serializable {
         courses.add(new Course("Programing"));
         courses.add(new Course("DataBase"));
         courses.add(new Course("Algorithm"));
-        courses.add(new Course("Business in Science"));
-        courses.add(new Course("Complexity"));
-        courses.add(new Course("Hardware"));
-        courses.add(new Course("Develop C"));
+        courses.add(new Course("Statistics"));
+        courses.add(new Course("Intro to Business"));
+        courses.add(new Course("Caculations 101"));
 
 
         return courses;
