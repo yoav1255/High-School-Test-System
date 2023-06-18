@@ -216,7 +216,7 @@ public class StudentExecuteExamController {
                 RadioButton selectedRadioButton = (RadioButton) newValue;
                 if (selectedRadioButton != null) {
                     int answerIndex = Integer.parseInt(selectedRadioButton.getText().split("\\.")[0]) - 1;
-                    questionAnswer.setAnswer(answerIndex); // Update the answer index in the Question_Answer object
+                    questionAnswer.setAnswer(answerIndex+1); // Update the answer index in the Question_Answer object
                 }
             });
             Platform.runLater(() -> {
