@@ -148,8 +148,8 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().postSticky(new TimerFinishedEvent(scheduledTest2));
 					break;
 				case ("timeLeft"):
-					List<Object> scheduleTestId_timeLeft =(List<Object>) message.getData();
-					EventBus.getDefault().post(new TimeLeftEvent(scheduleTestId_timeLeft));
+					List<List<Object>> scheduleTestId_timeLeft_List =(List<List<Object>>) message.getData();
+					EventBus.getDefault().post(new TimeLeftEvent(scheduleTestId_timeLeft_List));
 					break;
 				case ("extraTimeRequests"):
 					EventBus.getDefault().post(new extraTimeRequestEvent((List<ExtraTime>) message.getData()));
@@ -209,7 +209,7 @@ public class SimpleClient extends AbstractClient {
 	
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("192.168.64.189", 3028);
+			client = new SimpleClient("localhost", 3028);
 		}
 		return client;
 	}

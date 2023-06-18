@@ -31,6 +31,7 @@ public class SimpleServer extends AbstractServer {
 	private Timer timer;
 	private static List<CustomMessage> allMessages;
 	private final Lock lock = new ReentrantLock(); // Create a lock object
+	private List<List<Object>> scheduleTestId_TimeLeft_List;
 
 
 
@@ -40,6 +41,7 @@ public class SimpleServer extends AbstractServer {
 		scheduleTestTimerHandler();
 		EventBus.getDefault().register(this);
 		allMessages = new ArrayList<>();
+		scheduleTestId_TimeLeft_List = new ArrayList<>();
 	}
 
 	public static List<CustomMessage> getAllMessages() {
@@ -92,7 +94,7 @@ public class SimpleServer extends AbstractServer {
 		try {
 
 			CustomMessage message = (CustomMessage) msg;
-//			allMessages.add(message);
+			allMessages.add(message);
 			String msgString = message.getMessage();
 			switch (msgString){
 				case ("#warning"):
@@ -301,9 +303,6 @@ public class SimpleServer extends AbstractServer {
 				case ("#addExtraTimeRequest"):
 					App.saveExtraTimeRequest((ExtraTime) message.getData());
 					break;
-				case ("#clearExtraTimeRequests"):
-					App.clearExtraTimeTable();
-					break;
 				case ("#checkStudentTest"):
 					List<Object> studentId_scheduleTestId = (List<Object>) message.getData();
 					String studentId = (String) studentId_scheduleTestId.get(0);
@@ -375,7 +374,6 @@ public class SimpleServer extends AbstractServer {
 							e.printStackTrace();
 						}
 
-						System.out.println("timer started for test : "+ scheduledTest.getId());
 						// timer started
 						// now we apply what the timer will do through its whole lifecycle
 						TimerTask task = new TimerTask() {
@@ -387,16 +385,28 @@ public class SimpleServer extends AbstractServer {
 								LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 								LocalDateTime currentDateTime = LocalDateTime.now();
 								long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
-								System.out.println(timeLeft + " time left");
 
 								try {
 									List<Object> scheduleTestId_timeLeft = new ArrayList<>();
 									scheduleTestId_timeLeft.add(st.getId());
-									System.out.println("Time Left: " + timeLeft);
 									scheduleTestId_timeLeft.add(timeLeft);
-									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
+//									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
+
+									lock.lock();
+//									System.out.println("checking tests");
+									for(int i=0;i<scheduleTestId_TimeLeft_List.size();i++){
+										List<Object> currCheck = scheduleTestId_TimeLeft_List.get(i);
+										String idInList = (String)currCheck.get(0);
+										if(st.getId().equals(idInList)){
+											scheduleTestId_TimeLeft_List.remove(i);
+										}
+									}
+//									System.out.println("test : " + scheduleTestId_timeLeft.get(0) + " time left : " + scheduleTestId_timeLeft.get(1));
+									scheduleTestId_TimeLeft_List.add(scheduleTestId_timeLeft);
 								}catch (Exception e){
 									e.printStackTrace();
+								}finally {
+									lock.unlock();
 								}
 
 								if (currentDateTime.isAfter(endTime)) {
@@ -408,16 +418,19 @@ public class SimpleServer extends AbstractServer {
 									}
 
 									timer.cancel(); // Stop the timer when the time limit is reached
+
+									//TODO remove object from list
+
 									App.updateScheduleTestStatus(scheduledTest,2);
 								}
 							}
 						};
 
-
 						timer.schedule(task, 0, 10000); // Check every 10 seconds (adjust the delay as needed)
 					}
 				}
 			}
+			sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_TimeLeft_List));
 		}, 0, 20, TimeUnit.SECONDS);
 	}
 

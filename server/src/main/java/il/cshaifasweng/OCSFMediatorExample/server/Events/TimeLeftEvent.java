@@ -6,13 +6,13 @@ import java.util.List;
 
 public class TimeLeftEvent {
 
-    private List<Object> scheduleTestId_timeLeft;
+    private List<List<Object>> scheduleTestId_timeLeft_List;
 
-    public TimeLeftEvent(List<Object> scheduleTestId_timeLeft) {
-        this.scheduleTestId_timeLeft = scheduleTestId_timeLeft;
+    public TimeLeftEvent(List<List<Object>> scheduleTestId_timeLeft) {
+        this.scheduleTestId_timeLeft_List = scheduleTestId_timeLeft;
     }
 
-    public List<Object> getScheduleTestId_timeLeft() {
-        return scheduleTestId_timeLeft;
+    public List<List<Object>> getScheduleTestId_timeLeft() {
+        return scheduleTestId_timeLeft_List;
     }
 }

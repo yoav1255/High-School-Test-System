@@ -304,10 +304,19 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
-        List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
+    public void onTimeLeftEvent(TimeLeftEvent event) {
+
+        List<List<Object>> scheduleTestId_timeLeft_List = event.getScheduleTestId_timeLeft();
+        List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+        for(int i=0;i<scheduleTestId_timeLeft_List.size();i++){
+            List<Object> currObj = scheduleTestId_timeLeft_List.get(i);
+            String currId = (String)currObj.get(0);
+            if(currId.equals(scheduledTest.getId())){
+                scheduleTestId_timeLeft=currObj;
+            }
+        }
+
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
-        Platform.runLater(() -> {
             if (scheduleTestId.equals(scheduledTest.getId())) {
                 timeLeft = (long) scheduleTestId_timeLeft.get(1);
                 long hours = timeLeft / 60;
@@ -315,9 +324,11 @@ public class StudentExecuteExamController {
                 System.out.println(remainingMinutes);
                 String formattedHours = String.format("%02d", hours);
                 String formattedMinutes = String.format("%02d", remainingMinutes);
-                timeLeftText.setText((formattedHours + ":" + formattedMinutes));
+                Platform.runLater(() -> {
+                    timeLeftText.setText((formattedHours + ":" + formattedMinutes));
+                });
+
             }
-        });
     }
 
     @Subscribe

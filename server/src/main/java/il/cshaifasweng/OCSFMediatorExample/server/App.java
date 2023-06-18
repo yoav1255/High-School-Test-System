@@ -388,28 +388,27 @@ public class App extends Application {
         session.close();
     }
 
+
     public static List<ExtraTime> getAllExtraTimes() {
         List<ExtraTime> extraTimes = new ArrayList<>();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        String queryString = "SELECT e FROM ExtraTime e";
-        extraTimes = session.createQuery(queryString, ExtraTime.class).getResultList();
+
+        // Retrieve all ExtraTime records
+        String selectQuery = "SELECT e FROM ExtraTime e";
+        extraTimes = session.createQuery(selectQuery, ExtraTime.class).getResultList();
+
+        // Delete all data from ExtraTime table
+        String deleteQuery = "DELETE FROM ExtraTime";
+        Query deleteQueryObj = session.createQuery(deleteQuery);
+        deleteQueryObj.executeUpdate();
+
         session.getTransaction().commit();
         session.close();
+
         return extraTimes;
     }
 
-    public synchronized static void clearExtraTimeTable() {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        String queryString = "DELETE FROM ExtraTime";
-        Query query = session.createQuery(queryString);
-        query.executeUpdate();
-
-        session.getTransaction().commit();
-        session.close();
-    }
 
     public static void updateScheduleTests(List<ScheduledTest> scheduledTests, SessionFactory sessionFactory) throws Exception {
         Session session = sessionFactory.openSession();
