@@ -274,6 +274,11 @@ public class ShowScheduleTestController {
     }
     @FXML
     void showCurrentTest(ActionEvent event) throws IOException {
+        Platform.runLater(()->{
+            showAllTest.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
+            testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+            testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+        });
         this.presentThis="ShowCurrentTests";
         testsPerformed = false;
         testsNotYetPerformed = false;
