@@ -13,20 +13,7 @@
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
-                <Pane prefHeight="110.0" prefWidth="214.0">
-                    <children>
-                        <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="34.0" />
-                            </font>
-                        </Label>
-                        <Label ellipsisString="" layoutX="39.0" layoutY="44.0" prefHeight="23.0" prefWidth="140.0" text="School Test System" textAlignment="CENTER">
-                            <font>
-                                <Font name="Oriya Sangam MN" size="14.0" />
-                            </font>
-                        </Label>
-                    </children>
-                </Pane>
+                <Pane prefHeight="110.0" prefWidth="214.0" />
                 <Button fx:id="allStudentsBN" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleGoToAllStudentsButtonClick" prefHeight="50.0" prefWidth="214.0" text="Students List">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
@@ -121,5 +108,15 @@
           </Label>
       <Pane layoutX="208.0" layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
       <Pane layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
+      <Label alignment="BASELINE_CENTER" layoutX="23.0" layoutY="10.0" prefHeight="59.0" prefWidth="172.0" style="-fx-font-family: arial;" text="MOYAM">
+         <font>
+            <Font name="Arial" size="40.0" />
+         </font>
+      </Label>
+      <Label ellipsisString="" layoutX="41.0" layoutY="52.0" prefHeight="23.0" prefWidth="140.0" style="-fx-font-family: arial;" text="School Test System" textAlignment="CENTER">
+         <font>
+            <Font name="Arial" size="15.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

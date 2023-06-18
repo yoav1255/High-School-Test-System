@@ -62,9 +62,9 @@
                      </font></Button>
                   <TextArea fx:id="generalNotes" layoutX="-1.0" layoutY="353.0" prefHeight="50.0" prefWidth="714.0" />
                   <Label layoutY="336.0" text="Notes for the test" />
-                        <Button layoutX="744.0" layoutY="363.0" mnemonicParsing="false" onAction="#submitForm" style="-fx-background-color: orange; -fx-background-radius: 30; -fx-border-color: white; -fx-border-radius: 30;" text="Submit" textFill="WHITE">
+                        <Button layoutX="724.0" layoutY="363.0" mnemonicParsing="false" onAction="#submitForm" prefHeight="28.0" prefWidth="102.0" style="-fx-background-color: orange; -fx-background-radius: 30; -fx-border-color: black; -fx-border-radius: 30;" text="Submit">
                      <font>
-                        <Font name="System Bold Italic" size="13.0" />
+                        <Font name="Arial Bold Italic" size="15.0" />
                      </font>
                   </Button>
                     </children>
