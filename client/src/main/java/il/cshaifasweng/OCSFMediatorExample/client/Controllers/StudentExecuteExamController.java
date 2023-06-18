@@ -247,7 +247,7 @@ public class StudentExecuteExamController {
         alert.setContentText(msg);
         alert.setHeaderText("Submit");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.YES) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             endTest();
         }
     }
