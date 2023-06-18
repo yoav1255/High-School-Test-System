@@ -19,6 +19,8 @@ import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static il.cshaifasweng.OCSFMediatorExample.server.App.*;
 
@@ -28,6 +30,8 @@ public class SimpleServer extends AbstractServer {
 	private static int iterations = 0;
 	private Timer timer;
 	private static List<CustomMessage> allMessages;
+	private final Lock lock = new ReentrantLock(); // Create a lock object
+
 
 
 	public SimpleServer(int port) {
@@ -88,7 +92,7 @@ public class SimpleServer extends AbstractServer {
 		try {
 
 			CustomMessage message = (CustomMessage) msg;
-			allMessages.add(message);
+//			allMessages.add(message);
 			String msgString = message.getMessage();
 			switch (msgString){
 				case ("#warning"):
