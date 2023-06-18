@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class Statistics implements Serializable {
 
@@ -15,6 +16,7 @@ public class Statistics implements Serializable {
     String studentId;
     List<Double> distribution;
     String range;
+    LocalDate date;
 
 
     public void setMedian(int median) {
@@ -62,4 +64,11 @@ public class Statistics implements Serializable {
         else{return  (i * 10) + "-" + ((i + 1) * 10 - 1);}
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 }
