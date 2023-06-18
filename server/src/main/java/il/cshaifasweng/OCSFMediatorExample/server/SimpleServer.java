@@ -301,9 +301,6 @@ public class SimpleServer extends AbstractServer {
 				case ("#addExtraTimeRequest"):
 					App.saveExtraTimeRequest((ExtraTime) message.getData());
 					break;
-				case ("#clearExtraTimeRequests"):
-					App.clearExtraTimeTable();
-					break;
 				case ("#checkStudentTest"):
 					List<Object> studentId_scheduleTestId = (List<Object>) message.getData();
 					String studentId = (String) studentId_scheduleTestId.get(0);
