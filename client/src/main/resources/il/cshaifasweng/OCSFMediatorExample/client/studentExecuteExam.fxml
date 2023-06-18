@@ -25,20 +25,20 @@
             </Label>
             <Label fx:id="text_Id" layoutX="103.0" layoutY="16.0" prefHeight="17.0" prefWidth="105.0" text="Name:" />
             <StackPane fx:id="questionStackPane" layoutX="118.0" layoutY="80.0" prefHeight="270.0" prefWidth="443.0" />
-            <Button fx:id="previousButton" layoutX="135.0" layoutY="387.0" mnemonicParsing="false" onAction="#previousQuestion" prefHeight="27.0" prefWidth="133.0" style="-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10; -fx-font-family: Arial; -fx-font-weight: bold;" text="&lt;&lt;&lt;  Previous">
+            <Button fx:id="previousButton" alignment="CENTER" layoutX="135.0" layoutY="387.0" mnemonicParsing="false" onAction="#previousQuestion" prefHeight="33.0" prefWidth="177.0" style="-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10; -fx-font-family: Arial; -fx-font-weight: bold;" text="&lt;&lt;&lt;  Previous">
                <font>
                   <Font size="16.0" />
                </font></Button>
-            <Button fx:id="nextButton" layoutX="396.0" layoutY="385.0" mnemonicParsing="false" onAction="#nextQuestion" prefHeight="26.0" prefWidth="133.0" style="-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10; -fx-font-family: Arial; -fx-font-weight: bold;" text="Next  &gt;&gt;&gt;">
+            <Button fx:id="nextButton" alignment="CENTER" layoutX="396.0" layoutY="385.0" mnemonicParsing="false" onAction="#nextQuestion" prefHeight="33.0" prefWidth="177.0" style="-fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 10; -fx-font-family: Arial; -fx-font-weight: bold;" text="Next  &gt;&gt;&gt;">
                <font>
                   <Font size="16.0" />
                </font></Button>
-            <Label fx:id="quesNum" layoutX="290.0" layoutY="386.0" prefHeight="33.0" prefWidth="82.0">
+            <Label fx:id="quesNum" alignment="CENTER" layoutX="313.0" layoutY="386.0" prefHeight="33.0" prefWidth="82.0" style="-fx-text-alignment: center;">
                <font>
                   <Font name="Arial" size="16.0" />
                </font>
             </Label>
-            <Button fx:id="submitTestBtn" layoutX="247.0" layoutY="458.0" mnemonicParsing="false" onAction="#submitTestBtn" prefHeight="28.0" prefWidth="169.0" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20; -fx-font-family: Arial; -fx-font-size: 18;" text="Submit">
+            <Button fx:id="submitTestBtn" layoutX="264.0" layoutY="458.0" mnemonicParsing="false" onAction="#submitTestBtn" prefHeight="28.0" prefWidth="169.0" style="-fx-background-color: #ffab2e; -fx-background-radius: 20; -fx-border-color: BLACK; -fx-border-radius: 20; -fx-font-family: Arial; -fx-font-size: 18;" text="Submit">
                <font>
                   <Font name="Oriya Sangam MN" size="12.0" />
                </font>

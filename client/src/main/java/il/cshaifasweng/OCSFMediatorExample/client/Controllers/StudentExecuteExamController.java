@@ -81,6 +81,7 @@ public class StudentExecuteExamController {
 
         nextButton.setGraphic(viewForward);
         previousButton.setGraphic(viewBack);*/
+        quesNum.setText("1/1");
 
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
@@ -113,7 +114,7 @@ public class StudentExecuteExamController {
     @Subscribe
     public void onSelectedTestEvent(SelectedTestEvent event) throws IOException {
 
-        Platform.runLater(()->{
+        /*Platform.runLater(()->{
             int width = 30;
             int height = 30;
             File file = new File("right.png");
@@ -129,7 +130,7 @@ public class StudentExecuteExamController {
             imageView.setFitWidth(width);
             imageView.setFitHeight(height);
             previousButton.setGraphic(imageView);
-        });
+        });*/
         scheduledTest = event.getSelectedTestEvent();
         SimpleClient.getClient().sendToServer(new CustomMessage("#updateSubmissions_Active_Start", scheduledTest.getId()));
 
@@ -168,7 +169,7 @@ public class StudentExecuteExamController {
     private void displayQuestion(int questionIndex) {
         if (questionIndex >= 0 && questionIndex < totalQuestions) {
 
-            quesNum.setText(questionIndex + "/" + totalQuestions);
+            quesNum.setText((questionIndex + 1) + "/" + totalQuestions);
 
             Question_Answer questionAnswer = questionAnswers.get(questionIndex);
             Question_Score qs = questionAnswer.getQuestionScore();
@@ -185,29 +186,29 @@ public class StudentExecuteExamController {
             vbox.setSpacing(10);
 
             Label questionLabel = new Label(questionIndex + 1 + ") " + questionText);
-            questionLabel.setStyle("-fx-font-size: 16px; -fx-font-family: Arial; -fx-font-weight: bold;");
+            questionLabel.setStyle("-fx-font-size: 17px; -fx-font-family: Arial; -fx-font-weight: bold;");
             vbox.getChildren().add(questionLabel);
 
             ToggleGroup toggleGroup = new ToggleGroup();
 
             RadioButton answer1RadioButton = new RadioButton("1.    " + answer0);
             answer1RadioButton.setToggleGroup(toggleGroup);
-            answer1RadioButton.setStyle("-fx-font-size: 14px; -fx-font-family: Arial;");
+            answer1RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer1RadioButton);
 
             RadioButton answer2RadioButton = new RadioButton("2.     " + answer1);
             answer2RadioButton.setToggleGroup(toggleGroup);
-            answer2RadioButton.setStyle("-fx-font-size: 14px; -fx-font-family: Arial;");
+            answer2RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer2RadioButton);
 
             RadioButton answer3RadioButton = new RadioButton("3.     " + answer2);
             answer3RadioButton.setToggleGroup(toggleGroup);
-            answer3RadioButton.setStyle("-fx-font-size: 14px; -fx-font-family: Arial;");
+            answer3RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer3RadioButton);
 
             RadioButton answer4RadioButton = new RadioButton("4.     " + answer3);
             answer4RadioButton.setToggleGroup(toggleGroup);
-            answer4RadioButton.setStyle("-fx-font-size: 14px; -fx-font-family: Arial;");
+            answer4RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer4RadioButton);
 
             if(questionAnswer.getAnswer()==0) answer1RadioButton.setSelected(true);
