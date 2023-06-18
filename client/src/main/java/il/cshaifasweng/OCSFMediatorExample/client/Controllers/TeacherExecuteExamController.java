@@ -139,31 +139,25 @@ public class TeacherExecuteExamController {
             List<Object> eventObj = event.getData();
             ScheduledTest eventTest = (ScheduledTest) eventObj.get(0);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Manager response");
+            Platform.runLater(()->{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Manager response");
 
-            if (eventTest.getId().equals(scheduledTest.getId())) {
-                if ((Boolean) eventObj.get(1)) {
-                    Platform.runLater(() -> {
-                        alert.setContentText("Time will update shortly");
-                        alert.setHeaderText("Manager approved your request!");
-                        alert.show();
-                    });
-                } else {
-                    Platform.runLater(() -> {
-                        alert.setHeaderText("Manager did not approve your request");
-                        alert.setContentText("The time limit did not change. You can send another request");
-                        alert.show();
-                    });
+                if (eventTest.getId().equals(scheduledTest.getId())) {
+                    if ((Boolean) eventObj.get(1)) {
+                            alert.setContentText("Time will update shortly");
+                            alert.setHeaderText("Manager approved your request!");
+                            alert.show();
+                        } else {
+                            alert.setHeaderText("Manager did not approve your request");
+                            alert.setContentText("The time limit did not change. You can send another request");
+                            alert.show();
+                        }
+                        errorLabel.setVisible(false);
+                        comments.clear();
+                        extraTime.clear();
                 }
-                Platform.runLater(() -> {
-                    errorLabel.setVisible(false);
-                    comments.clear();
-                    extraTime.clear();
-                });
-
-            }
-
+            });
     }
     @FXML
     public void handleSendClick(ActionEvent event){
