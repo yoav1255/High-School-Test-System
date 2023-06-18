@@ -163,13 +163,17 @@ public class StudentExecuteExamLOCALController implements Serializable {
                 throw new RuntimeException(e);
             }
             Platform.runLater(()->{
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+                try {
+                    SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             });
         });
     }
 
     @Subscribe
-    public void onTimerStartEvent(TimerStartEvent event){ // not necessary
+    public synchronized void onTimerStartEvent(TimerStartEvent event){ // not necessary
         if(event.getScheduledTest().getId().equals(scheduledTest.getId()))
         {
             System.out.println(" on schedule test "+ scheduledTest.getId() + " timer started ");
@@ -177,19 +181,24 @@ public class StudentExecuteExamLOCALController implements Serializable {
     }
 
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event){
         List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
         if(scheduleTestId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
-                timeLeft = (long)scheduleTestId_timeLeft.get(1);
-                timeLeftText.setText(Long.toString(timeLeft));
+                timeLeft = (long) scheduleTestId_timeLeft.get(1);
+                long hours = timeLeft / 60;
+                long remainingMinutes = timeLeft % 60;
+                System.out.println(remainingMinutes);
+                String formattedHours = String.format("%02d", hours);
+                String formattedMinutes = String.format("%02d", remainingMinutes);
+                timeLeftText.setText((formattedHours + ":" + formattedMinutes));
             });
         }
     }
     @Subscribe
-    public void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
+    public synchronized void onTimerFinishedEvent(TimerFinishedEvent event) throws IOException {
         if(event.getScheduledTest().getId().equals(scheduledTest.getId())) {
             System.out.println(" on schedule test " + scheduledTest.getId() + " timer FINISHED ");
             studentTest.setOnTime(false);
@@ -199,7 +208,7 @@ public class StudentExecuteExamLOCALController implements Serializable {
             studentTest.setTimeToComplete(scheduledTest.getTimeLimit() - timeLeft);
             studentTest.setScheduledTest(scheduledTest);
 
-            //SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
+            SimpleClient.getClient().sendToServer(new CustomMessage("#updateStudentTest", studentTest));
             //SimpleClient.getClient().sendToServer(new CustomMessage("#endLocalTest", null));
 
             cleanup();
@@ -210,19 +219,25 @@ public class StudentExecuteExamLOCALController implements Serializable {
                     throw new RuntimeException(e);
                 }
                 Platform.runLater(()->{
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#studentHome",id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Time ended");
                     alert.setHeaderText("The test is over");
                     alert.setContentText("You did not submit any file");
                     alert.show();
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(student.getId()));
+
                 });
             });
 
         }
     }
     @Subscribe
-    public void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
+    public synchronized void onManagerExtraTimeEvent(ManagerExtraTimeEvent event) {
         Platform.runLater(() -> {
             List<Object> objectList = event.getData();
             if (objectList.get(3).equals(scheduledTest.getId())){

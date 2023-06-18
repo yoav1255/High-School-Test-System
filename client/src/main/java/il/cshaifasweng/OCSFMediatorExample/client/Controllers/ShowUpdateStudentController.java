@@ -236,6 +236,7 @@ public class ShowUpdateStudentController {
             try {
                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", studentTest.getScheduledTest()));
+                EventBus.getDefault().post(new SelectedTestEvent(studentTest.getScheduledTest()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

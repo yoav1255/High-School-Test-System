@@ -251,11 +251,10 @@ public class App extends Application {
         for (Student student : students)
             session.save(student);
 
-
         session.flush();
     }
 
-    public static List<ScheduledTest> getScheduledTests() throws Exception {
+    public synchronized static List<ScheduledTest> getScheduledTests() throws Exception {
 
         List<ScheduledTest> scheduledTests;
         try (Session session = sessionFactory.openSession()) {
@@ -276,7 +275,7 @@ public class App extends Application {
         return null;
     }
 
-    static List<ScheduledTest> getScheduledTestsActive() throws Exception {
+    public static synchronized List<ScheduledTest> getScheduledTestsActive() throws Exception {
         List<ScheduledTest> scheduledTests;
         Session session = sessionFactory.openSession();
         session.beginTransaction();
@@ -358,7 +357,7 @@ public class App extends Application {
         return true;
     }
 
-    public static boolean updateScheduleTestStatus(ScheduledTest scheduledTest, int newStatus) {
+    public synchronized static boolean updateScheduleTestStatus(ScheduledTest scheduledTest, int newStatus) {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
@@ -380,7 +379,7 @@ public class App extends Application {
         return true;
     }
 
-    public static void saveExtraTimeRequest(ExtraTime extraTime) {
+    public synchronized static void saveExtraTimeRequest(ExtraTime extraTime) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.saveOrUpdate(extraTime);
@@ -389,7 +388,7 @@ public class App extends Application {
         session.close();
     }
 
-    public static List<ExtraTime> getAllExtraTimes() {
+    public synchronized static List<ExtraTime> getAllExtraTimes() {
         List<ExtraTime> extraTimes = new ArrayList<>();
         Session session = sessionFactory.openSession();
         String queryString = "SELECT e FROM ExtraTime e";
@@ -398,7 +397,7 @@ public class App extends Application {
         return extraTimes;
     }
 
-    public static void clearExtraTimeTable() {
+    public synchronized static void clearExtraTimeTable() {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -845,7 +844,7 @@ public class App extends Application {
         return questionScores;
     }
 
-    public static ScheduledTest getScheduleTest(String id){
+    public synchronized static ScheduledTest getScheduleTest(String id){
         ScheduledTest scheduledTest;
         Session session = sessionFactory.openSession();
         String queryString = "SELECT st from ScheduledTest st where id =:id";
@@ -855,10 +854,9 @@ public class App extends Application {
         session.close();
         return scheduledTest;
     }
-    public static ScheduledTest getScheduleTestWithInfo(String id){
+    public synchronized static ScheduledTest getScheduleTestWithInfo(String id){
         ScheduledTest scheduledTest;
         Session session = sessionFactory.openSession();
-//        session.clear();
         scheduledTest = session.get(ScheduledTest.class,id);
         String qString = "SELECT e FROM ExamForm e WHERE :scheduleTest in elements(e.scheduledTests) ";
         Query query = session.createQuery(qString, ExamForm.class);

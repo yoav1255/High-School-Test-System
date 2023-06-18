@@ -146,7 +146,7 @@ public class ManagerHomeController {
     });
     }
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event){
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event){
         try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExtraTimeRequests",""));
         } catch (Exception e) {
@@ -155,7 +155,7 @@ public class ManagerHomeController {
     }
 
     @Subscribe
-    public void onExtraTimeRequestEvent(extraTimeRequestEvent event){
+    public synchronized void onExtraTimeRequestEvent(extraTimeRequestEvent event){
         List<ExtraTime> extraTimeRequestEventList = event.getData();
         Platform.runLater(() -> {
             try {
@@ -173,7 +173,7 @@ public class ManagerHomeController {
         }
     }
 
-    public boolean isScheduledTestActive(ScheduledTest scheduledTest) {
+    public synchronized boolean isScheduledTestActive(ScheduledTest scheduledTest) {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
 
@@ -191,15 +191,13 @@ public class ManagerHomeController {
                 (currentDate.isEqual(testEndDateTime.toLocalDate()) && currentTime.isBefore(testEndDateTime.toLocalTime()));
     }
 
-
-    public void handleExtraTimeRequest(ExtraTime extraTime){
-        Platform.runLater(() -> {
+    public synchronized void handleExtraTimeRequest(ExtraTime extraTime){
             String explanation = extraTime.getExplanation();
             int extraMinutes = extraTime.getExtraTime();
             String teacherName = extraTime.getTeacherName();
             String subCourse = extraTime.getSubCourse();
             ScheduledTest myScheduledTest = extraTime.getScheduledTest();
-
+        Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Extra time request");
             alert.setContentText("The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
@@ -231,7 +229,7 @@ public class ManagerHomeController {
                             data.add(1, true);
                             data.add(2, extraMinutes);
                             data.add(3, myScheduledTest.getId());
-                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
+                            SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

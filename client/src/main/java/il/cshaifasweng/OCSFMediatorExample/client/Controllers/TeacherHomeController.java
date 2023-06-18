@@ -170,9 +170,6 @@ public class TeacherHomeController {
         }
     }
 
-    public void handleShowStatsButtonClick(ActionEvent event) {
-    }
-
     @FXML
     public void goToStatistics(ActionEvent event) throws IOException {
         cleanup();

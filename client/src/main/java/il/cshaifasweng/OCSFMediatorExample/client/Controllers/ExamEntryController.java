@@ -73,7 +73,7 @@ public class ExamEntryController {
 
 
 @Subscribe
-    public void onShowScheduleTestEvent(ShowScheduleTestEvent event) throws IOException {
+    public synchronized void onShowScheduleTestEvent(ShowScheduleTestEvent event) throws IOException {
         scheduleTestIds.clear();
         List<Object> studentId_scheduleTestId = new ArrayList<>();
         studentId_scheduleTestId.add(id);
@@ -87,7 +87,7 @@ public class ExamEntryController {
 }
 
 @Subscribe
-    public void onCheckFirstEntryEvent(CheckFirstEntryEvent event){
+    public synchronized void onCheckFirstEntryEvent(CheckFirstEntryEvent event){
         System.out.println("is first changed to : " + event.isFirst());
         isFirstEntry = event.isFirst();
         Platform.runLater(()->{

@@ -121,7 +121,7 @@ public class ShowOneStudentController {
     }
 
     @Subscribe
-    public void onTimeLeftEvent(TimeLeftEvent event) {
+    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
         Platform.runLater(() -> {
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTests", student));
@@ -142,6 +142,8 @@ public class ShowOneStudentController {
                 String gradeToShow = "N/A";
                 if(test.isChecked())
                     gradeToShow = Integer.toString( test.getGrade());
+                if(!test.getScheduledTest().getIsComputerTest())
+                    gradeToShow = "Local";
                 return new SimpleStringProperty(gradeToShow);
             });
             TableCourse.setCellValueFactory(cellData -> {
@@ -161,8 +163,8 @@ public class ShowOneStudentController {
             });
             TableTestID.setCellValueFactory(cellData -> {
                 StudentTest test = cellData.getValue();
-                String examFormCode = test.getExamFormCode();
-                return new SimpleStringProperty(examFormCode);
+                String scheduledTestId = test.getScheduledTest().getId();
+                return new SimpleStringProperty(scheduledTestId);
             });
             ObservableList<StudentTest> allStudentTests = FXCollections.observableList(studentTests);
             GradesTable.setItems(allStudentTests);
