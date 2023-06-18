@@ -145,7 +145,6 @@ public class StudentExecuteExamController {
 
             questionAnswers.add(questionAnswer);
         }
-
         totalQuestions = questionAnswers.size();
         displayQuestion(currentQuestionIndex);
     }
@@ -169,7 +168,10 @@ public class StudentExecuteExamController {
     private void displayQuestion(int questionIndex) {
         if (questionIndex >= 0 && questionIndex < totalQuestions) {
 
-            quesNum.setText((questionIndex + 1) + "/" + totalQuestions);
+            Platform.runLater(()->{
+                quesNum.setText((questionIndex + 1) + "/" + totalQuestions);
+
+            });
 
             Question_Answer questionAnswer = questionAnswers.get(questionIndex);
             Question_Score qs = questionAnswer.getQuestionScore();
