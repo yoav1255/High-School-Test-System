@@ -31,6 +31,7 @@ public class SimpleServer extends AbstractServer {
 	private Timer timer;
 	private static List<CustomMessage> allMessages;
 	private final Lock lock = new ReentrantLock(); // Create a lock object
+	private List<List<Object>> scheduleTestId_TimeLeft_List;
 
 
 
@@ -40,6 +41,7 @@ public class SimpleServer extends AbstractServer {
 		scheduleTestTimerHandler();
 		EventBus.getDefault().register(this);
 		allMessages = new ArrayList<>();
+		scheduleTestId_TimeLeft_List = new ArrayList<>();
 	}
 
 	public static List<CustomMessage> getAllMessages() {
@@ -92,7 +94,7 @@ public class SimpleServer extends AbstractServer {
 		try {
 
 			CustomMessage message = (CustomMessage) msg;
-//			allMessages.add(message);
+			allMessages.add(message);
 			String msgString = message.getMessage();
 			switch (msgString){
 				case ("#warning"):
@@ -394,9 +396,21 @@ public class SimpleServer extends AbstractServer {
 									scheduleTestId_timeLeft.add(st.getId());
 									System.out.println("Time Left: " + timeLeft);
 									scheduleTestId_timeLeft.add(timeLeft);
-									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
+//									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
+
+									lock.lock();
+									for(int i=0;i<scheduleTestId_TimeLeft_List.size();i++){
+										String idInList = (String)scheduleTestId_TimeLeft_List.get(i).get(0);
+										if(st.getId().equals(idInList)){
+											scheduleTestId_TimeLeft_List.remove(i);
+										}
+									}
+									scheduleTestId_TimeLeft_List.add(scheduleTestId_timeLeft);
+
 								}catch (Exception e){
 									e.printStackTrace();
+								}finally {
+									lock.unlock();
 								}
 
 								if (currentDateTime.isAfter(endTime)) {
@@ -408,6 +422,9 @@ public class SimpleServer extends AbstractServer {
 									}
 
 									timer.cancel(); // Stop the timer when the time limit is reached
+
+									//TODO remove object from list
+
 									App.updateScheduleTestStatus(scheduledTest,2);
 								}
 							}
@@ -419,6 +436,8 @@ public class SimpleServer extends AbstractServer {
 				}
 			}
 		}, 0, 20, TimeUnit.SECONDS);
+		sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_TimeLeft_List));
+
 	}
 
 	@Subscribe

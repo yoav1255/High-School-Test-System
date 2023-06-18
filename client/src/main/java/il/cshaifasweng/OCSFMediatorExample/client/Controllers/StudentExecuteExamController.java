@@ -304,8 +304,16 @@ public class StudentExecuteExamController {
     }
 
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event) {
-        List<Object> scheduleTestId_timeLeft = event.getScheduleTestId_timeLeft();
+    public void onTimeLeftEvent(TimeLeftEvent event) {
+        List<List<Object>> scheduleTestId_timeLeft_List = event.getScheduleTestId_timeLeft();
+        List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+        for(int i=0;i<scheduleTestId_timeLeft_List.size();i++){
+            String currId = (String)scheduleTestId_timeLeft_List.get(i).get(0);
+            if(currId.equals(scheduledTest.getId())){
+                scheduleTestId_timeLeft.add( scheduleTestId_timeLeft_List.get(i).get(0));
+                scheduleTestId_timeLeft.add( scheduleTestId_timeLeft_List.get(i).get(1));
+            }
+        }
         String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
         Platform.runLater(() -> {
             if (scheduleTestId.equals(scheduledTest.getId())) {

@@ -208,8 +208,18 @@ public class TeacherExecuteExamController {
         }
     }
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
-        List<Object> testIdTime = event.getScheduleTestId_timeLeft();
+    public void onTimeLeftEvent(TimeLeftEvent event){// list (0) schedule test (1) time left in minutes
+        List<List<Object>> scheduleTestId_timeLeft_List = event.getScheduleTestId_timeLeft();
+        List<Object> scheduleTestId_timeLeft = new ArrayList<>();
+        for(int i=0;i<scheduleTestId_timeLeft_List.size();i++){
+            String currId = (String)scheduleTestId_timeLeft_List.get(i).get(0);
+            if(currId.equals(scheduledTest.getId())){
+                scheduleTestId_timeLeft.add( scheduleTestId_timeLeft_List.get(i).get(0));
+                scheduleTestId_timeLeft.add( scheduleTestId_timeLeft_List.get(i).get(1));
+            }
+        }
+
+        List<Object> testIdTime = scheduleTestId_timeLeft;
         timeLeft = Integer.parseInt(testIdTime.get(1).toString()) ;
         String eventId = (String) testIdTime.get(0);
         int hours = timeLeft / 60;

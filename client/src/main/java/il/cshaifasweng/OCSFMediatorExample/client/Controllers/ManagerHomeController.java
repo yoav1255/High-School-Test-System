@@ -147,7 +147,7 @@ public class ManagerHomeController {
     }
 
     @Subscribe
-    public synchronized void onTimeLeftEvent(TimeLeftEvent event){
+    public void onTimeLeftEvent(TimeLeftEvent event){
         try {
             SimpleClient.getClient().sendToServer(new CustomMessage("#getExtraTimeRequests",""));
         } catch (Exception e) {
