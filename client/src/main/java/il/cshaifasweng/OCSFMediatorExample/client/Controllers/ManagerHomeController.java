@@ -158,11 +158,6 @@ public class ManagerHomeController {
     @Subscribe
     public synchronized void onExtraTimeRequestEvent(extraTimeRequestEvent event){
         List<ExtraTime> extraTimeRequestEventList = event.getData();
-            try {
-                SimpleClient.getClient().sendToServer(new CustomMessage("#clearExtraTimeRequests",""));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         if (!extraTimeRequestEventList.isEmpty()){
             for (ExtraTime extraTime : extraTimeRequestEventList) {
                 if (isScheduledTestActive(extraTime.getScheduledTest())) {
