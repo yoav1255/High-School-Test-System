@@ -1147,7 +1147,6 @@ public class App extends Application {
         return statistics;
     }
 
-
     public static List<Statistics> getTeacherWriterExamStats(String teacherId) {
         SessionFactory sessionFactory = getSessionFactory();
         Session session = sessionFactory.openSession(); // Open a new session
