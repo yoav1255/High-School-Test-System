@@ -220,8 +220,8 @@ public class TeacherExecuteExamController {
         if (eventId.equals(scheduledTest.getId())) {
             Platform.runLater(() -> {
                 timeLeftText.setText((formattedHours + ":" + formattedMinutes));
-                updateStudentsStatus(scheduledTest.getId());
             });
+            updateStudentsStatus(scheduledTest.getId());
         }
     }
     @Subscribe
@@ -243,13 +243,11 @@ public class TeacherExecuteExamController {
         }
     }
     public void updateStudentsStatus(String testId){
-        Platform.runLater(() -> {
             try{
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getScheduleTestWithInfo", testId));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        });
     }
     @Subscribe
     public void onSelectedTestEvent (SelectedTestEvent event) throws IOException {
