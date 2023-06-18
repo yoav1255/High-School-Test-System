@@ -544,7 +544,11 @@ public class CreateExamFormController2 {
                 cleanup();
                 App.switchScreen("teacherHome");
                 Platform.runLater(()->{
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }catch (Exception e){
                 e.printStackTrace();
