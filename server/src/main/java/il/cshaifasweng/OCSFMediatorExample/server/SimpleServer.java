@@ -377,7 +377,6 @@ public class SimpleServer extends AbstractServer {
 							e.printStackTrace();
 						}
 
-						System.out.println("timer started for test : "+ scheduledTest.getId());
 						// timer started
 						// now we apply what the timer will do through its whole lifecycle
 						TimerTask task = new TimerTask() {
@@ -389,24 +388,24 @@ public class SimpleServer extends AbstractServer {
 								LocalDateTime endTime = scheduledDateTime.plusMinutes(timeLimitMinutes);
 								LocalDateTime currentDateTime = LocalDateTime.now();
 								long timeLeft = Duration.between(currentDateTime,endTime).toMinutes();
-								System.out.println(timeLeft + " time left");
 
 								try {
 									List<Object> scheduleTestId_timeLeft = new ArrayList<>();
 									scheduleTestId_timeLeft.add(st.getId());
-									System.out.println("Time Left: " + timeLeft);
 									scheduleTestId_timeLeft.add(timeLeft);
 //									sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_timeLeft));
 
 									lock.lock();
+//									System.out.println("checking tests");
 									for(int i=0;i<scheduleTestId_TimeLeft_List.size();i++){
-										String idInList = (String)scheduleTestId_TimeLeft_List.get(i).get(0);
+										List<Object> currCheck = scheduleTestId_TimeLeft_List.get(i);
+										String idInList = (String)currCheck.get(0);
 										if(st.getId().equals(idInList)){
 											scheduleTestId_TimeLeft_List.remove(i);
 										}
 									}
+//									System.out.println("test : " + scheduleTestId_timeLeft.get(0) + " time left : " + scheduleTestId_timeLeft.get(1));
 									scheduleTestId_TimeLeft_List.add(scheduleTestId_timeLeft);
-
 								}catch (Exception e){
 									e.printStackTrace();
 								}finally {
@@ -430,14 +429,12 @@ public class SimpleServer extends AbstractServer {
 							}
 						};
 
-
 						timer.schedule(task, 0, 10000); // Check every 10 seconds (adjust the delay as needed)
 					}
 				}
 			}
+			sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_TimeLeft_List));
 		}, 0, 20, TimeUnit.SECONDS);
-		sendToAllClients(new CustomMessage("timeLeft",scheduleTestId_TimeLeft_List));
-
 	}
 
 	@Subscribe

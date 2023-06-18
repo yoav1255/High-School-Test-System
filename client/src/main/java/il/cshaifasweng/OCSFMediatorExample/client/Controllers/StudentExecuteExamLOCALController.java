@@ -182,24 +182,28 @@ public class StudentExecuteExamLOCALController implements Serializable {
 
     @Subscribe
     public void onTimeLeftEvent(TimeLeftEvent event){
+
         List<List<Object>> scheduleTestId_timeLeft_List = event.getScheduleTestId_timeLeft();
         List<Object> scheduleTestId_timeLeft = new ArrayList<>();
         for(int i=0;i<scheduleTestId_timeLeft_List.size();i++){
-            String currId = (String)scheduleTestId_timeLeft_List.get(i).get(0);
+            List<Object> currObj = scheduleTestId_timeLeft_List.get(i);
+            String currId = (String)currObj.get(0);
             if(currId.equals(scheduledTest.getId())){
-                scheduleTestId_timeLeft.add( scheduleTestId_timeLeft_List.get(i).get(0));
-                scheduleTestId_timeLeft.add( scheduleTestId_timeLeft_List.get(i).get(1));
+                scheduleTestId_timeLeft=currObj;
             }
-        }        String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
+        }
+
+        String scheduleTestId = (String) scheduleTestId_timeLeft.get(0);
 
         if(scheduleTestId.equals(scheduledTest.getId())) {
+            timeLeft = (long) scheduleTestId_timeLeft.get(1);
+            long hours = timeLeft / 60;
+            long remainingMinutes = timeLeft % 60;
+            System.out.println(remainingMinutes);
+            String formattedHours = String.format("%02d", hours);
+            String formattedMinutes = String.format("%02d", remainingMinutes);
             Platform.runLater(() -> {
-                timeLeft = (long) scheduleTestId_timeLeft.get(1);
-                long hours = timeLeft / 60;
-                long remainingMinutes = timeLeft % 60;
-                System.out.println(remainingMinutes);
-                String formattedHours = String.format("%02d", hours);
-                String formattedMinutes = String.format("%02d", remainingMinutes);
+
                 timeLeftText.setText((formattedHours + ":" + formattedMinutes));
             });
         }
