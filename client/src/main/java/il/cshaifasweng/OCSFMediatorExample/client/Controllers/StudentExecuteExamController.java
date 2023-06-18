@@ -82,6 +82,7 @@ public class StudentExecuteExamController {
         nextButton.setGraphic(viewForward);
         previousButton.setGraphic(viewBack);*/
         quesNum.setText("1/1");
+        quesNum.setStyle("-fx-font-size: 24px; -fx-font-family: Arial; -fx-font-weight: bold;");
 
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
@@ -170,7 +171,7 @@ public class StudentExecuteExamController {
 
             Platform.runLater(()->{
                 quesNum.setText((questionIndex + 1) + "/" + totalQuestions);
-
+                quesNum.setStyle("-fx-font-size: 24px; -fx-font-family: Arial; -fx-font-weight: bold; -fx-text-alignment: center");
             });
 
             Question_Answer questionAnswer = questionAnswers.get(questionIndex);
@@ -190,6 +191,10 @@ public class StudentExecuteExamController {
             Label questionLabel = new Label(questionIndex + 1 + ") " + questionText);
             questionLabel.setStyle("-fx-font-size: 17px; -fx-font-family: Arial; -fx-font-weight: bold;");
             vbox.getChildren().add(questionLabel);
+
+            // SPACING
+            Label Space = new Label("");
+            vbox.getChildren().add(Space);
 
             ToggleGroup toggleGroup = new ToggleGroup();
 
