@@ -27,18 +27,18 @@ public class Student extends User implements Serializable{
 
     public static List<Student> GenerateStudents(){
         List<Student> newStudents = new ArrayList<>();
-        newStudents.add(new Student("1","yoyo@gmail.com","Eitan","Male","David","123123Y"));
-        newStudents.add(new Student("2","eldadM@gmail.com","Eldad","Male","Moshe","2233PPP"));
-        newStudents.add(new Student("3","danM@gmail.com","Dan","Male","David","123123Y"));
-        newStudents.add(new Student("4","adiL@gmail.com","Adi","Female","Levi","11554ss"));
-        newStudents.add(new Student("5","liorc@gmail.com","Lior","Female","Cohen","345yyy"));
-        newStudents.add(new Student("6","shaniD@gmail.com","Shani","FeMale","David","31ffdd"));
-        newStudents.add(new Student("7","yaakovB@gmail.com","Yaakov","Male","Ben-Dor","1pppds2"));
-        newStudents.add(new Student("8","lanaF@gmail.com","Lana","Female","Franco","2332211dd"));
-        newStudents.add(new Student("9","leaP@gmail.com","Lea","Female","Pomeran","99ol9o"));
-        newStudents.add(new Student("10","matanP@gmail.com","Matan","Male","Polik","yo2s3r"));
-        newStudents.add(new Student("11","orenG@gmail.com","Oren","Male","Golan","123123"));
-        newStudents.add(new Student("12","meitarY@gmail.com","Meitar","Female","Yeruham","9o8i7us"));
+        newStudents.add(new Student("11","yoyo@gmail.com","Eitan","Male","David","s1"));
+        newStudents.add(new Student("12","eldadM@gmail.com","Eldad","Male","Moshe","s2"));
+        newStudents.add(new Student("13","danM@gmail.com","Dan","Male","David","s3"));
+        newStudents.add(new Student("14","adiL@gmail.com","Adi","Female","Levi","s4"));
+        newStudents.add(new Student("15","liorc@gmail.com","Lior","Female","Cohen","s5"));
+        newStudents.add(new Student("16","shaniD@gmail.com","Shani","FeMale","David","s6"));
+        newStudents.add(new Student("17","yaakovB@gmail.com","Yaakov","Male","Ben-Dor","s7"));
+        newStudents.add(new Student("18","lanaF@gmail.com","Lana","Female","Franco","s8"));
+        newStudents.add(new Student("19","leaP@gmail.com","Lea","Female","Pomeran","s9"));
+        newStudents.add(new Student("101","matanP@gmail.com","Matan","Male","Polik","s10"));
+        newStudents.add(new Student("102","orenG@gmail.com","Oren","Male","Golan","s11"));
+        newStudents.add(new Student("103","meitarY@gmail.com","Meitar","Female","Yeruham","s12"));
 //        newStudents.add(new Student("13", "shalom@gmail.com", "Shalom","Haim","male","777"));
 //        newStudents.add(new Student("14", "ronen@gmail.com", "ronen","Eta","male","9090"));
 //        newStudents.add(new Student("16","oded@gmail.com","Oded","Yor","male","86jih"));
