@@ -141,10 +141,11 @@ public class ManagerHomeController {
     public void goToStatistics(ActionEvent event) throws IOException {
         cleanup();
         App.switchScreen("showStatistics");
-    Platform.runLater(()->{
-        EventBus.getDefault().post(new MoveManagerIdEvent(id));
-    });
+        Platform.runLater(()->{
+            EventBus.getDefault().post(new MoveManagerIdEvent(id));
+        });
     }
+
     @Subscribe
     public synchronized void onTimeLeftEvent(TimeLeftEvent event){
         try {
@@ -197,64 +198,48 @@ public class ManagerHomeController {
             String teacherName = extraTime.getTeacherName();
             String subCourse = extraTime.getSubCourse();
             ScheduledTest myScheduledTest = extraTime.getScheduledTest();
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Extra time request");
-            alert.setContentText("The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
-                    + subCourse  + " from the reason: " + '"'+ explanation + '"' + ". Select if you want to approve this request.");
-            alert.setResizable(true);
-            alert.getDialogPane().setPrefSize(480, 320);
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Extra time request");
+                alert.setContentText("The teacher " +teacherName + " has requested " + extraMinutes + " extra minutes to an exam in "
+                        + subCourse  + " from the reason: " + '"'+ explanation + '"' + ". Select if you want to approve this request.");
+                alert.setResizable(true);
+                alert.getDialogPane().setPrefSize(480, 320);
 
-            Optional<ButtonType> result = alert.showAndWait();
+                Optional<ButtonType> result = alert.showAndWait();
 
-            List<Object> data = new ArrayList<>();
-            data.add(myScheduledTest);
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                try {
-                    int x = myScheduledTest.getTimeLimit();
-                    myScheduledTest.setTimeLimit(x+extraMinutes);
-                    Platform.runLater(()->{
-                        try {
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", myScheduledTest));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Platform.runLater(() -> {
-                        try{
+                List<Object> data = new ArrayList<>();
+                data.add(myScheduledTest);
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    try {
+                        int x = myScheduledTest.getTimeLimit();
+                        myScheduledTest.setTimeLimit(x+extraMinutes);
+                        Platform.runLater(()->{
+                            try {
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", myScheduledTest));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
                             data.add(1, true);
                             data.add(2, extraMinutes);
                             data.add(3, myScheduledTest.getId());
                             SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
+                         }
+                    }
+                else {
+                    try{
+                        data.add(1, false);
+                        data.add(2,  0);
+                        data.add(3, myScheduledTest.getId());
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            else {
-                try {
-                    Platform.runLater(() -> {
-                        try{
-                            data.add(1, false);
-                            data.add(2,  0);
-                            data.add(3, myScheduledTest.getId());
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+            });
     }
 
     public void handleLogoutButtonClick(ActionEvent actionEvent) throws IOException {
