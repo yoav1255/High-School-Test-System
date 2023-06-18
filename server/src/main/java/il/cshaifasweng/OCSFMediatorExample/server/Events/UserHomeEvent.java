@@ -1,12 +1,14 @@
 package il.cshaifasweng.OCSFMediatorExample.server.Events;
 
+import java.util.ArrayList;
+
 public class UserHomeEvent {
-    private String id;
-    public UserHomeEvent(String id) {
+    ArrayList<Object> id;
+    public UserHomeEvent(ArrayList<Object> id) {
         this.id = id;
         System.out.println("in user home event "+id );
     }
-    public String getUserID() {
+    public ArrayList<Object>  getUserID() {
         return id;
     }
 }

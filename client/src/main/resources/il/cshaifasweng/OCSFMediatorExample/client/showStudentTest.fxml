@@ -28,29 +28,29 @@
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="test_id" layoutX="183.0" layoutY="14.0" text="test_id">
+                <Label fx:id="test_id" layoutX="187.0" layoutY="14.0" text="test_id">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="test_course" layoutX="164.0" layoutY="44.0" text="test_course">
+                <Label fx:id="test_course" layoutX="187.0" layoutY="44.0" text="test_course">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="oldGrade" layoutX="169.0" layoutY="74.0" text="grade">
+                <Label fx:id="oldGrade" layoutX="187.0" layoutY="74.0" text="grade">
                     <font>
                         <Font name="Oriya Sangam MN" size="18.0" />
                     </font>
                 </Label>
-                <Label layoutX="315.0" layoutY="61.0" prefHeight="19.0" prefWidth="161.0" text="Explanation for grade change" />
-                <TextArea fx:id="txtChange" layoutX="489.0" layoutY="36.0" prefHeight="70.0" prefWidth="249.0" />
-            <Label layoutX="17.0" layoutY="101.0" text="time to complete">
+                <Label layoutX="489.0" layoutY="14.0" prefHeight="19.0" prefWidth="177.0" text="Explanation for grade change:" />
+                <TextArea fx:id="txtChange" layoutX="489.0" layoutY="36.0" prefHeight="70.0" prefWidth="249.0" wrapText="true" />
+            <Label layoutX="17.0" layoutY="101.0" text="Time to complete:">
                <font>
                   <Font name="Oriya Sangam MN" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="timeToComplete" layoutX="169.0" layoutY="101.0" text="time to complete">
+            <Label fx:id="timeToComplete" layoutX="187.0" layoutY="101.0" text="time to complete">
                <font>
                   <Font name="Oriya Sangam MN" size="18.0" />
                </font>
@@ -60,11 +60,6 @@
         <ListView fx:id="questionsListView" layoutX="119.0" layoutY="166.0" prefHeight="401.0" prefWidth="752.0" />
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

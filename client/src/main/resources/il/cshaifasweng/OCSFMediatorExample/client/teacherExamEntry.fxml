@@ -10,13 +10,13 @@
 
 <AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherExamEntryController">
     <children>
-      <Button layoutX="465.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="26.0" prefWidth="53.0" style="-fx-background-color: orange; -fx-border-color: white;" text="Enter" textFill="WHITE">
+      <Button layoutX="465.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleEnterBN" prefHeight="31.0" prefWidth="59.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Enter">
          <font>
-            <Font name="System Bold Italic" size="12.0" />
+            <Font name="System Bold Italic" size="14.0" />
          </font></Button>
       <Label layoutX="456.0" layoutY="97.0" text="Enter Exam ID:">
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="14.0" />
          </font></Label>
       <TextField fx:id="textEntered" layoutX="418.0" layoutY="129.0" />
       <Label fx:id="textDisplay" alignment="CENTER" contentDisplay="CENTER" layoutX="202.0" layoutY="248.0" prefHeight="74.0" prefWidth="579.0" text="lable" textAlignment="CENTER" textFill="#ea0b0b">
@@ -25,11 +25,6 @@
          </font></Label>
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

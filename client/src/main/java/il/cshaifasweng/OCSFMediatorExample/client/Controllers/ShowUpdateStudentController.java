@@ -33,16 +33,10 @@ public class ShowUpdateStudentController {
     private Label oldGrade;
     @FXML
     private TextField newGrade;
-
-    @FXML
-    private Label statusLB;
-
     @FXML
     private Label test_course;
-
     @FXML
     private Label test_id;
-
     @FXML
     private TextArea txtChange;
     @FXML
@@ -76,8 +70,6 @@ public class ShowUpdateStudentController {
         Platform.runLater(() -> {
             update_status.setVisible(false);
         });
-
-
     }
 
     @Subscribe
@@ -90,7 +82,6 @@ public class ShowUpdateStudentController {
         try {
             studentTest = event.getStudentTest();
             Platform.runLater(() -> {
-                statusLB.setText(statusLB.getText() + studentTest.getExamFormCode());
                 test_id.setText(String.valueOf(studentTest.getExamFormCode()));
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
@@ -245,6 +236,7 @@ public class ShowUpdateStudentController {
             try {
                 EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getStudentTestsFromSchedule", studentTest.getScheduledTest()));
+                EventBus.getDefault().post(new SelectedTestEvent(studentTest.getScheduledTest()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -256,7 +248,7 @@ public class ShowUpdateStudentController {
         App.switchScreen("teacherHome");
         Platform.runLater(() -> {
             try {
-                EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", teacherId));
             } catch (Exception e) {
                 e.printStackTrace();
             }

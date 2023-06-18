@@ -34,10 +34,6 @@ public class ShowStudentTest {
 
     @FXML
     private Label oldGrade;
-
-    @FXML
-    private Label statusLB;
-
     @FXML
     private Label test_course;
 
@@ -91,8 +87,7 @@ public class ShowStudentTest {
         try {
             studentTest = event.getStudentTest();
             Platform.runLater(() -> {
-                statusLB.setText(statusLB.getText() + studentTest.getExamFormCode());
-                test_id.setText(String.valueOf(studentTest.getExamFormCode()));
+                test_id.setText(String.valueOf(studentTest.getScheduledTest().getId()));
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
                 timeToComplete.setText(String.valueOf(studentTest.getTimeToComplete()));

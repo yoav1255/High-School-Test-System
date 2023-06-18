@@ -12,22 +12,22 @@
 
 <AnchorPane prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.TeacherExecuteExamController">
     <children>
-      <Label layoutX="143.0" layoutY="103.0" prefHeight="20.0" prefWidth="140.0" text="Time Left in minutes: ">
+      <Label layoutX="143.0" layoutY="103.0" prefHeight="20.0" prefWidth="71.0" text="Time Left : ">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="timeLeftText" layoutX="299.0" layoutY="98.0" prefHeight="30.0" prefWidth="62.0" text="timer">
+      <Label fx:id="timeLeftText" layoutX="214.0" layoutY="98.0" prefHeight="30.0" prefWidth="62.0" text="timer">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label layoutX="162.0" layoutY="53.0" prefHeight="20.0" prefWidth="140.0" text="Active Students:">
+      <Label layoutX="143.0" layoutY="53.0" prefHeight="20.0" prefWidth="106.0" text="Active Students:">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="studentsActiveLabel" layoutX="286.0" layoutY="53.0" prefHeight="20.0" prefWidth="140.0" text="/">
+      <Label fx:id="studentsActiveLabel" layoutX="270.0" layoutY="50.0" prefHeight="20.0" prefWidth="140.0" text="/">
          <font>
             <Font size="20.0" />
          </font>
@@ -39,9 +39,9 @@
       </Label>
       <TextField fx:id="comments" layoutX="374.0" layoutY="98.0" prefHeight="58.0" prefWidth="244.0" promptText="Write here the explanation for the request" />
       <TextField fx:id="extraTime" layoutX="640.0" layoutY="95.0" prefHeight="26.0" prefWidth="204.0" promptText="Write here the extra time in minutes" />
-      <Button layoutX="720.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleSendClick" style="-fx-background-color: orange; -fx-border-color: white;" text="Send" textFill="WHITE">
+      <Button layoutX="720.0" layoutY="133.0" mnemonicParsing="false" onAction="#handleSendClick" style="-fx-background-color: orange; -fx-border-color: black; -fx-border-width: 1;" text="Send">
          <font>
-            <Font name="System Bold" size="12.0" />
+            <Font name="System Bold" size="13.0" />
          </font></Button>
       <Label fx:id="errorLabel" alignment="CENTER" layoutX="127.0" layoutY="173.0" prefHeight="30.0" prefWidth="737.0" text="Label" textFill="#f41515">
          <font>
@@ -53,11 +53,6 @@
       <Label layoutX="147.0" layoutY="487.0" prefHeight="18.0" prefWidth="113.0" text="Notes: " />
       <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
          <children>
-            <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-               <font>
-                  <Font name="Oriya Sangam MN" size="13.0" />
-               </font>
-            </Label>
             <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                <font>
                   <Font name="Oriya Sangam MN" size="31.0" />

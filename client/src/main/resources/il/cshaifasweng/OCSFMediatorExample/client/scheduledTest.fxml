@@ -14,17 +14,17 @@
 
 <AnchorPane id="scheduledDate" prefHeight="578.0" prefWidth="956.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Controllers.ScheduledTestController">
     <children>
-        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="164.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Date">
+        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="164.0" prefHeight="30.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-border-color: orange;" text="Date">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="239.0" prefHeight="23.0" prefWidth="114.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Time">
+        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="239.0" prefHeight="23.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-border-color: orange;" text="Time">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
-        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="316.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Exam Form">
+        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="316.0" prefHeight="0.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-border-color: orange;" text="Exam Form">
             <font>
                 <Font size="20.0" />
             </font>
@@ -38,8 +38,11 @@
             <Cursor fx:constant="NONE" />
          </cursor></ComboBox>
         <TextField id="scheduleTime" fx:id="scheduleTime" layoutX="421.0" layoutY="241.0" prefHeight="10.0" prefWidth="48.0" />
-        <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="315.0" layoutY="456.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="30.0" prefWidth="183.0" style="-fx-background-color: orange; -fx-border-color: white; -fx-background-radius: 20; -fx-border-radius: 20;" text="Add Schedule Test" textFill="WHITE" />
-        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="84.0" prefHeight="19.0" prefWidth="114.0" style="-fx-background-color: white; -fx-border-color: orange;" text="Code">
+        <Button id="buttonScheduleTest" fx:id="buttonScheduleTest" layoutX="333.0" layoutY="467.0" mnemonicParsing="false" onAction="#sendSchedule" prefHeight="34.0" prefWidth="155.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Add Schedule Test">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+        <Label alignment="BASELINE_CENTER" layoutX="248.0" layoutY="84.0" prefHeight="19.0" prefWidth="114.0" style="-fx-background-color: transparent; -fx-border-color: orange;" text="Code">
             <font>
                 <Font size="20.0" />
             </font>
@@ -47,21 +50,16 @@
         <TextField id="scheduleTime" fx:id="scheduleCode" layoutX="421.0" layoutY="86.0" prefHeight="10.0" prefWidth="48.0" />
         <RadioButton fx:id="radioManualTest" layoutX="261.0" layoutY="406.0" mnemonicParsing="false" onAction="#handleRadioManualTest" text="Local Test" textFill="#df9b07">
             <font>
-                <Font name="System Bold Italic" size="12.0" />
+                <Font size="15.0" />
             </font>
         </RadioButton>
         <RadioButton fx:id="radioComputerTest" layoutX="425.0" layoutY="406.0" mnemonicParsing="false" onAction="#handleRadioComputerTest" text="Computer Test" textFill="#df9b07fa">
             <font>
-                <Font name="System Bold Italic" size="12.0" />
+                <Font size="15.0" />
             </font>
         </RadioButton>
         <Pane prefHeight="36.0" prefWidth="967.0" style="-fx-background-color: #ffab2e;">
             <children>
-                <Label fx:id="statusLB" layoutX="113.0" layoutY="12.0" text="/student">
-                    <font>
-                        <Font name="Oriya Sangam MN" size="13.0" />
-                    </font>
-                </Label>
                 <Label alignment="BASELINE_CENTER" layoutX="2.0" layoutY="-6.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM" visible="false">
                     <font>
                         <Font name="Oriya Sangam MN" size="31.0" />
@@ -98,10 +96,10 @@
         <Label fx:id="examFormError" layoutX="623.0" layoutY="324.0" prefHeight="18.0" prefWidth="204.0" />
         <Label fx:id="timeError" layoutX="625.0" layoutY="245.0" prefHeight="18.0" prefWidth="204.0" />
         <Label fx:id="dateError" layoutX="623.0" layoutY="170.0" prefHeight="18.0" prefWidth="215.0" />
-        <Button id="buttonScheduleTest" fx:id="deleteScheduleTest" layoutX="665.0" layoutY="456.0" mnemonicParsing="false" onAction="#deleteScheduleTest" prefHeight="30.0" prefWidth="161.0" style="-fx-background-color: black; -fx-border-color: white;" text="Delete Schedule Test" textFill="#fffffa" visible="false">
-            <font>
-                <Font name="System Bold Italic" size="12.0" />
-            </font>
+        <Button id="buttonScheduleTest" fx:id="deleteScheduleTest" layoutX="515.0" layoutY="467.0" mnemonicParsing="false" onAction="#deleteScheduleTest" prefHeight="34.0" prefWidth="161.0" style="-fx-background-color: orange; -fx-border-color: black;" text="Delete Schedule Test" visible="false">
+         <font>
+            <Font name="System Bold Italic" size="14.0" />
+         </font>
         </Button>
     </children>
 </AnchorPane>

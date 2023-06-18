@@ -13,7 +13,7 @@
     <children>
         <VBox prefHeight="578.0" prefWidth="214.0" style="-fx-background-color: #ffab2e;" stylesheets="@css/menu_buttons_style.css">
             <children>
-                <Pane prefHeight="83.0" prefWidth="214.0">
+                <Pane prefHeight="110.0" prefWidth="214.0">
                     <children>
                         <Label alignment="BASELINE_CENTER" layoutX="27.0" layoutY="8.0" prefHeight="51.0" prefWidth="161.0" text="MOYAM">
                             <font>
@@ -27,7 +27,7 @@
                         </Label>
                     </children>
                 </Pane>
-                <Button fx:id="enterTestBtn" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleEnterTestClick" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Enter Test">
+                <Button fx:id="enterTestBtn" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#handleEnterTestClick" prefHeight="50.0" prefWidth="214.0" text="Enter Test">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="HOME" size="20" />-->
                     </graphic>
@@ -41,13 +41,13 @@
                         <Font name="Oriya Sangam MN" size="15.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="1.0" top="2.0" />
+                        <Insets top="-2.0" />
                     </VBox.margin>
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
                 </Button>
-                <Button fx:id="GradesButton" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#goToAllTests" prefHeight="50.0" prefWidth="214.0" style="-fx-border-color: BLACK; -fx-border-width: 1; -fx-background-radius: 15; -fx-border-radius: 15;" text="Grades">
+                <Button fx:id="GradesButton" alignment="BASELINE_LEFT" graphicTextGap="7.0" mnemonicParsing="false" onAction="#goToAllTests" prefHeight="50.0" prefWidth="214.0" text="Grades">
                     <graphic>
                         <!--                  <FontAwesomeIconView glyphName="USERS" size="20" />-->
                     </graphic>
@@ -61,7 +61,7 @@
                         <Font name="Oriya Sangam MN" size="15.0" />
                     </font>
                     <VBox.margin>
-                        <Insets bottom="1.0" top="2.0" />
+                        <Insets top="-2.0" />
                     </VBox.margin>
                 </Button>
             </children>
@@ -99,17 +99,19 @@
         </Pane>
         <Pane layoutX="331.0" layoutY="111.0" prefHeight="385.0" prefWidth="512.0">
             <children>
-                <Label layoutX="150.0" layoutY="110.0" text="Hello Student !">
+                <Label fx:id="helloLabel" layoutX="26.0" layoutY="129.0" text="Hello Student !">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
-                    </font>
-                </Label>
-                <Label fx:id="idLabel" layoutX="298.0" layoutY="110.0" text="ID : ">
-                    <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Label>
             </children>
         </Pane>
+          <Label fx:id="idLabel" layoutX="856.0" layoutY="58.0" text="ID : ">
+              <font>
+                  <Font name="Oriya Sangam MN" size="18.0" />
+              </font>
+          </Label>
+      <Pane layoutX="208.0" layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
+      <Pane layoutY="43.0" prefHeight="506.0" prefWidth="6.0" style="-fx-background-color: #ffab2e;" />
     </children>
 </AnchorPane>

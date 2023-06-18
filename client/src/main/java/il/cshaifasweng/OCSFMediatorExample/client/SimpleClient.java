@@ -7,6 +7,10 @@ import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +24,14 @@ public class SimpleClient extends AbstractClient {
 	}
 
 	@Override
-	protected void connectionEstablished(){
+	protected void connectionException(Exception exception) {
+		if (exception instanceof SocketException) {
+			System.out.println("Socket Exception!");
+		} else if (exception instanceof IOException) {
+			System.out.println("IO Exception!");
+		} else {
+			System.out.println("Other Exception");
+		}
 	}
 
 	@Override
@@ -56,7 +67,7 @@ public class SimpleClient extends AbstractClient {
 					EventBus.getDefault().post(new loginEvent(login_auth));
 					break;
 				case ("studentHome"),("teacherHome"),("managerHome"):
-					EventBus.getDefault().post(new UserHomeEvent((String) message.getData()));
+					EventBus.getDefault().post(new UserHomeEvent((ArrayList<Object>) message.getData()));
 					break;
 				case ("returnSubjects"):
 					List<Subject> subjects = (List<Subject>) message.getData();
@@ -96,8 +107,9 @@ public class SimpleClient extends AbstractClient {
 				case ("deleteScheduleTestSuccess"):
 					EventBus.getDefault().post(new ShowSuccessEvent("Successfully deleted"));
 				case ("returnExamForm"):
-					ExamForm examForm1=(ExamForm) message.getData();
-					EventBus.getDefault().post(new ScheduledTestEvent(examForm1));
+					if(message.getData()  instanceof ExamForm) {
+						EventBus.getDefault().post(new ScheduledTestEvent((ExamForm) message.getData()));
+					}
 					break;
 				case ("returnScheduledTestList"):
 					List<ScheduledTest> scheduledTests = (List<ScheduledTest>) message.getData();
