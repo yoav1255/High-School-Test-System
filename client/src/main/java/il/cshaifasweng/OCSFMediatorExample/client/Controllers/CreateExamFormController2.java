@@ -148,14 +148,10 @@ public class CreateExamFormController2 {
         for(Course course:courses){
             items.add(course.getName());
         }
-        Platform.runLater(()->{
-            ComboCourse.setItems(items);
-        });
+        Platform.runLater(()-> ComboCourse.setItems(items));
 
         if(isUpdate){ // We are in update mode
-            Platform.runLater(()->{
-                ComboCourse.setValue(examForm.getCourseName());
-            });
+            Platform.runLater(()-> ComboCourse.setValue(examForm.getCourseName()));
         }
     }
     @FXML
@@ -261,8 +257,10 @@ public class CreateExamFormController2 {
             });
 
             if (timeLim <= 0 || timeLim > 1000) {
-                labelMsg.setText("Time not allowed!");
-                labelMsg.setTextFill(Color.RED);
+                Platform.runLater(()->{
+                    labelMsg.setText("Time not allowed!");
+                    labelMsg.setTextFill(Color.RED);
+                });
             }
             else { // Time is valid
                 questionScoreList.clear();
@@ -274,8 +272,10 @@ public class CreateExamFormController2 {
                     sum += questionScore.getScore();
                 }
                 if (sum != 100) {
-                    labelMsg.setText("Grade must sum to 100!");
-                    labelMsg.setTextFill(Color.RED);
+                    Platform.runLater(()->{
+                        labelMsg.setText("Grade must sum to 100!");
+                        labelMsg.setTextFill(Color.RED);
+                    });
                 } else {
                     try {
                         String courseCode = cour.getCode() < 10 ? String.format("%02d", cour.getCode()) : String.valueOf(cour.getCode());
@@ -358,7 +358,7 @@ public class CreateExamFormController2 {
                     Label score = new Label("( " + question.getScore() + " points )");
                     vbox.getChildren().add(score);
 
-                    setGraphic(vbox);
+                    Platform.runLater(()-> setGraphic(vbox));
                 }
             }
         });
@@ -399,7 +399,7 @@ public class CreateExamFormController2 {
                             answerLabel3.setStyle("-fx-font-weight: bold; -fx-background-color: derive(greenyellow, 0%, 50%);");                        }
                         vbox.getChildren().add(answerLabel3);
 
-                        setGraphic(vbox);
+                        Platform.runLater(()-> setGraphic(vbox));
 
                     });
                 }
@@ -421,7 +421,7 @@ public class CreateExamFormController2 {
             TextArea teacherNoteArea = new TextArea();
             TextArea studentNoteArea = new TextArea();
             Label errLabel = new Label("Invalid score");
-            errLabel.setVisible(false);
+            Platform.runLater(()-> errLabel.setVisible(false));
 
             if (isUpdateScore) { // update mode
                 Platform.runLater(() -> {
