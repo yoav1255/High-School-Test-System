@@ -211,23 +211,19 @@ public class ManagerHomeController {
                 List<Object> data = new ArrayList<>();
                 data.add(myScheduledTest);
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    try {
                         int x = myScheduledTest.getTimeLimit();
                         myScheduledTest.setTimeLimit(x+extraMinutes);
                         Platform.runLater(()->{
                             try {
                                 SimpleClient.getClient().sendToServer(new CustomMessage("#updateScheduleTest", myScheduledTest));
+                                data.add(1, true);
+                                data.add(2, extraMinutes);
+                                data.add(3, myScheduledTest.getId());
+                                SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
                         });
-                            data.add(1, true);
-                            data.add(2, extraMinutes);
-                            data.add(3, myScheduledTest.getId());
-                            SimpleClient.getClient().sendToServer(new CustomMessage("#extraTimeResponse", data));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                         }
                     }
                 else {
                     try{
