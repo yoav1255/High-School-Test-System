@@ -248,7 +248,11 @@ public class CreateQuestionController {
                 cleanup();
                 App.switchScreen("teacherHome");
                 Platform.runLater(() -> {
-                    EventBus.getDefault().post(new MoveIdToNextPageEvent(teacherId));
+                    try {
+                        SimpleClient.getClient().sendToServer(new CustomMessage("#teacherHome", id));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             } catch (Exception e) {
                 e.printStackTrace();

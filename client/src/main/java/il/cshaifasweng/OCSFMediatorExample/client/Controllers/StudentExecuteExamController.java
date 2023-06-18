@@ -67,6 +67,19 @@ public class StudentExecuteExamController {
 
     @FXML
     void initialize() {
+        /*Image img = new Image("file:png/arrowback.png");
+        ImageView viewBack = new ImageView(img);
+        viewBack.setFitHeight(80);
+        viewBack.setPreserveRatio(true);
+
+        Image img2 = new Image("file:png/arrowforward.png");
+        ImageView viewForward = new ImageView(img2);
+        viewForward.setFitHeight(80);
+        viewForward.setPreserveRatio(true);
+
+        nextButton.setGraphic(viewForward);
+        previousButton.setGraphic(viewBack);*/
+
         App.getStage().setOnCloseRequest(event -> {
             ArrayList<String> info = new ArrayList<>();
             info.add(id);
