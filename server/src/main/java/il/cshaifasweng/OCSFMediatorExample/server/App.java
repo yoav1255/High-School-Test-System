@@ -95,7 +95,6 @@ public class App extends Application {
 
 //            generateObjects();
 
-
             session.getTransaction().commit(); // Save Everything in the transaction area
 
         } catch (Exception exception) {
@@ -165,23 +164,27 @@ public class App extends Application {
         courses.get(2).setSubject(subjects.get(0));
         courses.get(3).setSubject(subjects.get(0));
 
+        subjects.get(0).addCourse(courses.get(0));
+        subjects.get(0).addCourse(courses.get(1));
+        subjects.get(0).addCourse(courses.get(2));
+        subjects.get(0).addCourse(courses.get(3));
+
+
         courses.get(4).setSubject(subjects.get(1));
         courses.get(5).setSubject(subjects.get(1));
         courses.get(6).setSubject(subjects.get(1));
+
+        subjects.get(1).addCourse(courses.get(4));
+        subjects.get(1).addCourse(courses.get(5));
+        subjects.get(1).addCourse(courses.get(6));
 
         courses.get(7).setSubject(subjects.get(2));
         courses.get(8).setSubject(subjects.get(2));
         courses.get(9).setSubject(subjects.get(2));
 
-//Update Subjects
-
-//        subjects.get(0).addCourse(courses.get(0));
-//        subjects.get(0).addCourse(courses.get(1));
-//        subjects.get(1).addCourse(courses.get(2));
-//        subjects.get(1).addCourse(courses.get(3));
-//        subjects.get(2).addCourse(courses.get(4));
-//        subjects.get(2).addCourse(courses.get(5));
-
+        subjects.get(2).addCourse(courses.get(7));
+        subjects.get(2).addCourse(courses.get(8));
+        subjects.get(2).addCourse(courses.get(9));
 
 //Update Teachers
 
@@ -192,6 +195,12 @@ public class App extends Application {
 
         teachers.get(0).addSubject(subjects.get(0));
 
+        courses.get(0).addTeacher(teachers.get(0));
+        courses.get(1).addTeacher(teachers.get(0));
+        courses.get(2).addTeacher(teachers.get(0));
+        courses.get(3).addTeacher(teachers.get(0));
+
+        subjects.get(0).addTeacher(teachers.get(0));
 
         teachers.get(1).addCourses(courses.get(0));
         teachers.get(1).addCourses(courses.get(1));
@@ -204,6 +213,17 @@ public class App extends Application {
         teachers.get(1).addSubject(subjects.get(0));
         teachers.get(1).addSubject(subjects.get(1));
 
+        courses.get(0).addTeacher(teachers.get(1));
+        courses.get(1).addTeacher(teachers.get(1));
+        courses.get(2).addTeacher(teachers.get(1));
+        courses.get(3).addTeacher(teachers.get(1));
+        courses.get(4).addTeacher(teachers.get(1));
+        courses.get(5).addTeacher(teachers.get(1));
+        courses.get(6).addTeacher(teachers.get(1));
+
+        subjects.get(1).addTeacher(teachers.get(1));
+        subjects.get(2).addTeacher(teachers.get(1));
+
 
         teachers.get(2).addCourses(courses.get(7));
         teachers.get(2).addCourses(courses.get(8));
@@ -213,20 +233,27 @@ public class App extends Application {
         teachers.get(2).addSubject(subjects.get(0));
         teachers.get(2).addSubject(subjects.get(1));
 
+        courses.get(7).addTeacher(teachers.get(2));
+        courses.get(8).addTeacher(teachers.get(2));
+        courses.get(4).addTeacher(teachers.get(2));
+        courses.get(5).addTeacher(teachers.get(2));
+
+        subjects.get(0).addTeacher(teachers.get(2));
+        subjects.get(1).addTeacher(teachers.get(2));
+
+
 
 
 // ------------ Add objects to DB --------//
 
         for (Subject subject : subjects)
-            session.save(subject);
+            session.saveOrUpdate(subject);
         for (Course course : courses)
-            session.save(course);
-//        for (Question question: questions)
-//            session.save(question);
+            session.saveOrUpdate(course);
         for (Teacher teacher : teachers)
-            session.save(teacher);
+            session.saveOrUpdate(teacher);
         for (Student student : students)
-            session.save(student);
+            session.saveOrUpdate(student);
 
         session.flush();
     }
