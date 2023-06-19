@@ -74,6 +74,9 @@ public class ShowScheduleTestController {
     private TableColumn<ScheduledTest, String> InComputer; // Value injected by FXMLLoader
 
     @FXML
+    private Button currentTestBtn;
+
+    @FXML
     private Button showAllTest;
     @FXML
     private Button testPerformed;
@@ -275,7 +278,8 @@ public class ShowScheduleTestController {
     @FXML
     void showCurrentTest(ActionEvent event) throws IOException {
         Platform.runLater(()->{
-            showAllTest.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
+            currentTestBtn.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");;
+            showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
             testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
             testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
         });
@@ -292,6 +296,8 @@ public class ShowScheduleTestController {
             testHasntPerformed.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
             testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
             showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+           currentTestBtn.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+
         });
 
         this.presentThis="ShowTestHasntPerformed";
@@ -308,6 +314,7 @@ public class ShowScheduleTestController {
             testPerformed.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
             showAllTest.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
             testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+            currentTestBtn.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
         });
 
         this.presentThis="ShowTestPerformed";
@@ -324,6 +331,7 @@ public class ShowScheduleTestController {
             showAllTest.setStyle("-fx-background-color:  #ffab2e; -fx-text-fill: black;");
             testPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
             testHasntPerformed.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
+            currentTestBtn.setStyle("-fx-background-color:  white; -fx-text-fill: black; -fx-border-color: orange;");
         });
 
         this.presentThis="ShowAllTests";
