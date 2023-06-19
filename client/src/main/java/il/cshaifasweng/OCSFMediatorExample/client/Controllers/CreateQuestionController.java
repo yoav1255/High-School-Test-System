@@ -120,6 +120,7 @@ public class CreateQuestionController {
         }
 
     }
+
     @FXML
     public void onSelectSubject(ActionEvent event) {
         try {
@@ -142,6 +143,7 @@ public class CreateQuestionController {
     public void onShowSubjectCourses(ShowSubjectCoursesEvent event) {
         courses.clear();
         courses.addAll(event.getCourses());
+
         ObservableList<String> items = FXCollections.observableArrayList();
         for (Course course : courses) {
             items.add(course.getName());
@@ -170,6 +172,9 @@ public class CreateQuestionController {
                 }
 
                 Platform.runLater(()->{
+                    listSelectionView_Courses.getSourceItems().clear();
+                    listSelectionView_Courses.getTargetItems().clear();
+
                     listSelectionView_Courses.getSourceItems().addAll(unSelected);
                     listSelectionView_Courses.getTargetItems().addAll(selected);
                 });
@@ -177,6 +182,8 @@ public class CreateQuestionController {
             else { // not on update
                 unSelected = FXCollections.observableArrayList(items);
                 selected = FXCollections.observableArrayList();
+                listSelectionView_Courses.getSourceItems().clear();
+                listSelectionView_Courses.getTargetItems().clear();
                 listSelectionView_Courses.getSourceItems().addAll(unSelected);
                 listSelectionView_Courses.getTargetItems().addAll(selected);
             }

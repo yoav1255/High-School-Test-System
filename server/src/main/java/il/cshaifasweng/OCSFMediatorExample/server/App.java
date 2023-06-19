@@ -93,7 +93,7 @@ public class App extends Application {
             session = sessionFactory.openSession();
             session.beginTransaction();
 
-//            generateObjects();
+           // generateObjects();
 
             session.getTransaction().commit(); // Save Everything in the transaction area
 
@@ -1151,7 +1151,6 @@ public class App extends Application {
         session.close();
         return statistics;
     }
-
 
     public static List<Statistics> getTeacherWriterExamStats(String teacherId) {
         SessionFactory sessionFactory = getSessionFactory();
