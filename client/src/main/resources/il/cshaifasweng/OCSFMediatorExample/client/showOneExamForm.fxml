@@ -30,11 +30,11 @@
                      <font>
                         <Font size="16.0" />
                      </font></Label>
-                  <Label fx:id="txtSubject" layoutX="14.0" layoutY="18.0" prefHeight="17.0" prefWidth="176.0" text="Subject : ">
+                  <Label fx:id="txtSubject" layoutX="14.0" layoutY="18.0" prefHeight="25.0" prefWidth="276.0" text="Subject : ">
                      <font>
                         <Font size="16.0" />
                      </font></Label>
-                  <Label fx:id="txtCourse" layoutX="222.0" layoutY="18.0" prefHeight="17.0" prefWidth="187.0" text="Course : ">
+                  <Label fx:id="txtCourse" layoutX="293.0" layoutY="18.0" prefHeight="25.0" prefWidth="234.0" text="Course : ">
                      <font>
                         <Font size="16.0" />
                      </font></Label>
