@@ -337,7 +337,7 @@ public class SimpleServer extends AbstractServer {
 	}
 	public void scheduleTestTimerHandler(){
 		ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-		// do this code every 20 seconds
+		// do this code every 10 seconds
 		executorService.scheduleAtFixedRate(() -> {
 			try {
 				iterations++;
