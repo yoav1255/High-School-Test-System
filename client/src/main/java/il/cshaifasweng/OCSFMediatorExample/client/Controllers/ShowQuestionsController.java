@@ -37,6 +37,7 @@ public class ShowQuestionsController {
     private ComboBox<String> comboSubject;
     @FXML
     private ComboBox<String> comboCourse;
+    private boolean isShow;
     private List<Subject> subjects;
     private List<String> courseNames;
     private List<Course> courses;
@@ -131,6 +132,7 @@ public class ShowQuestionsController {
         ans2 = new ArrayList<>();
         ans3 = new ArrayList<>();
         ans4 = new ArrayList<>();
+        //isShow = false;
     }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -217,6 +219,15 @@ public class ShowQuestionsController {
     }
     @FXML
     public void onSelectSubject(ActionEvent event) {
+        Platform.runLater(() -> {
+            labelX.setVisible(false);
+        });
+
+        //if (isShow) {
+            List<Question> questionList = new ArrayList<>();
+            EventBus.getDefault().post(new ShowCourseQuestionsEvent(questionList));
+            isShow = false;
+       // }
         try {
             String subjectName = comboSubject.getValue();
             SimpleClient.getClient().sendToServer(new CustomMessage("#getCourses", subjectName));
@@ -224,6 +235,7 @@ public class ShowQuestionsController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
     @Subscribe
     public void onShowSubjectCourses(ShowSubjectCoursesEvent event) {
@@ -239,6 +251,7 @@ public class ShowQuestionsController {
     }
     @FXML
     public void onSelectCourse(ActionEvent event){
+       // isShow=true;
         try {
             labelX.setVisible(true);
             String courseName = comboCourse.getValue();
