@@ -14,39 +14,39 @@
     <children>
         <Pane layoutX="119.0" layoutY="35.0" prefHeight="166.0" prefWidth="752.0">
             <children>
-                <Label layoutX="14.0" layoutY="14.0" text="Test ID:">
+                <Label layoutX="14.0" layoutY="6.0" text="Test ID:">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="17.0" />
                     </font>
                 </Label>
-                <Label layoutX="14.0" layoutY="44.0" text="Course:">
+                <Label layoutX="14.0" layoutY="32.0" text="Course:">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="17.0" />
                     </font>
                 </Label>
-                <Label layoutX="14.0" layoutY="74.0" text="Old Grade:">
+                <Label layoutX="235.0" layoutY="6.0" text="Old Grade:">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="17.0" />
                     </font>
                 </Label>
                 <Label layoutX="447.0" layoutY="14.0" text="New Grade:">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="18.0" />
                     </font>
                 </Label>
-                <Label fx:id="test_id" layoutX="134.0" layoutY="14.0" text="test_id">
+                <Label fx:id="test_id" layoutX="117.0" layoutY="6.0" text="test_id">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="17.0" />
                     </font>
                 </Label>
-                <Label fx:id="test_course" layoutX="134.0" layoutY="44.0" text="test_course">
+                <Label fx:id="test_course" layoutX="117.0" layoutY="34.0" text="test_course">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="17.0" />
                     </font>
                 </Label>
-                <Label fx:id="oldGrade" layoutX="134.0" layoutY="74.0" text="old_grade">
+                <Label fx:id="oldGrade" layoutX="328.0" layoutY="6.0" text="old_grade">
                     <font>
-                        <Font name="Oriya Sangam MN" size="18.0" />
+                        <Font name="Arial" size="17.0" />
                     </font>
                 </Label>
                 <TextField fx:id="newGrade" layoutX="564.0" layoutY="13.0" prefHeight="29.0" prefWidth="90.0" promptText="new grade" style="-fx-background-radius: 10;">
@@ -61,15 +61,31 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
                 </Button>
-            <Label layoutX="448.0" layoutY="46.0" prefHeight="19.0" prefWidth="161.0" text="Explanation for grade change" />
-            <TextArea fx:id="txtChange" layoutX="447.0" layoutY="63.0" prefHeight="51.0" prefWidth="285.0" wrapText="true" />
-            <Label fx:id="update_status" layoutX="447.0" layoutY="119.0" prefHeight="17.0" prefWidth="228.0" text="update status" textFill="RED" />
-            <Label layoutX="14.0" layoutY="101.0" prefHeight="27.0" prefWidth="61.0" text="Notes: ">
+            <Label layoutX="448.0" layoutY="45.0" prefHeight="21.0" prefWidth="270.0" text="Explanation for grade change">
                <font>
-                  <Font name="Oriya Sangam MN" size="18.0" />
+                  <Font name="Arial" size="13.0" />
+               </font></Label>
+            <TextArea fx:id="txtChange" layoutX="447.0" layoutY="63.0" prefHeight="51.0" prefWidth="285.0" wrapText="true" />
+            <Label fx:id="update_status" layoutX="447.0" layoutY="119.0" prefHeight="17.0" prefWidth="228.0" text="update status" textFill="RED">
+               <font>
+                  <Font name="Arial" size="18.0" />
+               </font></Label>
+            <Label layoutX="14.0" layoutY="101.0" prefHeight="29.0" prefWidth="70.0" text="Notes: ">
+               <font>
+                  <Font name="Arial" size="18.0" />
                </font>
             </Label>
             <TextArea fx:id="g_notes_text" layoutX="134.0" layoutY="102.0" prefHeight="51.0" prefWidth="285.0" wrapText="true" />
+            <Label layoutX="14.0" layoutY="62.0" text="On Time:">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
+            <Label fx:id="onTime" layoutX="118.0" layoutY="62.0" text="true/false">
+               <font>
+                  <Font name="Arial" size="17.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
       <ListView fx:id="questionsListView" layoutX="119.0" layoutY="206.0" prefHeight="372.0" prefWidth="752.0" />

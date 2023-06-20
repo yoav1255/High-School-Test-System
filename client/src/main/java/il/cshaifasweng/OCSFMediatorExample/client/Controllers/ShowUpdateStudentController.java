@@ -45,6 +45,8 @@ public class ShowUpdateStudentController {
     private Label update_status;
     @FXML
     private ListView<Question_Answer> questionsListView;
+    @FXML
+    private Label onTime;
 
     public ShowUpdateStudentController() {
         EventBus.getDefault().register(this);
@@ -89,6 +91,7 @@ public class ShowUpdateStudentController {
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
                 newGrade.setText(String.valueOf(studentTest.getGrade()));
+                onTime.setText(String.valueOf(studentTest.isOnTime()));
                 if(scheduledTest.getExamForm().getGeneralNotes()!=null) g_notes_text.setText(scheduledTest.getExamForm().getGeneralNotes());
                 g_notes_text.setDisable(true);
             });
