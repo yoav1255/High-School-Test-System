@@ -127,6 +127,7 @@ public class TeacherExecuteExamController {
             setCourseName(scheduledTest.getCourseName());
             setSubjectName(scheduledTest.getSubjectName());
             examForm = scheduledTest.getExamForm();
+            if(examForm.getGeneralNotes()!=null) teacher_notes.setText(examForm.getGeneralNotes());
             try {
                 SimpleClient.getClient().sendToServer(new CustomMessage("#getQuestionScores", examForm));
             } catch (Exception e) {
@@ -326,6 +327,15 @@ public class TeacherExecuteExamController {
 
                         Label score = new Label("( " + Integer.toString(questionScore.getScore()) + " points )");
                         vbox.getChildren().add(score);
+
+                        if (questionScore.getTeacher_note()!=null) {
+                            Label t_notes = new Label("Note for the teacher : " + questionScore.getTeacher_note());
+                            vbox.getChildren().add(t_notes);
+                        }
+                        if (questionScore.getStudent_note()!=null) {
+                            Label s_notes = new Label("Note for the Student : " + questionScore.getStudent_note());
+                            vbox.getChildren().add(s_notes);
+                        }
 
                         Platform.runLater(()-> setGraphic(vbox));
 

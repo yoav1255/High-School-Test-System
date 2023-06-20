@@ -68,7 +68,6 @@ public class ExamEntryController {
             cleanup();
             javafx.application.Platform.exit();
         });
-
     }
 
 
@@ -83,7 +82,6 @@ public class ExamEntryController {
             scheduleTestIds.add(scheduledTest.getId());
         }
         SimpleClient.getClient().sendToServer(new CustomMessage("#checkStudentTest",studentId_scheduleTestId));
-
 }
 
 @Subscribe
@@ -101,7 +99,6 @@ public class ExamEntryController {
                     msg.setVisible(true);
                     msg.setText("Already submitted this test!");
                 });
-
             }
         });
     }
