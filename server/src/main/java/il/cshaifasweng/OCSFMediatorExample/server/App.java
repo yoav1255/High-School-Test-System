@@ -952,7 +952,7 @@ public class App extends Application {
         Query query = session.createQuery(
                 "SELECT e.scheduledTest.id as st,e.scheduledTest.date, AVG(e.grade) AS average " +
                         "FROM StudentTest e " +
-                        "WHERE e.scheduledTest.teacher.id = :teacherId " +
+                        "WHERE e.scheduledTest.teacher.id = :teacherId and e.scheduledTest.isComputerTest = true " +
                         "GROUP BY st"
         );
         query.setParameter("teacherId", teacherId);
@@ -1026,7 +1026,7 @@ public class App extends Application {
         Query query = session.createQuery(
                 "SELECT e.scheduledTest.id as st,e.scheduledTest.date, AVG(e.grade) AS average " +
                         "FROM StudentTest e " +
-                        "WHERE e.scheduledTest.examForm.course.id = :courseId " +
+                        "WHERE e.scheduledTest.examForm.course.id = :courseId and e.scheduledTest.isComputerTest = true " +
                         "GROUP BY st"
         );
         query.setParameter("courseId", courseId);
@@ -1099,7 +1099,7 @@ public class App extends Application {
         Query query = session.createQuery(
                 "SELECT e.grade " +
                         "FROM StudentTest e " +
-                        "WHERE e.student.id = :studentId " +
+                        "WHERE e.student.id = :studentId and e.scheduledTest.isComputerTest = true " +
                         "order by e.grade"
         );
         query.setParameter("studentId", studentId);
@@ -1159,7 +1159,7 @@ public class App extends Application {
         Query query = session.createQuery(
                 "SELECT e.scheduledTest.id as st,e.scheduledTest.date, AVG(e.grade) AS average " +
                         "FROM StudentTest e " +
-                        "WHERE e.scheduledTest.examForm.teacher.id = :teacherId " +
+                        "WHERE e.scheduledTest.examForm.teacher.id = :teacherId and e.scheduledTest.isComputerTest = true " +
                         "GROUP BY st"
         );
         query.setParameter("teacherId", teacherId);
