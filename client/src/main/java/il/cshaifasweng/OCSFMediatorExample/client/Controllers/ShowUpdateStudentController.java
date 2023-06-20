@@ -32,6 +32,8 @@ public class ShowUpdateStudentController {
     @FXML
     private Label oldGrade;
     @FXML
+    private TextArea g_notes_text;
+    @FXML
     private TextField newGrade;
     @FXML
     private Label test_course;
@@ -81,11 +83,14 @@ public class ShowUpdateStudentController {
     public void onShowUpdateStudentEvent(ShowUpdateStudentEvent event) {
         try {
             studentTest = event.getStudentTest();
+            scheduledTest = studentTest.getScheduledTest();
             Platform.runLater(() -> {
                 test_id.setText(String.valueOf(studentTest.getExamFormCode()));
                 test_course.setText(String.valueOf(studentTest.getCourseName()));
                 oldGrade.setText(String.valueOf(studentTest.getGrade()));
                 newGrade.setText(String.valueOf(studentTest.getGrade()));
+                if(scheduledTest.getExamForm().getGeneralNotes()!=null) g_notes_text.setText(scheduledTest.getExamForm().getGeneralNotes());
+                g_notes_text.setDisable(true);
             });
             questionAnswerList = studentTest.getQuestionAnswers();
             scheduledTest = studentTest.getScheduledTest();
@@ -161,6 +166,17 @@ public class ShowUpdateStudentController {
                             Label studentNotes = new Label("Student Note: " + questionAnswer.getNote());
                             vbox.getChildren().add(studentNotes);
                         }
+
+                        if (questionScore.getTeacher_note()!=null) {
+                            Label t_notes = new Label("Note for the teacher : " + questionScore.getTeacher_note());
+                            vbox.getChildren().add(t_notes);
+                        }
+                        if (questionScore.getStudent_note()!=null) {
+                            Label s_notes = new Label("Note for the Student : " + questionScore.getStudent_note());
+                            vbox.getChildren().add(s_notes);
+                        }
+
+
                         setGraphic(vbox);
 
 
