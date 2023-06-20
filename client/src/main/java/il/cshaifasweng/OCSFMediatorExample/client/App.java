@@ -48,7 +48,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         try {
-//            EventBus.getDefault().register(this);
+            EventBus.getDefault().register(this);
 
             App.stage = stage;
             scene = new Scene(loadFXML("start"), 574, 423);
@@ -61,11 +61,17 @@ public class App extends Application {
         }
     }
 
+    @Subscribe
+    public void onDisconnectClientEvent(DisconnectClientEvent event){
+        client = event.getClient();
+    }
+
     @Override
     public void stop() throws Exception {
         // TODO Auto-generated method stub
-        EventBus.getDefault().post(new DisconnectClientEvent(client));
+        cleanup();
         System.out.println("CLIENT SHUT DOWN");
+        client.closeConnection();
         super.stop();
     }
 

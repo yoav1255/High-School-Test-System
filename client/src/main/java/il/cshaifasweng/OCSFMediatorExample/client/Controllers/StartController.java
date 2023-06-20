@@ -25,13 +25,6 @@ public class StartController {
     @FXML
     private TextField port_text;
 
-    public StartController() {
-        EventBus.getDefault().register(this);
-    }
-    public void cleanup(){
-        EventBus.getDefault().unregister(this);
-    }
-
     @FXML
     void goToLogin(ActionEvent event) {
         try {
@@ -41,7 +34,7 @@ public class StartController {
             client.openConnection();
             System.out.println(client.getHost()+ " is the host " + client.getPort() + " is the port ");
             App.switchScreen("login");
-            cleanup();
+            EventBus.getDefault().post(new DisconnectClientEvent(client));
         }catch (Exception e){
             Platform.runLater(()->{
                 msg.setVisible(true);
@@ -50,12 +43,4 @@ public class StartController {
         }
     }
 
-    @Subscribe
-    public void onDisconnectClientEvent(DisconnectClientEvent event) throws IOException {
-        System.out.println("on disconnect ");
-        if(event.getClient()==client) {
-            client.closeConnection();
-            System.out.println("disconnect this client");
-        }
-    }
 }
