@@ -48,21 +48,13 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         try {
-            //EventBus.getDefault().register(this);
-            System.out.println("register successfully with client");
-            client = SimpleClient.getClient();
-            client.openConnection();
-            System.out.println(client.getHost()+ " is the host " + client.getPort() + " is the port ");
+//            EventBus.getDefault().register(this);
 
-//        cleanup();
             App.stage = stage;
-            scene = new Scene(loadFXML("login"), 574, 423);
-            //App.stage = stage;
-            setWindowTitle("Login");
+            scene = new Scene(loadFXML("start"), 574, 423);
+            setWindowTitle("Start");
             stage.setScene(scene);
             stage.show();
-
-            //stage.setOnCloseRequest(event -> logout(stage));
 
         }catch (Exception e){
             e.printStackTrace();
@@ -72,9 +64,8 @@ public class App extends Application {
     @Override
     public void stop() throws Exception {
         // TODO Auto-generated method stub
-        client.closeConnection();
+        EventBus.getDefault().post(new DisconnectClientEvent(client));
         System.out.println("CLIENT SHUT DOWN");
-        //cleanup();
         super.stop();
     }
 

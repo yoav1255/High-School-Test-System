@@ -1,6 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.server.Events.*;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
@@ -15,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleClient extends AbstractClient {
-	
+
+
 	private static SimpleClient client = null;
 
 	private SimpleClient(String host, int port) {
+
 		super(host, port);
 		System.out.println("host: "+host + " port: "+ port);
 	}
@@ -210,6 +217,16 @@ public class SimpleClient extends AbstractClient {
 	public static SimpleClient getClient() {
 		if (client == null) {
 			client = new SimpleClient("localhost", 3028);
+			System.out.println("client is null");
+		}
+		return client;
+	}
+
+	public static SimpleClient getClient(String host,int port){
+		if (client == null) {
+			client = new SimpleClient(host, port);
+			System.out.println("client is null");
+			System.out.println("Trying to create client , host : "+ host + " port : "+port);
 		}
 		return client;
 	}
