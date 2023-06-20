@@ -218,10 +218,10 @@ public class StudentExecuteExamController {
             answer4RadioButton.setStyle("-fx-font-size: 15px; -fx-font-family: Arial;");
             vbox.getChildren().add(answer4RadioButton);
 
-            if(questionAnswer.getAnswer()==0) answer1RadioButton.setSelected(true);
-            if(questionAnswer.getAnswer()==1) answer2RadioButton.setSelected(true);
-            if(questionAnswer.getAnswer()==2) answer3RadioButton.setSelected(true);
-            if(questionAnswer.getAnswer()==3) answer4RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==1) answer1RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==2) answer2RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==3) answer3RadioButton.setSelected(true);
+            if(questionAnswer.getAnswer()==4) answer4RadioButton.setSelected(true);
 
 
             if(qs.getStudent_note()!=null) {
