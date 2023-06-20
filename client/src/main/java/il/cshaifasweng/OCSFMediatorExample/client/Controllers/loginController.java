@@ -27,9 +27,6 @@ public class loginController {
     @FXML
     private Label loggedIn_msg;
 
-    //@FXML
-    //private TextArea error_msgg;
-
     @FXML
     private Button loginBN;
 
