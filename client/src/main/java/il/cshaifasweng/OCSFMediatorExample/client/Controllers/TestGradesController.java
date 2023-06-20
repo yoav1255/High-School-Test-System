@@ -62,6 +62,12 @@ public class TestGradesController {
 
     @FXML // fx:id="timeTook"
     private TableColumn<StudentTest, String> timeTook; // Value injected by FXMLLoader
+
+    @FXML
+    private Label ontime_text;
+
+    int onTime;
+    int afterTime;
     private String id;
     private List<StudentTest> studentTests;
 
@@ -109,6 +115,16 @@ public class TestGradesController {
     @Subscribe
     public void onShowStudentFromScheduleEvent(ShowStudentFromScheduleEvent event) throws IOException {
         this.studentTests = event.getStudentTests();
+        onTime=0;
+        afterTime=0;
+        for(StudentTest st : studentTests){
+            if(st.isOnTime()) onTime++;
+            else afterTime++;
+        }
+        Platform.runLater(()->{
+            ontime_text.setText("On time: " + onTime + " / "+studentTests.size());
+        });
+
         studentId.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getId()));
         studentName.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getStudent().getFirst_name() + param.getValue().getStudent().getLast_name()));
         timeTook.setCellValueFactory(new PropertyValueFactory<>("timeToComplete"));

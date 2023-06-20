@@ -23,7 +23,7 @@
                 <RowConstraints maxHeight="487.7233467102051" minHeight="10.0" prefHeight="480.58882904052734" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView fx:id="studentTestTableView" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
+                <TableView fx:id="studentTestTableView" onMouseClicked="#handleRowClick" pickOnBounds="false" prefHeight="446.0" prefWidth="818.0" stylesheets="@css/table-style.css" GridPane.rowIndex="1">
                     <columns>
                         <TableColumn fx:id="studentId" prefWidth="75.0" text="Student Id" />
                         <TableColumn fx:id="studentName" prefWidth="75.0" text="Student Name" />
@@ -40,6 +40,11 @@
                   <Label fx:id="statusLB1" layoutX="383.0" layoutY="9.0" text="to show student grades, double click his row">
                      <font>
                         <Font name="Oriya Sangam MN" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="ontime_text" layoutX="20.0" layoutY="9.0" prefHeight="20.0" prefWidth="101.0" text="On time: ">
+                     <font>
+                        <Font size="14.0" />
                      </font>
                   </Label>
                </children>
