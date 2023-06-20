@@ -58,7 +58,7 @@
                      </font>
                   </Button>
                   <ListSelectionView fx:id="listSelectionView_Courses" layoutX="369.0" layoutY="-88.0" prefHeight="133.0" prefWidth="387.0" />
-                  <Label fx:id="label1" layoutX="254.0" layoutY="69.0" prefHeight="18.0" prefWidth="94.0" text="Choose courses:">
+                  <Label fx:id="label1" layoutX="262.0" layoutY="22.0" prefHeight="18.0" prefWidth="94.0" text="Choose courses:">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font></Label>

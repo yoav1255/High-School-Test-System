@@ -120,6 +120,7 @@ public class ShowStudentTest {
                         Question question = questionScore.getQuestion();
                         VBox vbox = new VBox();
                         Label questionText = new Label(question.getText());
+                        questionText.setStyle("-fx-font-size: 14px; -fx-font-family: Arial; -fx-font-weight: bold;");
                         vbox.getChildren().add(questionText);
 
                         // Add the answers as separate labels in the VBox
