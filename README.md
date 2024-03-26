@@ -32,6 +32,13 @@ Students, teachers, and managers each have distinct roles with specific permissi
 
 ### Grade Adjustment:
 - Teachers can modify test grades as necessary.
+![hello student](https://github.com/yoav1255/High-School-Test-System/assets/101698622/94b2ce66-be3c-4187-9a7f-a55cb03cc618)
+![hello teacher](https://github.com/yoav1255/High-School-Test-System/assets/101698622/2314f5ad-c3a3-44ab-99dc-63a9ff09a780)
+![create question](https://github.com/yoav1255/High-School-Test-System/assets/101698622/d8ac8404-a238-4874-8bc8-b1b4a325a6d4)
+![server](https://github.com/yoav1255/High-School-Test-System/assets/101698622/15c8d94a-5cf2-43d0-8af0-b0e1ec88bda7)
+![Statistics](https://github.com/yoav1255/High-School-Test-System/assets/101698622/291cfe72-3941-4c42-aefa-40267b633b8d)
+
+
 
 ## Structure
 Pay attention to the three modules:
