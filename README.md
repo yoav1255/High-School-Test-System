@@ -2,6 +2,7 @@
 
 ## Overview
 The Online School Test System is designed to enhance the process of conducting tests within an educational institution. It fits for the needs of students, teachers, and managers by providing specific functionalities to each role.
+We utilized Java (OCSF server-clent framework, Greenrobot's EVENTBUS), JavaFX GUI, SQL, and Git.
 
 ## Features
 
